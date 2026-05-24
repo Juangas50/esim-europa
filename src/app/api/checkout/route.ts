@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
             },
           },
         ],
+        allow_promotion_codes: true,
         customer_email: customer.email,
         metadata: {
           order_ref: orderRef,
