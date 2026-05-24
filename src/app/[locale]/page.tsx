@@ -7,25 +7,96 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import Compatibility from "@/components/landing/Compatibility";
 import FAQ from "@/components/landing/FAQ";
 import Footer from "@/components/landing/Footer";
+import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 
-export const metadata: Metadata = {
-  title: "RUTA34 Telecom — eSIM para Europa | Conectate al instante",
-  description:
-    "eSIM instantánea para argentinos, uruguayos, chilenos y brasileños que viajan a Europa. Activá en minutos, olvidate del roaming. 20 GB desde USD 39.90.",
-  keywords:
-    "eSIM Europa Argentina, chip virtual Europa viaje, internet Europa sin roaming, eSIM viaje Europa, esim españa latinoamerica",
-  openGraph: {
-    title: "RUTA34 Telecom — Llegás a Europa y ya estás conectado",
+const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://ruta34.com";
+
+// ── Per-locale copy ──────────────────────────────────────────────────────────
+const META = {
+  es: {
+    title: "RUTA34 Telecom — eSIM para Europa | Conectate al instante",
     description:
+      "eSIM instantánea para argentinos, uruguayos, chilenos y brasileños que viajan a Europa. Activá en minutos, olvidate del roaming. 20 GB desde USD 39.90.",
+    keywords:
+      "eSIM Europa Argentina, chip virtual Europa viaje, internet Europa sin roaming, eSIM viaje Europa, esim españa latinoamerica, esim argentina europa",
+    ogTitle: "RUTA34 Telecom — Llegás a Europa y ya estás conectado",
+    ogDescription:
       "eSIM instantánea para viajeros latinoamericanos. Activá en minutos y navegá en 30+ países europeos.",
-    type: "website",
-    url: "https://ruta34.com",
+    ogLocale: "es_AR",
+    altLocale: "pt_BR",
   },
-};
+  pt: {
+    title: "RUTA34 Telecom — eSIM para Europa | Conecte-se ao instante",
+    description:
+      "eSIM instantâneo para argentinos, uruguaios, chilenos e brasileiros que viajam à Europa. Ative em minutos, esqueça o roaming. 20 GB a partir de USD 39,90.",
+    keywords:
+      "eSIM Europa Brasil, chip virtual Europa viagem, internet Europa sem roaming, eSIM viagem Europa, esim espanha america latina, esim brasil europa",
+    ogTitle: "RUTA34 Telecom — Chega na Europa e já está conectado",
+    ogDescription:
+      "eSIM instantâneo para viajantes latino-americanos. Ative em minutos e navegue em 30+ países europeus.",
+    ogLocale: "pt_BR",
+    altLocale: "es_AR",
+  },
+} as const;
 
-export default function HomePage() {
+// ── Dynamic metadata ─────────────────────────────────────────────────────────
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const m = META[locale as "es" | "pt"] ?? META.es;
+  const url = `${base}/${locale}`;
+
+  return {
+    title: m.title,
+    description: m.description,
+    keywords: m.keywords,
+    alternates: {
+      canonical: url,
+      languages: {
+        es: `${base}/es`,
+        pt: `${base}/pt`,
+      },
+    },
+    openGraph: {
+      title: m.ogTitle,
+      description: m.ogDescription,
+      type: "website",
+      url,
+      locale: m.ogLocale,
+      alternateLocale: m.altLocale,
+      siteName: "RUTA34 Telecom",
+      images: [
+        {
+          url: `${base}/og-image.jpg`,
+          width: 1200,
+          height: 630,
+          alt: m.ogTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: m.ogTitle,
+      description: m.ogDescription,
+      images: [`${base}/og-image.jpg`],
+    },
+  };
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
   return (
     <>
+      <HomeSchemaOrg locale={locale as "es" | "pt"} />
       <Navbar />
       <main>
         <Hero />
