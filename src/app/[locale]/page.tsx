@@ -68,20 +68,13 @@ export async function generateMetadata({
       locale: m.ogLocale,
       alternateLocale: m.altLocale,
       siteName: "RUTA34 Telecom",
-      images: [
-        {
-          url: `${base}/og-image.jpg`,
-          width: 1200,
-          height: 630,
-          alt: m.ogTitle,
-        },
-      ],
+      // og:image is provided by /[locale]/opengraph-image.tsx (file-based wins)
     },
     twitter: {
       card: "summary_large_image",
       title: m.ogTitle,
       description: m.ogDescription,
-      images: [`${base}/og-image.jpg`],
+      // twitter:image is inferred from opengraph-image.tsx
     },
   };
 }
