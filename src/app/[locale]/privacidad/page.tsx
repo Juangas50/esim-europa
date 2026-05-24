@@ -1,12 +1,34 @@
 import { Metadata } from "next";
 import LegalLayout from "@/components/legal/LegalLayout";
 
-export const metadata: Metadata = {
-  title: "Política de privacidad — RUTA34 Telecom",
-  robots: { index: false },
-};
+// ── Metadata ─────────────────────────────────────────────────────────────────
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title:
+      locale === "pt"
+        ? "Política de privacidade — RUTA34 Telecom"
+        : "Política de privacidad — RUTA34 Telecom",
+    robots: { index: false },
+  };
+}
 
-export default function PrivacidadPage() {
+// ── Page ─────────────────────────────────────────────────────────────────────
+export default async function PrivacidadPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  return locale === "pt" ? <PrivacidadPT /> : <PrivacidadES />;
+}
+
+// ── ES ────────────────────────────────────────────────────────────────────────
+function PrivacidadES() {
   return (
     <LegalLayout title="Política de privacidad" lastUpdated="24 de mayo de 2026">
       <Section title="1. Responsable del tratamiento">
@@ -19,12 +41,16 @@ export default function PrivacidadPage() {
       <Section title="2. Datos que recopilamos">
         <p>Al realizar una compra, recopilamos los siguientes datos:</p>
         <ul>
-          <li><strong>Identificativos:</strong> nombre, apellido y país de origen.</li>
-          <li><strong>Contacto:</strong> dirección de correo electrónico.</li>
+          <li>
+            <strong>Identificativos:</strong> nombre, apellido y país de origen.
+          </li>
+          <li>
+            <strong>Contacto:</strong> dirección de correo electrónico.
+          </li>
           <li>
             <strong>Transaccionales:</strong> referencia del pedido, plan adquirido, fecha de
-            activación solicitada y método de pago (sin datos de tarjeta, que gestiona el
-            proveedor de pago).
+            activación solicitada y método de pago (sin datos de tarjeta, que gestiona el proveedor
+            de pago).
           </li>
         </ul>
         <p>
@@ -78,8 +104,8 @@ export default function PrivacidadPage() {
         <p>Los datos pueden ser compartidos con:</p>
         <ul>
           <li>
-            <strong>Stripe Inc.</strong> (procesador de pago) — transferencia internacional amparada
-            en cláusulas contractuales tipo de la Comisión Europea.
+            <strong>Stripe Inc.</strong> (procesador de pago) — transferencia internacional
+            amparada en cláusulas contractuales tipo de la Comisión Europea.
           </li>
           <li>
             <strong>Supabase Inc.</strong> (base de datos) — infraestructura alojada en la UE.
@@ -88,32 +114,45 @@ export default function PrivacidadPage() {
             <strong>Resend Inc.</strong> (envío de correos transaccionales).
           </li>
         </ul>
-        <p>
-          No vendemos ni cedemos datos personales a terceros con fines comerciales.
-        </p>
+        <p>No vendemos ni cedemos datos personales a terceros con fines comerciales.</p>
       </Section>
 
       <Section title="6. Derechos del interesado (RGPD)">
         <p>Podés ejercer los siguientes derechos enviando un correo a soporte@ruta34.com:</p>
         <ul>
-          <li><strong>Acceso:</strong> obtener confirmación de si tratamos tus datos y una copia de los mismos.</li>
-          <li><strong>Rectificación:</strong> corregir datos inexactos o incompletos.</li>
-          <li><strong>Supresión:</strong> solicitar la eliminación de tus datos cuando ya no sean necesarios.</li>
-          <li><strong>Portabilidad:</strong> recibir tus datos en formato estructurado y legible.</li>
-          <li><strong>Oposición:</strong> oponerte al tratamiento basado en interés legítimo.</li>
-          <li><strong>Limitación:</strong> solicitar que suspendamos el tratamiento en determinadas circunstancias.</li>
+          <li>
+            <strong>Acceso:</strong> obtener confirmación de si tratamos tus datos y una copia de
+            los mismos.
+          </li>
+          <li>
+            <strong>Rectificación:</strong> corregir datos inexactos o incompletos.
+          </li>
+          <li>
+            <strong>Supresión:</strong> solicitar la eliminación de tus datos cuando ya no sean
+            necesarios.
+          </li>
+          <li>
+            <strong>Portabilidad:</strong> recibir tus datos en formato estructurado y legible.
+          </li>
+          <li>
+            <strong>Oposición:</strong> oponerte al tratamiento basado en interés legítimo.
+          </li>
+          <li>
+            <strong>Limitación:</strong> solicitar que suspendamos el tratamiento en determinadas
+            circunstancias.
+          </li>
         </ul>
         <p>
-          También tenés derecho a presentar una reclamación ante la Agencia Española de
-          Protección de Datos (aepd.es).
+          También tenés derecho a presentar una reclamación ante la Agencia Española de Protección
+          de Datos (aepd.es).
         </p>
       </Section>
 
       <Section title="7. Cookies">
         <p>
           Utilizamos cookies técnicas y analíticas. Podés consultar nuestra{" "}
-          <a href="../cookies">Política de cookies</a> para más información y para gestionar
-          tus preferencias.
+          <a href="../cookies">Política de cookies</a> para más información y para gestionar tus
+          preferencias.
         </p>
       </Section>
 
@@ -137,16 +176,171 @@ export default function PrivacidadPage() {
   );
 }
 
+// ── PT ────────────────────────────────────────────────────────────────────────
+function PrivacidadPT() {
+  return (
+    <LegalLayout title="Política de privacidade" lastUpdated="24 de maio de 2026">
+      <Section title="1. Responsável pelo tratamento">
+        <p>
+          O responsável pelo tratamento dos dados pessoais é a RUTA34 Telecom, com endereço de
+          contato em soporte@ruta34.com.
+        </p>
+      </Section>
+
+      <Section title="2. Dados que coletamos">
+        <p>Ao realizar uma compra, coletamos os seguintes dados:</p>
+        <ul>
+          <li>
+            <strong>Identificação:</strong> nome, sobrenome e país de origem.
+          </li>
+          <li>
+            <strong>Contato:</strong> endereço de e-mail.
+          </li>
+          <li>
+            <strong>Transacionais:</strong> referência do pedido, plano adquirido, data de
+            ativação solicitada e método de pagamento (sem dados do cartão, gerenciados pelo
+            provedor de pagamento).
+          </li>
+        </ul>
+        <p>
+          Não coletamos dados especialmente sensíveis (saúde, origem racial, filiação política,
+          etc.).
+        </p>
+      </Section>
+
+      <Section title="3. Finalidade e base jurídica do tratamento">
+        <table>
+          <thead>
+            <tr>
+              <th>Finalidade</th>
+              <th>Base jurídica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gestão e entrega do pedido (envio do QR)</td>
+              <td>Execução do contrato</td>
+            </tr>
+            <tr>
+              <td>Faturamento e obrigações fiscais</td>
+              <td>Obrigação legal</td>
+            </tr>
+            <tr>
+              <td>Atendimento ao cliente e suporte pós-venda</td>
+              <td>Interesse legítimo</td>
+            </tr>
+            <tr>
+              <td>Lembrete de ativação (se programado)</td>
+              <td>Execução do contrato</td>
+            </tr>
+            <tr>
+              <td>Comunicações comerciais (somente com consentimento)</td>
+              <td>Consentimento</td>
+            </tr>
+          </tbody>
+        </table>
+      </Section>
+
+      <Section title="4. Conservação dos dados">
+        <p>
+          Mantemos os dados do pedido por <strong>5 anos</strong> para fins fiscais e contábeis,
+          conforme a legislação espanhola. Os dados de contato para comunicações comerciais são
+          mantidos até que o usuário retire seu consentimento.
+        </p>
+      </Section>
+
+      <Section title="5. Destinatários e transferências internacionais">
+        <p>Os dados podem ser compartilhados com:</p>
+        <ul>
+          <li>
+            <strong>Stripe Inc.</strong> (processador de pagamento) — transferência internacional
+            amparada por cláusulas contratuais padrão da Comissão Europeia.
+          </li>
+          <li>
+            <strong>Supabase Inc.</strong> (banco de dados) — infraestrutura hospedada na UE.
+          </li>
+          <li>
+            <strong>Resend Inc.</strong> (envio de e-mails transacionais).
+          </li>
+        </ul>
+        <p>Não vendemos nem cedemos dados pessoais a terceiros para fins comerciais.</p>
+      </Section>
+
+      <Section title="6. Direitos do titular (LGPD / RGPD)">
+        <p>
+          Você pode exercer os seguintes direitos enviando um e-mail para soporte@ruta34.com:
+        </p>
+        <ul>
+          <li>
+            <strong>Acesso:</strong> obter confirmação sobre se tratamos seus dados e uma cópia
+            deles.
+          </li>
+          <li>
+            <strong>Retificação:</strong> corrigir dados inexatos ou incompletos.
+          </li>
+          <li>
+            <strong>Eliminação:</strong> solicitar a exclusão dos seus dados quando não forem mais
+            necessários.
+          </li>
+          <li>
+            <strong>Portabilidade:</strong> receber seus dados em formato estruturado e legível.
+          </li>
+          <li>
+            <strong>Oposição:</strong> opor-se ao tratamento baseado em interesse legítimo.
+          </li>
+          <li>
+            <strong>Limitação:</strong> solicitar a suspensão do tratamento em determinadas
+            circunstâncias.
+          </li>
+        </ul>
+        <p>
+          Estes direitos são garantidos pelo Regulamento Geral de Proteção de Dados (RGPD) europeu
+          e pela Lei Geral de Proteção de Dados (LGPD) brasileira. Você também pode apresentar uma
+          reclamação à Autoridade Nacional de Proteção de Dados do Brasil (gov.br/anpd) ou à
+          Agência Espanhola de Proteção de Dados (aepd.es).
+        </p>
+      </Section>
+
+      <Section title="7. Cookies">
+        <p>
+          Utilizamos cookies técnicos e analíticos. Você pode consultar nossa{" "}
+          <a href="../cookies">Política de cookies</a> para mais informações e para gerenciar suas
+          preferências.
+        </p>
+      </Section>
+
+      <Section title="8. Segurança">
+        <p>
+          Aplicamos medidas técnicas e organizacionais adequadas para proteger seus dados contra
+          acessos não autorizados, perda ou alteração: conexões criptografadas (TLS), acesso
+          restrito ao banco de dados via Row Level Security e revisões periódicas de segurança.
+        </p>
+      </Section>
+
+      <Section title="9. Modificações">
+        <p>
+          Podemos atualizar esta política a qualquer momento. Você será notificado por e-mail caso
+          as alterações sejam substanciais. A data de «Última atualização» no início do documento
+          sempre reflete a versão vigente.
+        </p>
+      </Section>
+    </LegalLayout>
+  );
+}
+
+// ── Section shared component ──────────────────────────────────────────────────
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
       <h2 className="text-lg font-bold text-[#111111] mb-3 tracking-tight">{title}</h2>
-      <div className="space-y-3 text-[#444] leading-relaxed text-[15px]
+      <div
+        className="space-y-3 text-[#444] leading-relaxed text-[15px]
         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5
         [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm
         [&_th]:text-left [&_th]:font-semibold [&_th]:text-[#111] [&_th]:py-2 [&_th]:px-3 [&_th]:bg-[#F8F8F8] [&_th]:border [&_th]:border-black/8
         [&_td]:py-2 [&_td]:px-3 [&_td]:border [&_td]:border-black/8
-        [&_a]:text-[#E60000] [&_a]:underline [&_a]:hover:no-underline">
+        [&_a]:text-[#E60000] [&_a]:underline [&_a]:hover:no-underline"
+      >
         {children}
       </div>
     </section>
