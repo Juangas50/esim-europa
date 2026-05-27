@@ -69,7 +69,7 @@ function HeroVisual() {
         <div className="relative w-full" style={{ paddingBottom: "125%" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=560&h=700&fit=crop&q=80"
+            src="/images/hero-travel.jpg"
             alt="Viajando por Europa"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
