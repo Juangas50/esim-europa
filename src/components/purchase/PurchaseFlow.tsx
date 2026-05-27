@@ -13,10 +13,11 @@ import { analytics } from "@/lib/analytics";
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 interface PurchaseFlowProps {
+  plans: Plan[];
   initialPlanId?: string;
 }
 
-export default function PurchaseFlow({ initialPlanId }: PurchaseFlowProps) {
+export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps) {
   const t = useTranslations("purchase");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
@@ -95,6 +96,7 @@ export default function PurchaseFlow({ initialPlanId }: PurchaseFlowProps) {
           >
             {step === 1 && (
               <StepPlan
+                plans={plans}
                 initialPlanId={initialPlanId}
                 onNext={(plan) => {
                   setSelectedPlan(plan);

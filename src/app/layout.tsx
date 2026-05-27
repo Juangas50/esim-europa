@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { GTMNoScript } from "@/components/analytics/GTM";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,7 +29,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} h-full`}>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {/* GTM noscript — debe ir inmediatamente después de <body> */}
+        <GTMNoScript />
+        {children}
+      </body>
     </html>
   );
 }

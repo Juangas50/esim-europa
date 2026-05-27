@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Star, ArrowRight } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
-import { PLANS } from "@/lib/plans";
 import { Plan } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
@@ -14,22 +13,23 @@ import { analytics } from "@/lib/analytics";
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 interface StepPlanProps {
+  plans: Plan[];
   initialPlanId?: string;
   onNext: (plan: Plan) => void;
 }
 
-export default function StepPlan({ initialPlanId, onNext }: StepPlanProps) {
+export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps) {
   const t = useTranslations("plans");
   const [selected, setSelected] = useState<string>(
-    initialPlanId ?? PLANS.find((p) => p.is_popular)?.id ?? PLANS[0].id
+    initialPlanId ?? plans.find((p) => p.is_popular)?.id ?? plans[0]?.id ?? ""
   );
 
-  const selectedPlan = PLANS.find((p) => p.id === selected)!;
+  const selectedPlan = plans.find((p) => p.id === selected) ?? plans[0];
 
   // Fire checkout_step_viewed once on mount with the pre-selected plan
   useEffect(() => {
-    const plan = PLANS.find((p) => p.id === selected)!;
-    analytics.checkoutStepViewed(1, "plan", plan);
+    const plan = plans.find((p) => p.id === selected) ?? plans[0];
+    if (plan) analytics.checkoutStepViewed(1, "plan", plan);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,7 +37,7 @@ export default function StepPlan({ initialPlanId, onNext }: StepPlanProps) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Plan cards */}
       <div className="lg:col-span-2 space-y-3">
-        {PLANS.map((plan) => {
+        {plans.map((plan) => {
           const isSelected = plan.id === selected;
           return (
             <motion.button

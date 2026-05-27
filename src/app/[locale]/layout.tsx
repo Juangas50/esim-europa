@@ -3,6 +3,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import CookieBanner from "@/components/legal/CookieBanner";
+import { GTMScript } from "@/components/analytics/GTM";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -27,6 +28,8 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      {/* GTM script — carga asíncrona después de hidratación */}
+      <GTMScript />
       {children}
       <CookieBanner />
     </NextIntlClientProvider>

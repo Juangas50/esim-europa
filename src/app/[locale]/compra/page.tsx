@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PurchaseFlow from "@/components/purchase/PurchaseFlow";
+import { getPlans } from "@/lib/plans-server";
 
 export const metadata: Metadata = {
   title: "Comprar eSIM — RUTA34 Telecom",
@@ -13,6 +14,7 @@ interface CompraPageProps {
 
 export default async function CompraPage({ searchParams }: CompraPageProps) {
   const { plan } = await searchParams;
+  const plans = await getPlans();
 
-  return <PurchaseFlow initialPlanId={plan} />;
+  return <PurchaseFlow plans={plans} initialPlanId={plan} />;
 }

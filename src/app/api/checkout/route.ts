@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
-import { getPlanById } from "@/lib/plans";
+import { getPlanById } from "@/lib/plans-server";
 import { generateOrderRef } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -13,8 +13,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = body;
 
-    // 1. Validar plan
-    const plan = getPlanById(plan_id);
+    // 1. Validar plan (Supabase first, fallback to hardcoded)
+    const plan = await getPlanById(plan_id);
     if (!plan) {
       return NextResponse.json({ error: "Plan no encontrado" }, { status: 400 });
     }

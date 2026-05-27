@@ -9,6 +9,7 @@ import Compatibility from "@/components/landing/Compatibility";
 import FAQ from "@/components/landing/FAQ";
 import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
+import { getPlans } from "@/lib/plans-server";
 
 const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
 
@@ -87,6 +88,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const plans = await getPlans();
 
   return (
     <>
@@ -94,7 +96,7 @@ export default async function HomePage({
       <Navbar />
       <main>
         <Hero />
-        <Plans />
+        <Plans plans={plans} />
         <Testimonials />
         <Benefits />
         <HowItWorks />

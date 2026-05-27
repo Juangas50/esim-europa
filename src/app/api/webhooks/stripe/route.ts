@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
-import { getPlanById } from "@/lib/plans";
+import { getPlanById } from "@/lib/plans-server";
 import { sendPurchaseConfirmation } from "@/lib/resend";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Enviar email de confirmación con QR (placeholder hasta API Vodafone)
-    const plan = getPlanById(planId);
+    const plan = await getPlanById(planId);
     if (plan && order.customer_email) {
       try {
         console.log("[email] Sending to:", order.customer_email, "| RESEND_API_KEY set:", !!process.env.RESEND_API_KEY);
