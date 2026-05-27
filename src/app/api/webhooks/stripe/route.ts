@@ -56,13 +56,15 @@ export async function POST(req: NextRequest) {
     const plan = getPlanById(planId);
     if (plan && order.customer_email) {
       try {
-        await sendPurchaseConfirmation({
+        console.log("[email] Sending to:", order.customer_email, "| RESEND_API_KEY set:", !!process.env.RESEND_API_KEY);
+        const emailResult = await sendPurchaseConfirmation({
           to: order.customer_email,
           customerName: order.customer_name,
           orderRef,
           plan,
-          qrPlaceholder: true, // Se reemplaza cuando tengamos la API de Vodafone
+          qrPlaceholder: true,
         });
+        console.log("[email] Resend result:", JSON.stringify(emailResult));
 
         // Marcar email como enviado
         await supabase
@@ -70,8 +72,7 @@ export async function POST(req: NextRequest) {
           .update({ qr_sent_at: new Date().toISOString(), status: "qr_sent" })
           .eq("order_ref", orderRef);
       } catch (emailError) {
-        console.error("Error sending confirmation email:", emailError);
-        // No falla el webhook — el email puede reenviarse manualmente desde B2B portal
+        console.error("[email] Error sending confirmation email:", emailError);
       }
     }
   }
