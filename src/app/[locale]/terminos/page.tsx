@@ -35,7 +35,7 @@ function TerminosES() {
         <p>
           RUTA34 Telecom (en adelante, «la empresa») ofrece servicios de venta de eSIMs para su
           uso en Europa y España, destinados a viajeros originarios de Latinoamérica. Al completar
-          una compra en ruta34.com, el cliente acepta íntegramente los presentes términos y
+          una compra en esimruta34.com, el cliente acepta íntegramente los presentes términos y
           condiciones.
         </p>
       </Section>
@@ -106,7 +106,7 @@ function TerminosES() {
         </p>
         <p>
           Para solicitar un reembolso, el cliente deberá contactar con el soporte por WhatsApp o
-          mediante correo a soporte@ruta34.com, indicando la referencia del pedido.
+          mediante correo a soporte@esimruta34.com, indicando la referencia del pedido.
         </p>
       </Section>
 
@@ -156,7 +156,7 @@ function TerminosES() {
       <Section title="Contacto">
         <p>
           Para cualquier consulta relacionada con estos términos, podés contactarnos por WhatsApp o
-          en soporte@ruta34.com.
+          en soporte@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>
@@ -171,7 +171,7 @@ function TerminosPT() {
         <p>
           A RUTA34 Telecom (doravante, «a empresa») oferece serviços de venda de eSIMs para uso
           na Europa e Espanha, destinados a viajantes originários da América Latina. Ao concluir
-          uma compra em ruta34.com, o cliente aceita integralmente os presentes termos e condições.
+          uma compra em esimruta34.com, o cliente aceita integralmente os presentes termos e condições.
         </p>
       </Section>
 
@@ -242,7 +242,7 @@ function TerminosPT() {
         </p>
         <p>
           Para solicitar um reembolso, o cliente deverá entrar em contato com o suporte pelo
-          WhatsApp ou por e-mail em soporte@ruta34.com, informando a referência do pedido.
+          WhatsApp ou por e-mail em soporte@esimruta34.com, informando a referência do pedido.
         </p>
       </Section>
 
@@ -292,7 +292,7 @@ function TerminosPT() {
       <Section title="Contato">
         <p>
           Para qualquer dúvida relacionada a estes termos, você pode nos contatar pelo WhatsApp ou
-          pelo e-mail soporte@ruta34.com.
+          pelo e-mail soporte@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>

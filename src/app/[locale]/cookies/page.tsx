@@ -143,7 +143,7 @@ function CookiesES() {
         <p>
           Para más información sobre el tratamiento de tus datos personales, consultá nuestra{" "}
           <a href="../privacidad">Política de privacidad</a>. Si tenés dudas sobre el uso de
-          cookies, podés escribirnos a soporte@ruta34.com.
+          cookies, podés escribirnos a soporte@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>
@@ -266,7 +266,7 @@ function CookiesPT() {
         <p>
           Para mais informações sobre o tratamento dos seus dados pessoais, consulte nossa{" "}
           <a href="../privacidad">Política de privacidade</a>. Se tiver dúvidas sobre o uso de
-          cookies, escreva para soporte@ruta34.com.
+          cookies, escreva para soporte@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>

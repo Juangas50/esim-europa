@@ -93,7 +93,7 @@ export async function sendPurchaseConfirmation({
 
     <p style="text-align:center;color:#bbb;font-size:12px;margin:16px 0 0;">
       RUTA34 Telecom · eSIM para latinoamericanos en Europa<br />
-      <a href="https://ruta34.com" style="color:#bbb;">ruta34.com</a>
+      <a href="https://esimruta34.com" style="color:#bbb;">ruta34.com</a>
     </p>
   </div>
 </body>
@@ -101,7 +101,7 @@ export async function sendPurchaseConfirmation({
 `;
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <noreply@ruta34.com>",
+    from: "RUTA34 Telecom <noreply@esimruta34.com>",
     to,
     subject: `¡Tu eSIM está lista! Ref. ${orderRef}`,
     html,
@@ -122,7 +122,7 @@ export async function sendActivationReminder({
   const firstName = customerName.split(" ")[0];
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <noreply@ruta34.com>",
+    from: "RUTA34 Telecom <noreply@esimruta34.com>",
     to,
     subject: `Recordatorio: tu eSIM se activa mañana — Ref. ${orderRef}`,
     html: `

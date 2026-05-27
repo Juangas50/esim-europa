@@ -9,7 +9,7 @@ import FAQ from "@/components/landing/FAQ";
 import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://ruta34.com";
+const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
 
 // ── Per-locale copy ──────────────────────────────────────────────────────────
 const META = {

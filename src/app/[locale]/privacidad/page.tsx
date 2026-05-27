@@ -34,7 +34,7 @@ function PrivacidadES() {
       <Section title="1. Responsable del tratamiento">
         <p>
           El responsable del tratamiento de los datos personales es RUTA34 Telecom, con domicilio
-          a efectos de contacto en soporte@ruta34.com.
+          a efectos de contacto en soporte@esimruta34.com.
         </p>
       </Section>
 
@@ -118,7 +118,7 @@ function PrivacidadES() {
       </Section>
 
       <Section title="6. Derechos del interesado (RGPD)">
-        <p>Podés ejercer los siguientes derechos enviando un correo a soporte@ruta34.com:</p>
+        <p>Podés ejercer los siguientes derechos enviando un correo a soporte@esimruta34.com:</p>
         <ul>
           <li>
             <strong>Acceso:</strong> obtener confirmación de si tratamos tus datos y una copia de
@@ -183,7 +183,7 @@ function PrivacidadPT() {
       <Section title="1. Responsável pelo tratamento">
         <p>
           O responsável pelo tratamento dos dados pessoais é a RUTA34 Telecom, com endereço de
-          contato em soporte@ruta34.com.
+          contato em soporte@esimruta34.com.
         </p>
       </Section>
 
@@ -268,7 +268,7 @@ function PrivacidadPT() {
 
       <Section title="6. Direitos do titular (LGPD / RGPD)">
         <p>
-          Você pode exercer os seguintes direitos enviando um e-mail para soporte@ruta34.com:
+          Você pode exercer os seguintes direitos enviando um e-mail para soporte@esimruta34.com:
         </p>
         <ul>
           <li>

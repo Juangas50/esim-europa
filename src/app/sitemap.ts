@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://ruta34.com";
+const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
 const locales = ["es", "pt"] as const;
 
 // Rutas públicas indexables (excluye compra, confirmacion, legales)

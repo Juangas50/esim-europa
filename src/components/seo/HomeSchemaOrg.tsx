@@ -1,7 +1,7 @@
 import JsonLd from "./JsonLd";
 import { PLANS } from "@/lib/plans";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://ruta34.com";
+const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
 
 interface Props {
   locale: "es" | "pt";
@@ -37,7 +37,7 @@ export default function HomeSchemaOrg({ locale }: Props) {
     sameAs: [],
     contactPoint: {
       "@type": "ContactPoint",
-      email: "soporte@ruta34.com",
+      email: "soporte@esimruta34.com",
       contactType: "customer support",
       availableLanguage: ["Spanish", "Portuguese"],
     },
