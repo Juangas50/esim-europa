@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       .from("b2c_orders")
       .insert({
         order_ref: orderRef,
-        tariff_id: plan_id, // Se mapea a tariffs(id) en producción
+        tariff_id: null, // Los planes son hardcoded — sin UUID de tariffs por ahora
         customer_name: customer.name,
         customer_lastname: customer.lastname,
         customer_email: customer.email,
