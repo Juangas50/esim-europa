@@ -44,6 +44,7 @@
     "dataGb": "GB de datos",
     "countries": "países cubiertos",
     "buyPlan": "Comprar este plan",
+    "summary": "Resumen del pedido",
     "prepago": {
       "badge": "Prepago",
       "desc": "Los 28 días cuentan desde el día que lo activás. Podés activarlo hasta 12 meses después de la compra."
