@@ -19,6 +19,8 @@ const schema = z
     customer_email: z.string().email("Email inválido"),
     customer_email_confirm: z.string().email("Email inválido"),
     customer_country: z.string().min(1, "Seleccioná tu país"),
+    // activation_type controla el radio; activation_date guarda la fecha elegida
+    activation_type: z.enum(["now", "schedule"]),
     activation_date: z.string().optional(),
     device_confirmed: z.boolean().refine((v) => v === true, {
       message: "Debés confirmar la compatibilidad de tu dispositivo",
@@ -77,6 +79,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       customer_email: initialData.customer_email ?? "",
       customer_email_confirm: initialData.customer_email ?? "",
       customer_country: initialData.customer_country ?? "",
+      activation_type: "now",
       activation_date: initialData.activation_date ?? "",
       device_confirmed: initialData.device_confirmed ?? false,
     },
@@ -85,7 +88,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const isPrepago = plan.type === "prepago";
 
   const onSubmit = (data: FormValues) => {
-    onNext(data);
+    // Combina activation_type + activation_date en un solo campo para el pedido
+    const finalActivationDate =
+      data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
+    onNext({ ...data, activation_date: finalActivationDate });
   };
 
   return (
@@ -170,13 +176,12 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             <div className="space-y-2.5">
               {/* Opción por defecto — destacada visualmente */}
               <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
-                watch("activation_date") !== "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
+                watch("activation_type") === "now" ? "border-[#6EC1E4] bg-white" : "border-transparent"
               }`}>
                 <input
                   type="radio"
-                  {...register("activation_date")}
-                  value=""
-                  defaultChecked
+                  {...register("activation_type")}
+                  value="now"
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div>
@@ -186,18 +191,18 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               </label>
               {/* Opción programar */}
               <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
-                watch("activation_date") === "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
+                watch("activation_type") === "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
               }`}>
                 <input
                   type="radio"
-                  {...register("activation_date")}
+                  {...register("activation_type")}
                   value="schedule"
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-[#111]">{t("form.activationSchedule")}</p>
                   <p className="text-xs text-[#777] mt-0.5">{t("form.activationScheduleHint")}</p>
-                  {watch("activation_date") === "schedule" && (
+                  {watch("activation_type") === "schedule" && (
                     <input
                       type="date"
                       {...register("activation_date")}

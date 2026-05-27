@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Star } from "@phosphor-icons/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
-const TESTIMONIALS = [
+const TESTIMONIALS_ES = [
   {
     name: "Lucía F.",
     country: "Argentina",
@@ -20,6 +20,33 @@ const TESTIMONIALS = [
     country: "México",
     flag: "🇲🇽",
     text: "Lo usé en un viaje de 3 semanas por España, Francia e Italia. Funcionó perfecto en todos lados. Muy fácil de instalar, escaneás el QR y listo.",
+    plan: "Europa Prepago 20 GB",
+    rating: 5,
+  },
+  {
+    name: "Ana Beatriz S.",
+    country: "Brasil",
+    flag: "🇧🇷",
+    text: "Facilísimo. Instalé el QR antes de embarcar y cuando llegué a Lisboa ya estaba conectada. Sin colas, sin estrés. Lo recomiendo a todos los que viajan a Europa.",
+    plan: "España Prepago 10 GB",
+    rating: 5,
+  },
+];
+
+const TESTIMONIALS_PT = [
+  {
+    name: "Lucía F.",
+    country: "Argentina",
+    flag: "🇦🇷",
+    text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR chegou no email em menos de um minuto. Incrível.",
+    plan: "Europa Prepago 20 GB",
+    rating: 5,
+  },
+  {
+    name: "Carlos M.",
+    country: "México",
+    flag: "🇲🇽",
+    text: "Usei numa viagem de 3 semanas pela Espanha, França e Itália. Funcionou perfeitamente em todos os lugares. Muito fácil de instalar.",
     plan: "Europa Prepago 20 GB",
     rating: 5,
   },
@@ -45,6 +72,8 @@ function StarRating({ count }: { count: number }) {
 
 export default function Testimonials() {
   const t = useTranslations("testimonials");
+  const locale = useLocale();
+  const TESTIMONIALS = locale === "pt" ? TESTIMONIALS_PT : TESTIMONIALS_ES;
 
   return (
     <section className="py-20 px-4 bg-[#F8F8F8]">
