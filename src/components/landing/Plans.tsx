@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, ArrowRight, Star } from "@phosphor-icons/react";
+import { Check, ArrowRight, Star, Users } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import { PLANS } from "@/lib/plans";
@@ -30,7 +30,13 @@ export default function Plans() {
           <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
             {t("title")}
           </h2>
-          <p className="text-[#555555] text-base">{t("subtitle")}</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-[#555555] text-base">{t("subtitle")}</p>
+            <div className="inline-flex items-center gap-1.5 bg-[#F0FDF4] border border-emerald-200 rounded-full px-3 py-1">
+              <Users size={13} weight="fill" className="text-emerald-500" />
+              <span className="text-xs font-semibold text-emerald-700">{t("socialProof")}</span>
+            </div>
+          </div>
         </motion.div>
 
         {/* Planes — layout asimétrico: España (1/3) + Europa Featured (2/3) */}

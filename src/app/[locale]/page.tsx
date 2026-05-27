@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
-import Benefits from "@/components/landing/Benefits";
 import Plans from "@/components/landing/Plans";
+import Testimonials from "@/components/landing/Testimonials";
+import Benefits from "@/components/landing/Benefits";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Compatibility from "@/components/landing/Compatibility";
 import FAQ from "@/components/landing/FAQ";
@@ -93,8 +94,9 @@ export default async function HomePage({
       <Navbar />
       <main>
         <Hero />
-        <Benefits />
         <Plans />
+        <Testimonials />
+        <Benefits />
         <HowItWorks />
         <Compatibility />
         <FAQ />

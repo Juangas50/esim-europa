@@ -13,7 +13,8 @@
     "ctaSecondary": "Cómo funciona",
     "trust1": "+5.000 viajeros",
     "trust2": "30+ países",
-    "trust3": "Activación en 1 min"
+    "trust3": "Activación en 1 min",
+    "priceAnchor": "Desde USD 24.90 · Sin renovación automática"
   },
   "benefits": {
     "title": "Internet como en casa, pero en Europa",
@@ -40,6 +41,7 @@
     "title": "Elegí tu plan",
     "subtitle": "Precios en dólares, un solo pago, sin renovación automática.",
     "popular": "Más elegido",
+    "socialProof": "+5.000 viajeros activos",
     "perMonth": "por 28 días",
     "dataGb": "GB de datos",
     "countries": "países cubiertos",
@@ -116,6 +118,11 @@
       }
     }
   },
+  "testimonials": {
+    "title": "Lo que dicen nuestros viajeros",
+    "subtitle": "+5.000 latinoamericanos ya viajan conectados con RUTA34",
+    "aggregate": "4.9/5 · Más de 500 opiniones verificadas"
+  },
   "footer": {
     "tagline": "eSIM para latinoamericanos que viajan a Europa.",
     "company": "Empresa",
@@ -145,15 +152,29 @@
       "email": "Email",
       "emailConfirm": "Confirmá tu email",
       "country": "País de origen",
-      "activationDate": "¿Cuándo querés activar tu eSIM?",
-      "activationToday": "Al aterrizar (lo antes posible)",
-      "activationSchedule": "Programar una fecha",
+      "activationDate": "¿Cuándo activás la eSIM?",
+      "activationHint": "Podés activarla hasta 12 meses después de la compra.",
+      "activationToday": "Al aterrizar en Europa (recomendado)",
+      "activationTodayHint": "Instalás el QR antes de salir y activás cuando llegás.",
+      "activationSchedule": "Quiero programar una fecha",
+      "activationScheduleHint": "Elegí el día que querés que empiece tu plan.",
       "deviceConfirm": "Confirmo que mi celular es compatible con eSIM y no está bloqueado por mi operador",
       "next": "Continuar",
       "back": "Volver",
       "pay": "Pagar ahora"
     },
     "summary": "Resumen del pedido",
+    "payment": {
+      "method": "Método de pago",
+      "card": "Tarjeta de crédito / débito",
+      "cardSub": "Visa, Mastercard, American Express",
+      "mp": "MercadoPago",
+      "mpSub": "Ideal para Argentina, Chile, México y más",
+      "secure": "Pago 100% seguro",
+      "processing": "Procesando...",
+      "once": "pago único · sin renovación",
+      "noStore": "No almacenamos datos de tu tarjeta"
+    },
     "countries": {
       "AR": "Argentina",
       "UY": "Uruguay",

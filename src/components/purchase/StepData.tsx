@@ -164,38 +164,49 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         {/* Fecha de activación — solo prepago */}
         {isPrepago && (
           <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
-            <Label>{t("form.activationDate")}</Label>
-            <div className="space-y-2 mt-2">
-              <label className="flex items-center gap-3 cursor-pointer">
+            <p className="text-sm font-bold text-[#111111] mb-0.5">{t("form.activationDate")}</p>
+            <p className="text-xs text-[#777] mb-3">{t("form.activationHint")}</p>
+            <div className="space-y-2.5">
+              {/* Opción por defecto — destacada visualmente */}
+              <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                watch("activation_date") !== "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
+              }`}>
                 <input
                   type="radio"
                   {...register("activation_date")}
                   value=""
                   defaultChecked
-                  className="accent-[#E60000] w-4 h-4"
+                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
-                <span className="text-sm text-[#111]">{t("form.activationToday")}</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#111]">{t("form.activationToday")}</p>
+                  <p className="text-xs text-[#777] mt-0.5">{t("form.activationTodayHint")}</p>
+                </div>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer">
+              {/* Opción programar */}
+              <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                watch("activation_date") === "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
+              }`}>
                 <input
                   type="radio"
                   {...register("activation_date")}
                   value="schedule"
-                  className="accent-[#E60000] w-4 h-4"
+                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
-                <span className="text-sm text-[#111]">{t("form.activationSchedule")}</span>
-              </label>
-              {watch("activation_date") === "schedule" && (
-                <div className="mt-2 pl-7">
-                  <input
-                    type="date"
-                    {...register("activation_date")}
-                    className={inputClass}
-                    min={new Date().toISOString().split("T")[0]}
-                    max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
-                  />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-[#111]">{t("form.activationSchedule")}</p>
+                  <p className="text-xs text-[#777] mt-0.5">{t("form.activationScheduleHint")}</p>
+                  {watch("activation_date") === "schedule" && (
+                    <input
+                      type="date"
+                      {...register("activation_date")}
+                      className={`${inputClass} mt-3`}
+                      min={new Date().toISOString().split("T")[0]}
+                      max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
+                    />
+                  )}
                 </div>
-              )}
+              </label>
             </div>
           </div>
         )}

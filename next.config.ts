@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   // Imágenes optimizadas con next/image
   images: {
     formats: ["image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
 };
 
