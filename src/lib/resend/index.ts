@@ -101,7 +101,7 @@ export async function sendPurchaseConfirmation({
 `;
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <noreply@esimruta34.com>",
+    from: "RUTA34 Telecom <onboarding@resend.dev>",
     to,
     subject: `¡Tu eSIM está lista! Ref. ${orderRef}`,
     html,
@@ -122,7 +122,7 @@ export async function sendActivationReminder({
   const firstName = customerName.split(" ")[0];
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <noreply@esimruta34.com>",
+    from: "RUTA34 Telecom <onboarding@resend.dev>",
     to,
     subject: `Recordatorio: tu eSIM se activa mañana — Ref. ${orderRef}`,
     html: `
