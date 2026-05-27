@@ -123,10 +123,17 @@ export default function Plans() {
             <div className="relative">
               {/* Popular badge */}
               <div className="flex items-center justify-between mb-6">
-                <Badge variant="red">
-                  <Star size={10} weight="fill" />
-                  {t("popular")}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="red">
+                    <Star size={10} weight="fill" />
+                    {t("popular")}
+                  </Badge>
+                  {/* Badge 5G */}
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[10px] tracking-tight px-2 py-1 shadow">
+                    5G
+                  </span>
+                  <span className="text-sm">🇪🇸</span>
+                </div>
                 <Badge variant="outline" className="bg-white/10 border-white/20 text-white/80">
                   {t(`${planEuropa.type}.badge`)}
                 </Badge>

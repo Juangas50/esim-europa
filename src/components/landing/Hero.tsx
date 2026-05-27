@@ -84,8 +84,14 @@ function HeroVisual() {
             {/* Header de la card */}
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-[#999]">RUTA34 Telecom</p>
-                <p className="text-sm font-bold text-[#111]">Europa Prepago</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-[#999]">RUTA34 Telecom · 🇪🇸</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <p className="text-sm font-bold text-[#111]">Europa Prepago</p>
+                  {/* Badge 5G */}
+                  <span className="inline-flex items-center justify-center rounded-md bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] tracking-tight px-1.5 py-0.5 shadow-sm">
+                    5G
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#E60000] flex items-center justify-center shadow-[0_4px_12px_-2px_rgba(230,0,0,0.4)]">
@@ -129,7 +135,7 @@ function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* Badge flotante — países */}
+      {/* Badge flotante — países + flags */}
       <motion.div
         initial={{ opacity: 0, x: 16, scale: 0.9 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -137,18 +143,23 @@ function HeroVisual() {
         className="absolute -right-3 top-8 bg-white rounded-2xl px-3.5 py-2 shadow-[0_8px_24px_-4px_rgba(0,0,0,0.15)] border border-black/5"
       >
         <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">Cobertura</p>
-        <p className="text-sm font-bold text-[#111]">30+ países 🇪🇺</p>
+        <p className="text-sm font-bold text-[#111]">30+ países 🇪🇸🇪🇺</p>
       </motion.div>
 
-      {/* Badge flotante — activación */}
+      {/* Badge flotante — red 5G + línea española */}
       <motion.div
         initial={{ opacity: 0, x: -16, scale: 0.9 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.85, ease: EASE_OUT }}
         className="absolute -left-3 top-[30%] bg-[#111111] rounded-2xl px-3.5 py-2 shadow-[0_8px_24px_-4px_rgba(0,0,0,0.25)]"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-white/50">Activación</p>
-        <p className="text-sm font-bold text-white">En 60 seg ⚡</p>
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="inline-flex items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] tracking-tight px-1 py-0.5">
+            5G
+          </span>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-white/50">Red española</p>
+        </div>
+        <p className="text-sm font-bold text-white">🇪🇸 Operador local</p>
       </motion.div>
     </div>
   );

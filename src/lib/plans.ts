@@ -14,7 +14,8 @@ export const PLANS: Plan[] = [
     zone: "espana",
     countries_count: 1,
     features: [
-      "10 GB en España",
+      "10 GB en España — red 4G/5G",
+      "Línea española 🇪🇸 — operador local",
       "28 días desde activación",
       "QR instantáneo por email",
       "Activá hasta 12 meses después",
@@ -33,11 +34,11 @@ export const PLANS: Plan[] = [
     zone: "europa",
     countries_count: 30,
     features: [
-      "20 GB en 30+ países europeos",
+      "20 GB en 30+ países europeos — red 4G/5G",
+      "Línea española 🇪🇸 — operador local",
       "28 días desde activación",
       "QR instantáneo por email",
       "Activá hasta 12 meses después",
-      "Incluye España, Francia, Italia, Alemania y más",
     ],
   },
   {
@@ -52,11 +53,11 @@ export const PLANS: Plan[] = [
     zone: "europa",
     countries_count: 30,
     features: [
-      "20 GB en 30+ países europeos",
+      "20 GB en 30+ países europeos — red 4G/5G",
+      "Línea española 🇪🇸 — operador local",
       "28 días desde activación",
       "QR instantáneo por email",
       "Activá cuando quieras (60 días)",
-      "Ideal si el viaje no está confirmado",
     ],
   },
 ];

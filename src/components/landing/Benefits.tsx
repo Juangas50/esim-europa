@@ -106,8 +106,15 @@ export default function Benefits() {
                 <p className="text-sm text-white/60 leading-relaxed">
                   {t("items.coverage.desc")}
                 </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {["España", "Francia", "Italia", "Alemania", "Portugal", "+25 más"].map((c) => (
+                {/* Badge 5G + línea española */}
+                <div className="flex items-center gap-2 mt-4 mb-3">
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[10px] tracking-tight px-2 py-1">
+                    5G
+                  </span>
+                  <span className="text-xs font-semibold text-white/60">Línea española 🇪🇸 — cobertura en toda Europa</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["🇪🇸 España", "🇫🇷 Francia", "🇮🇹 Italia", "🇩🇪 Alemania", "🇵🇹 Portugal", "+25 más"].map((c) => (
                     <span key={c} className="text-xs font-semibold text-white/70 bg-white/10 px-3 py-1 rounded-full">
                       {c}
                     </span>
