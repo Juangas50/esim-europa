@@ -1,17 +1,28 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
 import { EASE_OUT, fadeUp, stagger } from "@/lib/motion";
+import { analytics } from "@/lib/analytics";
 
 function ConfirmacionContent() {
   const t = useTranslations("confirmation");
   const locale = useLocale();
   const searchParams = useSearchParams();
   const orderRef = searchParams.get("ref") ?? "—";
+  const planId = searchParams.get("plan") ?? "";
+
+  // Fire once — GA4 purchase confirmation page view
+  useEffect(() => {
+    if (orderRef !== "—") {
+      analytics.purchaseConfirmedPageViewed(orderRef, planId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const steps = [
     t("step1"),

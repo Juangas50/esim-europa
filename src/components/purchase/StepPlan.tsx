@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Star, ArrowRight } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,7 @@ import { Plan } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import { analytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -24,6 +25,13 @@ export default function StepPlan({ initialPlanId, onNext }: StepPlanProps) {
   );
 
   const selectedPlan = PLANS.find((p) => p.id === selected)!;
+
+  // Fire checkout_step_viewed once on mount with the pre-selected plan
+  useEffect(() => {
+    const plan = PLANS.find((p) => p.id === selected)!;
+    analytics.checkoutStepViewed(1, "plan", plan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -118,7 +126,10 @@ export default function StepPlan({ initialPlanId, onNext }: StepPlanProps) {
             variant="primary"
             size="lg"
             fullWidth
-            onClick={() => onNext(selectedPlan)}
+            onClick={() => {
+              analytics.checkoutStepCompleted(1, "plan", selectedPlan);
+              onNext(selectedPlan);
+            }}
           >
             Continuar
             <ArrowRight size={16} weight="bold" />

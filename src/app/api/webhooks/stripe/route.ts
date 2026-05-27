@@ -75,6 +75,50 @@ export async function POST(req: NextRequest) {
         console.error("[email] Error sending confirmation email:", emailError);
       }
     }
+
+    // 3. GA4 Measurement Protocol — purchase event (server-side, survives Stripe redirect)
+    const ga4MeasurementId = process.env.GA4_MEASUREMENT_ID;
+    const ga4ApiSecret = process.env.GA4_API_SECRET;
+    const ga4ClientId = session.metadata?.ga_client_id;
+
+    if (ga4MeasurementId && ga4ApiSecret && ga4ClientId && plan) {
+      try {
+        const ga4Res = await fetch(
+          `https://www.google-analytics.com/mp/collect?measurement_id=${ga4MeasurementId}&api_secret=${ga4ApiSecret}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              client_id: ga4ClientId,
+              events: [
+                {
+                  name: "purchase",
+                  params: {
+                    transaction_id: orderRef,
+                    value: plan.price_usd,
+                    currency: "USD",
+                    items: [
+                      {
+                        item_id: planId,
+                        item_name: `eSIM ${plan.name}`,
+                        item_category: plan.type,
+                        price: plan.price_usd,
+                        quantity: 1,
+                      },
+                    ],
+                  },
+                },
+              ],
+            }),
+          }
+        );
+        console.log("[ga4] Measurement Protocol sent, status:", ga4Res.status, "| order:", orderRef);
+      } catch (ga4Error) {
+        console.error("[ga4] Error sending purchase event:", ga4Error);
+      }
+    } else if (!ga4ClientId) {
+      console.warn("[ga4] Skipping MP — no ga_client_id in Stripe metadata for order:", orderRef);
+    }
   }
 
   return NextResponse.json({ received: true });

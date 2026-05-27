@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, ArrowLeft, Lock, ArrowRight, ShieldCheck } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Button from "@/components/ui/Button";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
+import { analytics, getGA4ClientId } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -70,9 +71,29 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Step viewed once on mount
+  useEffect(() => {
+    analytics.checkoutStepViewed(3, "payment", plan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Payment method changed — skip initial mount
+  const isFirstMethodRender = useRef(true);
+  useEffect(() => {
+    if (isFirstMethodRender.current) {
+      isFirstMethodRender.current = false;
+      return;
+    }
+    analytics.paymentMethodSelected(method, plan);
+  }, [method, plan]);
+
   const handlePay = async () => {
     setLoading(true);
     setError(null);
+
+    // Track payment initiation + pass GA4 client_id for server-side attribution
+    analytics.checkoutPaymentInitiated(plan, method, formData.customer_country);
+    const ga_client_id = getGA4ClientId();
 
     try {
       const res = await fetch("/api/checkout", {
@@ -89,6 +110,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           },
           activation_date: formData.activation_date,
           locale,
+          ga_client_id, // forwarded to Stripe metadata → used by webhook for GA4 MP
         }),
       });
 

@@ -8,6 +8,7 @@ import StepPlan from "./StepPlan";
 import StepData from "./StepData";
 import StepPayment from "./StepPayment";
 import { Plan, OrderFormData } from "@/types";
+import { analytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -98,6 +99,7 @@ export default function PurchaseFlow({ initialPlanId }: PurchaseFlowProps) {
                 onNext={(plan) => {
                   setSelectedPlan(plan);
                   setFormData((prev) => ({ ...prev, plan_id: plan.id }));
+                  analytics.checkoutStarted(plan);
                   goToStep(2);
                 }}
               />

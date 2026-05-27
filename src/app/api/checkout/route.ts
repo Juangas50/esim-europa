@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { plan_id, payment_method, customer, activation_date, locale } = body;
+    const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = body;
 
     // 1. Validar plan
     const plan = getPlanById(plan_id);
@@ -73,8 +73,10 @@ export async function POST(req: NextRequest) {
           order_ref: orderRef,
           plan_id,
           customer_country: customer.country,
+          // GA4 client_id for Measurement Protocol attribution (may be undefined if GA not loaded)
+          ...(ga_client_id ? { ga_client_id } : {}),
         },
-        success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&plan=${plan_id}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/${locale}/compra?plan=${plan_id}`,
       });
 

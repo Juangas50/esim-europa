@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
@@ -9,6 +10,7 @@ import Button from "@/components/ui/Button";
 import PurchaseFAQ from "@/components/purchase/PurchaseFAQ";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
+import { analytics } from "@/lib/analytics";
 
 const COUNTRIES = ["AR", "UY", "CL", "BR", "MX", "CO", "PE", "VE", "EC", "PY", "BO", "OTHER"] as const;
 
@@ -85,12 +87,19 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     },
   });
 
+  // Fire checkout_step_viewed once when this step mounts
+  useEffect(() => {
+    analytics.checkoutStepViewed(2, "data", plan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const isPrepago = plan.type === "prepago";
 
   const onSubmit = (data: FormValues) => {
     // Combina activation_type + activation_date en un solo campo para el pedido
     const finalActivationDate =
       data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
+    analytics.checkoutStepCompleted(2, "data", plan);
     onNext({ ...data, activation_date: finalActivationDate });
   };
 
