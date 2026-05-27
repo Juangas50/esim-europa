@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
@@ -67,14 +66,13 @@ function HeroVisual() {
         className="relative rounded-[2rem] overflow-hidden shadow-[0_32px_80px_-16px_rgba(0,0,0,0.22)]"
       >
         {/* Foto de viaje */}
-        <div className="relative w-full aspect-[4/5]">
-          <Image
+        <div className="relative w-full" style={{ paddingBottom: "125%" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="https://images.unsplash.com/photo-1499856871958-5b9357976b82?w=560&h=700&fit=crop&q=80"
             alt="Viajando por Europa"
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 640px) 90vw, 400px"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
           />
           {/* Gradiente para legibilidad de la card */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/10 to-transparent" />
