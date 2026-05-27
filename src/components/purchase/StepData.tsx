@@ -6,6 +6,7 @@ import { z } from "zod/v4";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, WarningCircle } from "@phosphor-icons/react";
 import Button from "@/components/ui/Button";
+import PurchaseFAQ from "@/components/purchase/PurchaseFAQ";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
 
@@ -225,6 +226,9 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
           </label>
           <FieldError message={errors.device_confirmed?.message} />
         </div>
+
+        {/* FAQ inline — P3 CRO */}
+        <PurchaseFAQ />
 
         {/* Botones */}
         <div className="flex items-center gap-3 pt-2">

@@ -164,6 +164,21 @@
       "pay": "Pagar ahora"
     },
     "summary": "Resumen del pedido",
+    "faq": {
+      "title": "Dudas frecuentes",
+      "compatible": {
+        "q": "¿Mi celular es compatible con eSIM?",
+        "tip": "Podés verificarlo ahora mismo: marcá *#06# en tu celular. Si aparece un código EID, tu equipo es compatible con eSIM."
+      },
+      "whatsapp": {
+        "q": "¿La eSIM me cambia el número de WhatsApp?",
+        "a": "No, para nada. La eSIM solo agrega datos móviles a tu celular. Tu SIM física sigue con tu número de siempre y WhatsApp funciona exactamente igual — de hecho, vas a poder usarlo con datos 4G/5G en toda Europa."
+      },
+      "qr": {
+        "q": "¿Cuándo llega el QR de activación?",
+        "a": "En menos de un minuto después de confirmar el pago. Te llega por email. Escanealo con tu celular antes de salir de tu país (necesitás WiFi solo para instalarlo) y activá la eSIM cuando aterrizás en Europa."
+      }
+    },
     "payment": {
       "method": "Método de pago",
       "card": "Tarjeta de crédito / débito",
