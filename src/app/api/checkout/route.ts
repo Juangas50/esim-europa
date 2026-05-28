@@ -8,9 +8,37 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
 });
 
+// ── Rate limiting (in-memory, per serverless instance) ───────────────────────
+// For multi-instance protection upgrade to Upstash Redis rate limiter.
+
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const WINDOW_MS = 60_000; // 1 minute window
+  const MAX_REQ   = 10;     // max 10 checkout requests per IP per minute
+
+  // Clean up expired entries to avoid memory leak
+  if (rateLimitStore.size > 5000) {
+    for (const [key, val] of rateLimitStore) {
+      if (val.resetAt < now) rateLimitStore.delete(key);
+    }
+  }
+
+  const entry = rateLimitStore.get(ip);
+  if (!entry || entry.resetAt < now) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  if (entry.count >= MAX_REQ) return true;
+  entry.count++;
+  return false;
+}
+
 // ── Server-side input validation ─────────────────────────────────────────────
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UUID_RE   = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ALLOWED_COUNTRIES = ["AR","UY","CL","BR","MX","CO","PE","VE","EC","PY","BO","OTHER"];
 
 function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody } | { valid: false; error: string } {
@@ -41,6 +69,18 @@ interface CheckoutBody {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit by IP
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    req.headers.get("x-real-ip") ??
+    "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes. Intentá en unos minutos." },
+      { status: 429 }
+    );
+  }
+
   try {
     // Limit body size to 8KB
     const rawBody = await req.text();
@@ -70,7 +110,7 @@ export async function POST(req: NextRequest) {
       .from("b2c_orders")
       .insert({
         order_ref: orderRef,
-        tariff_id: null, // Los planes son hardcoded — sin UUID de tariffs por ahora
+        tariff_id: UUID_RE.test(plan_id) ? plan_id : null, // link UUID from Supabase; null for legacy IDs
         customer_name: customer.name,
         customer_lastname: customer.lastname,
         customer_email: customer.email,
