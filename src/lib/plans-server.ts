@@ -32,7 +32,8 @@ interface TariffRow {
 function mapType(raw: string): PlanType {
   const t = raw.toLowerCase();
   if (t.includes("data") || t === "data_only" || t === "dataonly") return "dataonly";
-  return "prepago";
+  // "prepago", "local", "voz", "sim_local", etc. → local
+  return "local";
 }
 
 function inferZone(name: string): "espana" | "europa" {
@@ -61,19 +62,29 @@ function generateFeatures(
   zone: "espana" | "europa",
   activation_days: number
 ): string[] {
-  const coverage =
-    zone === "espana" ? "España — red 4G/5G" : "30+ países europeos — red 4G/5G";
   const days = validity_days ?? 28;
+
+  if (type === "local") {
+    return [
+      `${data_gb} GB datos 4G/5G`,
+      "Número español 🇪🇸 incluido",
+      "Llamadas y SMS ilimitados",
+      `${days} días de validez`,
+      "QR instantáneo por email",
+    ];
+  }
+
+  // dataonly
+  const coverage = zone === "espana" ? "España" : "30+ países europeos";
   const activationLabel =
     activation_days >= 365
       ? "Activá hasta 12 meses después"
       : `Activá cuando quieras (${activation_days} días)`;
-
   return [
     `${data_gb} GB en ${coverage}`,
-    "Línea española 🇪🇸 — operador local",
-    `${days} días desde activación`,
-    "QR instantáneo por email",
+    "Red 4G/5G",
+    "Sin número ni llamadas — solo datos",
+    `${days} días de validez`,
     activationLabel,
   ];
 }
@@ -82,7 +93,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
   const type = mapType(t.type);
   const zone = (t.zone as "espana" | "europa" | null) ?? inferZone(t.name);
   const activation_days =
-    t.activation_days ?? (type === "prepago" ? 365 : 60);
+    t.activation_days ?? (type === "local" ? 365 : 60);
 
   return {
     id: t.id,

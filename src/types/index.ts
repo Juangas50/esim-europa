@@ -1,15 +1,17 @@
 export type Locale = "es" | "pt";
 
-export type PlanType = "prepago" | "dataonly";
+export type PlanType = "local" | "dataonly";
+export type PlanSize = "S" | "M" | "L" | "XL" | "XXL";
 
 export interface Plan {
   id: string;
   slug: string;
   name: string;
   type: PlanType;
+  size?: PlanSize;           // solo para planes "local" (S/M/L/XL/XXL)
   data_gb: number;
   duration_days: number;
-  activation_days: number; // días para activar desde la compra
+  activation_days: number;   // días para activar desde la compra
   price_usd: number;
   is_popular?: boolean;
   zone: "espana" | "europa";

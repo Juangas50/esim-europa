@@ -1,12 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, ArrowRight, Star, Users } from "@phosphor-icons/react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, ArrowRight, Star, Users, Phone, ChatCircleText, Globe } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
-import type { Plan } from "@/types";
+import type { Plan, PlanSize } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -14,317 +15,276 @@ interface PlansProps {
   plans: Plan[];
 }
 
-// ── Card: plan compacto (lateral) ────────────────────────────────────────────
+type ActiveTab = "local" | "dataonly";
 
-function CompactPlanCard({ plan, delay }: { plan: Plan; delay: number }) {
+// ── Size order for sorting ────────────────────────────────────────────────────
+const SIZE_ORDER: Record<PlanSize, number> = { S: 0, M: 1, L: 2, XL: 3, XXL: 4 };
+
+// ── Tab switcher ─────────────────────────────────────────────────────────────
+
+function TabSwitcher({
+  active,
+  onChange,
+  hasLocal,
+  hasData,
+}: {
+  active: ActiveTab;
+  onChange: (t: ActiveTab) => void;
+  hasLocal: boolean;
+  hasData: boolean;
+}) {
   const t = useTranslations("plans");
-  const locale = useLocale();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay, ease: EASE_OUT }}
-      className="flex flex-col rounded-[1.5rem] bg-[#F8F8F8] border border-black/[0.06] p-7"
-    >
-      <div className="mb-6">
-        <Badge variant="outline">{t(`${plan.type}.badge`)}</Badge>
-        <h3 className="text-xl font-black text-[#111111] mt-3 mb-1">{plan.name}</h3>
-        <p className="text-sm text-[#777] leading-snug">{t(`${plan.type}.desc`)}</p>
-      </div>
-
-      {/* Precio */}
-      <div className="mb-6">
-        <span className="text-4xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</span>
-        <p className="text-sm text-[#999] mt-0.5">{t("perMonth")}</p>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-2.5 mb-6">
-        <div className="rounded-xl bg-white border border-black/5 p-3">
-          <p className="text-lg font-black text-[#111]">{plan.data_gb} GB</p>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">{t("dataGb")}</p>
-        </div>
-        <div className="rounded-xl bg-white border border-black/5 p-3">
-          <p className="text-lg font-black text-[#111]">
-            {plan.countries_count}{plan.countries_count > 1 ? "+" : ""}
-          </p>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">{t("countries")}</p>
-        </div>
-      </div>
-
-      {/* Features */}
-      <ul className="space-y-2 mb-8 flex-1">
-        {plan.features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-[#555]">
-            <Check size={15} weight="bold" className="text-[#E60000] mt-0.5 shrink-0" />
-            {f}
-          </li>
-        ))}
-      </ul>
-
-      <a
-        href={`/${locale}/compra?plan=${plan.id}`}
-        onClick={() => analytics.planSelected(plan)}
-        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-[#111111] text-[#111111] font-bold text-sm hover:bg-[#111111] hover:text-white active:scale-[0.97] transition-all"
-        style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
-      >
-        {t("buyPlan")}
-      </a>
-    </motion.div>
-  );
-}
-
-// ── Card: plan featured (oscuro, 2/3 ancho) ──────────────────────────────────
-
-function FeaturedPlanCard({ plan, delay }: { plan: Plan; delay: number }) {
-  const t = useTranslations("plans");
-  const locale = useLocale();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay, ease: EASE_OUT }}
-      className="lg:col-span-2 relative flex flex-col rounded-[1.5rem] bg-[#111111] p-8 overflow-hidden"
-    >
-      {/* Decoración */}
-      <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-[#E60000]/15" />
-      <div className="absolute -left-8 -bottom-8 w-40 h-40 rounded-full bg-[#6EC1E4]/10" />
-
-      <div className="relative">
-        {/* Badges */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Badge variant="red">
-              <Star size={10} weight="fill" />
-              {t("popular")}
-            </Badge>
-            <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[10px] tracking-tight px-2 py-1 shadow">
-              5G
-            </span>
-            <span className="text-sm">🇪🇸</span>
-          </div>
-          <Badge variant="outline" className="bg-white/10 border-white/20 text-white/80">
-            {t(`${plan.type}.badge`)}
-          </Badge>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {/* Left: info */}
-          <div className="flex flex-col">
-            <h3 className="text-2xl font-black text-white mb-1">{plan.name}</h3>
-            <p className="text-sm text-white/50 leading-snug mb-6">{t(`${plan.type}.desc`)}</p>
-
-            {/* Precio */}
-            <div className="mb-6">
-              <span className="text-5xl font-black text-white">{formatUSD(plan.price_usd)}</span>
-              <p className="text-sm text-white/40 mt-0.5">{t("perMonth")}</p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-2.5 mb-6">
-              <div className="rounded-xl bg-white/8 border border-white/10 p-3">
-                <p className="text-xl font-black text-white">{plan.data_gb} GB</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">{t("dataGb")}</p>
-              </div>
-              <div className="rounded-xl bg-white/8 border border-white/10 p-3">
-                <p className="text-xl font-black text-white">{plan.countries_count}+</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">{t("countries")}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: features + CTA */}
-          <div className="flex flex-col">
-            <ul className="space-y-2.5 mb-8 flex-1">
-              {plan.features.map((f, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-white/70">
-                  <Check size={15} weight="bold" className="text-[#E60000] mt-0.5 shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href={`/${locale}/compra?plan=${plan.id}`}
-              onClick={() => analytics.planSelected(plan)}
-              className="flex items-center justify-center gap-2.5 w-full py-4 rounded-xl bg-[#E60000] text-white font-black text-sm hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.5)]"
-              style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
-            >
-              {t("buyPlan")}
-              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                <ArrowRight size={13} weight="bold" />
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// ── Card: plan horizontal (fila inferior) ────────────────────────────────────
-
-function HorizontalPlanCard({ plan, delay }: { plan: Plan; delay: number }) {
-  const t = useTranslations("plans");
-  const locale = useLocale();
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay, ease: EASE_OUT }}
-      className="rounded-[1.5rem] bg-[#EBF6FC] border border-[#6EC1E4]/30 p-6 sm:p-8"
-    >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-lg font-black text-[#111111]">{plan.name}</h3>
-            <Badge variant="blue">{t(`${plan.type}.badge`)}</Badge>
-          </div>
-          <p className="text-sm text-[#555] max-w-[480px] leading-relaxed">
-            {t(`${plan.type}.desc`)}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-6 sm:gap-8 shrink-0 flex-wrap">
-          <div className="text-center">
-            <p className="text-2xl font-black text-[#111111]">{plan.data_gb} GB</p>
-            <p className="text-xs text-[#777] font-semibold uppercase tracking-wider">{t("dataGb")}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-black text-[#111111]">{plan.countries_count}+</p>
-            <p className="text-xs text-[#777] font-semibold uppercase tracking-wider">{t("countries")}</p>
-          </div>
-          <div>
-            <p className="text-2xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</p>
-            <p className="text-xs text-[#777] font-semibold">{t("perMonth")}</p>
-          </div>
-          <a
-            href={`/${locale}/compra?plan=${plan.id}`}
-            onClick={() => analytics.planSelected(plan)}
-            className="flex items-center gap-2 bg-[#111111] text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-[#333] active:scale-[0.97]"
-            style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
-          >
-            {t("buyPlan")}
-          </a>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// ── Layout: sin planes destacados — grid uniforme ────────────────────────────
-
-function UniformGrid({ plans }: { plans: Plan[] }) {
-  const t = useTranslations("plans");
-  const locale = useLocale();
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {plans.map((plan, i) => (
-        <motion.div
-          key={plan.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, delay: i * 0.07, ease: EASE_OUT }}
-          className="flex flex-col rounded-[1.5rem] bg-[#F8F8F8] border border-black/[0.06] p-7"
+    <div className="inline-flex rounded-2xl bg-[#F0F0F0] p-1.5 gap-1">
+      {hasLocal && (
+        <button
+          onClick={() => onChange("local")}
+          className={`relative flex flex-col items-start sm:items-center sm:flex-row sm:gap-2.5 px-4 sm:px-5 py-3 rounded-xl text-sm font-bold transition-colors duration-200 ${
+            active === "local" ? "text-[#111111]" : "text-[#888] hover:text-[#555]"
+          }`}
         >
-          <div className="mb-6">
-            <Badge variant="outline">{t(`${plan.type}.badge`)}</Badge>
-            <h3 className="text-xl font-black text-[#111111] mt-3 mb-1">{plan.name}</h3>
-            <p className="text-sm text-[#777] leading-snug">{t(`${plan.type}.desc`)}</p>
-          </div>
-          <div className="mb-4">
-            <span className="text-4xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</span>
-            <p className="text-sm text-[#999] mt-0.5">{t("perMonth")}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mb-5">
-            <div className="rounded-xl bg-white border border-black/5 p-2.5">
-              <p className="text-base font-black text-[#111]">{plan.data_gb} GB</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">{t("dataGb")}</p>
-            </div>
-            <div className="rounded-xl bg-white border border-black/5 p-2.5">
-              <p className="text-base font-black text-[#111]">{plan.countries_count}{plan.countries_count > 1 ? "+" : ""}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">{t("countries")}</p>
-            </div>
-          </div>
-          <ul className="space-y-1.5 mb-6 flex-1">
-            {plan.features.slice(0, 4).map((f, j) => (
-              <li key={j} className="flex items-start gap-2 text-xs text-[#555]">
-                <Check size={13} weight="bold" className="text-[#E60000] mt-0.5 shrink-0" />
-                {f}
-              </li>
-            ))}
-          </ul>
-          <a
-            href={`/${locale}/compra?plan=${plan.id}`}
-            onClick={() => analytics.planSelected(plan)}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border-2 border-[#111111] text-[#111111] font-bold text-sm hover:bg-[#111111] hover:text-white active:scale-[0.97] transition-all"
-            style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
-          >
-            {t("buyPlan")}
-          </a>
-        </motion.div>
-      ))}
+          {active === "local" && (
+            <motion.div
+              layoutId="tab-bg"
+              className="absolute inset-0 rounded-xl bg-white shadow-sm"
+              transition={{ duration: 0.25, ease: EASE_OUT }}
+            />
+          )}
+          <span className="relative flex items-center gap-1.5">
+            <span className="text-base">🇪🇸</span>
+            <span>{t("tabLocal")}</span>
+          </span>
+          <span className={`relative text-[11px] font-medium sm:font-semibold hidden sm:block ${active === "local" ? "text-[#888]" : "text-[#bbb]"}`}>
+            {t("tabLocalSub")}
+          </span>
+        </button>
+      )}
+      {hasData && (
+        <button
+          onClick={() => onChange("dataonly")}
+          className={`relative flex flex-col items-start sm:items-center sm:flex-row sm:gap-2.5 px-4 sm:px-5 py-3 rounded-xl text-sm font-bold transition-colors duration-200 ${
+            active === "dataonly" ? "text-[#111111]" : "text-[#888] hover:text-[#555]"
+          }`}
+        >
+          {active === "dataonly" && (
+            <motion.div
+              layoutId="tab-bg"
+              className="absolute inset-0 rounded-xl bg-white shadow-sm"
+              transition={{ duration: 0.25, ease: EASE_OUT }}
+            />
+          )}
+          <span className="relative flex items-center gap-1.5">
+            <span className="text-base">✈️</span>
+            <span>{t("tabData")}</span>
+          </span>
+          <span className={`relative text-[11px] font-medium sm:font-semibold hidden sm:block ${active === "dataonly" ? "text-[#888]" : "text-[#bbb]"}`}>
+            {t("tabDataSub")}
+          </span>
+        </button>
+      )}
     </div>
   );
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+// ── SIM Local: tarjetas de tamaño ─────────────────────────────────────────────
+
+function LocalSizeCard({ plan, index }: { plan: Plan; index: number }) {
+  const t = useTranslations("plans");
+  const locale = useLocale();
+  const isPopular = plan.is_popular;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.06, ease: EASE_OUT }}
+      className={`relative flex flex-col rounded-2xl p-5 ${
+        isPopular
+          ? "bg-[#111111] text-white shadow-[0_8px_32px_-8px_rgba(0,0,0,0.35)]"
+          : "bg-white border border-black/[0.07]"
+      }`}
+    >
+      {/* Size badge + popular */}
+      <div className="flex items-center justify-between mb-4">
+        <span className={`inline-flex items-center justify-center w-9 h-9 rounded-xl font-black text-sm ${
+          isPopular ? "bg-white/15 text-white" : "bg-[#F0F0F0] text-[#111]"
+        }`}>
+          {plan.size ?? "—"}
+        </span>
+        {isPopular && (
+          <Badge variant="red" className="text-[10px]">
+            <Star size={9} weight="fill" />
+            {t("popular")}
+          </Badge>
+        )}
+      </div>
+
+      {/* GB */}
+      <div className="mb-1">
+        <span className={`text-3xl font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+          {plan.data_gb}
+        </span>
+        <span className={`text-sm font-bold ml-1 ${isPopular ? "text-white/60" : "text-[#999]"}`}>GB</span>
+      </div>
+      <p className={`text-xs font-semibold uppercase tracking-wider mb-5 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>
+        4G/5G
+      </p>
+
+      {/* Precio */}
+      <div className="mt-auto">
+        <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+          {formatUSD(plan.price_usd)}
+        </p>
+        <p className={`text-xs mb-4 ${isPopular ? "text-white/40" : "text-[#999]"}`}>
+          {t("perMonth")}
+        </p>
+
+        <a
+          href={`/${locale}/compra?plan=${plan.id}`}
+          onClick={() => analytics.planSelected(plan)}
+          className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-bold text-sm transition-all active:scale-[0.97] ${
+            isPopular
+              ? "bg-[#E60000] text-white hover:bg-[#CC0000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.5)]"
+              : "border-2 border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white"
+          }`}
+          style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
+        >
+          {t("buyPlan")}
+          {isPopular && <ArrowRight size={13} weight="bold" />}
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── SIM Local: strip de características compartidas ───────────────────────────
+
+function LocalFeaturesStrip() {
+  const t = useTranslations("plans");
+
+  const features = [
+    { icon: <Phone size={14} weight="fill" className="text-[#E60000]" />, label: t("localFeatureNumber") },
+    { icon: <Phone size={14} weight="fill" className="text-[#E60000]" />, label: t("localFeatureCalls") },
+    { icon: <ChatCircleText size={14} weight="fill" className="text-[#E60000]" />, label: t("localFeatureSms") },
+    { icon: <span className="inline-flex items-center gap-1 rounded bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] px-1.5 py-0.5">5G</span>, label: t("localFeatureNetwork") },
+    { icon: <Check size={14} weight="bold" className="text-emerald-500" />, label: t("localFeatureQr") },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.35, ease: EASE_OUT }}
+      className="mt-4 rounded-2xl bg-[#F8F8F8] border border-black/[0.06] px-5 py-4"
+    >
+      <p className="text-xs font-bold uppercase tracking-wider text-[#999] mb-3">
+        {t("localIncludes")}
+      </p>
+      <div className="flex flex-wrap gap-x-6 gap-y-2">
+        {features.map((f, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            {f.icon}
+            <span className="text-sm font-semibold text-[#333]">{f.label}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Data Traveler: tarjetas ───────────────────────────────────────────────────
+
+function DataCard({ plan, index }: { plan: Plan; index: number }) {
+  const t = useTranslations("plans");
+  const locale = useLocale();
+  const isPopular = plan.is_popular;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.07, ease: EASE_OUT }}
+      className={`rounded-2xl p-6 sm:p-7 border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 ${
+        isPopular
+          ? "bg-[#111111] border-transparent"
+          : "bg-white border-black/[0.07]"
+      }`}
+    >
+      {/* Left: name + desc */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+          <h3 className={`text-lg font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+            {plan.name}
+          </h3>
+          {isPopular && (
+            <Badge variant="red" className="text-[10px]">
+              <Star size={9} weight="fill" />
+              {t("popular")}
+            </Badge>
+          )}
+          <span className={`inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] tracking-tight px-1.5 py-0.5`}>
+            5G
+          </span>
+          <Globe size={14} className={isPopular ? "text-white/40" : "text-[#bbb]"} />
+          <span className={`text-xs font-semibold ${isPopular ? "text-white/50" : "text-[#999]"}`}>
+            {plan.countries_count}+ {t("countries")}
+          </span>
+        </div>
+        <p className={`text-sm leading-snug max-w-sm ${isPopular ? "text-white/50" : "text-[#777]"}`}>
+          {t("dataonly.desc")}
+        </p>
+      </div>
+
+      {/* Right: price + CTA */}
+      <div className="flex items-center gap-5 shrink-0">
+        <div>
+          <p className={`text-3xl font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+            {plan.data_gb} <span className={`text-base font-bold ${isPopular ? "text-white/50" : "text-[#999]"}`}>GB</span>
+          </p>
+          <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+            {formatUSD(plan.price_usd)}
+          </p>
+          <p className={`text-xs ${isPopular ? "text-white/40" : "text-[#999]"}`}>{t("perMonth")}</p>
+        </div>
+        <a
+          href={`/${locale}/compra?plan=${plan.id}`}
+          onClick={() => analytics.planSelected(plan)}
+          className={`flex items-center gap-2 font-bold text-sm px-5 py-3 rounded-xl transition-all active:scale-[0.97] whitespace-nowrap ${
+            isPopular
+              ? "bg-[#E60000] text-white hover:bg-[#CC0000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.4)]"
+              : "bg-[#111111] text-white hover:bg-[#333]"
+          }`}
+          style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
+        >
+          {t("buyPlan")}
+          <ArrowRight size={13} weight="bold" />
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Plans({ plans }: PlansProps) {
   const t = useTranslations("plans");
 
-  // Elegir el plan featured (highlight=true / is_popular)
-  const featured = plans.find((p) => p.is_popular);
+  const localPlans = plans
+    .filter((p) => p.type === "local")
+    .sort((a, b) => {
+      if (a.size && b.size) return SIZE_ORDER[a.size] - SIZE_ORDER[b.size];
+      return a.price_usd - b.price_usd;
+    });
 
-  // Si no hay highlighted, mostrar todos en grid uniforme
-  if (!featured) {
-    return (
-      <section id="planes" className="py-24 px-4 bg-white">
-        <div className="max-w-[1200px] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5, ease: EASE_OUT }}
-            className="mb-12"
-          >
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
-              {t("title")}
-            </h2>
-            <div className="flex flex-wrap items-center gap-4">
-              <p className="text-[#555555] text-base">{t("subtitle")}</p>
-              <div className="inline-flex items-center gap-1.5 bg-[#F0FDF4] border border-emerald-200 rounded-full px-3 py-1">
-                <Users size={13} weight="fill" className="text-emerald-500" />
-                <span className="text-xs font-semibold text-emerald-700">{t("socialProof")}</span>
-              </div>
-            </div>
-          </motion.div>
-          <UniformGrid plans={plans} />
-        </div>
-      </section>
-    );
-  }
+  const dataPlans = plans
+    .filter((p) => p.type === "dataonly")
+    .sort((a, b) => a.price_usd - b.price_usd);
 
-  // Planes sin el featured — se distribuyen en "compact" (lateral) y "bottom" (horizontal)
-  const rest = plans.filter((p) => p.id !== featured.id);
+  const hasLocal = localPlans.length > 0;
+  const hasData = dataPlans.length > 0;
 
-  // Preferimos el plan más barato de zona España como tarjeta lateral compacta
-  const sideCard =
-    rest.find((p) => p.zone === "espana") ??
-    rest[0];
-
-  // El resto va en cards horizontales debajo
-  const bottomCards = sideCard
-    ? rest.filter((p) => p.id !== sideCard.id)
-    : rest;
+  const [activeTab, setActiveTab] = useState<ActiveTab>(hasLocal ? "local" : "dataonly");
 
   return (
     <section id="planes" className="py-24 px-4 bg-white">
@@ -336,7 +296,7 @@ export default function Plans({ plans }: PlansProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-12"
+          className="mb-10"
         >
           <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
             {t("title")}
@@ -350,36 +310,61 @@ export default function Plans({ plans }: PlansProps) {
           </div>
         </motion.div>
 
-        {/* Fila principal: compact (1/3) + featured (2/3) */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.4, ease: EASE_OUT }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"
-        >
-          {sideCard ? (
-            <CompactPlanCard plan={sideCard} delay={0.05} />
-          ) : null}
-
-          <FeaturedPlanCard
-            plan={featured}
-            delay={0.12}
-          />
-        </motion.div>
-
-        {/* Tarjetas adicionales — una por fila (horizontales) */}
-        {bottomCards.length > 0 && (
-          <div className="space-y-4">
-            {bottomCards.map((plan, i) => (
-              <HorizontalPlanCard
-                key={plan.id}
-                plan={plan}
-                delay={0.18 + i * 0.06}
-              />
-            ))}
-          </div>
+        {/* Tab switcher */}
+        {hasLocal && hasData && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, ease: EASE_OUT }}
+            className="mb-8"
+          >
+            <TabSwitcher
+              active={activeTab}
+              onChange={setActiveTab}
+              hasLocal={hasLocal}
+              hasData={hasData}
+            />
+          </motion.div>
         )}
+
+        {/* Contenido del tab */}
+        <AnimatePresence mode="wait">
+          {activeTab === "local" && hasLocal && (
+            <motion.div
+              key="local"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.25, ease: EASE_OUT }}
+            >
+              {/* Size cards — grid 5 cols (desktop), 2-3 cols (tablet), 2 cols (mobile) */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                {localPlans.map((plan, i) => (
+                  <LocalSizeCard key={plan.id} plan={plan} index={i} />
+                ))}
+              </div>
+
+              {/* Feature strip */}
+              <LocalFeaturesStrip />
+            </motion.div>
+          )}
+
+          {activeTab === "dataonly" && hasData && (
+            <motion.div
+              key="dataonly"
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.25, ease: EASE_OUT }}
+              className="space-y-3"
+            >
+              {dataPlans.map((plan, i) => (
+                <DataCard key={plan.id} plan={plan} index={i} />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </section>

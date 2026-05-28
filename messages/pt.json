@@ -44,16 +44,30 @@
     "socialProof": "+5.000 viajantes ativos",
     "perMonth": "por 28 dias",
     "dataGb": "GB de dados",
-    "countries": "países cobertos",
+    "countries": "países",
     "buyPlan": "Comprar este plano",
     "summary": "Resumo do pedido",
-    "prepago": {
-      "badge": "Pré-pago",
-      "desc": "Os 28 dias contam a partir do dia que você ativar. Pode ativar até 12 meses após a compra."
+    "tabLocal": "SIM Local",
+    "tabLocalSub": "Número · Ligações · SMS · Dados",
+    "tabData": "Data Traveler",
+    "tabDataSub": "Só dados · 30+ países",
+    "localIncludes": "Todos os tamanhos incluem:",
+    "localFeatureNumber": "Número espanhol 🇪🇸",
+    "localFeatureCalls": "Ligações ilimitadas",
+    "localFeatureSms": "SMS ilimitados",
+    "localFeatureNetwork": "Rede 4G/5G",
+    "localFeatureQr": "QR por email ao instante",
+    "local": {
+      "badge": "Linha espanhola",
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
     },
     "dataonly": {
-      "badge": "DataOnly",
-      "desc": "Compra agora e ativa quando quiser. Tem 60 dias para fazer isso."
+      "badge": "Só dados",
+      "desc": "Sem número nem ligações. Só dados em 30+ países europeus. Tem 60 dias para ativar."
+    },
+    "prepago": {
+      "badge": "Linha espanhola",
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
     }
   },
   "howItWorks": {

@@ -44,16 +44,30 @@
     "socialProof": "+5.000 viajeros activos",
     "perMonth": "por 28 días",
     "dataGb": "GB de datos",
-    "countries": "países cubiertos",
+    "countries": "países",
     "buyPlan": "Comprar este plan",
     "summary": "Resumen del pedido",
-    "prepago": {
-      "badge": "Prepago",
-      "desc": "Los 28 días cuentan desde el día que lo activás. Podés activarlo hasta 12 meses después de la compra."
+    "tabLocal": "SIM Local",
+    "tabLocalSub": "Número · Llamadas · SMS · Datos",
+    "tabData": "Data Traveler",
+    "tabDataSub": "Solo datos · 30+ países",
+    "localIncludes": "Todas las tallas incluyen:",
+    "localFeatureNumber": "Número español 🇪🇸",
+    "localFeatureCalls": "Llamadas ilimitadas",
+    "localFeatureSms": "SMS ilimitados",
+    "localFeatureNetwork": "Red 4G/5G",
+    "localFeatureQr": "QR por email al instante",
+    "local": {
+      "badge": "Línea española",
+      "desc": "Número español incluido con llamadas y SMS. Los 28 días cuentan desde que activás la eSIM."
     },
     "dataonly": {
-      "badge": "DataOnly",
-      "desc": "Comprás ahora y activás cuando quieras. Tenés 60 días para hacerlo."
+      "badge": "Solo datos",
+      "desc": "Sin número ni llamadas. Solo datos en 30+ países europeos. Tenés 60 días para activarla."
+    },
+    "prepago": {
+      "badge": "Línea española",
+      "desc": "Número español incluido con llamadas y SMS. Los 28 días cuentan desde que activás la eSIM."
     }
   },
   "howItWorks": {

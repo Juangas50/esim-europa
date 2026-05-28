@@ -93,7 +93,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isPrepago = plan.type === "prepago";
+  // Local SIM plans allow scheduling activation date; data-only plans activate on demand
+  const isPrepago = plan.type === "local";
 
   const onSubmit = (data: FormValues) => {
     // Combina activation_type + activation_date en un solo campo para el pedido
