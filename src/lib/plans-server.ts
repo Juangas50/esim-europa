@@ -126,8 +126,8 @@ function mapTariffToPlan(t: TariffRow): Plan {
     slug: slugify(t.name),
     name: t.name,
     type,
-    // Talla: position → badge → GB (aplica a todos los tipos para consistencia)
-    size: inferSize(t.position ?? null, t.badge, t.data_gb),
+    // Talla S/M/L/XL/XXL solo para planes locales (data-only no tiene talla)
+    size: type === "local" ? inferSize(t.position ?? null, t.badge, t.data_gb) : undefined,
     position: t.position ?? undefined,
     data_gb: t.data_gb,
     duration_days: t.validity_days ?? 28,
