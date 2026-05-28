@@ -4,14 +4,22 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star, ArrowRight } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
-import { Plan, PlanSize } from "@/types";
+import { Plan } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { analytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
-const SIZE_ORDER: Record<PlanSize, number> = { S: 0, M: 1, L: 2, XL: 3, XXL: 4 };
+
+function sortPlans(plans: Plan[]) {
+  return [...plans].sort((a, b) => {
+    if (a.position != null && b.position != null) return a.position - b.position;
+    if (a.position != null) return -1;
+    if (b.position != null) return 1;
+    return a.price_usd - b.price_usd;
+  });
+}
 
 type ActiveTab = "local" | "dataonly";
 
@@ -24,16 +32,8 @@ interface StepPlanProps {
 export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps) {
   const t = useTranslations("plans");
 
-  const localPlans = plans
-    .filter((p) => p.type === "local")
-    .sort((a, b) => {
-      if (a.size && b.size) return SIZE_ORDER[a.size] - SIZE_ORDER[b.size];
-      return a.price_usd - b.price_usd;
-    });
-
-  const dataPlans = plans
-    .filter((p) => p.type === "dataonly")
-    .sort((a, b) => a.price_usd - b.price_usd);
+  const localPlans = sortPlans(plans.filter((p) => p.type === "local"));
+  const dataPlans  = sortPlans(plans.filter((p) => p.type === "dataonly"));
 
   const hasLocal = localPlans.length > 0;
   const hasData = dataPlans.length > 0;

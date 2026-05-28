@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { CheckCircle } from "@phosphor-icons/react";
@@ -19,11 +19,23 @@ interface PurchaseFlowProps {
 
 export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps) {
   const t = useTranslations("purchase");
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+
+  // If the user clicked "Buy plan" on the landing, skip the plan-picker entirely
+  const initialPlan = initialPlanId
+    ? (plans.find((p) => p.id === initialPlanId) ?? null)
+    : null;
+
+  const [step, setStep] = useState<1 | 2 | 3>(initialPlan ? 2 : 1);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(initialPlan);
   const [formData, setFormData] = useState<Partial<OrderFormData>>({
     plan_id: initialPlanId,
   });
+
+  // Fire checkoutStarted when a plan arrives pre-selected from the landing page
+  useEffect(() => {
+    if (initialPlan) analytics.checkoutStarted(initialPlan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const steps = [
     { id: 1 as const, label: t("steps.plan") },

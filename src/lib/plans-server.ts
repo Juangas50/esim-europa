@@ -32,22 +32,17 @@ interface TariffRow {
 
 /**
  * Infiere el tamaño S/M/L/XL/XXL.
- * Prioridad: position (1→S … 5→XXL) → badge explícito → derivar de GB.
+ * Prioridad: badge explícito en Supabase → derivar de GB.
+ * El campo `position` NO se usa para inferir talla — solo controla el orden
+ * de izquierda a derecha (1 = más a la izquierda).
  */
-function inferSize(position: number | null, badge: string | null, data_gb: number): PlanSize | undefined {
-  // 1. Position es la fuente más fiable
-  if (position !== null) {
-    const map: Record<number, PlanSize> = { 1: "S", 2: "M", 3: "L", 4: "XL", 5: "XXL" };
-    if (map[position]) return map[position];
-    // position 6-10 → XXL (por si acaso)
-    return "XXL";
-  }
-  // 2. Badge explícito (ej. "M", "XL")
+function inferSize(badge: string | null, data_gb: number): PlanSize | undefined {
+  // 1. Badge explícito (ej. "S", "M", "XL") — campo badge en Supabase
   if (badge) {
     const b = badge.trim().toUpperCase();
     if (b === "S" || b === "M" || b === "L" || b === "XL" || b === "XXL") return b as PlanSize;
   }
-  // 3. Fallback por GB
+  // 2. Fallback por GB
   if (data_gb <= 5)  return "S";
   if (data_gb <= 10) return "M";
   if (data_gb <= 20) return "L";
@@ -127,7 +122,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
     name: t.name,
     type,
     // Talla S/M/L/XL/XXL solo para planes locales (data-only no tiene talla)
-    size: type === "local" ? inferSize(t.position ?? null, t.badge, t.data_gb) : undefined,
+    size: type === "local" ? inferSize(t.badge, t.data_gb) : undefined,
     position: t.position ?? undefined,
     data_gb: t.data_gb,
     duration_days: t.validity_days ?? 28,
