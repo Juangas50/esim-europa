@@ -25,20 +25,29 @@ interface TariffRow {
   zone: string | null;
   countries_count: number | null;
   activation_days: number | null;
+  position: number | null;
 }
 
 // ── Mapping helpers ───────────────────────────────────────────────────────────
 
 /**
  * Infiere el tamaño S/M/L/XL/XXL.
- * Prioridad: campo `badge` de Supabase (si contiene S/M/L/XL/XXL) → derivar de GB.
+ * Prioridad: position (1→S … 5→XXL) → badge explícito → derivar de GB.
  */
-function inferSize(badge: string | null, data_gb: number): PlanSize | undefined {
+function inferSize(position: number | null, badge: string | null, data_gb: number): PlanSize | undefined {
+  // 1. Position es la fuente más fiable
+  if (position !== null) {
+    const map: Record<number, PlanSize> = { 1: "S", 2: "M", 3: "L", 4: "XL", 5: "XXL" };
+    if (map[position]) return map[position];
+    // position 6-10 → XXL (por si acaso)
+    return "XXL";
+  }
+  // 2. Badge explícito (ej. "M", "XL")
   if (badge) {
     const b = badge.trim().toUpperCase();
     if (b === "S" || b === "M" || b === "L" || b === "XL" || b === "XXL") return b as PlanSize;
   }
-  // Derivar de los GB como fallback
+  // 3. Fallback por GB
   if (data_gb <= 5)  return "S";
   if (data_gb <= 10) return "M";
   if (data_gb <= 20) return "L";
@@ -117,8 +126,9 @@ function mapTariffToPlan(t: TariffRow): Plan {
     slug: slugify(t.name),
     name: t.name,
     type,
-    // Para planes local: inferir talla del campo badge o de los GB
-    size: type === "local" ? inferSize(t.badge, t.data_gb) : undefined,
+    // Talla: position → badge → GB (aplica a todos los tipos para consistencia)
+    size: inferSize(t.position ?? null, t.badge, t.data_gb),
+    position: t.position ?? undefined,
     data_gb: t.data_gb,
     duration_days: t.validity_days ?? 28,
     activation_days,
@@ -149,10 +159,10 @@ export async function getPlans(): Promise<Plan[]> {
     const { data, error } = await supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days"
+        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
       )
       .eq("active", true)
-      .order("price_usd", { ascending: true });
+      .order("position", { ascending: true, nullsFirst: false });
 
     if (error) {
       console.warn("[plans] Supabase error, using fallback:", error.message);
@@ -181,7 +191,7 @@ export async function getPlanById(id: string): Promise<Plan | undefined> {
     const { data, error } = await supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days"
+        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
       )
       .eq("id", id)
       .single();

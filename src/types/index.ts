@@ -8,7 +8,8 @@ export interface Plan {
   slug: string;
   name: string;
   type: PlanType;
-  size?: PlanSize;           // solo para planes "local" (S/M/L/XL/XXL)
+  size?: PlanSize;           // S/M/L/XL/XXL — derivado de position o badge
+  position?: number;         // 1 = más izquierda, 5 = más derecha en la home
   data_gb: number;
   duration_days: number;
   activation_days: number;   // días para activar desde la compra
