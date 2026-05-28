@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const plan = await getPlanById(planId);
     if (plan && order.customer_email) {
       try {
-        console.log("[email] Sending to:", order.customer_email, "| RESEND_API_KEY set:", !!process.env.RESEND_API_KEY);
+        console.log("[email] Sending confirmation | RESEND_API_KEY set:", !!process.env.RESEND_API_KEY);
         const emailResult = await sendPurchaseConfirmation({
           to: order.customer_email,
           customerName: order.customer_name,

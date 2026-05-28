@@ -1,14 +1,36 @@
+"use client";
+
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+const CONSENT_KEY = "ruta34_cookie_consent";
 
 /**
- * Script de GTM — va en <head> del layout.
- * Se carga con strategy="afterInteractive" (recomendado Next.js).
- * No renderiza nada si NEXT_PUBLIC_GTM_ID no está configurado.
+ * GTM Script — only loads after the user has accepted cookies (GDPR).
+ * Falls back gracefully if GTM_ID is not configured.
  */
 export function GTMScript() {
-  if (!GTM_ID) return null;
+  const [canLoad, setCanLoad] = useState(false);
+
+  useEffect(() => {
+    // Check current consent
+    const check = () => {
+      const saved = localStorage.getItem(CONSENT_KEY);
+      if (saved === "accepted") setCanLoad(true);
+    };
+    check();
+
+    // Listen for consent decisions made during this session
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail === "accepted") setCanLoad(true);
+    };
+    window.addEventListener("cookie-consent", handler);
+    return () => window.removeEventListener("cookie-consent", handler);
+  }, []);
+
+  if (!GTM_ID || !canLoad) return null;
 
   return (
     <Script
@@ -26,21 +48,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 
 /**
- * Fallback noscript de GTM — va justo después de <body>.
- * Garantiza tracking básico para usuarios sin JavaScript.
+ * GTM noscript fallback — only renders after consent.
+ * Because this is a Server Component context, we keep it simple:
+ * it renders nothing (noscript users won't have localStorage anyway).
  */
 export function GTMNoScript() {
-  if (!GTM_ID) return null;
-
-  return (
-    <noscript>
-      <iframe
-        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-        height="0"
-        width="0"
-        style={{ display: "none", visibility: "hidden" }}
-        title="gtm"
-      />
-    </noscript>
-  );
+  return null;
 }

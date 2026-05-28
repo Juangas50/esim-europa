@@ -3,6 +3,13 @@ import { Plan } from "@/types";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+/** Strips HTML tags and limits string length to prevent email template injection. */
+function sanitizeText(input: string, maxLen = 80): string {
+  return input
+    .replace(/[<>"'&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "&": "&amp;" }[c] ?? c))
+    .slice(0, maxLen);
+}
+
 interface SendConfirmationParams {
   to: string;
   customerName: string;
@@ -20,7 +27,7 @@ export async function sendPurchaseConfirmation({
   qrPlaceholder = true,
   qrUrl,
 }: SendConfirmationParams) {
-  const firstName = customerName.split(" ")[0];
+  const firstName = sanitizeText(customerName.split(" ")[0]);
 
   const html = `
 <!DOCTYPE html>
@@ -68,7 +75,7 @@ export async function sendPurchaseConfirmation({
           qrPlaceholder
             ? `<p style="color:#999;font-size:14px;margin:0 0 8px;">El QR de activación se enviará en breve</p>
                <p style="color:#999;font-size:12px;margin:0;">Nuestro equipo lo procesa en las próximas horas.</p>`
-            : `<img src="${qrUrl}" alt="QR de activación eSIM" style="width:160px;height:160px;" />`
+            : `<img src="${sanitizeText(qrUrl ?? "", 512)}" alt="QR de activación eSIM" style="width:160px;height:160px;" />`
         }
       </div>
 
@@ -101,9 +108,9 @@ export async function sendPurchaseConfirmation({
 `;
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <onboarding@resend.dev>",
+    from: process.env.EMAIL_FROM ?? "RUTA34 Telecom <hola@esimruta34.com>",
     to,
-    subject: `¡Tu eSIM está lista! Ref. ${orderRef}`,
+    subject: `¡Tu eSIM está lista! Ref. ${sanitizeText(orderRef, 30)}`,
     html,
   });
 }
@@ -119,12 +126,12 @@ export async function sendActivationReminder({
   orderRef: string;
   activationDate: string;
 }) {
-  const firstName = customerName.split(" ")[0];
+  const firstName = sanitizeText(customerName.split(" ")[0]);
 
   return resend.emails.send({
-    from: "RUTA34 Telecom <onboarding@resend.dev>",
+    from: process.env.EMAIL_FROM ?? "RUTA34 Telecom <hola@esimruta34.com>",
     to,
-    subject: `Recordatorio: tu eSIM se activa mañana — Ref. ${orderRef}`,
+    subject: `Recordatorio: tu eSIM se activa mañana — Ref. ${sanitizeText(orderRef, 30)}`,
     html: `
       <p>Hola ${firstName},</p>
       <p>Te recordamos que tu eSIM de RUTA34 Telecom está programada para activarse mañana <strong>${activationDate}</strong>.</p>

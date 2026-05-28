@@ -8,10 +8,52 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
 });
 
+// ── Server-side input validation ─────────────────────────────────────────────
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ALLOWED_COUNTRIES = ["AR","UY","CL","BR","MX","CO","PE","VE","EC","PY","BO","OTHER"];
+
+function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody } | { valid: false; error: string } {
+  if (!body || typeof body !== "object") return { valid: false, error: "Cuerpo inválido" };
+  const b = body as Record<string, unknown>;
+
+  if (typeof b.plan_id !== "string" || b.plan_id.length > 100) return { valid: false, error: "plan_id inválido" };
+  if (!["stripe", "mercadopago"].includes(b.payment_method as string)) return { valid: false, error: "Método de pago inválido" };
+  if (!["es", "pt"].includes(b.locale as string)) return { valid: false, error: "Locale inválido" };
+
+  const c = b.customer as Record<string, unknown>;
+  if (!c || typeof c !== "object") return { valid: false, error: "Datos de cliente inválidos" };
+  if (typeof c.name !== "string" || c.name.trim().length < 2 || c.name.length > 80) return { valid: false, error: "Nombre inválido" };
+  if (typeof c.lastname !== "string" || c.lastname.trim().length < 2 || c.lastname.length > 80) return { valid: false, error: "Apellido inválido" };
+  if (typeof c.email !== "string" || !EMAIL_RE.test(c.email) || c.email.length > 254) return { valid: false, error: "Email inválido" };
+  if (typeof c.country !== "string" || !ALLOWED_COUNTRIES.includes(c.country)) return { valid: false, error: "País inválido" };
+
+  return { valid: true, data: b as unknown as CheckoutBody };
+}
+
+interface CheckoutBody {
+  plan_id: string;
+  payment_method: string;
+  customer: { name: string; lastname: string; email: string; country: string };
+  activation_date?: string;
+  locale: string;
+  ga_client_id?: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = body;
+    // Limit body size to 8KB
+    const rawBody = await req.text();
+    if (rawBody.length > 8192) {
+      return NextResponse.json({ error: "Solicitud demasiado grande" }, { status: 413 });
+    }
+
+    let parsedBody: unknown;
+    try { parsedBody = JSON.parse(rawBody); } catch { return NextResponse.json({ error: "JSON inválido" }, { status: 400 }); }
+
+    const validation = validateCheckoutBody(parsedBody);
+    if (!validation.valid) return NextResponse.json({ error: validation.error }, { status: 400 });
+    const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = validation.data;
 
     // 1. Validar plan (Supabase first, fallback to hardcoded)
     const plan = await getPlanById(plan_id);
