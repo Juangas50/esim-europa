@@ -90,7 +90,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           {plan.data_gb}
         </span>
         <span className={`text-lg font-bold ml-1 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
-        <p className={`text-[11px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/25" : "text-[#ddd]"}`}>
+        <p className={`text-[11px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/40" : "text-[#aaa]"}`}>
           4G / 5G
         </p>
       </div>

@@ -30,17 +30,15 @@ function FAQItem({
         <span className="font-semibold text-[#111111] text-base leading-snug pr-2 group-hover:text-[#E60000] transition-colors duration-200">
           {question}
         </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.2, ease: EASE_OUT }}
+        <div
           className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 border transition-colors duration-200 ${
             isOpen
               ? "bg-[#E60000] border-[#E60000] text-white"
               : "border-[#111111]/15 text-[#555]"
           }`}
         >
-          <Plus size={14} weight="bold" />
-        </motion.div>
+          {isOpen ? <Minus size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+        </div>
       </button>
 
       {/* AnimatePresence para transición suave — Emil Kowalski */}

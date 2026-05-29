@@ -25,7 +25,6 @@ export interface OrderFormData {
   customer_name: string;
   customer_lastname: string;
   customer_email: string;
-  customer_email_confirm: string;
   customer_country: string;
   activation_date?: string; // solo para prepago
   device_confirmed: boolean;

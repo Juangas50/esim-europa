@@ -96,8 +96,8 @@ export default async function HomePage({
       <Navbar />
       <main>
         <Hero />
-        <Plans plans={plans} />
         <Testimonials />
+        <Plans plans={plans} />
         <Benefits />
         <HowItWorks />
         <Compatibility />

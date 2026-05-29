@@ -98,7 +98,7 @@ export default function HowItWorks() {
             className="inline-flex items-center gap-3 bg-[#E60000] text-white font-bold text-base px-8 py-4 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.35)]"
             style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
           >
-            Ver planes y precios
+            {t("cta")}
           </a>
         </motion.div>
 

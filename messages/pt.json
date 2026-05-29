@@ -8,8 +8,8 @@
   "hero": {
     "eyebrow": "eSIM para viajantes latino-americanos",
     "headline": "Chega na Europa e já está conectado",
-    "sub": "Ative seu eSIM em minutos e esqueça o roaming. Receba o QR por email, escaneie antes de embarcar e chegue com internet.",
-    "cta": "Ver planos",
+    "sub": "Sem filas no aeroporto, sem surpresas na conta. Dados rápidos em 30+ países desde o momento que você aterrissar.",
+    "cta": "Escolha seu plano",
     "ctaSecondary": "Como funciona",
     "trust1": "+5.000 viajantes",
     "trust2": "30+ países",
@@ -28,11 +28,11 @@
         "desc": "O eSIM já está instalado. Chega, ativa e pronto. Sem filas, sem burocracia no aeroporto."
       },
       "nopermanence": {
-        "title": "Sem fidelidade nem surpresas",
+        "title": "Paga exatamente o que você precisa",
         "desc": "Paga só o que usa. Sem custos ocultos nem contratos. Preços claros em dólares."
       },
       "coverage": {
-        "title": "Funciona em toda a Europa",
+        "title": "De Madrid a Berlim, você fica conectado",
         "desc": "Cobertura na Espanha, França, Itália, Alemanha, Portugal e mais 25 países."
       }
     }
@@ -45,11 +45,11 @@
     "perMonth": "por 28 dias",
     "dataGb": "GB de dados",
     "countries": "países",
-    "buyPlan": "Comprar este plano",
+    "buyPlan": "Quero este plano",
     "summary": "Resumo do pedido",
-    "tabLocal": "SIM Local",
+    "tabLocal": "eSIM Espanha",
     "tabLocalSub": "Número · Ligações · SMS · Dados",
-    "tabData": "Data Traveler",
+    "tabData": "eSIM Europa",
     "tabDataSub": "Só dados · 30+ países",
     "localIncludes": "Todos os tamanhos incluem:",
     "localFeatureNumber": "Número espanhol 🇪🇸",
@@ -73,6 +73,7 @@
   "howItWorks": {
     "eyebrow": "Simples como deve ser",
     "title": "Três passos e viaja conectado",
+    "cta": "Ver planos e preços",
     "steps": {
       "1": {
         "title": "Escolha seu plano",
@@ -93,7 +94,7 @@
     "title": "Funciona com meu telefone?",
     "subtitle": "A maioria dos telefones lançados após 2020 são compatíveis com eSIM. Verifique o seu:",
     "compatible": "Compatível",
-    "notCompatible": "Verificar",
+    "notCompatible": "Ver se é compatível →",
     "devices": {
       "iphone": "iPhone XS / XR ou mais novo",
       "samsung": "Samsung Galaxy S20 ou mais novo",
@@ -104,7 +105,7 @@
     "warning": "Antes de comprar, verifique que seu telefone não está bloqueado pela sua operadora."
   },
   "faq": {
-    "title": "Perguntas frequentes",
+    "title": "Tudo o que você quer saber antes de comprar",
     "items": {
       "what": {
         "q": "O que é um eSIM?",
@@ -138,7 +139,7 @@
     "aggregate": "4.9/5 · Mais de 500 avaliações verificadas"
   },
   "footer": {
-    "tagline": "eSIM para latino-americanos que viajam para a Europa.",
+    "tagline": "Sua internet na Europa, sem dramas.",
     "company": "Empresa",
     "legal": "Legal",
     "links": {

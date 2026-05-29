@@ -70,13 +70,23 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                   {/* Círculo */}
                   <motion.div
                     animate={{
-                      backgroundColor: step > s.id ? "#111111" : step === s.id ? "#E60000" : "#ffffff",
-                      borderColor: step > s.id ? "#111111" : step === s.id ? "#E60000" : "#dddddd",
+                      backgroundColor:
+                        step > s.id || (s.id === 1 && initialPlan)
+                          ? "#111111"
+                          : step === s.id
+                          ? "#E60000"
+                          : "#ffffff",
+                      borderColor:
+                        step > s.id || (s.id === 1 && initialPlan)
+                          ? "#111111"
+                          : step === s.id
+                          ? "#E60000"
+                          : "#dddddd",
                     }}
                     transition={{ duration: 0.25 }}
                     className="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0"
                   >
-                    {step > s.id ? (
+                    {step > s.id || (s.id === 1 && initialPlan) ? (
                       <CheckCircle size={16} weight="fill" className="text-white" />
                     ) : (
                       <span className={`text-xs font-black ${step === s.id ? "text-white" : "text-[#aaa]"}`}>

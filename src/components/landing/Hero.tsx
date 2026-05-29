@@ -233,7 +233,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Precio ancla — reduce friction */}
-            <motion.p variants={fadeUp} className="text-sm text-[#999] mb-8">
+            <motion.p variants={fadeUp} className="text-sm text-[#555555] font-semibold mb-8">
               {t("priceAnchor")}
             </motion.p>
 

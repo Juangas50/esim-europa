@@ -14,24 +14,18 @@ import { analytics } from "@/lib/analytics";
 
 const COUNTRIES = ["AR", "UY", "CL", "BR", "MX", "CO", "PE", "VE", "EC", "PY", "BO", "OTHER"] as const;
 
-const schema = z
-  .object({
-    customer_name: z.string().min(2, "Ingresá tu nombre"),
-    customer_lastname: z.string().min(2, "Ingresá tu apellido"),
-    customer_email: z.string().email("Email inválido"),
-    customer_email_confirm: z.string().email("Email inválido"),
-    customer_country: z.string().min(1, "Seleccioná tu país"),
-    // activation_type controla el radio; activation_date guarda la fecha elegida
-    activation_type: z.enum(["now", "schedule"]),
-    activation_date: z.string().optional(),
-    device_confirmed: z.boolean().refine((v) => v === true, {
-      message: "Debés confirmar la compatibilidad de tu dispositivo",
-    }),
-  })
-  .refine((d) => d.customer_email === d.customer_email_confirm, {
-    message: "Los emails no coinciden",
-    path: ["customer_email_confirm"],
-  });
+const schema = z.object({
+  customer_name: z.string().min(2, "Ingresá tu nombre"),
+  customer_lastname: z.string().min(2, "Ingresá tu apellido"),
+  customer_email: z.string().email("Email inválido"),
+  customer_country: z.string().min(1, "Seleccioná tu país"),
+  // activation_type controla el radio; activation_date guarda la fecha elegida
+  activation_type: z.enum(["now", "schedule"]),
+  activation_date: z.string().optional(),
+  device_confirmed: z.boolean().refine((v) => v === true, {
+    message: "Debés confirmar la compatibilidad de tu dispositivo",
+  }),
+});
 
 type FormValues = z.infer<typeof schema>;
 
@@ -79,7 +73,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       customer_name: initialData.customer_name ?? "",
       customer_lastname: initialData.customer_lastname ?? "",
       customer_email: initialData.customer_email ?? "",
-      customer_email_confirm: initialData.customer_email ?? "",
       customer_country: initialData.customer_country ?? "",
       activation_type: "now",
       activation_date: initialData.activation_date ?? "",
@@ -94,7 +87,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   }, []);
 
   // Local SIM plans allow scheduling activation date; data-only plans activate on demand
-  const isPrepago = plan.type === "local";
+  const isLocal = plan.type === "local";
 
   const onSubmit = (data: FormValues) => {
     // Combina activation_type + activation_date en un solo campo para el pedido
@@ -151,19 +144,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
           </p>
         </div>
 
-        {/* Confirmar email */}
-        <div>
-          <Label required>{t("form.emailConfirm")}</Label>
-          <input
-            {...register("customer_email_confirm")}
-            type="email"
-            className={inputClass}
-            placeholder="juan@ejemplo.com"
-            autoComplete="email"
-          />
-          <FieldError message={errors.customer_email_confirm?.message} />
-        </div>
-
         {/* País */}
         <div>
           <Label required>{t("form.country")}</Label>
@@ -178,8 +158,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
           <FieldError message={errors.customer_country?.message} />
         </div>
 
-        {/* Fecha de activación — solo prepago */}
-        {isPrepago && (
+        {/* Fecha de activación — solo local */}
+        {isLocal && (
           <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
             <p className="text-sm font-bold text-[#111111] mb-0.5">{t("form.activationDate")}</p>
             <p className="text-xs text-[#777] mb-3">{t("form.activationHint")}</p>
@@ -228,7 +208,11 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         )}
 
         {/* Device confirmation */}
-        <div className="rounded-2xl bg-[#F8F8F8] border border-[#111111]/6 p-5">
+        <div className={`rounded-2xl border p-5 transition-colors duration-150 ${
+          errors.device_confirmed
+            ? "bg-red-50 border-red-300"
+            : "bg-[#F8F8F8] border-[#111111]/6"
+        }`}>
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
