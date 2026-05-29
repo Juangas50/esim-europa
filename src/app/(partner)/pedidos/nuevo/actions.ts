@@ -1,9 +1,14 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { requireAgency } from '@/lib/auth/require-role'
 import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/email/send'
 import { emailConfirmacionPartner, emailAvisoClienteProgramado } from '@/lib/email/templates'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const UUID_RE  = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function createOrder(data: {
   agencyId: string; sellerId: string; tariffId: string; type: string;
@@ -11,70 +16,84 @@ export async function createOrder(data: {
   customerNationality: string; customerDob: string; customerEmail: string;
   activationDate: string | null; pvpAtTime: number; costAtTime: number;
 }) {
-  const supabase = await createClient()
+  // ── P1-05: Verificar que el usuario autenticado pertenece a la agencia ──────
+  await requireAgency(data.agencyId)
 
-  const { count } = await supabase.from('orders').select('*', { count: 'exact', head: true })
-  const orderRef = `R34-${String((count || 0) + 1).padStart(4, '0')}`
-  const status = data.activationDate ? 'scheduled' : 'pending_review'
+  // ── Validación de inputs ──────────────────────────────────────────────────
+  if (!UUID_RE.test(data.agencyId) || !UUID_RE.test(data.tariffId)) {
+    return { error: 'Invalid IDs' }
+  }
+  if (!['prepago', 'dataonly'].includes(data.type)) {
+    return { error: 'Invalid type' }
+  }
+  if (!EMAIL_RE.test(data.customerEmail)) {
+    return { error: 'Invalid email' }
+  }
+  const customerName     = data.customerName.trim().slice(0, 100)
+  const customerLastname = data.customerLastname.trim().slice(0, 100)
+  if (!customerName || !customerLastname) return { error: 'Missing customer name' }
 
-  // Obtener datos para el email
-  const { data: seller } = await supabase.from('users').select('full_name').eq('id', data.sellerId).single()
-  const { data: tariff } = await supabase.from('tariffs').select('name').eq('id', data.tariffId).single()
+  const supabase      = await createClient()
+  const adminSupabase = createAdminClient()
+
+  // ── P2-09: orderRef con crypto — no más contador secuencial ──────────────
+  const orderRef = `R34-${crypto.randomUUID().replace(/-/g, '').substring(0, 6).toUpperCase()}`
+  const status   = data.activationDate ? 'scheduled' : 'pending_review'
+
+  // Datos para el email (con admin client para getUserById)
+  const [{ data: seller }, { data: tariff }] = await Promise.all([
+    supabase.from('users').select('full_name').eq('id', data.sellerId).single(),
+    supabase.from('tariffs').select('name').eq('id', data.tariffId).single(),
+  ])
 
   const { error } = await supabase
     .from('orders')
     .insert({
-      order_ref: orderRef,
-      agency_id: data.agencyId,
-      seller_id: data.sellerId,
-      tariff_id: data.tariffId,
-      type: data.type,
-      customer_name: data.customerName,
-      customer_lastname: data.customerLastname,
-      customer_passport: data.customerPassport,
-      customer_nationality: data.customerNationality,
-      customer_dob: data.customerDob,
-      customer_email: data.customerEmail,
-      activation_date: data.activationDate,
+      order_ref:            orderRef,
+      agency_id:            data.agencyId,
+      seller_id:            data.sellerId,
+      tariff_id:            data.tariffId,
+      type:                 data.type,
+      customer_name:        customerName,
+      customer_lastname:    customerLastname,
+      customer_passport:    data.customerPassport.trim().slice(0, 30),
+      customer_nationality: data.customerNationality.trim().slice(0, 60),
+      customer_dob:         data.customerDob || null,
+      customer_email:       data.customerEmail.trim().toLowerCase(),
+      activation_date:      data.activationDate,
       status,
-      pvp_at_time: data.pvpAtTime,
-      cost_at_time: data.costAtTime,
+      pvp_at_time:          Number(data.pvpAtTime),
+      cost_at_time:         Number(data.costAtTime),
     })
 
   if (error) return { error: error.message }
 
-  // Email al partner
-  const { data: agencyUser } = await supabase
-    .from('users')
-    .select('*, auth_email:id')
-    .eq('id', data.sellerId)
-    .single()
-
-  const { data: authUser } = await supabase.auth.admin.getUserById(data.sellerId)
+  // ── Emails ────────────────────────────────────────────────────────────────
+  // Usar adminClient para getUserById (requiere service role)
+  const { data: authUser } = await adminSupabase.auth.admin.getUserById(data.sellerId)
   const sellerEmail = authUser?.user?.email
 
   if (sellerEmail) {
     const tmpl = emailConfirmacionPartner({
       orderRef,
-      sellerName: seller?.full_name || 'Partner',
-      customerName: data.customerName,
-      customerLastname: data.customerLastname,
-      tariffName: tariff?.name || '',
-      type: data.type,
-      activationDate: data.activationDate,
+      sellerName:       seller?.full_name || 'Partner',
+      customerName,
+      customerLastname,
+      tariffName:       tariff?.name || '',
+      type:             data.type,
+      activationDate:   data.activationDate,
     })
     await sendEmail(sellerEmail, tmpl.subject, tmpl.html)
   }
 
-  // Email al cliente si hay fecha programada
   if (data.activationDate && data.type === 'prepago') {
     const tmpl = emailAvisoClienteProgramado({
-      customerName: data.customerName,
-      tariffName: tariff?.name || '',
+      customerName,
+      tariffName:     tariff?.name || '',
       activationDate: data.activationDate,
-      type: data.type,
+      type:           data.type,
     })
-    await sendEmail(data.customerEmail, tmpl.subject, tmpl.html)
+    await sendEmail(data.customerEmail.trim().toLowerCase(), tmpl.subject, tmpl.html)
   }
 
   revalidatePath('/pedidos')

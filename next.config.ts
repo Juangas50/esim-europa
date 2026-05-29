@@ -42,6 +42,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // ── Turbopack root (silencia warning de lockfiles múltiples) ────────────────
+  turbopack: {
+    root: __dirname,
+  },
+
   // ── Images ─────────────────────────────────────────────────────────────────
   images: {
     formats: ["image/webp"],
@@ -50,12 +55,20 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // ── Security headers on all routes ─────────────────────────────────────────
+  // ── Security headers ───────────────────────────────────────────────────────
   async headers() {
     return [
+      // Aplicar a todas las rutas
       {
         source: "/(.*)",
         headers: securityHeaders,
+      },
+      // Rutas del portal: no indexar en buscadores
+      {
+        source: "/(admin|pedidos|facturas|login)(.*)",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
       },
     ];
   },
