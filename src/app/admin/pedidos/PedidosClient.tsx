@@ -70,7 +70,7 @@ function SourceBadge({ source }: { source: 'b2b' | 'b2c' }) {
 
 export default function PedidosClient({ orders: initial }: { orders: UnifiedOrder[] }) {
   const [orders, setOrders]         = useState(initial)
-  const [statusFilter, setStatus]   = useState('all')
+  const [statusFilter, setStatus]   = useState('paid')
   const [sourceFilter, setSource]   = useState('all')
   const [search, setSearch]         = useState('')
   const [selected, setSelected]     = useState<UnifiedOrder | null>(null)

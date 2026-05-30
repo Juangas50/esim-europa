@@ -26,7 +26,7 @@ type ActiveTab = "local" | "dataonly";
 interface StepPlanProps {
   plans: Plan[];
   initialPlanId?: string;
-  onNext: (plan: Plan) => void;
+  onNext: (plan: Plan, quantity: number) => void;
 }
 
 export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps) {
@@ -50,6 +50,8 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
   const [activeTab, setActiveTab] = useState<ActiveTab>(initialTab);
 
   const tabPlans = activeTab === "local" ? localPlans : dataPlans;
+
+  const [quantity, setQuantity] = useState(1);
 
   const [selected, setSelected] = useState<string>(
     initialPlanId ??
@@ -190,6 +192,31 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             })}
           </motion.div>
         </AnimatePresence>
+
+        {/* Cantidad */}
+        <div className="bg-white rounded-2xl border border-black/[0.07] p-5">
+          <p className="font-bold text-sm text-[#111111] mb-3">¿Cuántas eSIM necesitás?</p>
+          <div className="flex gap-2 flex-wrap">
+            {[1,2,3,4,5,6,7,8,9,10].map(n => (
+              <button
+                key={n}
+                onClick={() => setQuantity(n)}
+                className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
+                  quantity === n
+                    ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
+                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          {quantity > 1 && (
+            <p className="text-xs text-[#999] mt-3">
+              Cada persona recibe su propio QR al email ingresado.
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Right: summary + CTA */}
@@ -214,10 +241,15 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
           </div>
 
           <div className="border-t border-[#111111]/8 pt-4 mb-5">
+            {quantity > 1 && (
+              <div className="flex justify-between text-sm text-[#999] mb-1">
+                <span>{quantity} × {selectedPlan ? formatUSD(selectedPlan.price_usd) : "—"}</span>
+              </div>
+            )}
             <div className="flex justify-between items-baseline">
               <span className="font-semibold text-[#555]">Total</span>
               <span className="text-2xl font-black text-[#111111]">
-                {selectedPlan ? formatUSD(selectedPlan.price_usd) : "—"}
+                {selectedPlan ? formatUSD(selectedPlan.price_usd * quantity) : "—"}
               </span>
             </div>
             <p className="text-xs text-[#999] text-right">USD · pago único</p>
@@ -230,7 +262,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             onClick={() => {
               if (!selectedPlan) return;
               analytics.checkoutStepCompleted(1, "plan", selectedPlan);
-              onNext(selectedPlan);
+              onNext(selectedPlan, quantity);
             }}
             disabled={!selectedPlan}
           >

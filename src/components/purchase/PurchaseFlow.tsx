@@ -27,8 +27,10 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
 
   const [step, setStep] = useState<1 | 2 | 3>(initialPlan ? 2 : 1);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(initialPlan);
+  const [quantity, setQuantity] = useState(1);
   const [formData, setFormData] = useState<Partial<OrderFormData>>({
     plan_id: initialPlanId,
+    quantity: 1,
   });
 
   // Fire checkoutStarted when a plan arrives pre-selected from the landing page
@@ -120,9 +122,10 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
               <StepPlan
                 plans={plans}
                 initialPlanId={initialPlanId}
-                onNext={(plan) => {
+                onNext={(plan, qty) => {
                   setSelectedPlan(plan);
-                  setFormData((prev) => ({ ...prev, plan_id: plan.id }));
+                  setQuantity(qty);
+                  setFormData((prev) => ({ ...prev, plan_id: plan.id, quantity: qty }));
                   analytics.checkoutStarted(plan);
                   goToStep(2);
                 }}

@@ -29,6 +29,7 @@ export interface OrderFormData {
   activation_date?: string; // solo para prepago
   device_confirmed: boolean;
   payment_method: "stripe" | "mercadopago";
+  quantity: number;          // 1–10 eSIMs por compra
 }
 
 export type OrderStatus =

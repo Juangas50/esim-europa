@@ -101,16 +101,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Plan no encontrado" }, { status: 400 });
     }
 
-    // 2. Generar referencia de pedido
+    // 2. MercadoPago no implementado — retornar antes de crear registros en DB
+    if (payment_method === "mercadopago") {
+      return NextResponse.json({
+        error: "MercadoPago disponible próximamente. Usá tarjeta de crédito.",
+      }, { status: 501 });
+    }
+
+    // 3. Cantidad de eSIMs (1–10)
+    const quantity = Math.min(Math.max(parseInt(String((parsedBody as Record<string, unknown>).quantity ?? "1"), 10) || 1, 1), 10);
+
+    // 4. Generar referencia de pedido
     const orderRef = generateOrderRef();
 
-    // 3. Crear pedido en Supabase (pending_payment)
+    // 5. Crear pedido en Supabase (pending_payment) — solo para Stripe
     const supabase = createAdminClient();
-    const { data: order, error: dbError } = await supabase
+    const { error: dbError } = await supabase
       .from("b2c_orders")
       .insert({
         order_ref: orderRef,
-        tariff_id: UUID_RE.test(plan_id) ? plan_id : null, // link UUID from Supabase; null for legacy IDs
+        tariff_id: UUID_RE.test(plan_id) ? plan_id : null,
         customer_name: customer.name,
         customer_lastname: customer.lastname,
         customer_email: customer.email,
@@ -119,62 +129,48 @@ export async function POST(req: NextRequest) {
         status: "pending_payment",
         payment_method,
         amount_usd: plan.price_usd,
-      })
-      .select()
-      .single();
+      });
 
     if (dbError) {
       console.error("Supabase error:", dbError);
-      // En desarrollo sin DB configurada, continuamos igual
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
-    // 4a. Stripe Checkout
-    if (payment_method === "stripe") {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        mode: "payment",
-        locale: locale === "pt" ? "pt-BR" : "es",
-        line_items: [
-          {
-            quantity: 1,
-            price_data: {
-              currency: "usd",
-              unit_amount: Math.round(plan.price_usd * 100), // en centavos
-              product_data: {
-                name: `eSIM ${plan.name} — RUTA34 Telecom`,
-                description: `${plan.data_gb} GB · ${plan.duration_days} días · ${plan.countries_count}+ países`,
-              },
+    // 6. Stripe Checkout
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      locale: locale === "pt" ? "pt-BR" : "es",
+      line_items: [
+        {
+          quantity,
+          price_data: {
+            currency: "usd",
+            unit_amount: Math.round(plan.price_usd * 100),
+            product_data: {
+              name: quantity > 1
+                ? `eSIM ${plan.name} × ${quantity} — RUTA34 Telecom`
+                : `eSIM ${plan.name} — RUTA34 Telecom`,
+              description: `${plan.data_gb} GB · ${plan.duration_days} días · ${plan.countries_count}+ países`,
             },
           },
-        ],
-        allow_promotion_codes: true,
-        customer_email: customer.email,
-        metadata: {
-          order_ref: orderRef,
-          plan_id,
-          customer_country: customer.country,
-          // GA4 client_id for Measurement Protocol attribution (may be undefined if GA not loaded)
-          ...(ga_client_id ? { ga_client_id } : {}),
         },
-        success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&plan=${plan_id}&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/${locale}/compra?plan=${plan_id}`,
-      });
+      ],
+      allow_promotion_codes: true,
+      customer_email: customer.email,
+      metadata: {
+        order_ref: orderRef,
+        plan_id,
+        quantity: String(quantity),
+        customer_country: customer.country,
+        ...(ga_client_id ? { ga_client_id } : {}),
+      },
+      success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&qty=${quantity}&plan=${plan_id}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/${locale}/compra?plan=${plan_id}`,
+    });
 
-      return NextResponse.json({ url: session.url });
-    }
-
-    // 4b. MercadoPago (próximamente)
-    if (payment_method === "mercadopago") {
-      // TODO: integrar SDK de MercadoPago
-      // Por ahora devolvemos un placeholder
-      return NextResponse.json({
-        error: "MercadoPago disponible próximamente. Usá tarjeta de crédito.",
-      }, { status: 501 });
-    }
-
-    return NextResponse.json({ error: "Método de pago inválido" }, { status: 400 });
+    return NextResponse.json({ url: session.url });
 
   } catch (err) {
     console.error("Checkout error:", err);

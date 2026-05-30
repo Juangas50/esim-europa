@@ -16,6 +16,17 @@ export async function GET(request: Request) {
 
   const today = new Date().toISOString().split('T')[0]
 
+  // Auto-cancelar b2c_orders en pending_payment con más de 24h (Stripe ya expiró la sesión)
+  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  const { count: cancelled } = await supabase
+    .from('b2c_orders')
+    .update({ status: 'cancelled' })
+    .eq('status', 'pending_payment')
+    .lt('created_at', cutoff)
+    .select('id')
+
+  console.log(`[cron] Auto-cancelados ${cancelled ?? 0} b2c_orders abandonados`)
+
   const [{ data: pendingReview }, { data: scheduledToday }] = await Promise.all([
     supabase.from('orders').select('*, agencies(name)').eq('status', 'pending_review'),
     supabase.from('orders').select('*, tariffs(name)').eq('status', 'scheduled').eq('activation_date', today),

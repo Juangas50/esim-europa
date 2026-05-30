@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
 import { sendEmail } from "@/lib/email/send";
 import { emailConfirmacionB2C, emailNuevoPedidoAdmin } from "@/lib/email/templates";
+import { generateOrderRef } from "@/lib/utils";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
@@ -52,8 +53,28 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (!order) {
-      console.error("Order not found:", orderRef);
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      console.log("[webhook] Already processed, skipping duplicate:", orderRef);
+      return NextResponse.json({ received: true, skipped: "already_processed" });
+    }
+
+    // 1b. Crear órdenes adicionales si quantity > 1 (compra grupal)
+    const quantity = Math.min(parseInt(session.metadata?.quantity ?? "1", 10) || 1, 10);
+    if (quantity > 1) {
+      const extras = Array.from({ length: quantity - 1 }, () => ({
+        order_ref: generateOrderRef(),
+        tariff_id: order.tariff_id,
+        customer_name: order.customer_name,
+        customer_lastname: order.customer_lastname,
+        customer_email: order.customer_email,
+        customer_country: order.customer_country,
+        activation_date: order.activation_date,
+        status: "paid",
+        payment_method: order.payment_method,
+        payment_id: session.payment_intent as string,
+        amount_usd: order.amount_usd,
+      }));
+      await supabase.from("b2c_orders").insert(extras);
+      console.log(`[webhook] Creadas ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef}`);
     }
 
     // 2. Enviar emails (confirmación al cliente + alerta al admin)

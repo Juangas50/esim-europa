@@ -102,6 +102,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
         body: JSON.stringify({
           plan_id: plan.id,
           payment_method: method,
+          quantity: formData.quantity ?? 1,
           customer: {
             name: formData.customer_name,
             lastname: formData.customer_lastname,
@@ -110,7 +111,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           },
           activation_date: formData.activation_date,
           locale,
-          ga_client_id, // forwarded to Stripe metadata → used by webhook for GA4 MP
+          ga_client_id,
         }),
       });
 
@@ -271,8 +272,12 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
 
           <div className="space-y-2 border-b border-[#111111]/8 pb-4 mb-4">
             <div className="flex justify-between text-sm">
-              <span className="text-[#555]">{plan.name}</span>
-              <span className="font-semibold text-[#111]">{formatUSD(plan.price_usd)}</span>
+              <span className="text-[#555]">
+                {plan.name}{(formData.quantity ?? 1) > 1 ? ` × ${formData.quantity}` : ""}
+              </span>
+              <span className="font-semibold text-[#111]">
+                {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-[#555]">Email</span>
@@ -282,7 +287,9 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
 
           <div className="flex justify-between items-baseline mb-1">
             <span className="font-semibold text-[#555]">Total</span>
-            <span className="text-2xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</span>
+            <span className="text-2xl font-black text-[#111111]">
+              {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
+            </span>
           </div>
           <p className="text-xs text-[#999] text-right">USD · {t("payment.once")}</p>
 
