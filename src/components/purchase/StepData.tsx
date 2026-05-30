@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
@@ -61,6 +61,7 @@ const inputClass =
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
   const tCountries = useTranslations("purchase.countries");
+  const [quantity, setQuantity] = useState(initialData.quantity ?? 1);
 
   const {
     register,
@@ -90,11 +91,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const isLocal = plan.type === "local";
 
   const onSubmit = (data: FormValues) => {
-    // Combina activation_type + activation_date en un solo campo para el pedido
     const finalActivationDate =
       data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
     analytics.checkoutStepCompleted(2, "data", plan);
-    onNext({ ...data, activation_date: finalActivationDate });
+    onNext({ ...data, activation_date: finalActivationDate, quantity });
   };
 
   return (
@@ -104,6 +104,34 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         onSubmit={handleSubmit(onSubmit)}
         className="lg:col-span-2 space-y-4"
       >
+        {/* Cantidad de eSIMs */}
+        <div className="rounded-2xl bg-white border border-black/[0.07] p-5">
+          <p className="text-sm font-bold text-[#111111] mb-3">
+            ¿Cuántas eSIM necesitás?
+          </p>
+          <div className="flex gap-2 flex-wrap">
+            {[1,2,3,4,5,6,7,8,9,10].map(n => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setQuantity(n)}
+                className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
+                  quantity === n
+                    ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
+                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          {quantity > 1 && (
+            <p className="text-xs text-[#999] mt-3">
+              Cada eSIM llega al mismo email con su propio código QR.
+            </p>
+          )}
+        </div>
+
         {/* Nombre y Apellido */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -258,9 +286,14 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             <p className="font-black text-lg text-[#111111]">{plan.name}</p>
             <p className="text-sm text-[#777]">{plan.data_gb} GB · {plan.duration_days} días</p>
           </div>
+          {quantity > 1 && (
+            <div className="flex justify-between text-sm text-[#999] mb-1">
+              <span>{quantity} × {formatUSD(plan.price_usd)}</span>
+            </div>
+          )}
           <div className="flex justify-between items-baseline pt-1">
             <span className="font-semibold text-[#555]">Total</span>
-            <span className="text-2xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</span>
+            <span className="text-2xl font-black text-[#111111]">{formatUSD(plan.price_usd * quantity)}</span>
           </div>
           <p className="text-xs text-[#999] text-right">USD · pago único</p>
         </div>
