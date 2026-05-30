@@ -89,13 +89,16 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const plans = await getPlans();
+  const minPrice = plans.length > 0
+    ? Math.min(...plans.map((p) => p.price_usd))
+    : undefined;
 
   return (
     <>
       <HomeSchemaOrg locale={locale as "es" | "pt"} />
       <Navbar />
       <main>
-        <Hero />
+        <Hero minPrice={minPrice} />
         <Testimonials />
         <Plans plans={plans} />
         <Benefits />

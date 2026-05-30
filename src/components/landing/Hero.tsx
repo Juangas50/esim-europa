@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import Badge from "@/components/ui/Badge";
+import { formatUSD } from "@/lib/utils";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -165,7 +166,11 @@ function HeroVisual() {
   );
 }
 
-export default function Hero() {
+interface HeroProps {
+  minPrice?: number;
+}
+
+export default function Hero({ minPrice }: HeroProps) {
   const t = useTranslations("hero");
 
   const trustItems = [
@@ -233,9 +238,11 @@ export default function Hero() {
             </motion.div>
 
             {/* Precio ancla — reduce friction */}
-            <motion.p variants={fadeUp} className="text-sm text-[#555555] font-semibold mb-8">
-              {t("priceAnchor")}
-            </motion.p>
+            {minPrice != null && (
+              <motion.p variants={fadeUp} className="text-sm text-[#555555] font-semibold mb-8">
+                {t("priceAnchor", { price: formatUSD(minPrice) })}
+              </motion.p>
+            )}
 
             {/* Trust indicators */}
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">

@@ -14,7 +14,7 @@
     "trust1": "+5.000 viajantes",
     "trust2": "30+ países",
     "trust3": "Ativação em 1 min",
-    "priceAnchor": "A partir de USD 24.90 · Sem renovação automática"
+    "priceAnchor": "A partir de {price} · Sem renovação automática"
   },
   "benefits": {
     "title": "Internet como em casa, mas na Europa",
