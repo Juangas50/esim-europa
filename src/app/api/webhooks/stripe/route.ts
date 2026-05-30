@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
-import { sendPurchaseConfirmation } from "@/lib/resend";
+import { sendEmail } from "@/lib/email/send";
+import { emailConfirmacionB2C, emailNuevoPedidoAdmin } from "@/lib/email/templates";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
@@ -52,27 +53,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // 2. Enviar email de confirmación con QR (placeholder hasta API Vodafone)
+    // 2. Enviar emails (confirmación al cliente + alerta al admin)
     const plan = await getPlanById(planId);
     if (plan && order.customer_email) {
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3002";
+
+      // 2a. Email al cliente — pedido recibido, eSIM en 24 hs
       try {
-        console.log("[email] Sending confirmation | RESEND_API_KEY set:", !!process.env.RESEND_API_KEY);
-        const emailResult = await sendPurchaseConfirmation({
-          to: order.customer_email,
+        const tmplCliente = emailConfirmacionB2C({
           customerName: order.customer_name,
           orderRef,
-          plan,
-          qrPlaceholder: true,
+          planName: plan.name,
+          planGB: plan.data_gb,
+          planDays: plan.duration_days,
+          planType: plan.type,
+          amountUSD: plan.price_usd,
         });
-        console.log("[email] Resend result:", JSON.stringify(emailResult));
+        const res = await sendEmail(order.customer_email, tmplCliente.subject, tmplCliente.html);
+        console.log("[email:cliente] confirmacion enviada | orderRef:", orderRef, "| error:", res.error ?? "none");
+      } catch (e) {
+        console.error("[email:cliente] Error:", e);
+      }
 
-        // Marcar email como enviado
-        await supabase
-          .from("b2c_orders")
-          .update({ qr_sent_at: new Date().toISOString(), status: "qr_sent" })
-          .eq("order_ref", orderRef);
-      } catch (emailError) {
-        console.error("[email] Error sending confirmation email:", emailError);
+      // 2b. Alerta inmediata al admin
+      try {
+        const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").filter(Boolean);
+        if (adminEmails.length > 0) {
+          const tmplAdmin = emailNuevoPedidoAdmin({
+            customerName: order.customer_name,
+            customerLastname: order.customer_lastname ?? "",
+            customerEmail: order.customer_email,
+            customerCountry: order.customer_country ?? "",
+            orderRef,
+            planName: plan.name,
+            planGB: plan.data_gb,
+            amountUSD: plan.price_usd,
+            portalUrl: `${baseUrl}/admin/pedidos`,
+          });
+          await Promise.all(
+            adminEmails.map(email =>
+              sendEmail(email.trim(), tmplAdmin.subject, tmplAdmin.html)
+            )
+          );
+          console.log("[email:admin] alerta enviada | orderRef:", orderRef);
+        }
+      } catch (e) {
+        console.error("[email:admin] Error:", e);
       }
     }
 

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { updateOrderStatus } from './actions'
+import { updateOrderStatus, deliverB2COrder } from './actions'
+import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 
 // ── Tipo unificado ────────────────────────────────────────────────────────────
 export type UnifiedOrder = {
@@ -28,6 +29,7 @@ export type UnifiedOrder = {
 // ── Estados ───────────────────────────────────────────────────────────────────
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
+  paid:           { label: '⚡ Tramitar',         color: '#E60000', bg: 'rgba(230,0,0,0.18)'   },
   scheduled:      { label: 'Programado',          color: '#6EC1E4', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado',           color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
@@ -37,6 +39,7 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
 
 const STATUS_FILTERS = [
   { id: 'all',            label: 'Todos' },
+  { id: 'paid',           label: '⚡ Tramitar' },
   { id: 'pending_review', label: 'Pendientes' },
   { id: 'scheduled',      label: 'Programados' },
   { id: 'qr_sent',        label: 'QR Enviado' },
@@ -64,12 +67,29 @@ function SourceBadge({ source }: { source: 'b2b' | 'b2c' }) {
 }
 
 export default function PedidosClient({ orders: initial }: { orders: UnifiedOrder[] }) {
-  const [orders, setOrders]       = useState(initial)
-  const [statusFilter, setStatus] = useState('all')
-  const [sourceFilter, setSource] = useState('all')
-  const [search, setSearch]       = useState('')
-  const [selected, setSelected]   = useState<UnifiedOrder | null>(null)
-  const [updating, setUpdating]   = useState<string | null>(null)
+  const [orders, setOrders]         = useState(initial)
+  const [statusFilter, setStatus]   = useState('all')
+  const [sourceFilter, setSource]   = useState('all')
+  const [search, setSearch]         = useState('')
+  const [selected, setSelected]     = useState<UnifiedOrder | null>(null)
+  const [updating, setUpdating]     = useState<string | null>(null)
+
+  // ── Estado del formulario de entrega eSIM ─────────────────────────────────
+  const [activation, setActivation]   = useState('')
+  const [confirmation, setConfirmation] = useState('')
+  const [delivering, setDelivering]   = useState(false)
+  const [deliverError, setDeliverError] = useState<string | null>(null)
+  const [deliverOk, setDeliverOk]     = useState(false)
+
+  // Validación en tiempo real
+  const activationParsed  = parseActivationString(activation)
+  const confirmationValid = validateConfirmationCode(confirmation)
+  const canDeliver        = activationParsed.ok && confirmationValid && !delivering
+
+  function resetDeliveryForm() {
+    setActivation(''); setConfirmation('')
+    setDeliverError(null); setDeliverOk(false)
+  }
 
   const filtered = orders.filter(o => {
     if (sourceFilter !== 'all' && o.source !== sourceFilter) return false
@@ -92,6 +112,21 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o))
     if (selected?.id === orderId) setSelected(prev => prev ? { ...prev, status } : null)
     setUpdating(null)
+  }
+
+  async function handleDeliver() {
+    if (!selected || !canDeliver) return
+    setDelivering(true)
+    setDeliverError(null)
+    const result = await deliverB2COrder(selected.id, activation, confirmation)
+    if (result.ok) {
+      setDeliverOk(true)
+      setOrders(prev => prev.map(o => o.id === selected.id ? { ...o, status: 'qr_sent' } : o))
+      setSelected(prev => prev ? { ...prev, status: 'qr_sent' } : null)
+    } else {
+      setDeliverError(result.error)
+    }
+    setDelivering(false)
   }
 
   const totalB2C = orders.filter(o => o.source === 'b2c').length
@@ -180,7 +215,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     return (
                       <tr
                         key={o.id}
-                        onClick={() => setSelected(isSelected ? null : o)}
+                        onClick={() => { setSelected(isSelected ? null : o); resetDeliveryForm() }}
                         style={{ borderBottom: i < filtered.length - 1 ? '1px solid #2A2A2A' : 'none', cursor: 'pointer', background: isSelected ? 'rgba(230,0,0,0.06)' : 'transparent', transition: 'background 0.15s' }}
                         onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
                         onMouseLeave={e => { e.currentTarget.style.background = isSelected ? 'rgba(230,0,0,0.06)' : 'transparent' }}
@@ -287,6 +322,90 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 {STATUSES[selected.status]?.label}
               </span>
             </div>
+
+            {/* ── Formulario entrega eSIM — solo B2C pagado ─────────────── */}
+            {selected.source === 'b2c' && selected.status === 'paid' && (
+              <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
+                <div style={{ fontSize: 11, color: '#E60000', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
+                  ⚡ Entregar eSIM
+                </div>
+
+                {deliverOk ? (
+                  <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
+                    ✅ QR enviado al cliente
+                  </div>
+                ) : (
+                  <>
+                    {/* Cadena de activación */}
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Cadena de activación</div>
+                      <input
+                        value={activation}
+                        onChange={e => { setActivation(e.target.value); setDeliverError(null) }}
+                        placeholder="1$servidor$CÓDIGO"
+                        style={{
+                          width: '100%', boxSizing: 'border-box',
+                          background: '#111', border: `1px solid ${activation && !activationParsed.ok ? '#EF4444' : activation && activationParsed.ok ? '#22C55E' : '#2A2A2A'}`,
+                          borderRadius: 8, padding: '8px 10px', color: '#fff',
+                          fontSize: 11, fontFamily: 'monospace', outline: 'none',
+                        }}
+                      />
+                      {activation && !activationParsed.ok && (
+                        <div style={{ fontSize: 10, color: '#EF4444', marginTop: 4, lineHeight: 1.4 }}>
+                          ✗ {activationParsed.error}
+                        </div>
+                      )}
+                      {activation && activationParsed.ok && (
+                        <div style={{ fontSize: 10, color: '#22C55E', marginTop: 4 }}>
+                          ✓ SM-DP+: {activationParsed.data.smdp}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Código de confirmación */}
+                    <div style={{ marginBottom: 14 }}>
+                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Código de confirmación</div>
+                      <input
+                        value={confirmation}
+                        onChange={e => { setConfirmation(e.target.value); setDeliverError(null) }}
+                        placeholder="106129"
+                        maxLength={8}
+                        style={{
+                          width: '100%', boxSizing: 'border-box',
+                          background: '#111', border: `1px solid ${confirmation && !confirmationValid ? '#EF4444' : confirmation && confirmationValid ? '#22C55E' : '#2A2A2A'}`,
+                          borderRadius: 8, padding: '8px 10px', color: '#fff',
+                          fontSize: 13, fontFamily: 'monospace', letterSpacing: 4, outline: 'none',
+                        }}
+                      />
+                      {confirmation && !confirmationValid && (
+                        <div style={{ fontSize: 10, color: '#EF4444', marginTop: 4 }}>✗ Deben ser 4-8 dígitos numéricos</div>
+                      )}
+                    </div>
+
+                    {/* Error del servidor */}
+                    {deliverError && (
+                      <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 12 }}>
+                        ⚠ {deliverError}
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleDeliver}
+                      disabled={!canDeliver}
+                      style={{
+                        width: '100%', padding: '10px 0', borderRadius: 8, border: 'none',
+                        background: canDeliver ? '#E60000' : '#2A2A2A',
+                        color: canDeliver ? '#fff' : '#555',
+                        fontWeight: 700, fontSize: 13, cursor: canDeliver ? 'pointer' : 'not-allowed',
+                        fontFamily: 'inherit', transition: 'background 0.15s',
+                      }}
+                    >
+                      {delivering ? 'Generando QR y enviando...' : 'Generar QR y enviar al cliente →'}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

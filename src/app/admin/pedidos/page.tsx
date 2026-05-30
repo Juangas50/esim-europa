@@ -6,8 +6,8 @@ import type { UnifiedOrder } from './PedidosClient'
 function mapB2CStatus(s: string): string {
   const map: Record<string, string> = {
     pending_payment: 'pending_review',
-    paid:            'scheduled',
-    processing:      'scheduled',
+    paid:            'paid',        // tramitar manualmente — no confundir con scheduled
+    processing:      'paid',
     qr_sent:         'qr_sent',
     active:          'activated',
     expired:         'expired',
