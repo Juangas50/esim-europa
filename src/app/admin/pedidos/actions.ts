@@ -68,7 +68,23 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Este pedido ya tiene el QR enviado.' }
   }
 
-  // 3b. Buscar datos de tarifa por separado si existe tariff_id
+  // 3b. Verificar que la cadena de activación no haya sido usada en otro pedido
+  const { data: duplicate } = await supabase
+    .from('b2c_orders')
+    .select('order_ref')
+    .eq('activation_string', parsed.data.raw)
+    .neq('id', orderId)
+    .neq('status', 'cancelled')
+    .maybeSingle()
+
+  if (duplicate) {
+    return {
+      ok: false,
+      error: `Esta cadena ya fue usada en el pedido ${duplicate.order_ref}. Verificá que estés pegando el código correcto.`,
+    }
+  }
+
+  // 3c. Buscar datos de tarifa por separado si existe tariff_id
   let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
@@ -122,12 +138,92 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Error enviando el email al cliente. Intentá nuevamente.' }
   }
 
-  // 6. Actualizar estado del pedido
+  // 6. Actualizar estado + guardar cadena y código para futuras consultas / reenvío
   await supabase
     .from('b2c_orders')
-    .update({ status: 'qr_sent', qr_sent_at: new Date().toISOString() })
+    .update({
+      status: 'qr_sent',
+      qr_sent_at: new Date().toISOString(),
+      activation_string: parsed.data.raw,
+      confirmation_code: confirmationCode.trim(),
+    })
     .eq('id', orderId)
 
   revalidatePath('/admin/pedidos')
+  return { ok: true }
+}
+
+// ── Reenviar email de entrega — solo pedidos ya entregados con cadena guardada ─
+export async function resendDeliveryEmail(
+  orderId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+
+  const supabase = createAdminClient()
+  const { data: order } = await supabase
+    .from('b2c_orders')
+    .select('*')
+    .eq('id', orderId)
+    .single()
+
+  if (!order) return { ok: false, error: 'Pedido no encontrado.' }
+
+  if (!order.activation_string) {
+    return { ok: false, error: 'No hay cadena de activación guardada. Solo se puede reenviar pedidos entregados desde este portal.' }
+  }
+
+  const parsed = parseActivationString(order.activation_string)
+  if (!parsed.ok) return { ok: false, error: 'La cadena de activación guardada es inválida.' }
+
+  // Tarifa
+  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  if (order.tariff_id) {
+    const { data: t } = await supabase
+      .from('tariffs')
+      .select('name, type, data_gb, duration_days')
+      .eq('id', order.tariff_id)
+      .single()
+    tariff = t
+  }
+
+  // QR
+  let qrBuffer: Buffer
+  try {
+    qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, {
+      width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' },
+    })
+  } catch (e) {
+    return { ok: false, error: 'Error generando el código QR.' }
+  }
+
+  const tmpl = emailEntregaB2C({
+    customerName: order.customer_name,
+    orderRef: order.order_ref,
+    planName: tariff?.name ?? 'eSIM RUTA34',
+    planGB: tariff?.data_gb ?? 0,
+    planDays: tariff?.duration_days ?? 28,
+    planType: tariff?.type ?? 'dataonly',
+    activationString: parsed.data.raw,
+    confirmationCode: order.confirmation_code ?? '—',
+    amountUSD: order.amount_usd ?? 0,
+  })
+
+  const { error: emailError } = await sendEmail(
+    order.customer_email,
+    `[Reenvío] ${tmpl.subject}`,
+    tmpl.html,
+    [{
+      filename: 'esim-qr.png',
+      content: qrBuffer,
+      content_type: 'image/png',
+      content_id: 'esim-qr',
+    }],
+  )
+
+  if (emailError) {
+    console.error('[resend] Error:', emailError)
+    return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
+  }
+
   return { ok: true }
 }

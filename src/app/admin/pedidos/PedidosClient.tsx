@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { updateOrderStatus, deliverB2COrder } from './actions'
+import { updateOrderStatus, deliverB2COrder, resendDeliveryEmail } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 
 // ── Tipo unificado ────────────────────────────────────────────────────────────
@@ -24,6 +24,8 @@ export type UnifiedOrder = {
   tariffs: { name: string } | null
   source: 'b2b' | 'b2c'
   payment_method: string | null
+  activation_string: string | null
+  confirmation_code: string | null
 }
 
 // ── Estados ───────────────────────────────────────────────────────────────────
@@ -81,6 +83,11 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const [deliverError, setDeliverError] = useState<string | null>(null)
   const [deliverOk, setDeliverOk]     = useState(false)
 
+  // ── Estado del reenvío ────────────────────────────────────────────────────
+  const [resending, setResending]     = useState(false)
+  const [resendError, setResendError] = useState<string | null>(null)
+  const [resendOk, setResendOk]       = useState(false)
+
   // Validación en tiempo real
   const activationParsed  = parseActivationString(activation)
   const confirmationValid = validateConfirmationCode(confirmation)
@@ -89,6 +96,18 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   function resetDeliveryForm() {
     setActivation(''); setConfirmation('')
     setDeliverError(null); setDeliverOk(false)
+    setResendError(null); setResendOk(false)
+  }
+
+  async function handleResend() {
+    if (!selected || resending) return
+    setResending(true)
+    setResendError(null)
+    setResendOk(false)
+    const result = await resendDeliveryEmail(selected.id)
+    if (result.ok) setResendOk(true)
+    else setResendError(result.error)
+    setResending(false)
   }
 
   const filtered = orders.filter(o => {
@@ -322,6 +341,50 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 {STATUSES[selected.status]?.label}
               </span>
             </div>
+
+            {/* ── Cadena de activación guardada — solo B2C con QR enviado ── */}
+            {selected.source === 'b2c' && selected.status === 'qr_sent' && selected.activation_string && (
+              <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 14 }}>
+                <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 6 }}>Cadena de activación enviada</div>
+                <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
+                  {selected.activation_string}
+                </div>
+                {selected.confirmation_code && (
+                  <div style={{ marginTop: 6, fontSize: 11, color: '#7A7A7A' }}>
+                    Código: <span style={{ fontFamily: 'monospace', color: '#fff', letterSpacing: 3 }}>{selected.confirmation_code}</span>
+                  </div>
+                )}
+
+                {/* Botón reenvío */}
+                <div style={{ marginTop: 14 }}>
+                  {resendOk ? (
+                    <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
+                      ✅ Email reenviado
+                    </div>
+                  ) : (
+                    <>
+                      {resendError && (
+                        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 8 }}>
+                          ⚠ {resendError}
+                        </div>
+                      )}
+                      <button
+                        onClick={handleResend}
+                        disabled={resending}
+                        style={{
+                          width: '100%', padding: '9px 0', borderRadius: 8, border: '1px solid #A78BFA',
+                          background: 'transparent', color: resending ? '#555' : '#A78BFA',
+                          fontWeight: 700, fontSize: 12, cursor: resending ? 'not-allowed' : 'pointer',
+                          fontFamily: 'inherit',
+                        }}
+                      >
+                        {resending ? 'Enviando...' : '📤 Reenviar email al cliente'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* ── Formulario entrega eSIM — solo B2C pagado ─────────────── */}
             {selected.source === 'b2c' && selected.status === 'paid' && (

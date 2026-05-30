@@ -51,6 +51,8 @@ export default async function PedidosAdminPage() {
     tariffs:              o.tariffs ?? null,
     source:               'b2b',
     payment_method:       null,
+    activation_string:    null,
+    confirmation_code:    null,
   }))
 
   // ── Normalizar B2C ────────────────────────────────────────────────────────
@@ -73,6 +75,8 @@ export default async function PedidosAdminPage() {
     tariffs:              o.tariffs ? { name: o.tariffs.name } : null,
     source:               'b2c',
     payment_method:       o.payment_method ?? null,
+    activation_string:    o.activation_string ?? null,
+    confirmation_code:    o.confirmation_code ?? null,
   }))
 
   // ── Unificar y ordenar por fecha desc ─────────────────────────────────────
