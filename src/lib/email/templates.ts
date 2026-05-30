@@ -364,27 +364,41 @@ export function emailEntregaB2C(data: {
     <div style="background:#181818;border:1px solid #2A2A2A;border-radius:14px;padding:28px;margin-bottom:20px;">
       <div style="font-size:15px;font-weight:800;margin-bottom:20px;">Cómo activar tu eSIM</div>
 
-      <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:16px;">
+      <!-- iPhone -->
+      <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="font-size:18px;">🍎</span>
-          <span style="font-size:13px;font-weight:700;color:#fff;">iPhone (activación rápida)</span>
+          <span style="font-size:13px;font-weight:700;color:#fff;">iPhone (iOS 14.4 o superior)</span>
         </div>
-        ${step(1, 'Mantené presionado el código QR')}
-        ${step(2, 'Seleccioná <strong>"Añadir eSIM"</strong>')}
-        ${step(3, 'Ingresá el código de confirmación')}
+        ${step(1, 'Mantené presionado el código QR con tu cámara o desde este email')}
+        ${step(2, 'Seleccioná <strong>"Añadir eSIM"</strong> en el menú que aparece')}
+        ${step(3, 'Ingresá el código de confirmación <strong>' + data.confirmationCode + '</strong>')}
+        ${step(4, 'Activá la línea cuando te lo solicite')}
+        <div style="margin-top:10px;font-size:11px;color:#555;">
+          ¿No aparece la opción? Usá el método manual: <strong>Ajustes → Datos móviles → Añadir plan de datos</strong>
+        </div>
       </div>
 
-      <div style="background:#111;border-radius:10px;padding:16px;">
+      <!-- Android -->
+      <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="font-size:18px;">📱</span>
-          <span style="font-size:13px;font-weight:700;color:#fff;">Activación manual (todos los celulares)</span>
+          <span style="font-size:18px;">🤖</span>
+          <span style="font-size:13px;font-weight:700;color:#fff;">Android (Samsung, Pixel, Motorola y otros)</span>
         </div>
-        ${step(1, 'Anotá el código de confirmación <strong>' + data.confirmationCode + '</strong>')}
-        ${step(2, 'Conectate a una red WiFi')}
-        ${step(3, 'Abrí <strong>Ajustes → Datos móviles → Añadir plan</strong> (o "Administrador de SIM")')}
-        ${step(4, 'Escaneá el código QR')}
-        ${step(5, 'Ingresá el código de confirmación cuando te lo pida')}
-        ${step(6, 'Seleccioná <strong>"Activar esta línea"</strong> o <strong>"Usar SIM"</strong>')}
+        ${step(1, 'Conectate a una red WiFi')}
+        ${step(2, '<strong>Samsung:</strong> Ajustes → Conexiones → Administrador de SIM → Añadir plan<br><span style="color:#7A7A7A;font-size:11px;"><strong>Pixel / otros:</strong> Ajustes → Red e Internet → SIMs → Añadir eSIM</span>')}
+        ${step(3, 'Escaneá el código QR')}
+        ${step(4, 'Ingresá el código de confirmación <strong>' + data.confirmationCode + '</strong>')}
+        ${step(5, 'Seleccioná <strong>"Activar"</strong> o <strong>"Usar SIM"</strong>')}
+      </div>
+
+      <!-- Manual fallback -->
+      <div style="background:#111;border-radius:10px;padding:14px;">
+        <div style="font-size:12px;font-weight:700;color:#7A7A7A;margin-bottom:8px;">📋 ¿No podés escanear el QR? Activación manual</div>
+        <div style="font-size:12px;color:#AAAAAA;line-height:1.7;">
+          Ingresá manualmente la cadena de activación en tu celular:<br>
+          <span style="font-family:monospace;color:#6EC1E4;font-size:11px;word-break:break-all;">${data.activationString}</span>
+        </div>
       </div>
     </div>
 
