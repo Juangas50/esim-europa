@@ -52,19 +52,31 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Código de confirmación inválido. Deben ser 4-8 dígitos numéricos.' }
   }
 
-  // 3. Buscar el pedido con datos del cliente y tarifa
+  // 3. Buscar el pedido — query simple sin JOIN para evitar error si FK no está configurada
   const supabase = createAdminClient()
   const { data: order, error: fetchError } = await supabase
     .from('b2c_orders')
-    .select('*, tariffs(name, type, data_gb, duration_days)')
+    .select('*')
     .eq('id', orderId)
     .single()
 
   if (fetchError || !order) {
+    console.error('[deliver] fetchError:', fetchError)
     return { ok: false, error: 'Pedido no encontrado.' }
   }
   if (order.status === 'qr_sent') {
     return { ok: false, error: 'Este pedido ya tiene el QR enviado.' }
+  }
+
+  // 3b. Buscar datos de tarifa por separado si existe tariff_id
+  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  if (order.tariff_id) {
+    const { data: t } = await supabase
+      .from('tariffs')
+      .select('name, type, data_gb, duration_days')
+      .eq('id', order.tariff_id)
+      .single()
+    tariff = t
   }
 
   // 4. Generar QR como PNG Buffer
@@ -84,10 +96,10 @@ export async function deliverB2COrder(
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
-    planName: order.tariffs?.name ?? 'eSIM RUTA34',
-    planGB: order.tariffs?.data_gb ?? 0,
-    planDays: order.tariffs?.duration_days ?? 28,
-    planType: order.tariffs?.type ?? 'dataonly',
+    planName: tariff?.name ?? 'eSIM RUTA34',
+    planGB: tariff?.data_gb ?? 0,
+    planDays: tariff?.duration_days ?? 28,
+    planType: tariff?.type ?? 'dataonly',
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
     amountUSD: order.amount_usd ?? 0,
