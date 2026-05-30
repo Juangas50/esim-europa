@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
@@ -62,9 +62,28 @@ function FAQItem({
   );
 }
 
+// índice de cada key en FAQ_KEYS
+const KEY_INDEX: Record<string, number> = Object.fromEntries(
+  FAQ_KEYS.map((k, i) => [k, i])
+);
+
 export default function FAQ() {
   const t = useTranslations("faq");
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  // Auto-abrir ítem cuando se navega directo por hash (ej: #faq-compatible)
+  useEffect(() => {
+    const hash = window.location.hash; // e.g. "#faq-compatible"
+    if (!hash.startsWith("#faq-")) return;
+    const key = hash.replace("#faq-", ""); // e.g. "compatible"
+    const idx = KEY_INDEX[key];
+    if (idx != null) {
+      setOpenIndex(idx);
+      setTimeout(() => {
+        document.getElementById(`faq-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+    }
+  }, []);
 
   const toggle = (i: number) => {
     setOpenIndex(openIndex === i ? null : i);
@@ -112,13 +131,14 @@ export default function FAQ() {
           >
             <div className="border-t border-[#111111]/8">
               {FAQ_KEYS.map((key, i) => (
-                <FAQItem
-                  key={key}
-                  question={t(`items.${key}.q`)}
-                  answer={t(`items.${key}.a`)}
-                  isOpen={openIndex === i}
-                  onToggle={() => toggle(i)}
-                />
+                <div key={key} id={`faq-${key}`}>
+                  <FAQItem
+                    question={t(`items.${key}.q`)}
+                    answer={t(`items.${key}.a`)}
+                    isOpen={openIndex === i}
+                    onToggle={() => toggle(i)}
+                  />
+                </div>
               ))}
             </div>
           </motion.div>

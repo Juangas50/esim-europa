@@ -78,9 +78,9 @@ export default function Compatibility() {
               </motion.div>
             ))}
 
-            {/* Link guía */}
+            {/* Link guía — ancla directo a la pregunta de compatibilidad en el FAQ */}
             <a
-              href="#faq"
+              href="#faq-compatible"
               className="flex items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed border-[#111111]/15 text-sm font-semibold text-[#555] hover:border-[#E60000]/40 hover:text-[#E60000] transition-all duration-200"
             >
               {t("checkGuide")} →

@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -23,8 +24,21 @@ const TOP_ITEMS = [
   { key: "instant", Icon: Lightning },
 ] as const;
 
+const MAIN_COUNTRIES = ["🇪🇸 España", "🇫🇷 Francia", "🇮🇹 Italia", "🇩🇪 Alemania", "🇵🇹 Portugal"];
+
+const ALL_COUNTRIES = [
+  "🇦🇹 Austria", "🇧🇪 Bélgica", "🇧🇬 Bulgaria", "🇭🇷 Croacia", "🇨🇾 Chipre",
+  "🇨🇿 Rep. Checa", "🇩🇰 Dinamarca", "🇸🇰 Eslovaquia", "🇸🇮 Eslovenia", "🇪🇪 Estonia",
+  "🇫🇮 Finlandia", "🇬🇷 Grecia", "🇭🇺 Hungría", "🇮🇪 Irlanda", "🇱🇻 Letonia",
+  "🇱🇹 Lituania", "🇱🇺 Luxemburgo", "🇲🇹 Malta", "🇳🇱 Holanda", "🇵🇱 Polonia",
+  "🇷🇴 Rumania", "🇸🇪 Suecia", "🇬🇧 Reino Unido", "🇮🇸 Islandia", "🇱🇮 Liechtenstein",
+  "🇳🇴 Noruega", "🇨🇭 Suiza", "🇹🇷 Turquía", "🇽🇰 Kosovo", "🇻🇦 Vaticano",
+  "🇲🇨 Mónaco", "🇺🇦 Ucrania", "🇲🇩 Moldavia", "🇺🇸 Estados Unidos",
+];
+
 export default function Benefits() {
   const t = useTranslations("benefits");
+  const [countriesOpen, setCountriesOpen] = useState(false);
 
   return (
     <section className="py-24 px-4">
@@ -124,12 +138,42 @@ export default function Benefits() {
                   <span className="text-xs font-semibold text-white/60">Línea española 🇪🇸 — cobertura en toda Europa</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {["🇪🇸 España", "🇫🇷 Francia", "🇮🇹 Italia", "🇩🇪 Alemania", "🇵🇹 Portugal", "+25 más"].map((c) => (
+                  {MAIN_COUNTRIES.map((c) => (
                     <span key={c} className="text-xs font-semibold text-white/70 bg-white/10 px-3 py-1 rounded-full">
                       {c}
                     </span>
                   ))}
+                  <button
+                    onClick={() => setCountriesOpen(o => !o)}
+                    className="text-xs font-semibold text-[#6EC1E4] bg-[#6EC1E4]/15 border border-[#6EC1E4]/25 px-3 py-1 rounded-full hover:bg-[#6EC1E4]/25 transition-colors"
+                  >
+                    {countriesOpen ? "Ver menos ↑" : `+${ALL_COUNTRIES.length} países ↓`}
+                  </button>
                 </div>
+
+                <AnimatePresence>
+                  {countriesOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-white/10">
+                        {ALL_COUNTRIES.map((c) => (
+                          <span key={c} className="text-xs font-semibold text-white/60 bg-white/8 px-3 py-1 rounded-full">
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-white/35 mt-3 leading-relaxed">
+                        Según normativa europea: hasta 23 GB incluidos en tarifa, después 1,33 €/GB.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
               </div>
             </motion.div>
 

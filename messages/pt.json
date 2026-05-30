@@ -113,7 +113,7 @@
       },
       "compatible": {
         "q": "Como sei se meu celular é compatível?",
-        "a": "iPhone XS / XR (2018) ou mais novo, Samsung Galaxy S20 ou mais novo, Google Pixel 4a ou mais novo são compatíveis. Pode ir em Ajustes → Geral → Informações → eSIM para verificar."
+        "a": "São compatíveis: iPhone XS / XR (2018) ou mais novos · Samsung Galaxy S20, Note 20, Z Fold/Flip, A54 ou mais novos · Google Pixel 4a ou mais novos · Motorola Razr 2019 ou mais novos. Para verificar: no iPhone → Ajustes → Geral → Informações → eSIM (deve aparecer o EID). No Android → Ajustes → Sobre o telefone → Status → se aparecem dois IMEI, seu celular suporta eSIM."
       },
       "number": {
         "q": "Posso manter meu número de telefone brasileiro?",
