@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -11,8 +12,8 @@ const TESTIMONIALS_ES = [
     name: "Lucía F.",
     country: "Argentina",
     flag: "🇦🇷",
-    text: "Me salvó el viaje. Llegué a Madrid y ya tenía internet, sin hacer nada en el aeropuerto. El QR me llegó al email en menos de un minuto. Increíble.",
-    plan: "Europa Prepago 20 GB",
+    text: "Me salvó el viaje. Llegué a Madrid y ya tenía internet, sin hacer nada en el aeropuerto. El QR con todas las instrucciones me llegó directo al email. Increíble.",
+    plan: "Data Europa · 10 GB",
     rating: 5,
   },
   {
@@ -20,7 +21,7 @@ const TESTIMONIALS_ES = [
     country: "México",
     flag: "🇲🇽",
     text: "Lo usé en un viaje de 3 semanas por España, Francia e Italia. Funcionó perfecto en todos lados. Muy fácil de instalar, escaneás el QR y listo.",
-    plan: "Europa Prepago 20 GB",
+    plan: "Data Europa · 20 GB",
     rating: 5,
   },
   {
@@ -28,7 +29,7 @@ const TESTIMONIALS_ES = [
     country: "Brasil",
     flag: "🇧🇷",
     text: "Facilísimo. Instalé el QR antes de embarcar y cuando llegué a Lisboa ya estaba conectada. Sin colas, sin estrés. Lo recomiendo a todos los que viajan a Europa.",
-    plan: "España Prepago 10 GB",
+    plan: "Data Europa · 10 GB",
     rating: 5,
   },
 ];
@@ -38,8 +39,8 @@ const TESTIMONIALS_PT = [
     name: "Lucía F.",
     country: "Argentina",
     flag: "🇦🇷",
-    text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR chegou no email em menos de um minuto. Incrível.",
-    plan: "Europa Prepago 20 GB",
+    text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR com todas as instruções chegou direto no meu email. Incrível.",
+    plan: "Data Europa · 10 GB",
     rating: 5,
   },
   {
@@ -47,7 +48,7 @@ const TESTIMONIALS_PT = [
     country: "México",
     flag: "🇲🇽",
     text: "Usei numa viagem de 3 semanas pela Espanha, França e Itália. Funcionou perfeitamente em todos os lugares. Muito fácil de instalar.",
-    plan: "Europa Prepago 20 GB",
+    plan: "Data Europa · 20 GB",
     rating: 5,
   },
   {
@@ -55,7 +56,7 @@ const TESTIMONIALS_PT = [
     country: "Brasil",
     flag: "🇧🇷",
     text: "Muito fácil! Instalei o QR antes de embarcar e quando cheguei em Lisboa já estava conectada. Sem fila, sem estresse. Super recomendo.",
-    plan: "España Prepago 10 GB",
+    plan: "Data Europa · 10 GB",
     rating: 5,
   },
 ];
@@ -91,6 +92,32 @@ export default function Testimonials() {
             {t("title")}
           </h2>
           <p className="text-[#555555] text-base">{t("subtitle")}</p>
+        </motion.div>
+
+        {/* Franja editorial de fotos — real travelers */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.55, ease: EASE_OUT }}
+          className="grid grid-cols-3 gap-2 mb-10 rounded-2xl overflow-hidden"
+        >
+          {[
+            { src: "/images/imagen3.png", alt: "Familia latinoamericana en Madrid" },
+            { src: "/images/imagen5.png", alt: "Pareja mayor en Roma" },
+            { src: "/images/imagen6.png", alt: "Pareja en puerto mediterráneo" },
+          ].map((img, i) => (
+            <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover object-center hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 100vw, 400px"
+                loading="lazy"
+              />
+            </div>
+          ))}
         </motion.div>
 
         {/* Grid testimonios */}

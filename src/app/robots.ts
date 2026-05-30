@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
           "/pt/compra",
           "/es/confirmacion",
           "/pt/confirmacion",
+          "/admin",
+          "/login",
           "/api/",
         ],
       },

@@ -14,10 +14,10 @@ export function GTMScript() {
   const [canLoad, setCanLoad] = useState(false);
 
   useEffect(() => {
-    // Check current consent
+    // Check current consent — leer desde cookie (fuente de verdad)
     const check = () => {
-      const saved = localStorage.getItem(CONSENT_KEY);
-      if (saved === "accepted") setCanLoad(true);
+      const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_KEY}=([^;]*)`));
+      if (match?.[1] === "accepted") setCanLoad(true);
     };
     check();
 

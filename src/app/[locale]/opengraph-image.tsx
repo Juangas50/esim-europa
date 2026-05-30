@@ -10,12 +10,12 @@ const COPY = {
   es: {
     headline: "Llegás a Europa",
     accent: "y ya estás conectado.",
-    sub: "eSIM instantánea · 30+ países · Desde USD 39.90",
+    sub: "eSIM instantánea · 30+ países · Desde USD 19.90",
   },
   pt: {
     headline: "Chega na Europa",
     accent: "e já está conectado.",
-    sub: "eSIM instantâneo · 30+ países · A partir de USD 39,90",
+    sub: "eSIM instantâneo · 30+ países · A partir de USD 19,90",
   },
 } as const;
 

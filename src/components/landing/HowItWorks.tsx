@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -84,6 +85,34 @@ export default function HowItWorks() {
           {/* Separador final */}
           <div className="h-px bg-[#111111]/8" />
         </div>
+
+        {/* Panel editorial de imagen — momento de llegada */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: EASE_OUT }}
+          className="mt-6 mb-2 rounded-[1.5rem] overflow-hidden relative"
+          style={{ height: "260px" }}
+        >
+          <Image
+            src="/images/imgen2.png"
+            alt="Viajero con internet listo al llegar al aeropuerto"
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 1200px) 100vw, 1200px"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#111111]/80 via-[#111111]/30 to-transparent" />
+          <div className="absolute inset-0 flex items-end p-8">
+            <div>
+              <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-1">Paso 03</p>
+              <p className="text-white text-2xl font-black tracking-tight leading-tight max-w-[320px]">
+                Aterrizás y ya tenés internet 🛬
+              </p>
+            </div>
+          </div>
+        </motion.div>
 
         {/* CTA final */}
         <motion.div

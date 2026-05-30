@@ -221,14 +221,15 @@
     }
   },
   "confirmation": {
-    "title": "Pronto, seu eSIM está a caminho!",
-    "subtitle": "Verifique seu email. Em menos de um minuto chega o código QR com as instruções.",
+    "title": "Pedido confirmado! Já estamos cuidando disso",
+    "subtitle": "Recebemos seu pagamento. Nas próximas horas enviamos o código QR para o email informado com tudo que você precisa para ativar seu eSIM.",
     "orderRef": "Referência do pedido",
-    "nextSteps": "Próximos passos",
-    "step1": "Abra o email da RUTA34 Telecom",
-    "step2": "Escaneie o QR em Ajustes → Dados móveis → Adicionar plano",
-    "step3": "Ao aterrissar na Europa, ative o eSIM e navegue",
-    "support": "Precisa de ajuda? Fale conosco pelo WhatsApp",
+    "nextSteps": "O que acontece agora?",
+    "step1": "Você recebe um email da RUTA34 Telecom com seu código QR e as instruções completas",
+    "step2": "Instale o eSIM antes de viajar — leva menos de 5 minutos",
+    "step3": "Ao aterrissar na Europa, ative o eSIM e navegue sem roaming",
+    "sla": "Atendemos de segunda a sábado das 8 às 21 hs (horário da Argentina). Pedidos fora desse horário são processados no dia seguinte.",
+    "support": "Tem dúvidas? Fale conosco pelo WhatsApp",
     "backHome": "Voltar ao início"
   }
 }

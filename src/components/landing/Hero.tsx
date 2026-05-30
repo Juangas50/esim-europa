@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 import { formatUSD } from "@/lib/utils";
 
@@ -52,115 +53,92 @@ function QRPlaceholder() {
   );
 }
 
-// Hero visual: foto de viaje + card eSIM flotante
+// Hero visual: foto de viaje + card eSIM glassmorphism
 function HeroVisual() {
   return (
     <div className="relative w-full max-w-sm mx-auto select-none" aria-hidden="true">
-      {/* Blob de fondo */}
-      <div className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-[#6EC1E4]/20 via-[#A8D8F0]/10 to-[#E60000]/8 blur-3xl" />
+      {/* Glow de marca — acento sutil en una esquina, no blob genérico */}
+      <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#E60000]/20 blur-3xl pointer-events-none" />
 
       {/* Contenedor principal */}
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.7, delay: 0.3, ease: EASE_OUT }}
-        className="relative rounded-[2rem] overflow-hidden shadow-[0_32px_80px_-16px_rgba(0,0,0,0.22)]"
+        className="relative rounded-[2rem] overflow-hidden shadow-[0_48px_100px_-20px_rgba(0,0,0,0.38)]"
       >
         {/* Foto de viaje */}
-        <div className="relative w-full" style={{ paddingBottom: "125%" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/hero-travel.jpg"
-            alt="Viajando por Europa"
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="eager"
+        <div className="relative w-full" style={{ paddingBottom: "132%" }}>
+          <Image
+            src="/images/imagen8.png"
+            alt="Viajando por Europa con internet desde que aterrizás"
+            fill
+            className="object-cover [object-position:50%_8%]"
+            sizes="(max-width: 1024px) 100vw, 480px"
+            priority
           />
-          {/* Gradiente para legibilidad de la card */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/10 to-transparent" />
+          {/* Gradiente continuo — sin corte brusco hacia la card */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 via-[48%] to-transparent" />
         </div>
 
-        {/* Card eSIM flotante en la parte inferior */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="rounded-2xl bg-white/95 backdrop-blur-sm p-4 shadow-[0_-8px_32px_rgba(0,0,0,0.12)]">
-            {/* Header de la card */}
-            <div className="flex items-center justify-between mb-3">
+        {/* Card glassmorphism — estado post-activación: ya estás conectado */}
+        <div className="absolute bottom-0 left-0 right-0 p-3.5">
+          <div className="rounded-2xl bg-white/[0.08] backdrop-blur-2xl border border-white/[0.13] p-3.5">
+
+            {/* Header: operador + señal + ubicación */}
+            <div className="flex items-center justify-between mb-2.5">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-[#999]">RUTA34 Telecom · 🇪🇸</p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <p className="text-sm font-bold text-[#111]">Europa Prepago</p>
-                  {/* Badge 5G */}
-                  <span className="inline-flex items-center justify-center rounded-md bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] tracking-tight px-1.5 py-0.5 shadow-sm">
-                    5G
-                  </span>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/45">RUTA34 Telecom</p>
+                <div className="flex items-center gap-2 mt-1">
+                  {/* Barras de señal */}
+                  <div className="flex items-end gap-[2px]">
+                    {[4, 6, 8, 10, 12].map((h, i) => (
+                      <div
+                        key={i}
+                        className="w-[3px] rounded-sm"
+                        style={{ height: `${h}px`, backgroundColor: "#4ade80" }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-black text-emerald-400">5G</span>
+                  <span className="text-[10px] font-semibold text-white/55">Madrid, España 🇪🇸</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#E60000] flex items-center justify-center shadow-[0_4px_12px_-2px_rgba(230,0,0,0.4)]">
-                  <span className="text-white text-[10px] font-black">34</span>
-                </div>
+              <div className="w-8 h-8 rounded-xl bg-[#E60000] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
+                <span className="text-white text-[10px] font-black tracking-tighter">34</span>
               </div>
             </div>
 
-            {/* Stats compactos */}
-            <div className="grid grid-cols-3 gap-2 mb-3">
-              <div className="rounded-xl bg-[#F8F8F8] p-2.5 text-center">
-                <p className="text-base font-black text-[#111]">20 GB</p>
-                <p className="text-[9px] font-semibold uppercase tracking-wider text-[#999]">Datos</p>
-              </div>
-              <div className="rounded-xl bg-[#F8F8F8] p-2.5 text-center">
-                <p className="text-base font-black text-[#111]">28d</p>
-                <p className="text-[9px] font-semibold uppercase tracking-wider text-[#999]">Duración</p>
-              </div>
-              <div className="rounded-xl bg-[#F8F8F8] p-2.5 text-center">
-                <p className="text-base font-black text-[#111]">30+</p>
-                <p className="text-[9px] font-semibold uppercase tracking-wider text-[#999]">Países</p>
-              </div>
+            {/* Status: conectado */}
+            <div className="rounded-xl bg-emerald-500/15 border border-emerald-400/25 px-3 py-2 mb-2.5 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+              <p className="text-[11px] font-bold text-emerald-300">Conectado desde que aterrizaste</p>
             </div>
 
-            {/* QR placeholder compacto */}
+            {/* QR + instrucción */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-white border border-black/8 shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-white p-1.5 shrink-0">
                 <QRPlaceholder />
               </div>
-              {/* Status */}
-              <div className="rounded-xl bg-[#ECFDF5] border border-emerald-100 p-2 flex items-center gap-2 flex-1">
-                <motion.div
-                  className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"
-                  animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <span className="text-xs font-semibold text-emerald-700">Listo para activar</span>
+              <div>
+                <p className="text-[11px] font-black text-white leading-tight">Escaneá el QR</p>
+                <p className="text-[10px] text-white/50 mt-0.5">Activá en menos de 2 min</p>
               </div>
             </div>
+
           </div>
         </div>
       </motion.div>
 
-      {/* Badge flotante — países + flags */}
+      {/* Un único badge flotante — sin competencia visual */}
       <motion.div
         initial={{ opacity: 0, x: 16, scale: 0.9 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.7, ease: EASE_OUT }}
-        className="absolute -right-3 top-8 bg-white rounded-2xl px-3.5 py-2 shadow-[0_8px_24px_-4px_rgba(0,0,0,0.15)] border border-black/5"
+        className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06]"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#999]">Cobertura</p>
-        <p className="text-sm font-bold text-[#111]">30+ países 🇪🇸🇪🇺</p>
-      </motion.div>
-
-      {/* Badge flotante — red 5G + línea española */}
-      <motion.div
-        initial={{ opacity: 0, x: -16, scale: 0.9 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.85, ease: EASE_OUT }}
-        className="absolute -left-3 top-[30%] bg-[#111111] rounded-2xl px-3.5 py-2 shadow-[0_8px_24px_-4px_rgba(0,0,0,0.25)]"
-      >
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <span className="inline-flex items-center justify-center rounded bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[9px] tracking-tight px-1 py-0.5">
-            5G
-          </span>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-white/50">Red española</p>
-        </div>
-        <p className="text-sm font-bold text-white">🇪🇸 Operador local</p>
+        <p className="text-[9px] font-bold uppercase tracking-widest text-[#aaa] mb-0.5">Cobertura</p>
+        <p className="text-sm font-black text-[#111]">30+ países 🇪🇸🇪🇺</p>
       </motion.div>
     </div>
   );

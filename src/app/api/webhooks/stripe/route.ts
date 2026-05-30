@@ -37,7 +37,9 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
 
-    // 1. Actualizar estado del pedido a "paid"
+    // Idempotency: el UPDATE solo afecta la fila si aún está en pending_payment.
+    // Si ya fue procesado (paid / qr_sent), no rows → data es null → early return.
+    // Una sola query elimina la race condition de SELECT+UPDATE separados.
     const { data: order } = await supabase
       .from("b2c_orders")
       .update({
@@ -45,6 +47,7 @@ export async function POST(req: NextRequest) {
         payment_id: session.payment_intent as string,
       })
       .eq("order_ref", orderRef)
+      .eq("status", "pending_payment")
       .select()
       .single();
 

@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle } from "@phosphor-icons/react";
+import { CheckCircle, Clock } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
 import { EASE_OUT, fadeUp, stagger } from "@/lib/motion";
@@ -85,6 +85,15 @@ function ConfirmacionContent() {
                 </li>
               ))}
             </ol>
+          </motion.div>
+
+          {/* SLA — horario de atención */}
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center justify-center gap-2 text-xs text-[#999] mb-6"
+          >
+            <Clock size={13} weight="fill" className="text-[#bbb] shrink-0" />
+            <span>{t("sla")}</span>
           </motion.div>
 
           {/* WhatsApp */}

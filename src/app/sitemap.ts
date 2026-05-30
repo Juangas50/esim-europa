@@ -19,14 +19,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates[locale] = `${base}/${locale}${route.path}`;
     }
 
-    // Una entrada por locale
+    // Una entrada por locale (ES es el canónico / x-default)
     for (const locale of locales) {
       entries.push({
         url: `${base}/${locale}${route.path}`,
         lastModified: new Date(),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
-        alternates: { languages: alternates },
+        alternates: {
+          languages: {
+            ...alternates,
+            "x-default": `${base}/es${route.path}`,
+          },
+        },
       });
     }
   }

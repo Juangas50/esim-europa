@@ -28,6 +28,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // lang="es" es el fallback para rutas sin locale (admin, login).
+    // Las rutas /es/ y /pt/ sobreescriben el lang vía hreflang en el sitemap
+    // y las señales de contenido. Refactor completo requiere mover <html> a [locale]/layout.tsx.
     <html lang="es" className={`${inter.variable} h-full`}>
       <body className="min-h-full">
         {/* GTM noscript — debe ir inmediatamente después de <body> */}

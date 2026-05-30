@@ -5,6 +5,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocale } from "next-intl";
 
 const CONSENT_KEY = "ruta34_cookie_consent";
+const CONSENT_MAX_AGE = 60 * 60 * 24 * 365; // 1 año en segundos
+
+function readConsentCookie(): ConsentValue {
+  if (typeof document === "undefined") return null;
+  // 1. Cookie (fuente de verdad actual)
+  const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_KEY}=([^;]*)`));
+  if (match?.[1]) return match[1] as ConsentValue;
+  // 2. Migración silenciosa desde localStorage para usuarios existentes
+  const legacy = localStorage.getItem(CONSENT_KEY) as ConsentValue;
+  if (legacy) {
+    writeConsentCookie(legacy);
+    localStorage.removeItem(CONSENT_KEY);
+    return legacy;
+  }
+  return null;
+}
+
+function writeConsentCookie(value: "accepted" | "rejected") {
+  document.cookie = `${CONSENT_KEY}=${value}; max-age=${CONSENT_MAX_AGE}; path=/; SameSite=Lax`;
+}
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 type ConsentValue = "accepted" | "rejected" | null;
@@ -30,15 +50,15 @@ export default function CookieBanner() {
   const [consent, setConsent] = useState<ConsentValue>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Leer preferencia guardada — solo en el cliente
+  // Leer preferencia guardada — cookie real (persistente, LGPD-compatible)
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem(CONSENT_KEY) as ConsentValue;
+    const saved = readConsentCookie();
     if (saved) setConsent(saved);
   }, []);
 
   const handleConsent = (value: "accepted" | "rejected") => {
-    localStorage.setItem(CONSENT_KEY, value);
+    writeConsentCookie(value);
     setConsent(value);
 
     // Activar/desactivar Google Analytics según elección

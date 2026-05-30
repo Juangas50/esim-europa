@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -94,8 +95,17 @@ export default function Benefits() {
               variants={fadeUp}
               className="rounded-[1.5rem] bg-[#111111] p-7 sm:col-span-2 relative overflow-hidden"
             >
-              <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-[#E60000]/20" />
-              <div className="absolute -right-4 -bottom-4 w-20 h-20 rounded-full bg-[#6EC1E4]/20" />
+              {/* Foto de fondo editorial */}
+              <Image
+                src="/images/imagen4.png"
+                alt=""
+                aria-hidden="true"
+                fill
+                className="object-cover object-center opacity-25"
+                sizes="(max-width: 640px) 100vw, 800px"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-[#111111]/40" />
               <div className="relative">
                 <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center mb-4">
                   <Globe size={20} weight="duotone" className="text-white" />
