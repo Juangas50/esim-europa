@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import PedidosClient from './PedidosClient'
 import type { UnifiedOrder } from './PedidosClient'
 
@@ -17,7 +17,7 @@ function mapB2CStatus(s: string): string {
 }
 
 export default async function PedidosAdminPage() {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // ── B2B orders ────────────────────────────────────────────────────────────
   const { data: b2bOrders } = await supabase
