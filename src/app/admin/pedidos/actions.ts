@@ -108,7 +108,19 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Error generando el código QR. Verificá los datos.' }
   }
 
-  // 5. Armar y enviar email de entrega
+  // 5. Subir QR a Supabase Storage para usar URL HTTPS en el email (compatible con todos los clientes)
+  let qrUrl: string | undefined
+  try {
+    await supabase.storage
+      .from('qr-codes')
+      .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
+    qrUrl = urlData.publicUrl
+  } catch (e) {
+    console.warn('[deliver] No se pudo subir QR a Storage, usando cid: como fallback', e)
+  }
+
+  // 6. Armar y enviar email de entrega
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -119,6 +131,7 @@ export async function deliverB2COrder(
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
     amountUSD: order.amount_usd ?? 0,
+    qrUrl,
   })
 
   const { error: emailError } = await sendEmail(
@@ -138,7 +151,7 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Error enviando el email al cliente. Intentá nuevamente.' }
   }
 
-  // 6. Actualizar estado + guardar cadena y código para futuras consultas / reenvío
+  // 7. Actualizar estado + guardar cadena y código para futuras consultas / reenvío
   await supabase
     .from('b2c_orders')
     .update({
@@ -196,6 +209,18 @@ export async function resendDeliveryEmail(
     return { ok: false, error: 'Error generando el código QR.' }
   }
 
+  // Subir QR a Storage (reutiliza el mismo archivo si ya existe)
+  let qrUrl: string | undefined
+  try {
+    await supabase.storage
+      .from('qr-codes')
+      .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
+    qrUrl = urlData.publicUrl
+  } catch (e) {
+    console.warn('[resend] No se pudo subir QR a Storage, usando cid: como fallback', e)
+  }
+
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -206,6 +231,7 @@ export async function resendDeliveryEmail(
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
     amountUSD: order.amount_usd ?? 0,
+    qrUrl,
   })
 
   const { error: emailError } = await sendEmail(

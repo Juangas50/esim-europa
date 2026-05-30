@@ -314,6 +314,7 @@ export function emailEntregaB2C(data: {
   activationString: string   // 1$server$code
   confirmationCode: string   // 6 dígitos
   amountUSD: number
+  qrUrl?: string             // URL pública HTTPS — si existe se usa en el body; si no, cid:esim-qr
 }) {
   const isLocal = data.planType === 'local' || data.planType === 'prepago'
   const importantNote = isLocal
@@ -345,7 +346,7 @@ export function emailEntregaB2C(data: {
     <!-- QR CODE -->
     <div style="background:#ffffff;border-radius:16px;padding:24px;margin-bottom:20px;text-align:center;">
       <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Tu código QR</div>
-      <img src="cid:esim-qr" alt="Código QR eSIM RUTA34" width="220" height="220"
+      <img src="${data.qrUrl ?? 'cid:esim-qr'}" alt="Código QR eSIM RUTA34" width="220" height="220"
            style="display:block;margin:0 auto;border-radius:8px;" />
       <div style="margin-top:16px;background:#F5F5F5;border-radius:8px;padding:12px;font-size:11px;color:#555;font-family:monospace;word-break:break-all;text-align:left;">
         <div style="font-size:10px;color:#999;margin-bottom:4px;font-family:sans-serif;">Si no podés escanear el QR, usá esta cadena de activación:</div>
