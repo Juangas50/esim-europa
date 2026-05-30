@@ -78,12 +78,18 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-2">
-            {/* Lang switcher */}
+            {/* Lang switcher — flag pill */}
             <button
               onClick={switchLocale}
-              className="text-xs font-semibold text-[#555555] hover:text-[#111111] uppercase tracking-wide px-2 py-1 rounded-full hover:bg-black/5 transition-all duration-150"
+              title={otherLocale === "pt" ? "Ver em Português" : "Ver en Español"}
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#555555] hover:text-[#111111] px-2.5 py-1.5 rounded-full border border-black/10 hover:bg-black/5 transition-all duration-150"
             >
-              {otherLocale === "pt" ? "PT" : "ES"}
+              <span className="text-base leading-none">
+                {otherLocale === "pt" ? "🇧🇷" : "🇦🇷"}
+              </span>
+              <span className="uppercase tracking-wide">
+                {otherLocale === "pt" ? "PT" : "ES"}
+              </span>
             </button>
 
             {/* CTA */}
@@ -173,9 +179,12 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-sm font-semibold text-[#999] uppercase tracking-wider mt-2"
+              className="flex items-center gap-2 text-sm font-semibold text-[#555] border border-black/10 rounded-full px-5 py-2.5 mt-2 hover:bg-black/5 transition-all"
             >
-              Cambiar a {otherLocale === "pt" ? "Português" : "Español"}
+              <span className="text-xl leading-none">
+                {otherLocale === "pt" ? "🇧🇷" : "🇦🇷"}
+              </span>
+              {otherLocale === "pt" ? "Ver em Português" : "Ver en Español"}
             </motion.button>
           </motion.div>
         )}
