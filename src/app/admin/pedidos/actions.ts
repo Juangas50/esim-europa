@@ -67,19 +67,30 @@ async function _deliverCore(
     return { ok: false, error: 'Este pedido ya tiene el QR enviado.' }
   }
 
-  // Verificar cadena duplicada (en la misma tabla)
-  const { data: duplicate } = await supabase
-    .from(table)
-    .select('order_ref')
-    .eq('activation_string', parsed.data.raw)
-    .neq('id', orderId)
-    .neq('status', 'cancelled')
-    .maybeSingle()
+  // Verificar cadena duplicada en AMBAS tablas (b2c_orders y orders)
+  // para garantizar unicidad global independientemente del canal
+  const [{ data: dupB2C }, { data: dupB2B }] = await Promise.all([
+    supabase
+      .from('b2c_orders')
+      .select('order_ref, id')
+      .eq('activation_string', parsed.data.raw)
+      .neq('status', 'cancelled')
+      .maybeSingle(),
+    supabase
+      .from('orders')
+      .select('order_ref, id')
+      .eq('activation_string', parsed.data.raw)
+      .neq('status', 'cancelled')
+      .maybeSingle(),
+  ])
+
+  // Excluir el propio pedido, buscar cualquier otro que use la misma cadena
+  const duplicate = [dupB2C, dupB2B].find(d => d && d.id !== orderId)
 
   if (duplicate) {
     return {
       ok: false,
-      error: `Esta cadena ya fue usada en el pedido ${duplicate.order_ref}. Verificá que estés pegando el código correcto.`,
+      error: `⛔ Esta cadena ya fue asignada al pedido ${duplicate.order_ref}. Cada cadena de activación es única y solo puede usarse una vez. Verificá que estés pegando el código correcto para este cliente.`,
     }
   }
 
