@@ -156,4 +156,34 @@ export const analytics = {
       section,
     });
   },
+
+  /** Landing — clic en "Ver planes" o scroll a la sección */
+  viewPlansClicked() {
+    push({ event: "click_view_plans" });
+  },
+
+  /** Landing — abre la guía de cuántos GB necesito */
+  gbGuideOpened() {
+    push({ event: "open_gb_guide" });
+  },
+
+  /** Checkout — cantidad de eSIMs seleccionada */
+  quantitySelected(quantity: number, plan: Plan) {
+    push({ event: "select_quantity", quantity, plan: planSnapshot(plan) });
+  },
+
+  /** Checkout — error de emails que no coinciden */
+  emailMismatchError() {
+    push({ event: "email_mismatch_error" });
+  },
+
+  /** Checkout — opción de activación seleccionada */
+  activationOptionSelected(option: "now" | "schedule", plan: Plan) {
+    push({ event: "select_activation_option", option, plan: planSnapshot(plan) });
+  },
+
+  /** Postpago — página de confirmación vista */
+  confirmationViewed(orderRef: string, quantity: number) {
+    push({ event: "view_confirmation", order_ref: orderRef, quantity });
+  },
 };

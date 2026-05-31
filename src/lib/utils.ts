@@ -6,11 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatUSD(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(amount);
+  const rounded = Math.round(amount * 100) / 100;
+  // Sin decimales si es número entero, con dos decimales si los tiene
+  const formatted = rounded % 1 === 0
+    ? rounded.toFixed(0)
+    : rounded.toFixed(2);
+  return `US$${formatted}`;
 }
 
 export function generateOrderRef(): string {

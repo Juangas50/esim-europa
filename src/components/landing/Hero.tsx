@@ -155,6 +155,8 @@ export default function Hero({ minPrice }: HeroProps) {
     { label: t("trust1") },
     { label: t("trust2") },
     { label: t("trust3") },
+    { label: t("trust4") },
+    { label: t("trust5") },
   ];
 
   return (

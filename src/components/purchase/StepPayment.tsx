@@ -225,6 +225,11 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           </div>
         )}
 
+        {/* Info Stripe */}
+        <p className="text-xs text-[#999] text-center">
+          El pago se procesa de forma segura con Stripe. Podés pagar con tarjeta, Apple Pay o Link si están disponibles.
+        </p>
+
         {/* Botones */}
         <div className="flex items-center gap-3 pt-2">
           <button
@@ -255,7 +260,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               </span>
             ) : (
               <>
-                {t("form.pay")} — {formatUSD(plan.price_usd)}
+                Pagar {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
                 <ArrowRight size={16} weight="bold" />
               </>
             )}
@@ -291,7 +296,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
             </span>
           </div>
-          <p className="text-xs text-[#999] text-right">USD · {t("payment.once")}</p>
+          <p className="text-xs text-[#999] text-right">USD · pago único · sin renovación automática</p>
 
           {/* Mini trust badge en summary */}
           <div className="mt-4 pt-3 border-t border-[#111111]/6 flex items-center gap-1.5 justify-center">

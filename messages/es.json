@@ -7,13 +7,15 @@
   },
   "hero": {
     "eyebrow": "eSIM para viajeros latinoamericanos",
-    "headline": "Llegás a Europa y ya estás conectado",
-    "sub": "Por lo que otras eSIM cobran una semana de datos, vos viajás un mes completo. Precio fijo, sin sorpresas, internet desde que aterrizás.",
-    "cta": "Elegí tu plan",
+    "headline": "Llegá a Europa con internet desde el primer minuto",
+    "sub": "Comprá tu eSIM antes de viajar, instalala con QR y activala cuando aterrices. Sin contratos ni sorpresas.",
+    "cta": "Ver planes",
     "ctaSecondary": "Cómo funciona",
-    "trust1": "+5.000 viajeros",
-    "trust2": "30+ países",
-    "trust3": "Activación en 1 min",
+    "trust1": "Pago único",
+    "trust2": "Sin renovación automática",
+    "trust3": "QR por email",
+    "trust4": "Conservás tu WhatsApp",
+    "trust5": "Soporte por WhatsApp",
     "priceAnchor": "Desde {price} · Sin renovación automática"
   },
   "benefits": {
@@ -45,7 +47,7 @@
     "perMonth": "por 28 días",
     "dataGb": "GB de datos",
     "countries": "países",
-    "buyPlan": "Quiero este plan",
+    "buyPlan": "Elegir plan",
     "summary": "Resumen del pedido",
     "tabLocal": "eSIM España",
     "tabLocalSub": "Número · Llamadas · SMS · Datos",
@@ -130,6 +132,26 @@
       "diff": {
         "q": "¿Qué diferencia hay entre Prepago y DataOnly?",
         "a": "Con el plan Prepago, los 28 días empiezan a contar desde el día que activás la eSIM (podés esperar hasta 12 meses para hacerlo). Con DataOnly, comprás ahora y tenés 60 días para activarla — ideal si tu viaje no está 100% confirmado."
+      },
+      "whatsapp": {
+        "q": "¿La eSIM me cambia el número de WhatsApp?",
+        "a": "No. Conservás tu WhatsApp y tu número habitual. La eSIM solo agrega datos móviles para usar internet durante el viaje. Tu SIM original sigue activa y recibís mensajes y llamadas como siempre."
+      },
+      "qr_receive": {
+        "q": "¿Cuándo recibo el QR?",
+        "a": "Te enviamos el QR por email dentro del horario de atención (lunes a sábado de 8 a 21 h, hora de España). Si comprás fuera de ese horario, lo preparamos al día siguiente."
+      },
+      "when_starts": {
+        "q": "¿Cuándo empieza a contar mi plan?",
+        "a": "El plan empieza cuando activás la eSIM en Europa o en la fecha que programés durante la compra. Podés instalar el QR antes de salir de tu país y activar la eSIM recién al llegar, así no perdés días de cobertura."
+      },
+      "no_email": {
+        "q": "¿Qué pasa si no me llega el email con el QR?",
+        "a": "Revisá la carpeta de spam o correo no deseado. Si no lo encontrás, escribinos por WhatsApp con tu referencia de pedido y te lo reenviamos de inmediato."
+      },
+      "not_working": {
+        "q": "¿Qué hago si la eSIM no funciona?",
+        "a": "Escribinos por WhatsApp con tu referencia de pedido y te ayudamos paso a paso. Antes de contactarnos, verificá que tu celular esté desbloqueado y que el servicio de datos esté activado para la eSIM en Ajustes."
       },
       "needs": {
         "q": "¿Cuántos GB necesito para viajar por Europa?",

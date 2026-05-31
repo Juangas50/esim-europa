@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -16,9 +16,21 @@ export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 24);
+    const handler = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      // Ocultar al bajar (solo después de 80px), mostrar al subir
+      if (y > lastY.current && y > 80) {
+        setHidden(true);
+      } else if (y < lastY.current) {
+        setHidden(false);
+      }
+      lastY.current = y;
+    };
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -44,8 +56,8 @@ export default function Navbar() {
       <nav className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4">
         <motion.div
           initial={{ y: -16, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: EASE_OUT }}
+          animate={{ y: hidden ? "-200%" : 0, opacity: hidden ? 0 : 1 }}
+          transition={{ duration: 0.35, ease: EASE_OUT }}
           className={cn(
             "flex items-center gap-6 px-4 py-2.5 rounded-full transition-all duration-300",
             scrolled

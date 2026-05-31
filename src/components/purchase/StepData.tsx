@@ -18,13 +18,16 @@ const schema = z.object({
   customer_name: z.string().min(2, "Ingresá tu nombre"),
   customer_lastname: z.string().min(2, "Ingresá tu apellido"),
   customer_email: z.string().email("Email inválido"),
+  confirm_email: z.string().email("Confirmá tu email"),
   customer_country: z.string().min(1, "Seleccioná tu país"),
-  // activation_type controla el radio; activation_date guarda la fecha elegida
   activation_type: z.enum(["now", "schedule"]),
   activation_date: z.string().optional(),
   device_confirmed: z.boolean().refine((v) => v === true, {
-    message: "Debés confirmar la compatibilidad de tu dispositivo",
+    message: "Confirmá que tu celular es compatible antes de continuar",
   }),
+}).refine((d) => d.customer_email === d.confirm_email, {
+  message: "Los emails no coinciden. Revisalos para que podamos enviarte los QR",
+  path: ["confirm_email"],
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -74,6 +77,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       customer_name: initialData.customer_name ?? "",
       customer_lastname: initialData.customer_lastname ?? "",
       customer_email: initialData.customer_email ?? "",
+      confirm_email: "",
       customer_country: initialData.customer_country ?? "",
       activation_type: "now",
       activation_date: initialData.activation_date ?? "",
@@ -167,8 +171,22 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             autoComplete="email"
           />
           <FieldError message={errors.customer_email?.message} />
+        </div>
+
+        {/* Confirmar email */}
+        <div>
+          <Label required>Confirmá tu email</Label>
+          <input
+            {...register("confirm_email")}
+            type="email"
+            className={inputClass}
+            placeholder="juan@ejemplo.com"
+            autoComplete="off"
+            onPaste={(e) => e.preventDefault()}
+          />
+          <FieldError message={errors.confirm_email?.message} />
           <p className="text-xs text-[#999] mt-1.5">
-            A este email te enviamos el QR de activación.
+            Te vamos a enviar los QR a este email. Revisalo antes de pagar.
           </p>
         </div>
 
@@ -189,8 +207,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         {/* Fecha de activación — solo local */}
         {isLocal && (
           <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
-            <p className="text-sm font-bold text-[#111111] mb-0.5">{t("form.activationDate")}</p>
-            <p className="text-xs text-[#777] mb-3">{t("form.activationHint")}</p>
+            <p className="text-sm font-bold text-[#111111] mb-0.5">¿Cuándo empieza tu plan?</p>
+            <p className="text-xs text-[#777] mb-3">Podés activarlo cuando llegues a Europa o programar una fecha. Tenés hasta 12 meses desde la compra.</p>
             <div className="space-y-2.5">
               {/* Opción por defecto — destacada visualmente */}
               <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
@@ -203,8 +221,11 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div>
-                  <p className="text-sm font-semibold text-[#111]">{t("form.activationToday")}</p>
-                  <p className="text-xs text-[#777] mt-0.5">{t("form.activationTodayHint")}</p>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <p className="text-sm font-semibold text-[#111]">Activarlo cuando llegue a Europa</p>
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Recomendado</span>
+                  </div>
+                  <p className="text-xs text-[#777]">Instalás el QR antes de viajar y encendés la eSIM al llegar.</p>
                 </div>
               </label>
               {/* Opción programar */}
@@ -218,8 +239,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-[#111]">{t("form.activationSchedule")}</p>
-                  <p className="text-xs text-[#777] mt-0.5">{t("form.activationScheduleHint")}</p>
+                  <p className="text-sm font-semibold text-[#111]">Programar una fecha de inicio</p>
+                  <p className="text-xs text-[#777] mt-0.5">Útil si ya sabés exactamente cuándo querés empezar a usarla.</p>
                   {watch("activation_type") === "schedule" && (
                     <input
                       type="date"
@@ -248,7 +269,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
             />
             <span className="text-sm text-[#555] leading-snug">
-              {t("form.deviceConfirm")}
+              Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
+              <a href="#compatibilidad" className="text-[#E60000] font-semibold hover:underline">
+                Ver celulares compatibles
+              </a>
             </span>
           </label>
           <FieldError message={errors.device_confirmed?.message} />

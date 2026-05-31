@@ -29,6 +29,14 @@ function sortByPosition(plans: Plan[]) {
   });
 }
 
+// En mobile el plan recomendado va primero para mayor visibilidad
+function sortMobileFirst(plans: Plan[]) {
+  const sorted = sortByPosition(plans);
+  const popular = sorted.find((p) => p.is_popular);
+  if (!popular) return sorted;
+  return [popular, ...sorted.filter((p) => !p.is_popular)];
+}
+
 // ── Card unificada ────────────────────────────────────────────────────────────
 
 function PlanCard({ plan, index }: { plan: Plan; index: number }) {
@@ -164,8 +172,8 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           }`}
           style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
         >
-          {t("buyPlan")}
-          {isPopular && <ArrowRight size={13} weight="bold" />}
+          {plan.size ? `${t("buyPlan")} ${plan.size}` : t("buyPlan")}
+          <ArrowRight size={13} weight="bold" />
         </a>
       </div>
     </motion.div>
@@ -250,9 +258,11 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
 
 function TabContent({ plans }: { plans: Plan[] }) {
   const sorted = sortByPosition(plans);
+  const sortedMobile = sortMobileFirst(plans);
   if (sorted.length === 0) return null;
+  // Desktop: orden por position; Mobile (carousel): popular primero
   return sorted.length > MAX_VISIBLE
-    ? <PlansCarousel plans={sorted} />
+    ? <PlansCarousel plans={sortedMobile} />
     : <PlansGrid plans={sorted} />;
 }
 
@@ -300,6 +310,22 @@ export default function Plans({ plans }: PlansProps) {
             <span className="text-[#E60000] font-bold">Ver guía →</span>
           </a>
         </motion.div>
+
+        {/* Trust strip — escaneable, mobile-first */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {[
+            "📧 QR por email",
+            "📲 Instalás antes de viajar",
+            "✈️ Activás al llegar",
+            "💬 Conservás tu WhatsApp",
+            "🔒 Pago seguro con Stripe",
+            "🛟 Soporte por WhatsApp",
+          ].map((item) => (
+            <span key={item} className="text-xs font-semibold text-[#555] bg-[#F5F5F5] border border-black/[0.07] px-3 py-1.5 rounded-full whitespace-nowrap">
+              {item}
+            </span>
+          ))}
+        </div>
 
         {/* Tab switcher — solo si hay ambos tipos */}
         {hasLocal && hasData && (

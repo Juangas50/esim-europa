@@ -150,9 +150,9 @@ export async function POST(req: NextRequest) {
             unit_amount: Math.round(plan.price_usd * 100),
             product_data: {
               name: quantity > 1
-                ? `eSIM ${plan.name} × ${quantity} — RUTA34 Telecom`
-                : `eSIM ${plan.name} — RUTA34 Telecom`,
-              description: `${plan.data_gb} GB · ${plan.duration_days} días · ${plan.countries_count}+ países`,
+                ? `eSIM Plan ${plan.size ?? plan.name} × ${quantity} — RUTA34 Telecom`
+                : `eSIM Plan ${plan.size ?? plan.name} — RUTA34 Telecom`,
+              description: `${plan.data_gb} GB · ${plan.duration_days} días · Número español incluido · 30+ países`,
             },
           },
         },
