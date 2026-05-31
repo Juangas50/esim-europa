@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { updateOrderStatus, deliverB2COrder, resendDeliveryEmail } from './actions'
+import { updateOrderStatus, deliverOrder, resendDeliveryEmail } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 
 // ── Tipo unificado ────────────────────────────────────────────────────────────
@@ -112,7 +112,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setResending(true)
     setResendError(null)
     setResendOk(false)
-    const result = await resendDeliveryEmail(selected.id)
+    const result = await resendDeliveryEmail(selected.id, selected.source)
     if (result.ok) setResendOk(true)
     else setResendError(result.error)
     setResending(false)
@@ -145,7 +145,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     if (!selected || !canDeliver) return
     setDelivering(true)
     setDeliverError(null)
-    const result = await deliverB2COrder(selected.id, activation, confirmation)
+    const result = await deliverOrder(selected.id, selected.source, activation, confirmation)
     if (result.ok) {
       setDeliverOk(true)
       setOrders(prev => prev.map(o => o.id === selected.id ? { ...o, status: 'qr_sent' } : o))
@@ -413,8 +413,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </span>
             </div>
 
-            {/* ── Cadena de activación guardada — solo B2C con QR enviado ── */}
-            {selected.source === 'b2c' && selected.status === 'qr_sent' && selected.activation_string && (
+            {/* ── Cadena de activación guardada — B2C y B2B con QR enviado ── */}
+            {selected.status === 'qr_sent' && selected.activation_string && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 14 }}>
                 <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 6 }}>Cadena de activación enviada</div>
                 <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
@@ -457,8 +457,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </div>
             )}
 
-            {/* ── Formulario entrega eSIM — solo B2C pagado ─────────────── */}
-            {selected.source === 'b2c' && selected.status === 'paid' && (
+            {/* ── Formulario entrega eSIM — B2C pagado + B2B pendiente ──── */}
+            {((selected.source === 'b2c' && selected.status === 'paid') ||
+              (selected.source === 'b2b' && selected.status === 'pending_review')) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#E60000', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ Entregar eSIM

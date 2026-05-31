@@ -10,7 +10,7 @@ import { emailEntregaB2C } from '@/lib/email/templates'
 import QRCode from 'qrcode'
 
 const VALID_STATUSES = new Set([
-  'pending_review', 'scheduled', 'qr_sent', 'activated', 'expired', 'cancelled',
+  'pending_review', 'paid', 'scheduled', 'qr_sent', 'activated', 'expired', 'cancelled',
 ])
 
 export async function updateOrderStatus(
@@ -35,27 +35,26 @@ export async function updateOrderStatus(
   return { error }
 }
 
-// ── Entregar eSIM B2C: valida, genera QR, envía email ────────────────────────
-export async function deliverB2COrder(
+// ── Helper interno: lógica compartida de entrega ─────────────────────────────
+async function _deliverCore(
   orderId: string,
+  source: 'b2b' | 'b2c',
   activationString: string,
   confirmationCode: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  await requireAdmin()
-
-  // 1. Validar cadena de activación (misma regex que el cliente)
   const parsed = parseActivationString(activationString)
   if (!parsed.ok) return { ok: false, error: parsed.error }
 
-  // 2. Validar código de confirmación
   if (!validateConfirmationCode(confirmationCode)) {
     return { ok: false, error: 'Código de confirmación inválido. Deben ser 4-8 dígitos numéricos.' }
   }
 
-  // 3. Buscar el pedido — query simple sin JOIN para evitar error si FK no está configurada
   const supabase = createAdminClient()
+  const table = source === 'b2c' ? 'b2c_orders' : 'orders'
+
+  // Buscar el pedido
   const { data: order, error: fetchError } = await supabase
-    .from('b2c_orders')
+    .from(table)
     .select('*')
     .eq('id', orderId)
     .single()
@@ -68,9 +67,9 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Este pedido ya tiene el QR enviado.' }
   }
 
-  // 3b. Verificar que la cadena de activación no haya sido usada en otro pedido
+  // Verificar cadena duplicada (en la misma tabla)
   const { data: duplicate } = await supabase
-    .from('b2c_orders')
+    .from(table)
     .select('order_ref')
     .eq('activation_string', parsed.data.raw)
     .neq('id', orderId)
@@ -84,7 +83,7 @@ export async function deliverB2COrder(
     }
   }
 
-  // 3c. Buscar datos de tarifa por separado si existe tariff_id
+  // Datos de tarifa
   let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
@@ -95,20 +94,18 @@ export async function deliverB2COrder(
     tariff = t
   }
 
-  // 4. Generar QR como PNG Buffer
+  // Generar QR
   let qrBuffer: Buffer
   try {
     qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, {
-      width: 400,
-      margin: 2,
-      color: { dark: '#000000', light: '#FFFFFF' },
+      width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' },
     })
   } catch (e) {
     console.error('[qr] Error generando QR:', e)
     return { ok: false, error: 'Error generando el código QR. Verificá los datos.' }
   }
 
-  // 5. Subir QR a Supabase Storage para usar URL HTTPS en el email (compatible con todos los clientes)
+  // Subir a Storage
   let qrUrl: string | undefined
   try {
     await supabase.storage
@@ -120,7 +117,12 @@ export async function deliverB2COrder(
     console.warn('[deliver] No se pudo subir QR a Storage, usando cid: como fallback', e)
   }
 
-  // 6. Armar y enviar email de entrega
+  // Importe — B2C usa amount_usd, B2B usa pvp_at_time
+  const amountUSD = source === 'b2c'
+    ? (order.amount_usd ?? 0)
+    : (order.pvp_at_time ?? 0)
+
+  // Email de entrega
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -130,7 +132,7 @@ export async function deliverB2COrder(
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
-    amountUSD: order.amount_usd ?? 0,
+    amountUSD,
     qrUrl,
   })
 
@@ -138,12 +140,7 @@ export async function deliverB2COrder(
     order.customer_email,
     tmpl.subject,
     tmpl.html,
-    [{
-      filename: 'esim-qr.png',
-      content: qrBuffer,
-      content_type: 'image/png',
-      content_id: 'esim-qr',   // referenciado como cid:esim-qr en el HTML
-    }],
+    [{ filename: 'esim-qr.png', content: qrBuffer, content_type: 'image/png', content_id: 'esim-qr' }],
   )
 
   if (emailError) {
@@ -151,9 +148,9 @@ export async function deliverB2COrder(
     return { ok: false, error: 'Error enviando el email al cliente. Intentá nuevamente.' }
   }
 
-  // 7. Actualizar estado + guardar cadena y código para futuras consultas / reenvío
+  // Actualizar estado + guardar cadena para reenvío
   await supabase
-    .from('b2c_orders')
+    .from(table)
     .update({
       status: 'qr_sent',
       qr_sent_at: new Date().toISOString(),
@@ -166,15 +163,39 @@ export async function deliverB2COrder(
   return { ok: true }
 }
 
-// ── Reenviar email de entrega — solo pedidos ya entregados con cadena guardada ─
+// ── Entregar eSIM — funciona para B2C y B2B ───────────────────────────────────
+export async function deliverOrder(
+  orderId: string,
+  source: 'b2b' | 'b2c',
+  activationString: string,
+  confirmationCode: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+  return _deliverCore(orderId, source, activationString, confirmationCode)
+}
+
+// Alias para compatibilidad — internamente usa deliverOrder
+export async function deliverB2COrder(
+  orderId: string,
+  activationString: string,
+  confirmationCode: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+  return _deliverCore(orderId, 'b2c', activationString, confirmationCode)
+}
+
+// ── Reenviar email — funciona para B2C y B2B ─────────────────────────────────
 export async function resendDeliveryEmail(
   orderId: string,
+  source: 'b2b' | 'b2c' = 'b2c',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   await requireAdmin()
 
   const supabase = createAdminClient()
+  const table = source === 'b2c' ? 'b2c_orders' : 'orders'
+
   const { data: order } = await supabase
-    .from('b2c_orders')
+    .from(table)
     .select('*')
     .eq('id', orderId)
     .single()
@@ -188,7 +209,6 @@ export async function resendDeliveryEmail(
   const parsed = parseActivationString(order.activation_string)
   if (!parsed.ok) return { ok: false, error: 'La cadena de activación guardada es inválida.' }
 
-  // Tarifa
   let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
@@ -199,17 +219,15 @@ export async function resendDeliveryEmail(
     tariff = t
   }
 
-  // QR
   let qrBuffer: Buffer
   try {
     qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, {
       width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' },
     })
-  } catch (e) {
+  } catch {
     return { ok: false, error: 'Error generando el código QR.' }
   }
 
-  // Subir QR a Storage (reutiliza el mismo archivo si ya existe)
   let qrUrl: string | undefined
   try {
     await supabase.storage
@@ -217,9 +235,11 @@ export async function resendDeliveryEmail(
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
     const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
     qrUrl = urlData.publicUrl
-  } catch (e) {
-    console.warn('[resend] No se pudo subir QR a Storage, usando cid: como fallback', e)
-  }
+  } catch {}
+
+  const amountUSD = source === 'b2c'
+    ? (order.amount_usd ?? 0)
+    : (order.pvp_at_time ?? 0)
 
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
@@ -230,7 +250,7 @@ export async function resendDeliveryEmail(
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
-    amountUSD: order.amount_usd ?? 0,
+    amountUSD,
     qrUrl,
   })
 
@@ -238,12 +258,7 @@ export async function resendDeliveryEmail(
     order.customer_email,
     `[Reenvío] ${tmpl.subject}`,
     tmpl.html,
-    [{
-      filename: 'esim-qr.png',
-      content: qrBuffer,
-      content_type: 'image/png',
-      content_id: 'esim-qr',
-    }],
+    [{ filename: 'esim-qr.png', content: qrBuffer, content_type: 'image/png', content_id: 'esim-qr' }],
   )
 
   if (emailError) {

@@ -22,7 +22,7 @@ export default async function PedidosAdminPage() {
   // ── B2B orders ────────────────────────────────────────────────────────────
   const { data: b2bOrders } = await supabase
     .from('orders')
-    .select(`*, agencies(name), users(full_name), tariffs(name, type)`)
+    .select(`*, agencies(name), users(full_name), tariffs(name, type), activation_string, confirmation_code`)
     .order('created_at', { ascending: false })
 
   // ── B2C orders (desde la web esim-europa) ────────────────────────────────
@@ -51,8 +51,8 @@ export default async function PedidosAdminPage() {
     tariffs:              o.tariffs ?? null,
     source:               'b2b',
     payment_method:       null,
-    activation_string:    null,
-    confirmation_code:    null,
+    activation_string:    o.activation_string ?? null,
+    confirmation_code:    o.confirmation_code ?? null,
   }))
 
   // ── Normalizar B2C ────────────────────────────────────────────────────────
