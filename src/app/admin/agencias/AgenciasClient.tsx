@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createAgency, updateAgency, toggleAgencyActive, savePricing, getPricing, getAgencyOrders } from './actions'
+import { toast } from '@/lib/toast'
 
 type Agency = { id: string; name: string; email: string; active: boolean }
 type Tariff = { id: string; name: string; type: string; data_gb: number; validity_days: number | null; badge: string }
@@ -18,6 +19,14 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
 }
 
 export default function AgenciasClient({ agencies: initial, tariffs }: { agencies: Agency[]; tariffs: Tariff[] }) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check, { passive: true })
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   const [agencies, setAgencies]       = useState(initial)
   const [managing, setManaging]       = useState<Agency | null>(null)
   const [tab, setTab]                 = useState('precios')
@@ -86,16 +95,21 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
   async function handleSavePrice(tariffId: string, cost: number, pvp: number) {
     if (!managing) return
     setSaving(true)
-    await savePricing(managing.id, tariffId, cost, pvp)
-    setPricing(prev => {
-      const existing = prev.findIndex(p => p.tariff_id === tariffId)
-      if (existing >= 0) {
-        const updated = [...prev]
-        updated[existing] = { tariff_id: tariffId, cost_price: cost, pvp }
-        return updated
-      }
-      return [...prev, { tariff_id: tariffId, cost_price: cost, pvp }]
-    })
+    const result = await savePricing(managing.id, tariffId, cost, pvp)
+    if ((result as any)?.error) {
+      toast('Error al guardar precio', 'error')
+    } else {
+      setPricing(prev => {
+        const existing = prev.findIndex(p => p.tariff_id === tariffId)
+        if (existing >= 0) {
+          const updated = [...prev]
+          updated[existing] = { tariff_id: tariffId, cost_price: cost, pvp }
+          return updated
+        }
+        return [...prev, { tariff_id: tariffId, cost_price: cost, pvp }]
+      })
+      toast('Precio guardado')
+    }
     setSaving(false)
   }
 
@@ -118,38 +132,39 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
   if (managing) return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
-        <button onClick={() => setManaging(null)} style={{ width: 34, height: 34, borderRadius: 9, background: '#232323', border: '1px solid #2A2A2A', color: '#AAAAAA', cursor: 'pointer', fontSize: 18, fontFamily: 'inherit' }}>←</button>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🏢</div>
-        <div style={{ flex: 1 }}>
-          {editing ? (
-            <form onSubmit={handleUpdate} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-              <input required style={{ ...inp, width: 200 }} value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} placeholder="Nombre agencia" />
-              <input required type="email" style={{ ...inp, width: 240 }} value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} placeholder="Email" />
-              <button type="submit" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Guardar</button>
-              <button type="button" onClick={() => setEditing(false)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 16px', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
-            </form>
-          ) : (
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <h2 style={{ fontSize: 19, fontWeight: 800, margin: 0 }}>{managing.name}</h2>
-                <span style={{ background: managing.active ? 'rgba(34,197,94,0.12)' : 'rgba(122,122,122,0.12)', color: managing.active ? '#22C55E' : '#7A7A7A', border: `1px solid ${managing.active ? 'rgba(34,197,94,0.3)' : 'rgba(122,122,122,0.3)'}`, borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
-                  {managing.active ? 'Activa' : 'Inactiva'}
-                </span>
-              </div>
-              <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2 }}>{managing.email}</div>
+      <div className="flex flex-col gap-3 mb-5 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <button onClick={() => setManaging(null)} style={{ width: 34, height: 34, borderRadius: 9, background: '#232323', border: '1px solid #2A2A2A', color: '#AAAAAA', cursor: 'pointer', fontSize: 18, fontFamily: 'inherit', flexShrink: 0 }}>←</button>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🏢</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 style={{ fontSize: 17, fontWeight: 800, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{managing.name}</h2>
+              <span style={{ background: managing.active ? 'rgba(34,197,94,0.12)' : 'rgba(122,122,122,0.12)', color: managing.active ? '#22C55E' : '#7A7A7A', border: `1px solid ${managing.active ? 'rgba(34,197,94,0.3)' : 'rgba(122,122,122,0.3)'}`, borderRadius: 6, padding: '2px 8px', fontSize: 10, fontWeight: 700, flexShrink: 0 }}>
+                {managing.active ? 'Activa' : 'Inactiva'}
+              </span>
             </div>
-          )}
+            <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{managing.email}</div>
+          </div>
         </div>
-        {!editing && (
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => setEditing(true)} style={{ padding: '7px 14px', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+        {/* Acciones */}
+        {!editing ? (
+          <div className="flex gap-2">
+            <button onClick={() => setEditing(true)} className="flex-1 sm:flex-none" style={{ padding: '8px 14px', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
               ✏️ Editar
             </button>
-            <button onClick={handleToggleActive} style={{ padding: '7px 14px', background: managing.active ? 'rgba(230,0,0,0.1)' : 'rgba(34,197,94,0.1)', border: `1px solid ${managing.active ? 'rgba(230,0,0,0.3)' : 'rgba(34,197,94,0.3)'}`, borderRadius: 8, color: managing.active ? '#E60000' : '#22C55E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+            <button onClick={handleToggleActive} className="flex-1 sm:flex-none" style={{ padding: '8px 14px', background: managing.active ? 'rgba(230,0,0,0.1)' : 'rgba(34,197,94,0.1)', border: `1px solid ${managing.active ? 'rgba(230,0,0,0.3)' : 'rgba(34,197,94,0.3)'}`, borderRadius: 8, color: managing.active ? '#E60000' : '#22C55E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
               {managing.active ? '🚫 Desactivar' : '✅ Activar'}
             </button>
           </div>
+        ) : (
+          <form onSubmit={handleUpdate} className="flex flex-col gap-2 w-full sm:flex-row sm:items-center">
+            <input required style={{ ...inp }} value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} placeholder="Nombre agencia" />
+            <input required type="email" style={{ ...inp }} value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} placeholder="Email" />
+            <div className="flex gap-2">
+              <button type="submit" className="flex-1" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Guardar</button>
+              <button type="button" className="flex-1" onClick={() => setEditing(false)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 8, padding: '9px 16px', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
+            </div>
+          </form>
         )}
       </div>
 
@@ -169,7 +184,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
       {tab === 'precios' && (
         <div>
           <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 18 }}>
-            Configurá el <strong style={{ color: '#fff' }}>precio coste</strong> (facturación) y el <strong style={{ color: '#fff' }}>PVP</strong> que ve el vendedor. Se guarda al salir del campo.
+            Configurá el <strong style={{ color: '#fff' }}>precio coste</strong> (lo que facturamos) y el <strong style={{ color: '#fff' }}>PVP que ve la agencia</strong>. Se guarda automáticamente al salir del campo.
           </p>
           {['prepago', 'dataonly'].map(type => (
             <div key={type}>
@@ -181,15 +196,15 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                 const pvp    = getPrice(t.id, 'pvp')
                 const margin = pvp - cost
                 return (
-                  <div key={t.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14 }}>
-                    <div>
+                  <div key={t.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 16px', marginBottom: 8 }}>
+                    <div style={{ marginBottom: 12 }}>
                       <div style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</div>
-                      <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2 }}>{t.data_gb}GB{t.validity_days ? ` · ${t.validity_days} días` : ''}</div>
+                      <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2 }}>{t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}</div>
                     </div>
-                    <div style={{ display: 'flex', gap: 14, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                    <div className="flex flex-wrap gap-4 items-end">
                       <PriceInput label="Precio coste" defaultValue={cost} onSave={val => handleSavePrice(t.id, val, pvp)} />
-                      <PriceInput label="PVP agencia"  defaultValue={pvp}  onSave={val => handleSavePrice(t.id, cost, val)} />
-                      <div style={{ textAlign: 'center', minWidth: 60 }}>
+                      <PriceInput label="PVP que ve la agencia" defaultValue={pvp} onSave={val => handleSavePrice(t.id, cost, val)} />
+                      <div style={{ textAlign: 'center', minWidth: 56 }}>
                         <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, textTransform: 'uppercase', marginBottom: 5 }}>Margen</div>
                         <div style={{ fontSize: 20, fontWeight: 900, color: margin > 0 ? '#22C55E' : '#E60000' }}>${margin.toFixed(0)}</div>
                       </div>
@@ -267,10 +282,31 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
             </button>
           </div>
 
-          <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
-            {filteredOrders.length === 0 ? (
-              <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13 }}>No hay pedidos que coincidan con los filtros</div>
-            ) : (
+          {filteredOrders.length === 0 ? (
+            <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13, background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A' }}>No hay pedidos que coincidan con los filtros</div>
+          ) : isMobile ? (
+            // Mobile: cards
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {filteredOrders.map(o => {
+                const st = STATUSES[o.status] || STATUSES.pending_review
+                return (
+                  <div key={o.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>{st.label}</span>
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{o.customer_name} {o.customer_lastname}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+                      <span style={{ fontSize: 12, color: '#7A7A7A' }}>{o.tariffs?.name}</span>
+                      <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            // Desktop: tabla
+            <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
@@ -297,8 +333,8 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                   })}
                 </tbody>
               </table>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -307,7 +343,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
   // ── Lista de agencias ──
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
+      <div className="flex justify-end mb-4">
         <button onClick={() => setAdding(!adding)} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           + Nueva agencia
         </button>
@@ -316,7 +352,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
       {adding && (
         <form onSubmit={handleCreate} style={{ background: '#181818', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 14, padding: 20, marginBottom: 18 }}>
           <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 16 }}>Nueva agencia</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             <div>
               <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre *</label>
               <input required style={inp} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Viajes Ejemplo" />
@@ -326,32 +362,30 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
               <input required type="email" style={inp} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="ventas@agencia.com" />
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-            <button type="button" onClick={() => setAdding(false)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
-            <button type="submit" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '9px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Crear agencia</button>
+          <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+            <button type="button" onClick={() => setAdding(false)} className="sm:w-auto" style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '10px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
+            <button type="submit" className="sm:w-auto" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Crear agencia</button>
           </div>
         </form>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {agencies.length === 0 && <div style={{ color: '#7A7A7A', fontSize: 13, padding: 20 }}>No hay agencias. Creá la primera.</div>}
         {agencies.map(a => (
-          <div key={a.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🏢</div>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: 15 }}>{a.name}</div>
-                <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2 }}>{a.email}</div>
+          <div key={a.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: '16px' }}>
+            <div className="flex items-center gap-4 mb-3">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🏢</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 800, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</div>
+                <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.email}</div>
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <span style={{ background: a.active ? 'rgba(34,197,94,0.12)' : 'rgba(122,122,122,0.12)', color: a.active ? '#22C55E' : '#7A7A7A', border: `1px solid ${a.active ? 'rgba(34,197,94,0.3)' : 'rgba(122,122,122,0.3)'}`, borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+              <span style={{ background: a.active ? 'rgba(34,197,94,0.12)' : 'rgba(122,122,122,0.12)', color: a.active ? '#22C55E' : '#7A7A7A', border: `1px solid ${a.active ? 'rgba(34,197,94,0.3)' : 'rgba(122,122,122,0.3)'}`, borderRadius: 6, padding: '3px 8px', fontSize: 10, fontWeight: 700, flexShrink: 0 }}>
                 {a.active ? 'Activa' : 'Inactiva'}
               </span>
-              <button onClick={() => handleManage(a)} style={{ padding: '8px 16px', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit', fontWeight: 600 }}>
-                Gestionar →
-              </button>
             </div>
+            <button onClick={() => handleManage(a)} style={{ width: '100%', padding: '9px 0', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, color: '#AAAAAA', cursor: 'pointer', fontSize: 13, fontFamily: 'inherit', fontWeight: 600 }}>
+              Gestionar →
+            </button>
           </div>
         ))}
       </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { updateOrderStatus, deliverOrder, resendDeliveryEmail } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
+import { toast } from '@/lib/toast'
 
 // ── Tipo unificado ────────────────────────────────────────────────────────────
 export type UnifiedOrder = {
@@ -123,8 +124,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setResendError(null)
     setResendOk(false)
     const result = await resendDeliveryEmail(selected.id, selected.source, resendEmail.trim() || selected.customer_email)
-    if (result.ok) setResendOk(true)
-    else setResendError(result.error)
+    if (result.ok) { setResendOk(true); toast('Email reenviado') }
+    else { setResendError(result.error); toast(result.error, 'error') }
     setResending(false)
   }
 
@@ -146,9 +147,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
   async function handleStatus(orderId: string, status: string, source: 'b2b' | 'b2c') {
     setUpdating(orderId)
-    await updateOrderStatus(orderId, status, source)
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o))
-    if (selected?.id === orderId) setSelected(prev => prev ? { ...prev, status } : null)
+    const result = await updateOrderStatus(orderId, status, source)
+    if (result.error) {
+      toast('Error al actualizar el estado', 'error')
+    } else {
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o))
+      if (selected?.id === orderId) setSelected(prev => prev ? { ...prev, status } : null)
+      toast('Estado actualizado')
+    }
     setUpdating(null)
   }
 
@@ -161,8 +167,10 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       setDeliverOk(true)
       setOrders(prev => prev.map(o => o.id === selected.id ? { ...o, status: 'qr_sent' } : o))
       setSelected(prev => prev ? { ...prev, status: 'qr_sent' } : null)
+      toast('✅ QR enviado correctamente')
     } else {
       setDeliverError(result.error)
+      toast(result.error, 'error')
     }
     setDelivering(false)
   }

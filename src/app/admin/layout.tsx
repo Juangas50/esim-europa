@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Sidebar from '@/components/layout/Sidebar'
 import TopBar from '@/components/layout/TopBar'
 import MobileBottomNav from '@/components/layout/MobileBottomNav'
+import ToastContainer from '@/components/ui/ToastContainer'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -39,6 +40,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       {/* Bottom nav — solo mobile */}
       <MobileBottomNav />
+      {/* Toasts — globales para todas las páginas del admin */}
+      <ToastContainer />
     </div>
   )
 }
