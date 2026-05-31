@@ -38,7 +38,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
   const keyFeatures =
     plan.type === "local"
-      ? ["Número español 🇪🇸", "Llamadas y SMS ilimitados", `${plan.duration_days} días`]
+      ? ["Número español 🇪🇸 incluido", "Llamadas y SMS ilimitados", `${plan.duration_days} días de validez`]
       : [`${plan.countries_count}+ países`, "Solo datos · sin llamadas", `${plan.duration_days} días`];
 
   return (
@@ -84,16 +84,56 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         {plan.name}
       </p>
 
-      {/* GB grande */}
-      <div className="mb-5">
-        <span className={`text-4xl font-black leading-none ${isPopular ? "text-white" : "text-[#111111]"}`}>
-          {plan.data_gb}
-        </span>
-        <span className={`text-lg font-bold ml-1 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
-        <p className={`text-[11px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/40" : "text-[#aaa]"}`}>
-          4G / 5G
-        </p>
-      </div>
+      {/* Datos — dos zonas para SIM Local, zona única para DataOnly */}
+      {plan.type === "local" && plan.eu_data_gb ? (
+        <div className="mb-5 rounded-xl overflow-hidden">
+          {/* Zona España — primaria */}
+          <div className={`px-3.5 py-3 ${isPopular ? "bg-white/12" : "bg-[#F5F5F5]"}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-1">
+                <span className={`text-3xl font-black leading-none ${isPopular ? "text-white" : "text-[#111]"}`}>
+                  {plan.data_gb}
+                </span>
+                <span className={`text-sm font-bold ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
+              </div>
+              <span className={`text-xs font-bold ${isPopular ? "text-white/70" : "text-[#555]"}`}>
+                🇪🇸 España
+              </span>
+            </div>
+            <p className={`text-[10px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/30" : "text-[#bbb]"}`}>
+              4G / 5G
+            </p>
+          </div>
+          {/* Zona UE — secundaria */}
+          <div className={`px-3.5 py-2.5 border-t ${
+            isPopular
+              ? "bg-white/6 border-white/10"
+              : "bg-white border-black/6"
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-1">
+                <span className={`text-xl font-black leading-none ${isPopular ? "text-white/85" : "text-[#222]"}`}>
+                  {plan.eu_data_gb}
+                </span>
+                <span className={`text-xs font-bold ${isPopular ? "text-white/30" : "text-[#ccc]"}`}>GB</span>
+              </div>
+              <span className="text-[11px] font-bold text-[#6EC1E4]">
+                🇪🇺 Roaming UE
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-5">
+          <span className={`text-4xl font-black leading-none ${isPopular ? "text-white" : "text-[#111111]"}`}>
+            {plan.data_gb}
+          </span>
+          <span className={`text-lg font-bold ml-1 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
+          <p className={`text-[11px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/40" : "text-[#aaa]"}`}>
+            4G / 5G
+          </p>
+        </div>
+      )}
 
       {/* Features */}
       <ul className="space-y-1.5 mb-6 flex-1">

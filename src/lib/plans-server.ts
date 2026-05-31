@@ -26,6 +26,7 @@ interface TariffRow {
   countries_count: number | null;
   activation_days: number | null;
   position: number | null;
+  eu_data_gb: number | null;  // GB en roaming UE (solo planes local/España)
 }
 
 // ── Mapping helpers ───────────────────────────────────────────────────────────
@@ -131,6 +132,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
     size: type === "local" ? inferSize(t.name, t.badge, t.data_gb) : undefined,
     position: t.position ?? undefined,
     data_gb: t.data_gb,
+    eu_data_gb: t.eu_data_gb ?? undefined,
     duration_days: t.validity_days ?? 28,
     activation_days,
     price_usd: t.price_usd ?? 0,
@@ -160,7 +162,7 @@ export async function getPlans(): Promise<Plan[]> {
     const { data, error } = await supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
+        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
       )
       .eq("active", true)
       .order("position", { ascending: true, nullsFirst: false });
@@ -192,7 +194,7 @@ export async function getPlanById(id: string): Promise<Plan | undefined> {
     const { data, error } = await supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
+        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
       )
       .eq("id", id)
       .single();

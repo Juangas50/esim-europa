@@ -11,6 +11,7 @@ export interface Plan {
   size?: PlanSize;           // S/M/L/XL/XXL — derivado de position o badge
   position?: number;         // 1 = más izquierda, 5 = más derecha en la home
   data_gb: number;
+  eu_data_gb?: number;        // GB en roaming UE (solo planes local/España)
   duration_days: number;
   activation_days: number;   // días para activar desde la compra
   price_usd: number;

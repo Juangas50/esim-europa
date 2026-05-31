@@ -12,13 +12,13 @@ const LOCAL_PLANS: Plan[] = [
     size: "S",
     position: 1,
     data_gb: 5,
+    eu_data_gb: 15,   // ← actualizar con valor real de Vodafone
     duration_days: 28,
     activation_days: 365,
     price_usd: 19.9,
     zone: "espana",
     countries_count: 1,
     features: [
-      "5 GB datos 4G/5G",
       "Número español 🇪🇸 incluido",
       "Llamadas y SMS ilimitados",
       "28 días de validez",
@@ -33,13 +33,13 @@ const LOCAL_PLANS: Plan[] = [
     size: "M",
     position: 2,
     data_gb: 10,
+    eu_data_gb: 23,   // ← actualizar con valor real de Vodafone
     duration_days: 28,
     activation_days: 365,
     price_usd: 29.9,
     zone: "espana",
     countries_count: 1,
     features: [
-      "10 GB datos 4G/5G",
       "Número español 🇪🇸 incluido",
       "Llamadas y SMS ilimitados",
       "28 días de validez",
@@ -54,6 +54,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "L",
     position: 3,
     data_gb: 20,
+    eu_data_gb: 31,   // ← actualizar con valor real de Vodafone
     duration_days: 28,
     activation_days: 365,
     price_usd: 39.9,
@@ -61,7 +62,6 @@ const LOCAL_PLANS: Plan[] = [
     zone: "espana",
     countries_count: 1,
     features: [
-      "20 GB datos 4G/5G",
       "Número español 🇪🇸 incluido",
       "Llamadas y SMS ilimitados",
       "28 días de validez",
@@ -76,13 +76,13 @@ const LOCAL_PLANS: Plan[] = [
     size: "XL",
     position: 4,
     data_gb: 30,
+    eu_data_gb: 37,   // ← actualizar con valor real de Vodafone
     duration_days: 28,
     activation_days: 365,
     price_usd: 49.9,
     zone: "espana",
     countries_count: 1,
     features: [
-      "30 GB datos 4G/5G",
       "Número español 🇪🇸 incluido",
       "Llamadas y SMS ilimitados",
       "28 días de validez",
@@ -97,13 +97,13 @@ const LOCAL_PLANS: Plan[] = [
     size: "XXL",
     position: 5,
     data_gb: 50,
+    eu_data_gb: 52,   // ← actualizar con valor real de Vodafone
     duration_days: 28,
     activation_days: 365,
     price_usd: 69.9,
     zone: "espana",
     countries_count: 1,
     features: [
-      "50 GB datos 4G/5G",
       "Número español 🇪🇸 incluido",
       "Llamadas y SMS ilimitados",
       "28 días de validez",
