@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { updateOrderStatus, deliverB2COrder, resendDeliveryEmail } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 
@@ -75,6 +75,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const [search, setSearch]         = useState('')
   const [selected, setSelected]     = useState<UnifiedOrder | null>(null)
   const [updating, setUpdating]     = useState<string | null>(null)
+  const [isMobile, setIsMobile]     = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check, { passive: true })
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   // ── Estado del formulario de entrega eSIM ─────────────────────────────────
   const [activation, setActivation]   = useState('')
@@ -214,7 +222,46 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             })}
           </div>
 
-          {/* Tabla */}
+          {/* ── Mobile: cards ────────────────────────────────────────────── */}
+          {isMobile && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {filtered.length === 0 ? (
+                <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13, background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A' }}>No hay pedidos</div>
+              ) : filtered.map(o => {
+                const st = STATUSES[o.status] ?? STATUSES.pending_review
+                const isPending = o.status === 'paid'
+                return (
+                  <div
+                    key={o.id}
+                    onClick={() => { setSelected(o); resetDeliveryForm() }}
+                    style={{ background: '#181818', border: `1px solid ${selected?.id === o.id ? '#E60000' : '#2A2A2A'}`, borderRadius: 12, padding: 14, cursor: 'pointer' }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>
+                        {st.label}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{o.customer_name} {o.customer_lastname}</div>
+                    <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 8 }}>{o.customer_email}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <SourceBadge source={o.source} />
+                        {o.tariffs?.name && <span style={{ fontSize: 11, color: '#7A7A7A' }}>{o.tariffs.name}</span>}
+                        <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
+                      </div>
+                      {isPending && (
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#E60000' }}>Tramitar →</span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* ── Desktop: tabla ───────────────────────────────────────────── */}
+          {!isMobile && (
           <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
             {filtered.length === 0 ? (
               <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13 }}>No hay pedidos</div>
@@ -298,18 +345,42 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </table>
             )}
           </div>
+          )} {/* fin !isMobile */}
         </div>
 
-        {/* Panel detalle */}
+        {/* Panel detalle — full screen en mobile, sidebar en desktop */}
         {selected && (
-          <div style={{ width: 300, flexShrink: 0, background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: 20, position: 'sticky', top: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <span style={{ fontWeight: 800, fontSize: 14 }}>Detalle pedido</span>
+          <div style={isMobile ? {
+            position: 'fixed', inset: 0, zIndex: 50,
+            background: '#0C0C0C', overflowY: 'auto',
+            paddingBottom: 80, // espacio para bottom nav
+          } : {
+            width: 300, flexShrink: 0, background: '#181818',
+            border: '1px solid #2A2A2A', borderRadius: 14,
+            padding: 20, position: 'sticky', top: 24,
+          }}>
+            <div style={isMobile ? {
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '16px 16px 12px', borderBottom: '1px solid #2A2A2A', marginBottom: 0,
+              position: 'sticky', top: 0, background: '#0C0C0C', zIndex: 10,
+            } : {
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16,
+            }}>
+              <div>
+                <span style={{ fontWeight: 800, fontSize: 14 }}>Detalle pedido</span>
+                {isMobile && <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4', marginTop: 2 }}>{selected.order_ref}</div>}
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SourceBadge source={selected.source} />
-                <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#7A7A7A', cursor: 'pointer', fontSize: 18 }}>×</button>
+                <button
+                  onClick={() => { setSelected(null); resetDeliveryForm() }}
+                  style={{ background: isMobile ? '#232323' : 'none', border: isMobile ? '1px solid #2A2A2A' : 'none', borderRadius: 8, color: '#fff', cursor: 'pointer', fontSize: isMobile ? 14 : 18, padding: isMobile ? '6px 12px' : 0, fontFamily: 'inherit', fontWeight: 700 }}
+                >
+                  {isMobile ? '← Volver' : '×'}
+                </button>
               </div>
             </div>
+            <div style={{ padding: isMobile ? '0 16px' : 0 }}>
             {([
               { label: 'Referencia',    value: selected.order_ref },
               { label: 'Canal',         value: selected.source === 'b2c' ? '💻 esimruta34.com' : '🏢 Agencia' },
@@ -469,6 +540,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 )}
               </div>
             )}
+            </div> {/* cierre del div padding mobile */}
           </div>
         )}
       </div>

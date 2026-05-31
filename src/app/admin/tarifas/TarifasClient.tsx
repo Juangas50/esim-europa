@@ -47,7 +47,7 @@ function TariffForm({ initial, onSave, onCancel }: {
         {initial?.id ? 'Editar tarifa' : 'Nueva tarifa'}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 12, marginBottom: 12 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre *</label>
           <input required style={inp} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Traveler 15GB" />
@@ -91,11 +91,11 @@ function TariffForm({ initial, onSave, onCancel }: {
         <label htmlFor="highlight" style={{ fontSize: 13, color: '#AAAAAA', cursor: 'pointer' }}>Marcar como "Más elegido"</label>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-        <button type="button" onClick={onCancel} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+      <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+        <button type="button" onClick={onCancel} className="w-full sm:w-auto" style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '11px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
           Cancelar
         </button>
-        <button type="submit" disabled={loading} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '9px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button type="submit" disabled={loading} className="w-full sm:w-auto" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           {loading ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
@@ -133,11 +133,11 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-        <div style={{ background: 'rgba(110,193,228,0.1)', border: '1px solid rgba(110,193,228,0.25)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#AAAAAA' }}>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
+        <div style={{ background: 'rgba(110,193,228,0.1)', border: '1px solid rgba(110,193,228,0.25)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#AAAAAA', flex: 1 }}>
           💡 Los precios <strong style={{ color: '#fff' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#6EC1E4' }}>Agencias → Gestionar</strong>
         </div>
-        <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           + Nueva tarifa
         </button>
       </div>
@@ -156,27 +156,27 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
               {editing?.id === t.id ? (
                 <TariffForm initial={t} onSave={handleUpdate} onCancel={() => setEditing(null)} />
               ) : (
-                <div style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                <div style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 16px', marginBottom: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
                       {type === 'prepago' ? '📱' : '📡'}
                     </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</span>
                         {t.highlight && <span style={{ background: '#E60000', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 3 }}>
-                        {t.data_gb}GB{t.validity_days ? ` · ${t.validity_days} días` : ''}{t.badge ? ` · ${t.badge.replace(/[#*_]/g, '').slice(0, 60)}` : ''}
+                      <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}
                       </div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 11, color: '#7A7A7A' }}>Precios por agencia</span>
-                    <button onClick={() => { setEditing(t); setAdding(false) }} style={{ padding: '6px 12px', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 7, color: '#AAAAAA', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit' }}>
+                  {/* Acciones dentro de la card, full width en mobile */}
+                  <div className="flex gap-2">
+                    <button onClick={() => { setEditing(t); setAdding(false) }} className="flex-1" style={{ padding: '8px 0', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 7, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
                       Editar
                     </button>
-                    <button onClick={() => handleDelete(t.id)} style={{ padding: '6px 12px', background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 7, color: '#E60000', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit' }}>
+                    <button onClick={() => handleDelete(t.id)} className="flex-1" style={{ padding: '8px 0', background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 7, color: '#E60000', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
                       Eliminar
                     </button>
                   </div>
