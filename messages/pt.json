@@ -130,6 +130,10 @@
       "diff": {
         "q": "Qual a diferença entre Pré-pago e DataOnly?",
         "a": "Com o plano Pré-pago, os 28 dias começam a contar a partir do dia que ativar o eSIM (pode esperar até 12 meses). Com DataOnly, compra agora e tem 60 dias para ativar — ideal se a viagem não está 100% confirmada."
+      },
+      "needs": {
+        "q": "Quantos GB eu preciso para viajar pela Europa?",
+        "a": "A maioria dos viajantes usa muito menos do que imagina. Como referência:\n\n📱 Uso leve (3–5 GB / semana)\nWhatsApp, Google Maps, redes sociais ocasionalmente, e-mails. Perfeito para viagens curtas.\n\n🌐 Uso normal (5–15 GB / semana)\nNavegação frequente, Instagram/TikTok, videochamadas ocasionais, música em streaming. O uso mais comum nas férias.\n\n🔥 Uso intensivo (15+ GB / semana)\nStreaming de vídeo, hotspot compartilhado, trabalho remoto, upload constante de conteúdo.\n\nExemplo real para 7 dias: Maps (~0,5 GB) + WhatsApp e navegação (~1–2 GB) + redes sociais (~2–5 GB) + música (~1 GB) + videochamadas (~1–2 GB). Total: entre 5 e 10 GB costuma ser mais do que suficiente para a maioria.\n\n💡 Dica: conecte-se ao WiFi do hotel ou restaurante quando disponível — assim reserva os dados para quando realmente precisar."
       }
     }
   },

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
-const FAQ_KEYS = ["what", "compatible", "number", "when", "costs", "diff"] as const;
+const FAQ_KEYS = ["what", "compatible", "number", "when", "costs", "diff", "needs"] as const;
 
 function FAQItem({
   question,
@@ -52,7 +52,7 @@ function FAQItem({
             transition={{ duration: 0.3, ease: EASE_OUT }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-[#555555] leading-relaxed max-w-[640px]">
+            <p className="pb-6 text-[#555555] leading-relaxed max-w-[640px] whitespace-pre-line">
               {answer}
             </p>
           </motion.div>
