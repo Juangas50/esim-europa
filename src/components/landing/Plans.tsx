@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, Star, Users, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -201,20 +201,25 @@ function PlansGrid({ plans }: { plans: Plan[] }) {
 
 function PlansCarousel({ plans }: { plans: Plan[] }) {
   const [current, setCurrent] = useState(0);
-  const maxIndex = Math.max(0, plans.length - MAX_VISIBLE);
+  // Mobile: 1 plan visible + pico del siguiente (85% de ancho)
+  // Desktop: 3 planes visibles (33%) o 5 (20%)
+  const maxIndex = Math.max(0, plans.length - 1);
 
   return (
     <div className="relative">
-      <div className="overflow-hidden">
+      {/* overflow-hidden en desktop, visible en mobile para el pico lateral */}
+      <div className="overflow-hidden sm:overflow-hidden">
         <motion.div
-          animate={{ x: `calc(-${current} * (20% + 12px))` }}
+          animate={{ x: `calc(-${current} * (85% + 12px))` }}
           transition={{ duration: 0.4, ease: EASE_OUT }}
           className="flex gap-3 sm:gap-4"
         >
           {plans.map((plan, i) => (
             <div
               key={plan.id}
-              className="flex-none w-[calc(50%-6px)] sm:w-[calc(33.33%-11px)] lg:w-[calc(20%-10px)]"
+              // Mobile: 85% de ancho → 1 plan + pico del siguiente
+              // sm: 3 columnas, lg: 5 columnas
+              className="flex-none w-[85%] sm:w-[calc(33.33%-11px)] lg:w-[calc(20%-10px)]"
             >
               <PlanCard plan={plan} index={i} />
             </div>
@@ -222,8 +227,21 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
         </motion.div>
       </div>
 
-      {/* Controles */}
-      <div className="flex items-center justify-center gap-3 mt-6">
+      {/* Dots — visibles en mobile */}
+      <div className="flex items-center justify-center gap-2 mt-5">
+        {plans.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`rounded-full transition-all duration-200 ${
+              i === current ? "w-6 h-2 bg-[#E60000]" : "w-2 h-2 bg-[#111111]/15"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Flechas — solo desktop */}
+      <div className="hidden sm:flex items-center justify-center gap-3 mt-4">
         <button
           onClick={() => setCurrent((c) => Math.max(0, c - 1))}
           disabled={current === 0}
@@ -231,17 +249,6 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
         >
           <CaretLeft size={16} weight="bold" />
         </button>
-        <div className="flex gap-1.5">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`rounded-full transition-all duration-200 ${
-                i === current ? "w-5 h-2 bg-[#111111]" : "w-2 h-2 bg-[#111111]/20"
-              }`}
-            />
-          ))}
-        </div>
         <button
           onClick={() => setCurrent((c) => Math.min(maxIndex, c + 1))}
           disabled={current === maxIndex}
@@ -257,10 +264,22 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
 // ── Plans section para un tab ─────────────────────────────────────────────────
 
 function TabContent({ plans }: { plans: Plan[] }) {
-  const sorted = sortByPosition(plans);
+  const sorted       = sortByPosition(plans);
   const sortedMobile = sortMobileFirst(plans);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   if (sorted.length === 0) return null;
-  // Desktop: orden por position; Mobile (carousel): popular primero
+
+  // Mobile: siempre carrusel con popular primero
+  // Desktop: grid ≤5 planes, carrusel >5 planes
+  if (isMobile) return <PlansCarousel plans={sortedMobile} />;
   return sorted.length > MAX_VISIBLE
     ? <PlansCarousel plans={sortedMobile} />
     : <PlansGrid plans={sorted} />;
