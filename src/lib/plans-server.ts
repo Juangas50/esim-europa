@@ -27,6 +27,7 @@ interface TariffRow {
   activation_days: number | null;
   position: number | null;
   eu_data_gb: number | null;  // GB en roaming UE (solo planes local/España)
+  web_visible: boolean | null; // false = oculto en la web B2C (ej. dataonly mientras no está habilitado)
 }
 
 // ── Mapping helpers ───────────────────────────────────────────────────────────
@@ -153,59 +154,74 @@ function mapTariffToPlan(t: TariffRow): Plan {
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
- * Returns all active plans sorted by price ascending.
- * Falls back to hardcoded PLANS when Supabase is unavailable or empty.
+ * Returns active plans.
+ * webOnly: true → filtra por web_visible=true (tienda B2C).
+ * webOnly: false (default) → devuelve todos (portal B2B, admin).
+ * Falls back to hardcoded PLANS when Supabase is unavailable.
  */
-export async function getPlans(): Promise<Plan[]> {
+export async function getPlans(opts?: { webOnly?: boolean }): Promise<Plan[]> {
+  const webOnly = opts?.webOnly ?? false;
+  const fallback = webOnly ? PLANS.filter((p) => p.type !== "dataonly") : PLANS;
+
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
+    let query = supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
+        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
       )
-      .eq("active", true)
-      .order("position", { ascending: true, nullsFirst: false });
+      .eq("active", true);
+
+    if (webOnly) query = query.eq("web_visible", true);
+
+    const { data, error } = await query.order("position", { ascending: true, nullsFirst: false });
 
     if (error) {
       console.warn("[plans] Supabase error, using fallback:", error.message);
-      return PLANS;
+      return fallback;
     }
-
     if (!data || data.length === 0) {
       console.warn("[plans] No active tariffs found, using fallback");
-      return PLANS;
+      return fallback;
     }
 
     return (data as TariffRow[]).map(mapTariffToPlan);
   } catch (err) {
     console.warn("[plans] Unexpected error, using fallback:", err);
-    return PLANS;
+    return fallback;
   }
 }
 
 /**
- * Returns a single plan by its ID (UUID from tariffs, or legacy string ID).
- * Tries Supabase first, falls back to hardcoded PLANS.
+ * Returns a single plan by its ID.
+ * webOnly: true → devuelve undefined si web_visible=false (bloquea checkout de planes ocultos).
  */
-export async function getPlanById(id: string): Promise<Plan | undefined> {
+export async function getPlanById(id: string, opts?: { webOnly?: boolean }): Promise<Plan | undefined> {
+  const webOnly = opts?.webOnly ?? false;
+
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
+    let query = supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position"
+        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
       )
-      .eq("id", id)
-      .single();
+      .eq("id", id);
+
+    if (webOnly) query = query.eq("web_visible", true);
+
+    const { data, error } = await query.single();
 
     if (error || !data) {
-      // Fall back to hardcoded plans (legacy string IDs)
-      return PLANS.find((p) => p.id === id);
+      const fallback = PLANS.find((p) => p.id === id);
+      if (fallback && webOnly && fallback.type === "dataonly") return undefined;
+      return fallback;
     }
 
     return mapTariffToPlan(data as TariffRow);
   } catch {
-    return PLANS.find((p) => p.id === id);
+    const fallback = PLANS.find((p) => p.id === id);
+    if (fallback && webOnly && fallback.type === "dataonly") return undefined;
+    return fallback;
   }
 }

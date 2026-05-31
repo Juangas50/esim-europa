@@ -88,7 +88,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const plans = await getPlans();
+  const plans = await getPlans({ webOnly: true });
   const minPrice = plans.length > 0
     ? Math.min(...plans.map((p) => p.price_usd))
     : undefined;

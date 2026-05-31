@@ -95,10 +95,10 @@ export async function POST(req: NextRequest) {
     if (!validation.valid) return NextResponse.json({ error: validation.error }, { status: 400 });
     const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = validation.data;
 
-    // 1. Validar plan (Supabase first, fallback to hardcoded)
-    const plan = await getPlanById(plan_id);
+    // 1. Validar plan — webOnly:true bloquea planes con web_visible=false aunque alguien manipule la URL
+    const plan = await getPlanById(plan_id, { webOnly: true });
     if (!plan) {
-      return NextResponse.json({ error: "Plan no encontrado" }, { status: 400 });
+      return NextResponse.json({ error: "Plan no disponible" }, { status: 400 });
     }
 
     // 2. MercadoPago no implementado — retornar antes de crear registros en DB
