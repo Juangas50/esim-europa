@@ -207,8 +207,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         {/* Fecha de activación — solo local */}
         {isLocal && (
           <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
-            <p className="text-sm font-bold text-[#111111] mb-0.5">¿Cuándo empieza tu plan?</p>
-            <p className="text-xs text-[#777] mb-3">Podés activarlo cuando llegues a Europa o programar una fecha. Tenés hasta 12 meses desde la compra.</p>
+            <p className="text-sm font-bold text-[#111111] mb-0.5">¿Cuándo querés que empiecen los 28 días?</p>
+            <p className="text-xs text-[#777] mb-3">Los 28 días corren desde que te enviamos el QR (activación inmediata) o desde la fecha que elijas.</p>
             <div className="space-y-2.5">
               {/* Opción por defecto — destacada visualmente */}
               <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
@@ -222,10 +222,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 />
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <p className="text-sm font-semibold text-[#111]">Activarlo cuando llegue a Europa</p>
+                    <p className="text-sm font-semibold text-[#111]">Activación inmediata</p>
                     <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Recomendado</span>
                   </div>
-                  <p className="text-xs text-[#777]">Instalás el QR antes de viajar y encendés la eSIM al llegar.</p>
+                  <p className="text-xs text-[#777]">Los 28 días empiezan desde que te enviamos el QR. Instalála antes de viajar y usala al llegar a Europa.</p>
                 </div>
               </label>
               {/* Opción programar */}
@@ -240,7 +240,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 />
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-[#111]">Programar una fecha de inicio</p>
-                  <p className="text-xs text-[#777] mt-0.5">Útil si ya sabés exactamente cuándo querés empezar a usarla.</p>
+                  <p className="text-xs text-[#777] mt-0.5">Los 28 días empiezan en la fecha que elijas — ideal si tu viaje aún no está confirmado.</p>
                   {watch("activation_type") === "schedule" && (
                     <input
                       type="date"
