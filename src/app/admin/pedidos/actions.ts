@@ -6,7 +6,7 @@ import { requireAdmin } from '@/lib/auth/require-role'
 import { revalidatePath } from 'next/cache'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { sendEmail } from '@/lib/email/send'
-import { emailEntregaB2C } from '@/lib/email/templates'
+import { emailEntregaB2C, emailEntregaMultiple } from '@/lib/email/templates'
 import QRCode from 'qrcode'
 
 const VALID_STATUSES = new Set([
@@ -290,5 +290,112 @@ export async function resendDeliveryEmail(
     return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
   }
 
+  return { ok: true }
+}
+
+// ── Entrega de grupo MultiSIM — valida todas las cadenas y envía 1 email ─────
+export async function deliverGroupOrders(
+  deliveries: Array<{ orderId: string; activationString: string; confirmationCode: string }>,
+  recipientEmail: string,
+  planInfo: { name: string; data_gb: number; duration_days: number; type: string },
+  customerName: string,
+  amountUSD: number,
+  overrideEmail?: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+
+  if (deliveries.length === 0) return { ok: false, error: 'Sin pedidos a entregar.' }
+
+  const supabase = createAdminClient()
+  const toEmail = (overrideEmail?.trim()) ? overrideEmail.trim() : recipientEmail
+
+  // 1. Validar todas las cadenas y códigos
+  const parsed = deliveries.map(d => {
+    const p = parseActivationString(d.activationString)
+    if (!p.ok) return { ok: false as const, error: `Cadena inválida en pedido ${d.orderId}: ${p.error}`, orderId: d.orderId }
+    if (!validateConfirmationCode(d.confirmationCode)) return { ok: false as const, error: `Código inválido en pedido ${d.orderId}`, orderId: d.orderId }
+    return { ok: true as const, parsed: p.data, orderId: d.orderId, confirmationCode: d.confirmationCode.trim() }
+  })
+
+  const firstError = parsed.find(p => !p.ok)
+  if (firstError && !firstError.ok) return { ok: false, error: firstError.error }
+
+  const validParsed = parsed as Array<{ ok: true; parsed: NonNullable<ReturnType<typeof parseActivationString> & { ok: true }>['data']; orderId: string; confirmationCode: string }>
+
+  // 2. Verificar cadenas duplicadas globalmente (en AMBAS tablas)
+  for (const d of validParsed) {
+    const [{ data: dupB2C }, { data: dupB2B }] = await Promise.all([
+      supabase.from('b2c_orders').select('order_ref, id').eq('activation_string', d.parsed.raw).neq('status', 'cancelled').maybeSingle(),
+      supabase.from('orders').select('order_ref, id').eq('activation_string', d.parsed.raw).neq('status', 'cancelled').maybeSingle(),
+    ])
+    const dup = [dupB2C, dupB2B].find(x => x && !deliveries.map(dd => dd.orderId).includes(x.id))
+    if (dup) return { ok: false, error: `⛔ La cadena de eSIM ${validParsed.indexOf(d) + 1} ya fue usada en el pedido ${dup.order_ref}.` }
+  }
+
+  // 3. Verificar que no haya duplicados entre las propias cadenas del grupo
+  const rawStrings = validParsed.map(d => d.parsed.raw)
+  const uniqueRaws = new Set(rawStrings)
+  if (uniqueRaws.size !== rawStrings.length) return { ok: false, error: '⛔ Hay cadenas repetidas dentro del grupo. Cada eSIM necesita una cadena distinta.' }
+
+  // 4. Generar N QRs y subirlos a Storage
+  const esimItems: Array<{ label: string; orderRef: string; activationString: string; confirmationCode: string; qrUrl?: string }> = []
+
+  for (let i = 0; i < validParsed.length; i++) {
+    const d = deliveries[i]
+    const p = validParsed[i]
+    let qrUrl: string | undefined
+    try {
+      const qrBuffer = await QRCode.toBuffer(p.parsed.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
+      await supabase.storage.from('qr-codes').upload(`${d.orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${d.orderId}.png`)
+      qrUrl = urlData.publicUrl
+    } catch (e) {
+      console.warn(`[group-deliver] QR ${i + 1} no subido a Storage:`, e)
+    }
+
+    // También guardar el order_ref del pedido
+    const { data: orderData } = await supabase.from('b2c_orders').select('order_ref').eq('id', d.orderId).single()
+
+    esimItems.push({
+      label: `eSIM ${i + 1} de ${deliveries.length}`,
+      orderRef: orderData?.order_ref ?? d.orderId,
+      activationString: p.parsed.raw,
+      confirmationCode: p.confirmationCode,
+      qrUrl,
+    })
+  }
+
+  // 5. Enviar UN email con todas las eSIMs
+  const tmpl = emailEntregaMultiple({
+    customerName,
+    totalCount: deliveries.length,
+    planName: planInfo.name,
+    planGB: planInfo.data_gb,
+    planDays: planInfo.duration_days,
+    planType: planInfo.type,
+    amountUSD,
+    esims: esimItems,
+  })
+
+  const { error: emailError } = await sendEmail(toEmail, tmpl.subject, tmpl.html)
+  if (emailError) {
+    console.error('[group-deliver] Error email:', emailError)
+    return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
+  }
+
+  // 6. Actualizar todos los pedidos del grupo
+  for (let i = 0; i < deliveries.length; i++) {
+    const d = deliveries[i]
+    const p = validParsed[i]
+    await supabase.from('b2c_orders').update({
+      status: 'qr_sent',
+      qr_sent_at: new Date().toISOString(),
+      activation_string: p.parsed.raw,
+      confirmation_code: p.confirmationCode,
+      ...(overrideEmail?.trim() ? { customer_email: overrideEmail.trim() } : {}),
+    }).eq('id', d.orderId)
+  }
+
+  revalidatePath('/admin/pedidos')
   return { ok: true }
 }

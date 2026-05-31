@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { updateOrderStatus, deliverOrder, resendDeliveryEmail } from './actions'
+import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { toast } from '@/lib/toast'
 
@@ -27,6 +27,15 @@ export type UnifiedOrder = {
   payment_method: string | null
   activation_string: string | null
   confirmation_code: string | null
+  // MultiSIM: datos de cada pedido individual dentro de la compra
+  group_count: number
+  group_orders: Array<{
+    id: string
+    order_ref: string
+    activation_string: string | null
+    confirmation_code: string | null
+    status: string
+  }>
 }
 
 // ── Estados ───────────────────────────────────────────────────────────────────
@@ -89,13 +98,20 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // ── Estado del formulario de entrega eSIM ─────────────────────────────────
+  // ── Estado del formulario de entrega (single) ────────────────────────────
   const [activation, setActivation]   = useState('')
   const [confirmation, setConfirmation] = useState('')
   const [deliverEmail, setDeliverEmail] = useState('')
   const [delivering, setDelivering]   = useState(false)
   const [deliverError, setDeliverError] = useState<string | null>(null)
   const [deliverOk, setDeliverOk]     = useState(false)
+
+  // ── Estado del formulario de entrega (multi) ──────────────────────────────
+  const [groupActivations, setGroupActivations] = useState<Record<string, string>>({})
+  const [groupCodes, setGroupCodes]             = useState<Record<string, string>>({})
+  const [groupDelivering, setGroupDelivering]   = useState(false)
+  const [groupError, setGroupError]             = useState<string | null>(null)
+  const [groupOk, setGroupOk]                   = useState(false)
 
   // ── Estado del reenvío ────────────────────────────────────────────────────
   const [resendEmail, setResendEmail] = useState('')
@@ -112,10 +128,49 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setActivation(''); setConfirmation('')
     setDeliverError(null); setDeliverOk(false)
     setResendError(null); setResendOk(false)
-    // Pre-rellenar con el email del pedido seleccionado
+    setGroupActivations({}); setGroupCodes({})
+    setGroupError(null); setGroupOk(false)
     const email = newSelected?.customer_email ?? ''
     setDeliverEmail(email)
     setResendEmail(email)
+  }
+
+  // Entrega de grupo
+  async function handleGroupDeliver() {
+    if (!selected || groupDelivering) return
+    setGroupDelivering(true)
+    setGroupError(null)
+
+    const deliveries = selected.group_orders.map(o => ({
+      orderId: o.id,
+      activationString: groupActivations[o.id] ?? '',
+      confirmationCode: groupCodes[o.id] ?? '',
+    }))
+
+    const result = await deliverGroupOrders(
+      deliveries,
+      selected.customer_email,
+      {
+        name: selected.tariffs?.name ?? 'eSIM RUTA34',
+        data_gb: 0,
+        duration_days: 28,
+        type: selected.type ?? 'local',
+      },
+      `${selected.customer_name} ${selected.customer_lastname}`,
+      selected.pvp_at_time,
+      deliverEmail.trim() || selected.customer_email,
+    )
+
+    if (result.ok) {
+      setGroupOk(true)
+      setOrders(prev => prev.map(o => o.id === selected.id ? { ...o, status: 'qr_sent' } : o))
+      setSelected(prev => prev ? { ...prev, status: 'qr_sent' } : null)
+      toast(`✅ ${selected.group_count} QRs enviados correctamente`)
+    } else {
+      setGroupError(result.error)
+      toast(result.error, 'error')
+    }
+    setGroupDelivering(false)
   }
 
   async function handleResend() {
@@ -505,8 +560,71 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               (selected.source === 'b2b' && selected.status === 'pending_review')) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#E60000', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
-                  ⚡ Entregar eSIM
+                  ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
                 </div>
+
+                {/* ── MultiSIM: N slots de activación ─────────────────── */}
+                {selected.group_count > 1 && (
+                  groupOk ? (
+                    <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
+                      ✅ {selected.group_count} QRs enviados a {deliverEmail || selected.customer_email}
+                    </div>
+                  ) : (
+                    <>
+                      {/* Email destino */}
+                      <div style={{ marginBottom: 14 }}>
+                        <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Email del cliente</div>
+                        <input value={deliverEmail} onChange={e => { setDeliverEmail(e.target.value); setGroupError(null) }} type="email"
+                          style={{ width: '100%', boxSizing: 'border-box', background: '#111', border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`, borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none' }} />
+                        {deliverEmail && deliverEmail !== selected.customer_email && (
+                          <div style={{ fontSize: 10, color: '#F59E0B', marginTop: 4 }}>⚠ Email diferente al registrado</div>
+                        )}
+                      </div>
+
+                      {/* N slots */}
+                      {selected.group_orders.map((o, idx) => {
+                        const act  = groupActivations[o.id] ?? ''
+                        const code = groupCodes[o.id] ?? ''
+                        const parsedAct = parseActivationString(act)
+                        const validCode = validateConfirmationCode(code)
+                        const slotOk = parsedAct.ok && validCode
+                        return (
+                          <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#111', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2A2A2A'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: slotOk ? '#22C55E' : '#E60000' }}>eSIM {idx + 1} de {selected.group_count}</span>
+                              <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                            </div>
+                            <input value={act} onChange={e => { setGroupActivations(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
+                              placeholder="1$servidor$CÓDIGO" style={{ width: '100%', boxSizing: 'border-box', background: '#0A0A0A', border: `1px solid ${act && !parsedAct.ok ? '#EF4444' : act && parsedAct.ok ? '#22C55E' : '#2A2A2A'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 11, fontFamily: 'monospace', outline: 'none', marginBottom: 6 }} />
+                            <input value={code} onChange={e => { setGroupCodes(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
+                              placeholder="Código (4-8 dígitos)" maxLength={8} style={{ width: '100%', boxSizing: 'border-box', background: '#0A0A0A', border: `1px solid ${code && !validCode ? '#EF4444' : code && validCode ? '#22C55E' : '#2A2A2A'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 12, fontFamily: 'monospace', letterSpacing: 3, outline: 'none' }} />
+                          </div>
+                        )
+                      })}
+
+                      {/* Progreso */}
+                      {(() => {
+                        const filled = selected.group_orders.filter(o => parseActivationString(groupActivations[o.id] ?? '').ok && validateConfirmationCode(groupCodes[o.id] ?? '')).length
+                        const allReady = filled === selected.group_count
+                        return (
+                          <>
+                            <div style={{ fontSize: 12, color: allReady ? '#22C55E' : '#7A7A7A', marginBottom: 10, fontWeight: 700 }}>
+                              {allReady ? '✅' : `⏳`} {filled} de {selected.group_count} eSIMs cargadas
+                            </div>
+                            {groupError && <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 10 }}>⚠ {groupError}</div>}
+                            <button onClick={handleGroupDeliver} disabled={!allReady || groupDelivering}
+                              style={{ width: '100%', padding: '10px 0', borderRadius: 8, border: 'none', background: allReady && !groupDelivering ? '#E60000' : '#2A2A2A', color: allReady && !groupDelivering ? '#fff' : '#555', fontWeight: 700, fontSize: 13, cursor: allReady && !groupDelivering ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
+                              {groupDelivering ? 'Generando QRs...' : `Generar y enviar ${selected.group_count} eSIMs →`}
+                            </button>
+                          </>
+                        )
+                      })()}
+                    </>
+                  )
+                )}
+
+                {/* ── Single: formulario existente ─────────────────────── */}
+                {selected.group_count === 1 && (<>
 
                 {deliverOk ? (
                   <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
@@ -604,6 +722,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     </button>
                   </>
                 )}
+                </>)} {/* cierre group_count === 1 */}
               </div>
             )}
             </div> {/* cierre del div padding mobile */}
