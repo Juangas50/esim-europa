@@ -39,15 +39,19 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   cancelled:      { label: 'Cancelado',            color: '#EF4444', bg: 'rgba(239,68,68,0.15)'  },
 }
 
+// "tramitar" agrupa paid (B2C) + pending_review (B2B): son lo mismo operativamente
 const STATUS_FILTERS = [
-  { id: 'all',            label: 'Todos' },
-  { id: 'paid',           label: '⚡ Tramitar' },
-  { id: 'pending_review', label: 'Pendientes' },
-  { id: 'scheduled',      label: 'Programados' },
-  { id: 'qr_sent',        label: 'QR Enviado' },
-  { id: 'activated',      label: 'Activados' },
-  { id: 'cancelled',      label: 'Cancelados' },
+  { id: 'all',      label: 'Todos'        },
+  { id: 'tramitar', label: '⚡ Tramitar'  },
+  { id: 'scheduled',label: 'Programados'  },
+  { id: 'qr_sent',  label: 'QR Enviado'  },
+  { id: 'activated',label: 'Activados'   },
+  { id: 'cancelled',label: 'Cancelados'  },
 ]
+
+function isTramitar(status: string) {
+  return status === 'paid' || status === 'pending_review'
+}
 
 const SOURCE_FILTERS = [
   { id: 'all', label: '🌐 Todos los canales' },
@@ -70,7 +74,7 @@ function SourceBadge({ source }: { source: 'b2b' | 'b2c' }) {
 
 export default function PedidosClient({ orders: initial }: { orders: UnifiedOrder[] }) {
   const [orders, setOrders]         = useState(initial)
-  const [statusFilter, setStatus]   = useState('paid')
+  const [statusFilter, setStatus]   = useState('tramitar')
   const [sourceFilter, setSource]   = useState('all')
   const [search, setSearch]         = useState('')
   const [selected, setSelected]     = useState<UnifiedOrder | null>(null)
@@ -87,11 +91,13 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   // ── Estado del formulario de entrega eSIM ─────────────────────────────────
   const [activation, setActivation]   = useState('')
   const [confirmation, setConfirmation] = useState('')
+  const [deliverEmail, setDeliverEmail] = useState('')
   const [delivering, setDelivering]   = useState(false)
   const [deliverError, setDeliverError] = useState<string | null>(null)
   const [deliverOk, setDeliverOk]     = useState(false)
 
   // ── Estado del reenvío ────────────────────────────────────────────────────
+  const [resendEmail, setResendEmail] = useState('')
   const [resending, setResending]     = useState(false)
   const [resendError, setResendError] = useState<string | null>(null)
   const [resendOk, setResendOk]       = useState(false)
@@ -101,10 +107,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const confirmationValid = validateConfirmationCode(confirmation)
   const canDeliver        = activationParsed.ok && confirmationValid && !delivering
 
-  function resetDeliveryForm() {
+  function resetDeliveryForm(newSelected?: UnifiedOrder | null) {
     setActivation(''); setConfirmation('')
     setDeliverError(null); setDeliverOk(false)
     setResendError(null); setResendOk(false)
+    // Pre-rellenar con el email del pedido seleccionado
+    const email = newSelected?.customer_email ?? ''
+    setDeliverEmail(email)
+    setResendEmail(email)
   }
 
   async function handleResend() {
@@ -112,7 +122,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setResending(true)
     setResendError(null)
     setResendOk(false)
-    const result = await resendDeliveryEmail(selected.id, selected.source)
+    const result = await resendDeliveryEmail(selected.id, selected.source, resendEmail.trim() || selected.customer_email)
     if (result.ok) setResendOk(true)
     else setResendError(result.error)
     setResending(false)
@@ -120,7 +130,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
   const filtered = orders.filter(o => {
     if (sourceFilter !== 'all' && o.source !== sourceFilter) return false
-    if (statusFilter !== 'all' && o.status !== statusFilter) return false
+    if (statusFilter === 'tramitar' && !isTramitar(o.status)) return false
+    if (statusFilter !== 'all' && statusFilter !== 'tramitar' && o.status !== statusFilter) return false
     if (search) {
       const q = search.toLowerCase()
       if (
@@ -145,7 +156,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     if (!selected || !canDeliver) return
     setDelivering(true)
     setDeliverError(null)
-    const result = await deliverOrder(selected.id, selected.source, activation, confirmation)
+    const result = await deliverOrder(selected.id, selected.source, activation, confirmation, deliverEmail.trim() || selected.customer_email)
     if (result.ok) {
       setDeliverOk(true)
       setOrders(prev => prev.map(o => o.id === selected.id ? { ...o, status: 'qr_sent' } : o))
@@ -207,7 +218,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
           <div style={{ display: 'flex', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
             {STATUS_FILTERS.map(f => {
               const base = sourceFilter === 'all' ? orders : orders.filter(o => o.source === sourceFilter)
-              const count = f.id === 'all' ? base.length : base.filter(o => o.status === f.id).length
+              const count = f.id === 'all' ? base.length
+                : f.id === 'tramitar' ? base.filter(o => isTramitar(o.status)).length
+                : base.filter(o => o.status === f.id).length
               return (
                 <button key={f.id} onClick={() => setStatus(f.id)} style={{
                   padding: '6px 14px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
@@ -281,7 +294,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     return (
                       <tr
                         key={o.id}
-                        onClick={() => { setSelected(isSelected ? null : o); resetDeliveryForm() }}
+                        onClick={() => { const next = isSelected ? null : o; setSelected(next); resetDeliveryForm(next) }}
                         style={{ borderBottom: i < filtered.length - 1 ? '1px solid #2A2A2A' : 'none', cursor: 'pointer', background: isSelected ? 'rgba(230,0,0,0.06)' : 'transparent', transition: 'background 0.15s' }}
                         onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
                         onMouseLeave={e => { e.currentTarget.style.background = isSelected ? 'rgba(230,0,0,0.06)' : 'transparent' }}
@@ -373,7 +386,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SourceBadge source={selected.source} />
                 <button
-                  onClick={() => { setSelected(null); resetDeliveryForm() }}
+                  onClick={() => { setSelected(null); resetDeliveryForm(null) }}
                   style={{ background: isMobile ? '#232323' : 'none', border: isMobile ? '1px solid #2A2A2A' : 'none', borderRadius: 8, color: '#fff', cursor: 'pointer', fontSize: isMobile ? 14 : 18, padding: isMobile ? '6px 12px' : 0, fontFamily: 'inherit', fontWeight: 700 }}
                 >
                   {isMobile ? '← Volver' : '×'}
@@ -430,10 +443,32 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 <div style={{ marginTop: 14 }}>
                   {resendOk ? (
                     <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
-                      ✅ Email reenviado
+                      ✅ Reenviado a {resendEmail || selected.customer_email}
                     </div>
                   ) : (
                     <>
+                      {/* Email editable para reenvío */}
+                      <div style={{ marginBottom: 10 }}>
+                        <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Reenviar a</div>
+                        <input
+                          value={resendEmail}
+                          onChange={e => { setResendEmail(e.target.value); setResendError(null) }}
+                          type="email"
+                          placeholder={selected.customer_email}
+                          style={{
+                            width: '100%', boxSizing: 'border-box',
+                            background: '#111', borderRadius: 8, padding: '8px 10px', color: '#fff',
+                            fontSize: 12, fontFamily: 'inherit', outline: 'none',
+                            border: `1px solid ${resendEmail && resendEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
+                          }}
+                        />
+                        {resendEmail && resendEmail !== selected.customer_email && (
+                          <div style={{ fontSize: 10, color: '#F59E0B', marginTop: 4 }}>
+                            ⚠ Email diferente al registrado
+                          </div>
+                        )}
+                      </div>
+
                       {resendError && (
                         <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 8 }}>
                           ⚠ {resendError}
@@ -467,10 +502,32 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
                 {deliverOk ? (
                   <div style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#22C55E', fontWeight: 700, textAlign: 'center' }}>
-                    ✅ QR enviado al cliente
+                    ✅ QR enviado a {deliverEmail || selected.customer_email}
                   </div>
                 ) : (
                   <>
+                    {/* Email destino — editable */}
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Email del cliente</div>
+                      <input
+                        value={deliverEmail}
+                        onChange={e => { setDeliverEmail(e.target.value); setDeliverError(null) }}
+                        type="email"
+                        placeholder={selected.customer_email}
+                        style={{
+                          width: '100%', boxSizing: 'border-box',
+                          background: '#111', borderRadius: 8, padding: '8px 10px', color: '#fff',
+                          fontSize: 12, fontFamily: 'inherit', outline: 'none',
+                          border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
+                        }}
+                      />
+                      {deliverEmail && deliverEmail !== selected.customer_email && (
+                        <div style={{ fontSize: 10, color: '#F59E0B', marginTop: 4 }}>
+                          ⚠ Enviando a un email diferente al registrado. Verificá antes de continuar.
+                        </div>
+                      )}
+                    </div>
+
                     {/* Cadena de activación */}
                     <div style={{ marginBottom: 10 }}>
                       <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Cadena de activación</div>

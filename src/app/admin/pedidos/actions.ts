@@ -41,6 +41,7 @@ async function _deliverCore(
   source: 'b2b' | 'b2c',
   activationString: string,
   confirmationCode: string,
+  overrideEmail?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const parsed = parseActivationString(activationString)
   if (!parsed.ok) return { ok: false, error: parsed.error }
@@ -128,6 +129,9 @@ async function _deliverCore(
     console.warn('[deliver] No se pudo subir QR a Storage, usando cid: como fallback', e)
   }
 
+  // Email de destino — usar override si se proporcionó, si no el registrado
+  const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
+
   // Importe — B2C usa amount_usd, B2B usa pvp_at_time
   const amountUSD = source === 'b2c'
     ? (order.amount_usd ?? 0)
@@ -148,7 +152,7 @@ async function _deliverCore(
   })
 
   const { error: emailError } = await sendEmail(
-    order.customer_email,
+    recipientEmail,
     tmpl.subject,
     tmpl.html,
     [{ filename: 'esim-qr.png', content: qrBuffer, content_type: 'image/png', content_id: 'esim-qr' }],
@@ -159,15 +163,21 @@ async function _deliverCore(
     return { ok: false, error: 'Error enviando el email al cliente. Intentá nuevamente.' }
   }
 
-  // Actualizar estado + guardar cadena para reenvío
+  // Actualizar estado + guardar cadena + actualizar email si fue corregido
+  const updatePayload: Record<string, string> = {
+    status: 'qr_sent',
+    qr_sent_at: new Date().toISOString(),
+    activation_string: parsed.data.raw,
+    confirmation_code: confirmationCode.trim(),
+  }
+  if (overrideEmail && overrideEmail.trim() && overrideEmail.trim() !== order.customer_email) {
+    updatePayload.customer_email = overrideEmail.trim()
+    console.log(`[deliver] Email actualizado: ${order.customer_email} → ${overrideEmail.trim()}`)
+  }
+
   await supabase
     .from(table)
-    .update({
-      status: 'qr_sent',
-      qr_sent_at: new Date().toISOString(),
-      activation_string: parsed.data.raw,
-      confirmation_code: confirmationCode.trim(),
-    })
+    .update(updatePayload)
     .eq('id', orderId)
 
   revalidatePath('/admin/pedidos')
@@ -180,9 +190,10 @@ export async function deliverOrder(
   source: 'b2b' | 'b2c',
   activationString: string,
   confirmationCode: string,
+  overrideEmail?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   await requireAdmin()
-  return _deliverCore(orderId, source, activationString, confirmationCode)
+  return _deliverCore(orderId, source, activationString, confirmationCode, overrideEmail)
 }
 
 // Alias para compatibilidad — internamente usa deliverOrder
@@ -199,6 +210,7 @@ export async function deliverB2COrder(
 export async function resendDeliveryEmail(
   orderId: string,
   source: 'b2b' | 'b2c' = 'b2c',
+  overrideEmail?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   await requireAdmin()
 
@@ -248,6 +260,7 @@ export async function resendDeliveryEmail(
     qrUrl = urlData.publicUrl
   } catch {}
 
+  const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
   const amountUSD = source === 'b2c'
     ? (order.amount_usd ?? 0)
     : (order.pvp_at_time ?? 0)
@@ -266,7 +279,7 @@ export async function resendDeliveryEmail(
   })
 
   const { error: emailError } = await sendEmail(
-    order.customer_email,
+    recipientEmail,
     `[Reenvío] ${tmpl.subject}`,
     tmpl.html,
     [{ filename: 'esim-qr.png', content: qrBuffer, content_type: 'image/png', content_id: 'esim-qr' }],
