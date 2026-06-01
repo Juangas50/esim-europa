@@ -8,7 +8,7 @@
   "hero": {
     "eyebrow": "El chip digital para viajar a Europa",
     "headline": "Llegá a Europa con internet listo para usar",
-    "sub": "Comprá tu eSIM antes de viajar, instalala con QR y activala cuando aterrices. Sin contratos ni sorpresas.",
+    "sub": "Lo que otras eSIMs cobran por una semana, vos viajás un mes entero. Compralo antes de viajar, instalalo con QR y llegás conectado.",
     "cta": "Ver planes",
     "ctaSecondary": "Cómo funciona",
     "trust1": "Pago único",
@@ -43,7 +43,7 @@
     "title": "Elegí tu plan",
     "subtitle": "Precios en dólares, un solo pago, sin renovación automática.",
     "popular": "Más elegido",
-    "socialProof": "+5.000 viajeros activos",
+    "socialProof": "Atención L-S · 8 a 21 h España",
     "perMonth": "por 28 días",
     "dataGb": "GB de datos",
     "countries": "países",
@@ -165,8 +165,8 @@
   },
   "testimonials": {
     "title": "Lo que dicen nuestros viajeros",
-    "subtitle": "+5.000 latinoamericanos ya viajan conectados con RUTA34",
-    "aggregate": "4.9/5 · Más de 500 opiniones verificadas"
+    "subtitle": "Viajeros del Cono Sur que ya lo probaron",
+    "aggregate": "Respaldado por viajeros de Argentina, Chile, Uruguay y Brasil"
   },
   "footer": {
     "tagline": "Tu internet en Europa, sin dramas.",
