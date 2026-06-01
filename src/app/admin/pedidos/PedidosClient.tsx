@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail } from './actions'
+import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail, resendGroupOrders } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { toast } from '@/lib/toast'
 
@@ -178,9 +178,25 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     setResending(true)
     setResendError(null)
     setResendOk(false)
-    const result = await resendDeliveryEmail(selected.id, selected.source, resendEmail.trim() || selected.customer_email)
-    if (result.ok) { setResendOk(true); toast('Email reenviado') }
-    else { setResendError(result.error); toast(result.error, 'error') }
+
+    const toEmail = resendEmail.trim() || selected.customer_email
+
+    let result: { ok: boolean; error?: string }
+    if (selected.group_count > 1) {
+      // Reenvío de grupo: busca activation_strings en la DB
+      result = await resendGroupOrders(
+        selected.group_orders.map(o => o.id),
+        selected.customer_email,
+        `${selected.customer_name} ${selected.customer_lastname}`,
+        selected.pvp_at_time,
+        toEmail !== selected.customer_email ? toEmail : undefined,
+      )
+    } else {
+      result = await resendDeliveryEmail(selected.id, selected.source, toEmail !== selected.customer_email ? toEmail : undefined)
+    }
+
+    if (result.ok) { setResendOk(true); toast(`Email reenviado a ${toEmail}`) }
+    else { setResendError(result.error ?? 'Error'); toast(result.error ?? 'Error', 'error') }
     setResending(false)
   }
 
@@ -489,8 +505,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </span>
             </div>
 
-            {/* ── Cadena de activación guardada — B2C y B2B con QR enviado ── */}
-            {selected.status === 'qr_sent' && selected.activation_string && (
+            {/* ── Cadena(s) guardada(s) + reenvío — qr_sent ── */}
+            {selected.status === 'qr_sent' && (selected.activation_string || selected.group_count > 1) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 14 }}>
                 <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 6 }}>Cadena de activación enviada</div>
                 <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>

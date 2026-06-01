@@ -229,10 +229,10 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
 
       {/* Dots — visibles en mobile */}
       <div className="flex items-center justify-center gap-2 mt-5">
-        {plans.map((_, i) => (
+        {plans.map((p, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
+            onClick={() => { setCurrent(i); analytics.swipePlanCarousel("dot", p.id) }}
             className={`rounded-full transition-all duration-200 ${
               i === current ? "w-6 h-2 bg-[#E60000]" : "w-2 h-2 bg-[#111111]/15"
             }`}
@@ -243,14 +243,14 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
       {/* Flechas — solo desktop */}
       <div className="hidden sm:flex items-center justify-center gap-3 mt-4">
         <button
-          onClick={() => setCurrent((c) => Math.max(0, c - 1))}
+          onClick={() => { setCurrent((c) => Math.max(0, c - 1)); analytics.swipePlanCarousel("prev") }}
           disabled={current === 0}
           className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#111111] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
           <CaretLeft size={16} weight="bold" />
         </button>
         <button
-          onClick={() => setCurrent((c) => Math.min(maxIndex, c + 1))}
+          onClick={() => { setCurrent((c) => Math.min(maxIndex, c + 1)); analytics.swipePlanCarousel("next") }}
           disabled={current === maxIndex}
           className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#111111] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
@@ -322,6 +322,7 @@ export default function Plans({ plans }: PlansProps) {
           {/* Mini CTA → FAQ cuántos GB necesito */}
           <a
             href="#faq-needs"
+            onClick={() => analytics.gbGuideOpened()}
             className="inline-flex items-center gap-2 text-xs font-semibold text-[#555] bg-amber-50 border border-amber-200 rounded-full px-4 py-2 hover:bg-amber-100 hover:text-[#111] transition-colors duration-200"
           >
             <span>💡</span>

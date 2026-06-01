@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { createTariff, updateTariff, deleteTariff } from './actions'
 
@@ -33,6 +33,13 @@ function TariffForm({ initial, onSave, onCancel }: {
     highlight: initial?.highlight || false,
   })
   const [loading, setLoading] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check, { passive: true })
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -73,14 +80,24 @@ function TariffForm({ initial, onSave, onCancel }: {
         <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
           Descripción
         </label>
-        <div data-color-mode="dark">
-          <MDEditor
+        {isMobile ? (
+          <textarea
             value={form.badge}
-            onChange={val => setForm({ ...form, badge: val || '' })}
-            height={160}
-            preview="edit"
+            onChange={e => setForm({ ...form, badge: e.target.value })}
+            rows={4}
+            placeholder="Descripción del plan..."
+            style={{ ...inp, resize: 'vertical', minHeight: 90 }}
           />
-        </div>
+        ) : (
+          <div data-color-mode="dark">
+            <MDEditor
+              value={form.badge}
+              onChange={val => setForm({ ...form, badge: val || '' })}
+              height={160}
+              preview="edit"
+            />
+          </div>
+        )}
         <div style={{ fontSize: 11, color: '#7A7A7A', marginTop: 6 }}>
           Podés usar **negrita**, _cursiva_, listas y más.
         </div>

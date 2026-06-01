@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 import { formatUSD } from "@/lib/utils";
+import { analytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -199,6 +200,7 @@ export default function Hero({ minPrice }: HeroProps) {
             >
               <a
                 href="#planes"
+                onClick={() => analytics.viewPlansClicked()}
                 className="inline-flex items-center gap-2.5 bg-[#E60000] text-white font-bold text-base px-7 py-3.5 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.4)]"
                 style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
               >

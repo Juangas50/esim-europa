@@ -11,6 +11,7 @@ import PurchaseFAQ from "@/components/purchase/PurchaseFAQ";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
+import { useRef } from "react";
 
 const COUNTRIES = ["AR", "UY", "CL", "BR", "MX", "CO", "PE", "VE", "EC", "PY", "BO", "OTHER"] as const;
 
@@ -94,7 +95,14 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   // Local SIM plans allow scheduling activation date; data-only plans activate on demand
   const isLocal = plan.type === "local";
 
+  const emailMismatchFired = useRef(false);
+
   const onSubmit = (data: FormValues) => {
+    // Si hay error de email mismatch, disparar evento (solo una vez por sesión)
+    if (!emailMismatchFired.current && data.customer_email !== data.confirm_email) {
+      analytics.emailMismatchError();
+      emailMismatchFired.current = true;
+    }
     const finalActivationDate =
       data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
     analytics.checkoutStepCompleted(2, "data", plan);
@@ -118,7 +126,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <button
                 key={n}
                 type="button"
-                onClick={() => setQuantity(n)}
+                onClick={() => { setQuantity(n); if (n !== quantity) analytics.quantitySelected(n, plan) }}
                 className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
                   quantity === n
                     ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
@@ -218,6 +226,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   type="radio"
                   {...register("activation_type")}
                   value="now"
+                  onChange={() => analytics.activationOptionSelected("now", plan)}
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div>
@@ -236,6 +245,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   type="radio"
                   {...register("activation_type")}
                   value="schedule"
+                  onChange={() => analytics.activationOptionSelected("schedule", plan)}
                   className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <div className="flex-1">

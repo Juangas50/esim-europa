@@ -186,4 +186,9 @@ export const analytics = {
   confirmationViewed(orderRef: string, quantity: number) {
     push({ event: "view_confirmation", order_ref: orderRef, quantity });
   },
+
+  /** Landing — swipe/navegación en carrusel de planes */
+  swipePlanCarousel(direction: "prev" | "next" | "dot", planId?: string) {
+    push({ event: "swipe_plan_carousel", direction, plan_id: planId });
+  },
 };

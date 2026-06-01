@@ -293,6 +293,82 @@ export async function resendDeliveryEmail(
   return { ok: true }
 }
 
+// ── Reenvío de grupo MultiSIM ─────────────────────────────────────────────────
+export async function resendGroupOrders(
+  groupOrderIds: string[],
+  recipientEmail: string,
+  customerName: string,
+  amountUSD: number,
+  overrideEmail?: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+
+  const supabase = createAdminClient()
+  const toEmail = (overrideEmail?.trim()) ? overrideEmail.trim() : recipientEmail
+
+  // Obtener datos de cada pedido del grupo
+  const { data: orders } = await supabase
+    .from('b2c_orders')
+    .select('id, order_ref, activation_string, confirmation_code, tariff_id, status')
+    .in('id', groupOrderIds)
+
+  if (!orders || orders.length === 0) return { ok: false, error: 'Pedidos no encontrados.' }
+
+  const missing = orders.filter(o => !o.activation_string)
+  if (missing.length > 0) {
+    return { ok: false, error: `${missing.length} eSIM(s) sin cadena guardada. Solo se puede reenviar pedidos entregados desde este portal.` }
+  }
+
+  // Obtener tarifa del primer pedido
+  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  const firstTariffId = orders[0]?.tariff_id
+  if (firstTariffId) {
+    const { data: t } = await supabase.from('tariffs').select('name, type, data_gb, duration_days').eq('id', firstTariffId).single()
+    tariff = t
+  }
+
+  // Regenerar N QRs
+  const esimItems: Array<{ label: string; orderRef: string; activationString: string; confirmationCode: string; qrUrl?: string }> = []
+
+  for (let i = 0; i < orders.length; i++) {
+    const o = orders[i]
+    const parsed = parseActivationString(o.activation_string!)
+    if (!parsed.ok) return { ok: false, error: `Cadena inválida en pedido ${o.order_ref}` }
+
+    let qrUrl: string | undefined
+    try {
+      const qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
+      await supabase.storage.from('qr-codes').upload(`${o.id}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${o.id}.png`)
+      qrUrl = urlData.publicUrl
+    } catch {}
+
+    esimItems.push({
+      label: `eSIM ${i + 1} de ${orders.length}`,
+      orderRef: o.order_ref,
+      activationString: o.activation_string!,
+      confirmationCode: o.confirmation_code ?? '—',
+      qrUrl,
+    })
+  }
+
+  const tmpl = emailEntregaMultiple({
+    customerName,
+    totalCount: orders.length,
+    planName: tariff?.name ?? 'eSIM RUTA34',
+    planGB: tariff?.data_gb ?? 0,
+    planDays: tariff?.duration_days ?? 28,
+    planType: tariff?.type ?? 'local',
+    amountUSD,
+    esims: esimItems,
+  })
+
+  const { error: emailError } = await sendEmail(toEmail, `[Reenvío] ${tmpl.subject}`, tmpl.html)
+  if (emailError) return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
+
+  return { ok: true }
+}
+
 // ── Entrega de grupo MultiSIM — valida todas las cadenas y envía 1 email ─────
 export async function deliverGroupOrders(
   deliveries: Array<{ orderId: string; activationString: string; confirmationCode: string }>,

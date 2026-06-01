@@ -19,7 +19,9 @@ function ConfirmacionContent() {
   // Fire once — GA4 purchase confirmation page view
   useEffect(() => {
     if (orderRef !== "—") {
+      const qty = parseInt(searchParams.get("qty") ?? "1", 10) || 1;
       analytics.purchaseConfirmedPageViewed(orderRef, planId);
+      analytics.confirmationViewed(orderRef, qty);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
