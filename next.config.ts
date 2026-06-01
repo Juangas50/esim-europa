@@ -28,10 +28,10 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts
       "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + Unsplash + GA pixel
-      "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com",
-      // Connect: API calls — self + Supabase + GA + Stripe
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://api.stripe.com https://checkout.stripe.com",
+      // Images: self + GA pixel + GTM
+      "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com",
+      // Connect: API calls — self + Supabase + GA4 (todas las regiones) + GTM + Stripe
+      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://api.stripe.com https://checkout.stripe.com",
       // Iframes: GTM noscript + Stripe checkout
       "frame-src https://www.googletagmanager.com https://js.stripe.com https://checkout.stripe.com",
       // Block all object/embed
