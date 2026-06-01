@@ -48,10 +48,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 
 /**
- * GTM noscript fallback — only renders after consent.
- * Because this is a Server Component context, we keep it simple:
- * it renders nothing (noscript users won't have localStorage anyway).
+ * GTM noscript fallback — iframe para usuarios sin JavaScript.
+ * Debe ir inmediatamente después del <body>.
  */
 export function GTMNoScript() {
-  return null;
+  if (!GTM_ID) return null;
+  return (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+        height="0"
+        width="0"
+        style={{ display: 'none', visibility: 'hidden' }}
+      />
+    </noscript>
+  );
 }
