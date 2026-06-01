@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const FAQ_KEYS = [
-  "what", "compatible", "whatsapp", "qr_receive", "when_starts",
+  "chip_vs_esim", "what", "compatible", "whatsapp", "qr_receive", "when_starts",
   "number", "when", "costs", "diff", "no_email", "not_working", "needs",
 ] as const;
 

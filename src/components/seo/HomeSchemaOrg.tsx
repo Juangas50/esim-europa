@@ -11,6 +11,10 @@ interface Props {
 
 const FAQ_ES = [
   {
+    q: "¿Es lo mismo una eSIM que un chip para Europa?",
+    a: "Sí, es exactamente lo mismo. Cuando buscás 'chip para España' o 'chip para Europa', la eSIM es la versión digital de ese chip. Se instala escaneando un código QR en tu celular en menos de 5 minutos, sin tarjeta física. Comprás desde Argentina, Chile, Uruguay o Brasil y al llegar a Europa ya tenés internet.",
+  },
+  {
     q: "¿Qué es una eSIM?",
     a: "Una eSIM es una SIM virtual que se instala directamente en tu teléfono escaneando un código QR. No necesitás una tarjeta física. Funciona igual que una SIM tradicional pero se activa al instante desde tu celular.",
   },

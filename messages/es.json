@@ -6,7 +6,7 @@
     "buyNow": "Comprar eSIM"
   },
   "hero": {
-    "eyebrow": "eSIM para viajeros latinoamericanos",
+    "eyebrow": "El chip digital para viajar a Europa",
     "headline": "Llegá a Europa con internet desde el primer minuto",
     "sub": "Comprá tu eSIM antes de viajar, instalala con QR y activala cuando aterrices. Sin contratos ni sorpresas.",
     "cta": "Ver planes",
@@ -27,7 +27,7 @@
       },
       "instant": {
         "title": "Internet rápido apenas aterrizás",
-        "desc": "La eSIM ya está instalada. Llegás, activás y listo. Sin colas, sin trámites en el aeropuerto."
+        "desc": "El chip digital ya está instalado en tu celular. Llegás, activás y listo. Sin colas, sin trámites en el aeropuerto."
       },
       "nopermanence": {
         "title": "Pagás exactamente lo que necesitás",
@@ -109,6 +109,10 @@
   "faq": {
     "title": "Todo lo que querés saber antes de comprar",
     "items": {
+      "chip_vs_esim": {
+        "q": "¿Es lo mismo una eSIM que un chip para Europa?",
+        "a": "Sí, es exactamente lo mismo. Cuando buscás 'chip para España' o 'chip para Europa', la eSIM es la versión digital de ese chip — funciona igual que el chip físico de tu celular pero sin tarjeta física. Se instala escaneando un código QR en tu celular en menos de 5 minutos. La ventaja es que no tenés que ir a ninguna tienda ni esperar envíos: comprás desde Argentina, Chile, Uruguay o Brasil, recibís el QR por email y lo instalás antes de subir al avión. Al llegar a Europa, ya tenés internet."
+      },
       "what": {
         "q": "¿Qué es una eSIM?",
         "a": "Una eSIM es una SIM virtual que se instala directamente en tu teléfono escaneando un código QR. No necesitás una tarjeta física. Funciona igual que una SIM tradicional pero se activa al instante desde tu celular."
