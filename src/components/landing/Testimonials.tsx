@@ -13,7 +13,7 @@ const TESTIMONIALS_ES = [
     country: "Argentina",
     flag: "🇦🇷",
     text: "Me salvó el viaje. Llegué a Madrid y ya tenía internet, sin hacer nada en el aeropuerto. El QR con todas las instrucciones me llegó directo al email. Increíble.",
-    plan: "Data Europa · 10 GB",
+    plan: "SIM Local M · 270 GB",
     rating: 5,
   },
   {
@@ -21,7 +21,7 @@ const TESTIMONIALS_ES = [
     country: "México",
     flag: "🇲🇽",
     text: "Lo usé en un viaje de 3 semanas por España, Francia e Italia. Funcionó perfecto en todos lados. Muy fácil de instalar, escaneás el QR y listo.",
-    plan: "Data Europa · 20 GB",
+    plan: "SIM Local L · 330 GB",
     rating: 5,
   },
   {
@@ -29,7 +29,7 @@ const TESTIMONIALS_ES = [
     country: "Brasil",
     flag: "🇧🇷",
     text: "Facilísimo. Instalé el QR antes de embarcar y cuando llegué a Lisboa ya estaba conectada. Sin colas, sin estrés. Lo recomiendo a todos los que viajan a Europa.",
-    plan: "Data Europa · 10 GB",
+    plan: "SIM Local M · 270 GB",
     rating: 5,
   },
 ];
@@ -40,7 +40,7 @@ const TESTIMONIALS_PT = [
     country: "Argentina",
     flag: "🇦🇷",
     text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR com todas as instruções chegou direto no meu email. Incrível.",
-    plan: "Data Europa · 10 GB",
+    plan: "SIM Local M · 270 GB",
     rating: 5,
   },
   {
@@ -48,7 +48,7 @@ const TESTIMONIALS_PT = [
     country: "México",
     flag: "🇲🇽",
     text: "Usei numa viagem de 3 semanas pela Espanha, França e Itália. Funcionou perfeitamente em todos os lugares. Muito fácil de instalar.",
-    plan: "Data Europa · 20 GB",
+    plan: "SIM Local L · 330 GB",
     rating: 5,
   },
   {
@@ -56,7 +56,7 @@ const TESTIMONIALS_PT = [
     country: "Brasil",
     flag: "🇧🇷",
     text: "Muito fácil! Instalei o QR antes de embarcar e quando cheguei em Lisboa já estava conectada. Sem fila, sem estresse. Super recomendo.",
-    plan: "Data Europa · 10 GB",
+    plan: "SIM Local M · 270 GB",
     rating: 5,
   },
 ];

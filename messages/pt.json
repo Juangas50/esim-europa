@@ -7,12 +7,12 @@
   },
   "hero": {
     "eyebrow": "O chip digital para viajar à Europa",
-    "headline": "Chegue à Europa com internet desde o primeiro minuto",
+    "headline": "Chegue à Europa com internet pronto para usar",
     "sub": "Compre seu eSIM antes de viajar, instale com QR e ative ao pousar. Sem contratos nem surpresas.",
     "cta": "Ver planos",
     "ctaSecondary": "Como funciona",
     "trust1": "Pagamento único",
-    "trust2": "Sem renovação automática",
+    "trust2": "Número espanhol incluído 🇪🇸",
     "trust3": "QR por email",
     "trust4": "Mantém seu WhatsApp",
     "trust5": "Suporte pelo WhatsApp",
@@ -83,7 +83,7 @@
       },
       "2": {
         "title": "Preencha seus dados",
-        "desc": "Nome, email e pronto. Não precisa criar conta. O eSIM chega no seu email em menos de um minuto."
+        "desc": "Nome, email e pronto. Não precisa criar conta. Você recebe o QR por email dentro do horário de atendimento para instalar antes de viajar."
       },
       "3": {
         "title": "Escaneie e pronto",
@@ -221,7 +221,7 @@
       },
       "qr": {
         "q": "Quando chega o QR de ativação?",
-        "a": "Em menos de um minuto após confirmar o pagamento. Chega por email. Escaneie com seu celular antes de sair do seu país (você precisa de WiFi só para instalar) e ative o eSIM quando chegar na Europa."
+        "a": "Enviamos o QR por email dentro do horário de atendimento (segunda a sábado das 8 às 21 h, horário da Espanha). Escaneie com WiFi antes de sair do seu país e ative o eSIM quando chegar na Europa."
       }
     },
     "payment": {
