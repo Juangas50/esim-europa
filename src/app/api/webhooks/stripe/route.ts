@@ -77,12 +77,44 @@ export async function POST(req: NextRequest) {
       console.log(`[webhook] Creadas ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef}`);
     }
 
-    // 2. Enviar emails (confirmación al cliente + alerta al admin)
+    // 2. Enviar emails
     const plan = await getPlanById(planId);
-    if (plan && order.customer_email) {
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3002";
+    const baseUrl = "https://www.esimruta34.com";
 
-      // 2a. Email al cliente — pedido recibido, eSIM en 24 hs
+    // 2a. Alerta al admin — fuera del if(plan) para que siempre dispare
+    try {
+      const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").filter(Boolean);
+      console.log("[email:admin] ADMIN_EMAILS configurados:", adminEmails.length, "| orderRef:", orderRef);
+      if (adminEmails.length === 0) {
+        console.warn("[email:admin] ADMIN_EMAILS vacío — revisar variable de entorno en Vercel");
+      } else {
+        const tmplAdmin = emailNuevoPedidoAdmin({
+          customerName: order.customer_name,
+          customerLastname: order.customer_lastname ?? "",
+          customerEmail: order.customer_email,
+          customerCountry: order.customer_country ?? "",
+          orderRef,
+          planName: plan?.name ?? planId,
+          planGB: plan?.data_gb ?? 0,
+          amountUSD: order.amount_usd ?? 0,
+          portalUrl: `${baseUrl}/admin/pedidos`,
+        });
+        const results = await Promise.all(
+          adminEmails.map(email => sendEmail(email.trim(), tmplAdmin.subject, tmplAdmin.html))
+        );
+        const errors = results.filter(r => r.error);
+        if (errors.length > 0) {
+          console.error("[email:admin] Error al enviar:", errors.map(r => r.error));
+        } else {
+          console.log("[email:admin] alerta enviada a", adminEmails.length, "destinatario(s) | orderRef:", orderRef);
+        }
+      }
+    } catch (e) {
+      console.error("[email:admin] Excepción:", e);
+    }
+
+    // 2b. Email al cliente — confirmación de pedido recibido
+    if (plan && order.customer_email) {
       try {
         const tmplCliente = emailConfirmacionB2C({
           customerName: order.customer_name,
@@ -98,32 +130,8 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         console.error("[email:cliente] Error:", e);
       }
-
-      // 2b. Alerta inmediata al admin
-      try {
-        const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").filter(Boolean);
-        if (adminEmails.length > 0) {
-          const tmplAdmin = emailNuevoPedidoAdmin({
-            customerName: order.customer_name,
-            customerLastname: order.customer_lastname ?? "",
-            customerEmail: order.customer_email,
-            customerCountry: order.customer_country ?? "",
-            orderRef,
-            planName: plan.name,
-            planGB: plan.data_gb,
-            amountUSD: plan.price_usd,
-            portalUrl: `${baseUrl}/admin/pedidos`,
-          });
-          await Promise.all(
-            adminEmails.map(email =>
-              sendEmail(email.trim(), tmplAdmin.subject, tmplAdmin.html)
-            )
-          );
-          console.log("[email:admin] alerta enviada | orderRef:", orderRef);
-        }
-      } catch (e) {
-        console.error("[email:admin] Error:", e);
-      }
+    } else {
+      console.warn("[email:cliente] plan no encontrado para planId:", planId, "| email:", order.customer_email);
     }
 
     // 3. GA4 Measurement Protocol — purchase event (server-side, survives Stripe redirect)

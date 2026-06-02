@@ -11,7 +11,9 @@ import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 import { getPlans } from "@/lib/plans-server";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
+// Siempre usar el dominio real en producción — ignorar si apunta a vercel.app
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
 
 // ── Per-locale copy ──────────────────────────────────────────────────────────
 const META = {

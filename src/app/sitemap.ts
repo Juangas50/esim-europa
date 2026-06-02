@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
 const locales = ["es", "pt"] as const;
 
 // Rutas públicas indexables (excluye compra, confirmacion, legales)

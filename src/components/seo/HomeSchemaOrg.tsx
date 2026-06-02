@@ -1,7 +1,8 @@
 import JsonLd from "./JsonLd";
 import { PLANS } from "@/lib/plans";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://esimruta34.com";
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
 
 interface Props {
   locale: "es" | "pt";

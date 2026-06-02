@@ -91,9 +91,6 @@ export default function Footer() {
             © {year} RUTA34 Telecom. {t("rights")}
           </p>
           <div className="flex items-center gap-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-white/20">
-              Powered by Vodafone España
-            </span>
           </div>
         </div>
 
