@@ -180,30 +180,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               )}
             </motion.button>
 
-            {/* MercadoPago */}
-            <motion.button
-              onClick={() => setMethod("mercadopago")}
-              whileTap={{ scale: 0.99 }}
-              className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
-                method === "mercadopago"
-                  ? "border-[#E60000] bg-[#E60000]/3"
-                  : "border-[#111111]/8 hover:border-[#111111]/20"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  method === "mercadopago" ? "border-[#E60000]" : "border-[#ccc]"
-                }`}>
-                  {method === "mercadopago" && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#E60000]" />
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold text-sm text-[#111]">{t("payment.mp")}</p>
-                  <p className="text-xs text-[#999]">{t("payment.mpSub")}</p>
-                </div>
-              </div>
-            </motion.button>
+            {/* MercadoPago — oculto temporalmente, próximamente */}
           </div>
         </div>
 
