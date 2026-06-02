@@ -30,7 +30,7 @@ export default async function TerminosPage({
 // ── ES ────────────────────────────────────────────────────────────────────────
 function TerminosES() {
   return (
-    <LegalLayout title="Términos y condiciones" lastUpdated="24 de mayo de 2026">
+    <LegalLayout title="Términos y condiciones" lastUpdated="2 de junio de 2026">
       <Section title="1. Objeto del servicio">
         <p>
           RUTA34 Telecom (en adelante, «la empresa») ofrece servicios de venta de eSIMs para su
@@ -38,27 +38,24 @@ function TerminosES() {
           una compra en esimruta34.com, el cliente acepta íntegramente los presentes términos y
           condiciones.
         </p>
+        <p>
+          El servicio se presta sobre una red de telecomunicaciones española certificada con
+          cobertura 4G/5G en España y más de 30 países europeos.
+        </p>
       </Section>
 
       <Section title="2. Descripción del producto">
         <p>
           Una eSIM es un perfil de datos móviles que se instala de forma virtual en dispositivos
-          compatibles. RUTA34 Telecom comercializa dos tipos de planes:
+          compatibles. RUTA34 Telecom comercializa planes de <strong>eSIM Prepago</strong>: el
+          período de 28 días comienza a contar desde el momento en que el cliente activa la eSIM.
+          El cliente dispone de hasta 12 meses desde la compra para activarla.
         </p>
-        <ul>
-          <li>
-            <strong>eSIM Prepago:</strong> el período de 28 días comienza a contar desde el momento
-            en que el cliente activa la eSIM. El cliente dispone de hasta 12 meses desde la compra
-            para activarla.
-          </li>
-          <li>
-            <strong>eSIM DataOnly:</strong> el cliente dispone de 60 días desde la fecha de compra
-            para activar la eSIM. Una vez activada, el período de uso corre según el plan adquirido.
-          </li>
-        </ul>
         <p>
-          El código QR de activación se envía por correo electrónico al completar el pago, en un
-          plazo máximo de 60 minutos.
+          El código QR de activación se envía por correo electrónico al completar el pago, dentro
+          del horario de atención (lunes a sábado, 8:00 a 21:00 h, hora de España), en un plazo
+          máximo de 2 horas. Los pedidos realizados fuera de ese horario serán procesados al inicio
+          del siguiente período de atención.
         </p>
       </Section>
 
@@ -84,9 +81,6 @@ function TerminosES() {
           <li>
             Tarjeta de crédito o débito (Visa, Mastercard, American Express) a través de Stripe.
           </li>
-          <li>
-            MercadoPago (disponible para Argentina, Chile, México, Colombia y Brasil).
-          </li>
         </ul>
         <p>
           El cobro es único y no existe renovación automática. La empresa no almacena datos de
@@ -102,7 +96,9 @@ function TerminosES() {
         </p>
         <p>
           Una vez instalada la eSIM, no procede reembolso bajo ninguna circunstancia, dado que el
-          perfil ya ha sido activado en el dispositivo del cliente.
+          perfil ya ha sido activado en el dispositivo del cliente. Antes de procesar cualquier
+          reembolso, RUTA34 Telecom verificará con el operador de red si el perfil eSIM ha sido
+          descargado o activado en algún dispositivo.
         </p>
         <p>
           Para solicitar un reembolso, el cliente deberá contactar con el soporte por WhatsApp o
@@ -114,8 +110,9 @@ function TerminosES() {
         <p>
           La cobertura y la velocidad de datos dependen de la red del operador local en cada país
           europeo. RUTA34 Telecom no garantiza velocidades mínimas ni cobertura en zonas rurales o
-          remotas. Las llamadas de voz y los SMS no están incluidos salvo indicación expresa en el
-          plan.
+          remotas. Todos los planes incluyen llamadas y SMS ilimitados dentro de España. El roaming
+          de voz en otros países de la UE depende del plan contratado. Consultá las especificaciones
+          de cada plan antes de comprar.
         </p>
       </Section>
 
@@ -166,34 +163,31 @@ function TerminosES() {
 // ── PT ────────────────────────────────────────────────────────────────────────
 function TerminosPT() {
   return (
-    <LegalLayout title="Termos e condições" lastUpdated="24 de maio de 2026">
+    <LegalLayout title="Termos e condições" lastUpdated="2 de junho de 2026">
       <Section title="1. Objeto do serviço">
         <p>
           A RUTA34 Telecom (doravante, «a empresa») oferece serviços de venda de eSIMs para uso
           na Europa e Espanha, destinados a viajantes originários da América Latina. Ao concluir
           uma compra em esimruta34.com, o cliente aceita integralmente os presentes termos e condições.
         </p>
+        <p>
+          O serviço é prestado sobre uma rede de telecomunicações espanhola certificada com
+          cobertura 4G/5G na Espanha e em mais de 30 países europeus.
+        </p>
       </Section>
 
       <Section title="2. Descrição do produto">
         <p>
           Um eSIM é um perfil de dados móveis instalado virtualmente em dispositivos compatíveis.
-          A RUTA34 Telecom comercializa dois tipos de planos:
+          A RUTA34 Telecom comercializa planos de <strong>eSIM Pré-pago</strong>: o período de 28
+          dias começa a contar a partir do momento em que o cliente ativa o eSIM. O cliente tem até
+          12 meses a partir da compra para ativá-lo.
         </p>
-        <ul>
-          <li>
-            <strong>eSIM Pré-pago:</strong> o período de 28 dias começa a contar a partir do
-            momento em que o cliente ativa o eSIM. O cliente tem até 12 meses a partir da compra
-            para ativá-lo.
-          </li>
-          <li>
-            <strong>eSIM DataOnly:</strong> o cliente tem 60 dias a partir da data de compra para
-            ativar o eSIM. Uma vez ativado, o período de uso corre conforme o plano adquirido.
-          </li>
-        </ul>
         <p>
-          O código QR de ativação é enviado por e-mail ao concluir o pagamento, em um prazo máximo
-          de 60 minutos.
+          O código QR de ativação é enviado por e-mail ao concluir o pagamento, dentro do horário
+          de atendimento (segunda a sábado, das 8h às 21h, horário da Espanha), em um prazo máximo
+          de 2 horas. Os pedidos realizados fora desse horário serão processados no início do
+          próximo período de atendimento.
         </p>
       </Section>
 
@@ -219,9 +213,6 @@ function TerminosPT() {
           <li>
             Cartão de crédito ou débito (Visa, Mastercard, American Express) via Stripe.
           </li>
-          <li>
-            MercadoPago (disponível para Argentina, Chile, México, Colômbia e Brasil).
-          </li>
         </ul>
         <p>
           A cobrança é única e não há renovação automática. A empresa não armazena dados de
@@ -238,7 +229,9 @@ function TerminosPT() {
         </p>
         <p>
           Uma vez instalado o eSIM, não haverá reembolso em nenhuma circunstância, pois o perfil
-          já foi ativado no dispositivo do cliente.
+          já foi ativado no dispositivo do cliente. Antes de processar qualquer reembolso, a
+          RUTA34 Telecom verificará com a operadora de rede se o perfil eSIM foi baixado ou
+          ativado em algum dispositivo.
         </p>
         <p>
           Para solicitar um reembolso, o cliente deverá entrar em contato com o suporte pelo
@@ -250,7 +243,9 @@ function TerminosPT() {
         <p>
           A cobertura e a velocidade dos dados dependem da rede da operadora local em cada país
           europeu. A RUTA34 Telecom não garante velocidades mínimas nem cobertura em zonas rurais
-          ou remotas. Chamadas de voz e SMS não estão incluídos, salvo indicação expressa no plano.
+          ou remotas. Todos os planos incluem chamadas e SMS ilimitados dentro da Espanha. O
+          roaming de voz em outros países da UE depende do plano contratado. Consulte as
+          especificações de cada plano antes de comprar.
         </p>
       </Section>
 
