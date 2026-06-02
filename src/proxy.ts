@@ -69,6 +69,7 @@ export const config = {
     // - API routes
     // - Static files (_next, assets)
     // - Archivos con extensión (favicon, robots, sitemap)
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    // - Rutas de metadata de Next.js (icon, apple-icon, favicon, manifest)
+    "/((?!api|_next|_vercel|icon|apple-icon|favicon.*|manifest.*|.*\\..*).*)",
   ],
 };
