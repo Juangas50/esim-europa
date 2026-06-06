@@ -5,6 +5,19 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const isDev = process.env.NODE_ENV === "development";
 
+// ── Validate production environment ────────────────────────────────────────────
+// Prevent accidental deploys to production with test/staging credentials
+if (process.env.NODE_ENV === "production") {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+
+  if (!stripeSecretKey.startsWith("sk_live_")) {
+    throw new Error(
+      "❌ PRODUCTION BUILD ERROR: Stripe key must be LIVE (sk_live_*), not TEST or missing.\n" +
+      "   Check your environment variables in Vercel or .env.production"
+    );
+  }
+}
+
 // ── Security headers ──────────────────────────────────────────────────────────
 const securityHeaders = [
   // Prevents clickjacking — never embed in iframes
