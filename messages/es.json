@@ -106,6 +106,13 @@
     "checkGuide": "Guía completa de compatibilidad",
     "warning": "Antes de comprar, verificá que tu teléfono no esté bloqueado por tu operador local."
   },
+  "definition": {
+    "title": "¿Qué es una eSIM?",
+    "answer": "Una eSIM es un chip digital que se instala escaneando un código QR en tu teléfono. Funciona igual que una SIM física pero sin tarjeta: no necesitás ir a tienda, no esperás envíos, se activa al instante. Ideal para viajar.",
+    "no_physical_card": "Sin tarjeta física",
+    "instant_activation": "Activación instantánea",
+    "qr_scan": "Instala con QR"
+  },
   "faq": {
     "title": "Todo lo que querés saber antes de comprar",
     "items": {

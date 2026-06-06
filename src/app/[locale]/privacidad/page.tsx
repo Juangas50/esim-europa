@@ -1,19 +1,49 @@
 import { Metadata } from "next";
 import LegalLayout from "@/components/legal/LegalLayout";
+import LegalSchemaOrg from "@/components/seo/LegalSchemaOrg";
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const url = `${base}/${locale}/privacidad`;
+
   return {
     title:
       locale === "pt"
         ? "Política de privacidade — RUTA34 Telecom"
         : "Política de privacidad — RUTA34 Telecom",
-    robots: { index: false },
+    description:
+      locale === "pt"
+        ? "Política de privacidade da RUTA34 Telecom. Cumpre com LGPD e GDPR. Saiba como processamos seus dados pessoais."
+        : "Política de privacidad de RUTA34 Telecom. Cumple con RGPD. Conoce cómo procesamos tus datos personales.",
+    alternates: {
+      canonical: url,
+      languages: {
+        es: `${base}/es/privacidad`,
+        pt: `${base}/pt/privacidad`,
+      },
+    },
+    openGraph: {
+      title:
+        locale === "pt"
+          ? "Política de privacidade — RUTA34 Telecom"
+          : "Política de privacidad — RUTA34 Telecom",
+      description:
+        locale === "pt"
+          ? "Política de privacidade da RUTA34 Telecom. Cumpre com LGPD e GDPR."
+          : "Política de privacidad de RUTA34 Telecom. Cumple con RGPD.",
+      type: "website",
+      url,
+      locale: locale === "pt" ? "pt_BR" : "es_AR",
+      siteName: "RUTA34 Telecom",
+    },
   };
 }
 
@@ -24,7 +54,12 @@ export default async function PrivacidadPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  return locale === "pt" ? <PrivacidadPT /> : <PrivacidadES />;
+  return (
+    <>
+      <LegalSchemaOrg locale={locale as "es" | "pt"} page="privacidad" lastUpdated="24 de mayo de 2026" />
+      {locale === "pt" ? <PrivacidadPT /> : <PrivacidadES />}
+    </>
+  );
 }
 
 // ── ES ────────────────────────────────────────────────────────────────────────

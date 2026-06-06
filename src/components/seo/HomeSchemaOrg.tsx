@@ -13,58 +13,58 @@ interface Props {
 const FAQ_ES = [
   {
     q: "¿Es lo mismo una eSIM que un chip para Europa?",
-    a: "Sí, es exactamente lo mismo. Cuando buscás 'chip para España' o 'chip para Europa', la eSIM es la versión digital de ese chip. Se instala escaneando un código QR en tu celular en menos de 5 minutos, sin tarjeta física. Comprás desde Argentina, Chile, Uruguay o Brasil y al llegar a Europa ya tenés internet.",
+    a: "Sí, es exactamente lo mismo. Una eSIM es la versión digital del chip físico tradicional. Se instala escaneando un QR en tu celular (menos de 5 minutos, sin tarjeta física). Comprás desde Argentina, Chile, Uruguay o Brasil y al llegar a Europa ya tenés internet. La ventaja: sin tiendas, sin envíos, sin esperas.",
   },
   {
     q: "¿Qué es una eSIM?",
-    a: "Una eSIM es una SIM virtual que se instala directamente en tu teléfono escaneando un código QR. No necesitás una tarjeta física. Funciona igual que una SIM tradicional pero se activa al instante desde tu celular.",
+    a: "Una eSIM es un chip digital que se instala escaneando un código QR en tu teléfono. No necesitás tarjeta física. Funciona igual que una SIM tradicional pero se activa instantáneamente desde tu celular — ideal para viajar sin complicaciones.",
   },
   {
     q: "¿Cómo sé si mi celular es compatible con eSIM?",
-    a: "Los iPhone XS / XR (2018) o más nuevos, Samsung Galaxy S20 o más nuevos y Google Pixel 4a o más nuevos son compatibles. También podés verificarlo en Ajustes → General → Información → eSIM.",
+    a: "Modelos compatibles: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 4a+. Verificación rápida: en iPhone → Ajustes → General → Información → eSIM. En Android → Ajustes → Acerca del teléfono → si ves dos IMEI, tienes eSIM.",
   },
   {
     q: "¿Puedo mantener mi número de teléfono latinoamericano?",
-    a: "Sí. Tu número sigue funcionando en la SIM física de tu celular. La eSIM se usa solo para datos en Europa. Podés recibir llamadas y WhatsApp como siempre.",
+    a: "¡Sí! Tu número original sigue activo en la SIM física. La eSIM solo agrega datos móviles en Europa. Recibís llamadas, WhatsApp y SMS como siempre con tu número actual.",
   },
   {
     q: "¿Cuándo activo la eSIM de RUTA34?",
-    a: "Recomendamos instalar el QR antes de salir de tu país (con WiFi) y activar la eSIM cuando aterrizás en Europa. Para el plan DataOnly tenés 60 días desde la compra para activarla.",
+    a: "Instala el QR antes de viajar (con WiFi en tu país). Actívalo cuando aterrizás en Europa. Para DataOnly: tenés 60 días desde la compra para activar. Para Prepago: 12 meses para activar.",
   },
   {
     q: "¿Hay costos adicionales o sorpresas en la factura?",
-    a: "No. El precio que ves es el precio final en dólares. Sin renovación automática, sin costos ocultos. Cuando se terminan los GB o los días, simplemente dejás de tener datos.",
+    a: "No. El precio mostrado es el final — en dólares USD, sin renovación automática. Cuando se agotan los GB o días, el servicio se detiene sin cobros adicionales.",
   },
   {
     q: "¿Qué diferencia hay entre el plan Prepago y DataOnly?",
-    a: "Con el plan Prepago los 28 días empiezan a contar desde que activás la eSIM (podés esperar hasta 12 meses). Con DataOnly comprás ahora y tenés 60 días para activarla — ideal si tu viaje no está confirmado.",
+    a: "Prepago: 28 días desde la fecha de activación (podés esperar hasta 12 meses). DataOnly: comprás ahora, 60 días para activar — perfecto si tu viaje aún no está confirmado al 100%.",
   },
 ];
 
 const FAQ_PT = [
   {
     q: "O que é um eSIM?",
-    a: "Um eSIM é um SIM virtual que se instala diretamente no seu celular escaneando um código QR. Não precisa de cartão físico. Funciona igual a um SIM tradicional mas ativa instantaneamente.",
+    a: "Um eSIM é um chip digital que se instala escaneando um código QR no seu telefone. Não precisa de cartão físico. Funciona igual a um SIM tradicional mas ativa instantaneamente — perfeito para viajar sem complicações.",
   },
   {
     q: "Como sei se meu celular é compatível com eSIM?",
-    a: "iPhone XS / XR (2018) ou mais novos, Samsung Galaxy S20 ou mais novos e Google Pixel 4a ou mais novos são compatíveis. Verifique em Ajustes → Geral → Informações → eSIM.",
+    a: "Modelos compatíveis: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 4a+. Verificação rápida: no iPhone → Ajustes → Geral → Informações → eSIM. No Android → Ajustes → Sobre o telefone → se vê dois IMEI, tem eSIM.",
   },
   {
     q: "Posso manter meu número de telefone brasileiro?",
-    a: "Sim. Seu número continua funcionando no SIM físico do seu celular. O eSIM é usado apenas para dados na Europa. Você pode receber chamadas e WhatsApp normalmente.",
+    a: "Sim! Seu número original fica ativo no SIM físico. O eSIM só adiciona dados móveis na Europa. Você recebe ligações, WhatsApp e SMS normalmente com seu número atual.",
   },
   {
     q: "Quando ativo o eSIM da RUTA34?",
-    a: "Recomendamos instalar o QR antes de sair do seu país (com WiFi) e ativar o eSIM ao pousar na Europa. Para o plano DataOnly você tem 60 dias desde a compra para ativá-lo.",
+    a: "Instale o QR antes de viajar (com WiFi no seu país). Ative quando chegar na Europa. Para DataOnly: 60 dias desde a compra. Para Pré-pago: 12 meses para ativar.",
   },
   {
     q: "Há custos adicionais ou surpresas na fatura?",
-    a: "Não. O preço que você vê é o preço final em dólares. Sem renovação automática, sem custos ocultos. Quando os GB ou os dias acabarem, simplesmente para de ter dados.",
+    a: "Não. O preço mostrado é o final — em dólares USD, sem renovação automática. Quando os GB ou dias acabarem, o serviço para sem cobranças adicionais.",
   },
   {
     q: "Qual a diferença entre o plano Pré-pago e DataOnly?",
-    a: "No plano Pré-pago os 28 dias começam a contar desde que você ativa o eSIM (pode esperar até 12 meses). Com DataOnly você compra agora e tem 60 dias para ativá-lo.",
+    a: "Pré-pago: 28 dias a partir da data de ativação (pode esperar até 12 meses). DataOnly: compra agora, 60 dias para ativar — perfeito se sua viagem ainda não está 100% confirmada.",
   },
 ];
 

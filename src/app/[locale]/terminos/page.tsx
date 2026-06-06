@@ -1,19 +1,49 @@
 import { Metadata } from "next";
 import LegalLayout from "@/components/legal/LegalLayout";
+import LegalSchemaOrg from "@/components/seo/LegalSchemaOrg";
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const url = `${base}/${locale}/terminos`;
+
   return {
     title:
       locale === "pt"
         ? "Termos e condições — RUTA34 Telecom"
         : "Términos y condiciones — RUTA34 Telecom",
-    robots: { index: false },
+    description:
+      locale === "pt"
+        ? "Leia os termos e condições da RUTA34 Telecom. Política de vendas, garantias e responsabilidades sobre eSIM para Europa."
+        : "Lee los términos y condiciones de RUTA34 Telecom. Política de ventas, garantías y responsabilidades sobre eSIM para Europa.",
+    alternates: {
+      canonical: url,
+      languages: {
+        es: `${base}/es/terminos`,
+        pt: `${base}/pt/terminos`,
+      },
+    },
+    openGraph: {
+      title:
+        locale === "pt"
+          ? "Termos e condições — RUTA34 Telecom"
+          : "Términos y condiciones — RUTA34 Telecom",
+      description:
+        locale === "pt"
+          ? "Leia os termos e condições da RUTA34 Telecom"
+          : "Lee los términos y condiciones de RUTA34 Telecom",
+      type: "website",
+      url,
+      locale: locale === "pt" ? "pt_BR" : "es_AR",
+      siteName: "RUTA34 Telecom",
+    },
   };
 }
 
@@ -24,7 +54,12 @@ export default async function TerminosPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  return locale === "pt" ? <TerminosPT /> : <TerminosES />;
+  return (
+    <>
+      <LegalSchemaOrg locale={locale as "es" | "pt"} page="terminos" lastUpdated="2 de junio de 2026" />
+      {locale === "pt" ? <TerminosPT /> : <TerminosES />}
+    </>
+  );
 }
 
 // ── ES ────────────────────────────────────────────────────────────────────────

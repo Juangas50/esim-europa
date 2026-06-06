@@ -1,0 +1,49 @@
+# RUTA34 Telecom — robots.txt
+# SEO: Allow all crawlers for maximum AI visibility
+# Updated: 2026-06-06
+
+# Default rules for all bots
+User-agent: *
+Allow: /
+# Block private routes
+Disallow: /admin/
+Disallow: /login/
+Disallow: /api/
+Disallow: /pedidos/
+Disallow: /facturas/
+Disallow: /*.json$
+Disallow: /_next/
+Disallow: /sitemap.xml
+
+# Crawl delay (optional — 0 means no delay)
+Crawl-delay: 0
+
+# Google-specific rules
+User-agent: Googlebot
+Allow: /
+
+# Allow all AI crawlers explicitly for maximum citations
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://www.esimruta34.com/sitemap.xml
+Sitemap: https://esimruta34.com/sitemap.xml

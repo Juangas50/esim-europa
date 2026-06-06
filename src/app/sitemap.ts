@@ -4,10 +4,12 @@ const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com"
 const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
 const locales = ["es", "pt"] as const;
 
-// Rutas públicas indexables (excluye compra, confirmacion, legales)
+// Rutas públicas indexables (excluye compra, confirmacion, admin, login)
 const publicRoutes = [
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   { path: "/planes", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/terminos", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/privacidad", priority: 0.7, changeFrequency: "monthly" },
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
