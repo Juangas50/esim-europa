@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
+import MaintenanceBanner from "@/components/landing/MaintenanceBanner";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,6 +44,9 @@ export default function RootLayout({
     // en el sitemap refuerzan la información de idioma para Google.
     <html lang="es" suppressHydrationWarning className={`${inter.variable} h-full`}>
       <body className="min-h-full">
+        {/* Maintenance mode banner */}
+        <MaintenanceBanner />
+
         {/* GTM noscript — debe ir inmediatamente después de <body> */}
         <GTMNoScript />
 
