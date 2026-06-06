@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "RUTA34 Telecom — eSIM para Europa",
   description:
     "Llegás a Europa y ya estás conectado. eSIM instantánea para argentinos, uruguayos, chilenos y brasileños que viajan a Europa.",
-  author: "RUTA34 Telecom",
+  authors: [{ name: "RUTA34 Telecom" }],
   creator: "RUTA34 Telecom",
   keywords: "eSIM Europa, chip digital, internet sin roaming, eSIM Argentina, eSIM Brasil",
   openGraph: {
