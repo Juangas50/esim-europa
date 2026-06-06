@@ -6,8 +6,12 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const isDev = process.env.NODE_ENV === "development";
 
 // ── Validate production environment ────────────────────────────────────────────
-// Prevent accidental deploys to production with test/staging credentials
-if (process.env.NODE_ENV === "production") {
+// Prevent accidental deploys to production (main branch) with test/staging credentials
+// Allow TEST keys in staging/preview (develop branch)
+const gitBranch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GIT_BRANCH || "";
+const isMainBranch = gitBranch === "main" || (process.env.NODE_ENV === "production" && !gitBranch);
+
+if (isMainBranch && process.env.NODE_ENV === "production") {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
 
   if (!stripeSecretKey.startsWith("sk_live_")) {
