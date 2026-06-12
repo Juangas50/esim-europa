@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
+import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
 import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -159,7 +160,15 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
         <a
           href={`/${locale}/compra?plan=${plan.id}`}
-          onClick={() => analytics.planSelected(plan)}
+          onClick={() => {
+            analytics.planSelected(plan);
+            trackSelectPlan({
+              id: plan.id,
+              name: plan.name,
+              price: plan.price_usd,
+              size: plan.size,
+            });
+          }}
           className={`flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm active:scale-[0.97] ${
             isPopular
               ? "bg-[#E60000] text-white hover:bg-[#CC0000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.4)]"
@@ -291,6 +300,19 @@ export default function Plans({ plans }: PlansProps) {
   const hasData     = dataPlans.length > 0;
 
   const [tab, setTab] = useState<Tab>(hasLocal ? "local" : "dataonly");
+
+  // Track "view plans" event on component mount
+  useEffect(() => {
+    if (plans.length > 0) {
+      trackViewPlans(
+        plans.map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price_usd,
+        }))
+      );
+    }
+  }, [plans]);
 
   return (
     <section id="planes" className="py-24 px-4 bg-white">

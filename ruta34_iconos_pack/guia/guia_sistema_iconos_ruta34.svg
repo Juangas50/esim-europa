@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1050" viewBox="0 0 1200 1050" fill="none">
+<rect width="1200" height="1050" fill="white"/>
+<text x="60" y="80" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="900" fill="#111111">Sistema de iconos RUTA<tspan fill="#E30613">34</tspan></text>
+<text x="60" y="118" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#6B6B6B">Pack para web, presentaciones y documentación</text>
+
+<g transform="translate(60,160)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<path d="M48 102 L128 154 L208 102" stroke="#111111" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 98 V194 H208 V98" stroke="#111111" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M74 82 L128 122 L182 82" stroke="#E30613" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="91" y="48" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="101" y="58" width="12" height="12" fill="#111111"/>
+<rect x="139" y="48" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="149" y="58" width="12" height="12" fill="#111111"/>
+<rect x="91" y="96" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="101" y="106" width="12" height="12" fill="#111111"/>
+<rect x="131" y="56" width="8" height="8" fill="#111111"/>
+<rect x="131" y="72" width="8" height="8" fill="#111111"/>
+<rect x="99" y="88" width="8" height="8" fill="#111111"/>
+<rect x="155" y="88" width="8" height="8" fill="#111111"/>
+<rect x="139" y="96" width="8" height="8" fill="#111111"/>
+<rect x="163" y="104" width="8" height="8" fill="#111111"/>
+<rect x="131" y="120" width="8" height="8" fill="#111111"/>
+<rect x="147" y="120" width="8" height="8" fill="#111111"/>
+<rect x="163" y="120" width="8" height="8" fill="#111111"/>
+<rect x="115" y="136" width="8" height="8" fill="#111111"/>
+<rect x="131" y="136" width="8" height="8" fill="#111111"/>
+<rect x="155" y="136" width="8" height="8" fill="#111111"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">QR por email</text>
+</g>
+<g transform="translate(330,160)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<circle cx="128" cy="134" r="58" stroke="#111111" stroke-width="9"/>
+<path d="M128 60 V42" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M112 42 H144" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M166 74 L180 60" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M70 119 H43" stroke="#E30613" stroke-width="8" stroke-linecap="round"/>
+<path d="M72 143 H50" stroke="#E30613" stroke-width="8" stroke-linecap="round"/>
+<path d="M128 134 L158 101" stroke="#E30613" stroke-width="9" stroke-linecap="round"/>
+<circle cx="128" cy="134" r="8" fill="#E30613"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Activación rápida</text>
+</g>
+<g transform="translate(600,160)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<rect x="76" y="42" width="104" height="172" rx="18" stroke="#111111" stroke-width="9"/>
+<path d="M113 60 H143" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+<path d="M122 196 H134" stroke="#111111" stroke-width="6" stroke-linecap="round"/>
+<path d="M98 102 H178 V151 H134 L114 169 V151 H98 Z" stroke="#111111" stroke-width="8" stroke-linejoin="round"/>
+<text x="113" y="137" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="800" fill="#E30613">+34</text>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Número español</text>
+</g>
+<g transform="translate(870,160)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<path d="M76 188 L84 159 C75 146 70 130 72 113 C76 75 110 48 148 53 C185 58 211 92 206 130 C201 168 166 194 129 189 C116 187 105 183 95 176 Z" stroke="#111111" stroke-width="9" stroke-linejoin="round"/>
+<path d="M126 94 C135 112 146 126 164 135" stroke="#E30613" stroke-width="17" stroke-linecap="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">WhatsApp / Soporte</text>
+</g>
+<g transform="translate(60,420)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<text x="128.0" y="66.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="159.0" y="74.3064249653648" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="181.6935750346352" y="97.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="190.0" y="128.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="181.69357503463522" y="159.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="159.0" y="181.69357503463522" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="128.0" y="190.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="97.00000000000001" y="181.69357503463522" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="74.30642496536481" y="159.00000000000003" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="66.0" y="128.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="74.30642496536481" y="97.0" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text><text x="96.99999999999997" y="74.30642496536481" text-anchor="middle" dominant-baseline="central" font-family="Arial" font-size="20" font-weight="800" fill="#111111">★</text>
+<text x="128" y="139" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="900" fill="#E30613">UE</text>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Cobertura UE</text>
+</g>
+<g transform="translate(330,420)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+<rect x="70" y="160" width="16" height="28" rx="7" fill="#111111"/>
+<rect x="101" y="139" width="16" height="49" rx="7" fill="#111111"/>
+<rect x="132" y="111" width="16" height="77" rx="7" fill="#111111"/>
+<rect x="163" y="82" width="16" height="106" rx="7" fill="#111111"/>
+<text x="148" y="82" font-family="Arial, Helvetica, sans-serif" font-size="45" font-weight="900" fill="#E30613">5G</text>
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">4G / 5G</text>
+</g>
+<g transform="translate(600,420)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<rect x="55" y="71" width="120" height="85" rx="9" stroke="#111111" stroke-width="8"/>
+<path d="M44 177 H168" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<path d="M92 157 H137" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<rect x="158" y="103" width="49" height="86" rx="10" fill="white" stroke="#111111" stroke-width="8"/>
+<path d="M93 114 L115 136 L153 97" stroke="#E30613" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Compatibilidad</text>
+</g>
+<g transform="translate(870,420)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<rect x="66" y="107" width="124" height="89" rx="16" stroke="#111111" stroke-width="9"/>
+<path d="M88 107 V82 C88 59 105 43 128 43 C151 43 168 59 168 82 V107" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M101 148 L121 168 L159 129" stroke="#E30613" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Pago seguro</text>
+</g>
+<g transform="translate(60,680)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<path d="M188 104 C178 73 149 52 116 56 C78 60 50 94 54 132 C58 171 93 199 132 194 C159 191 181 174 190 151" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M188 104 L189 70" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M188 104 L154 104" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<path d="M96 103 L154 161" stroke="#E30613" stroke-width="10" stroke-linecap="round"/>
+<path d="M154 103 L96 161" stroke="#E30613" stroke-width="10" stroke-linecap="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Sin renovación</text>
+</g>
+<g transform="translate(330,680)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<circle cx="115" cy="123" r="66" stroke="#111111" stroke-width="8"/>
+<path d="M49 123 H181" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 57 C92 81 80 101 80 123 C80 145 92 169 115 189" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M115 57 C138 81 150 101 150 123 C150 145 138 169 115 189" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M72 86 H158" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M72 160 H158" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M181 185 C181 185 212 154 212 133 C212 113 198 99 181 99 C164 99 150 113 150 133 C150 154 181 185 181 185Z" fill="#E30613"/>
+<circle cx="181" cy="132" r="10" fill="white"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Roaming</text>
+</g>
+<g transform="translate(600,680)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<rect x="85" y="62" width="87" height="141" rx="16" stroke="#111111" stroke-width="8"/>
+<path d="M106 62 V45 H151 V62" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<path d="M108 92 V171" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M149 92 V171" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M105 203 V215" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M151 203 V215" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+<path d="M164 85 L205 115 L181 148 L140 118 Z" stroke="#E30613" stroke-width="8" stroke-linejoin="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Viaje</text>
+</g>
+<g transform="translate(870,680)">
+<rect x="0" y="0" width="210" height="210" rx="28" fill="white" stroke="#E8E8E8" stroke-width="2"/>
+<g transform="translate(22,12) scale(0.65)">
+
+
+<path d="M61 142 V116 C61 78 89 49 128 49 C167 49 195 78 195 116 V142" stroke="#111111" stroke-width="9" stroke-linecap="round"/>
+<rect x="43" y="132" width="35" height="57" rx="13" stroke="#111111" stroke-width="8"/>
+<rect x="178" y="132" width="35" height="57" rx="13" stroke="#111111" stroke-width="8"/>
+<path d="M192 190 C187 211 169 220 145 220" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+<path d="M122 220 H151" stroke="#E30613" stroke-width="12" stroke-linecap="round"/>
+
+</g>
+<text x="105" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Soporte</text>
+</g>
+<text x="60" y="1015" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#777">Estilo: lineal, minimalista, negro + rojo RUTA34 · SVG vectorial + PNG transparente</text>
+</svg>

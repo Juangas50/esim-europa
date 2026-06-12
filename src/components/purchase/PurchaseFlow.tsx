@@ -9,6 +9,7 @@ import StepData from "./StepData";
 import StepPayment from "./StepPayment";
 import { Plan, OrderFormData } from "@/types";
 import { analytics } from "@/lib/analytics";
+import { trackBeginCheckout, trackAddPaymentInfo } from "@/lib/analytics-ga4";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -127,6 +128,12 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                   setQuantity(qty);
                   setFormData((prev) => ({ ...prev, plan_id: plan.id, quantity: qty }));
                   analytics.checkoutStarted(plan);
+                  // GA4: begin_checkout
+                  trackBeginCheckout({
+                    id: plan.id,
+                    name: plan.name,
+                    price: plan.price_usd,
+                  });
                   goToStep(2);
                 }}
               />
