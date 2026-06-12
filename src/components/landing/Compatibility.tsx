@@ -19,7 +19,7 @@ export default function Compatibility() {
 
   return (
     <section id="compatibilidad" className="py-24 px-4 bg-white">
-      <div className="max-w-[1200px] mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 

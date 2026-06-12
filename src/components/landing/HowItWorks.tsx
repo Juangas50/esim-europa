@@ -18,7 +18,7 @@ export default function HowItWorks() {
 
   return (
     <section id="como-funciona" className="py-24 px-4">
-      <div className="max-w-[1200px] mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <motion.div

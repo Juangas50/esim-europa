@@ -42,7 +42,7 @@ export default function Benefits() {
 
   return (
     <section className="py-24 px-4">
-      <div className="max-w-[1200px] mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header — left aligned (taste-skill anti-center bias) */}
         <motion.div

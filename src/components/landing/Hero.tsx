@@ -57,7 +57,7 @@ function QRPlaceholder() {
 // Hero visual: foto de viaje + card eSIM glassmorphism
 function HeroVisual() {
   return (
-    <div className="relative w-full max-w-sm mx-auto select-none" aria-hidden="true">
+    <div className="relative w-full max-w-2xl mx-auto select-none" aria-hidden="true">
       {/* Glow de marca — acento sutil en una esquina, no blob genérico */}
       <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#E60000]/20 blur-3xl pointer-events-none" />
 
@@ -162,7 +162,7 @@ export default function Hero({ minPrice }: HeroProps) {
 
   return (
     <section className="min-h-[100dvh] flex items-center pt-24 pb-16 px-4">
-      <div className="w-full max-w-[1200px] mx-auto">
+      <div className="w-full max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
           {/* LEFT — Contenido */}

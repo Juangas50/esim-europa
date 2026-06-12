@@ -94,7 +94,7 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="py-24 px-4">
-      <div className="max-w-[1200px] mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
 
