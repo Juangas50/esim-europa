@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, Smartphone, Zap, Globe } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Badge from "@/components/ui/Badge";
@@ -12,18 +12,37 @@ const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20, scale: 0.97 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.55, ease: EASE_OUT },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
+
+// Fondo animado con líneas de rutas
+function RouteBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="absolute w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        {/* Línea diagonal principal — ruta de viaje */}
+        <line x1="0" y1="0" x2="1200" y2="800" stroke="#06B6D4" strokeWidth="2" opacity="0.15" />
+        {/* Líneas secundarias */}
+        <line x1="200" y1="100" x2="1000" y2="700" stroke="#F59E0B" strokeWidth="1.5" opacity="0.1" />
+        <line x1="100" y1="600" x2="900" y2="200" stroke="#E60000" strokeWidth="1.5" opacity="0.08" />
+        {/* Puntos de ciudades */}
+        <circle cx="200" cy="150" r="4" fill="#F59E0B" opacity="0.3" />
+        <circle cx="800" cy="700" r="4" fill="#06B6D4" opacity="0.3" />
+      </svg>
+      {/* Gradiente overlay */}
+      <div className="absolute inset-0 bg-gradient-hero opacity-95" />
+    </div>
+  );
+}
 
 // QR placeholder con patrón SVG
 function QRPlaceholder() {
@@ -152,97 +171,100 @@ interface HeroProps {
 export default function Hero({ minPrice }: HeroProps) {
   const t = useTranslations("hero");
 
-  const trustItems = [
-    { label: t("trust1") },
-    { label: t("trust2") },
-    { label: t("trust3") },
-    { label: t("trust4") },
-    { label: t("trust5") },
-  ];
-
   return (
-    <section className="min-h-[100dvh] flex items-center pt-24 pb-16 px-4">
-      <div className="w-full max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-20 px-4 overflow-hidden">
+      {/* Fondo animado con gradiente + rutas */}
+      <RouteBackground />
 
-          {/* LEFT — Contenido */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="show"
-            className="flex flex-col items-start"
-          >
-            {/* Eyebrow */}
-            <motion.div variants={fadeUp} className="mb-5">
-              <Badge variant="blue">{t("eyebrow")}</Badge>
+      {/* Contenido */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24"
+        >
+          {/* LEFT — Contenido AUDAZ */}
+          <div className="flex-1 flex flex-col items-start justify-center">
+
+            {/* Badge de energía */}
+            <motion.div variants={fadeUp} className="mb-6">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2">
+                <div className="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse" />
+                <span className="text-sm font-semibold text-white">{t("eyebrow")}</span>
+              </div>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline en Prata — AUDAZ */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-[#111111] tracking-tight leading-[1.05] mb-5 max-w-[520px]"
+              className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6 max-w-xl"
             >
               {t("headline")}
             </motion.h1>
 
-            {/* Sub */}
+            {/* Subheadline — directa, sin rodeos */}
             <motion.p
               variants={fadeUp}
-              className="text-base sm:text-lg text-[#555555] leading-relaxed mb-8 max-w-[460px]"
+              className="text-lg sm:text-xl text-white/90 leading-relaxed mb-10 max-w-md"
             >
               {t("sub")}
             </motion.p>
 
-            {/* CTAs */}
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-wrap items-center gap-3 mb-3"
-            >
+            {/* CTA PRIMARIA — ENORME Y OBVIO */}
+            <motion.div variants={fadeUp} className="mb-10 w-full sm:w-auto">
               <a
                 href="#planes"
                 onClick={() => analytics.viewPlansClicked()}
-                className="inline-flex items-center gap-2.5 bg-[#E60000] text-white font-bold text-base px-7 py-3.5 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.4)]"
-                style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
+                className="block w-full sm:w-auto bg-[#E60000] text-white font-bold text-lg px-12 py-5 rounded-xl hover:bg-[#CC0000] active:scale-[0.98] shadow-premium-teal transition-all duration-200 text-center"
               >
-                {t("cta")}
-                <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center -mr-1">
-                  <ArrowRight size={14} weight="bold" />
-                </span>
-              </a>
-
-              <a
-                href="#como-funciona"
-                className="inline-flex items-center gap-2 text-[#111111] font-semibold text-base px-5 py-3.5 rounded-full border border-[#111111]/12 hover:bg-[#111111]/5 active:scale-[0.97]"
-                style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
-              >
-                {t("ctaSecondary")}
+                COMPRAR AHORA
               </a>
             </motion.div>
 
-            {/* Precio ancla — reduce friction */}
+            {/* Subtext con precio */}
             {minPrice != null && (
-              <motion.p variants={fadeUp} className="text-sm text-[#555555] font-semibold mb-8">
-                {t("priceAnchor", { price: formatUSD(minPrice) })}
+              <motion.p variants={fadeUp} className="text-white/75 text-sm font-semibold">
+                {t("priceAnchor", { price: formatUSD(minPrice) })} • Sin renovación automática
               </motion.p>
             )}
-
-            {/* Trust indicators */}
-            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">
-              {trustItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <CheckCircle size={16} weight="fill" className="text-[#E60000]" />
-                  <span className="text-sm font-semibold text-[#555555]">{item.label}</span>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* RIGHT — Visual */}
-          <div className="flex justify-center lg:justify-end">
-            <HeroVisual />
           </div>
 
-        </div>
+          {/* RIGHT — Visual del teléfono */}
+          <div className="flex-1 flex justify-center lg:justify-end">
+            <HeroVisual />
+          </div>
+        </motion.div>
+
+        {/* Trust Stats — 3 columnas abajo */}
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-24 pt-16 border-t border-white/10"
+        >
+          <div className="flex flex-col items-center sm:items-start text-white">
+            <div className="flex items-center gap-3 mb-2">
+              <Smartphone size={24} weight="bold" className="text-[#F59E0B]" />
+              <p className="text-3xl font-black font-mono">100K+</p>
+            </div>
+            <p className="text-white/70 text-sm">Viajeros confían</p>
+          </div>
+
+          <div className="flex flex-col items-center sm:items-start text-white">
+            <div className="flex items-center gap-3 mb-2">
+              <Zap size={24} weight="bold" className="text-[#06B6D4]" />
+              <p className="text-3xl font-black font-mono">2 min</p>
+            </div>
+            <p className="text-white/70 text-sm">Activación con QR</p>
+          </div>
+
+          <div className="flex flex-col items-center sm:items-start text-white">
+            <div className="flex items-center gap-3 mb-2">
+              <Globe size={24} weight="bold" className="text-[#06B6D4]" />
+              <p className="text-3xl font-black font-mono">30+</p>
+            </div>
+            <p className="text-white/70 text-sm">Países cubiertos</p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
