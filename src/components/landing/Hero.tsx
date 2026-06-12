@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, Smartphone, Zap, Globe } from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle, DeviceMobile, Lightning, Globe } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Badge from "@/components/ui/Badge";
@@ -30,16 +30,18 @@ function RouteBackground() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <svg className="absolute w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
         {/* Línea diagonal principal — ruta de viaje */}
-        <line x1="0" y1="0" x2="1200" y2="800" stroke="#06B6D4" strokeWidth="2" opacity="0.15" />
+        <line x1="0" y1="0" x2="1200" y2="800" stroke="#06B6D4" strokeWidth="2" opacity="0.12" />
         {/* Líneas secundarias */}
-        <line x1="200" y1="100" x2="1000" y2="700" stroke="#F59E0B" strokeWidth="1.5" opacity="0.1" />
-        <line x1="100" y1="600" x2="900" y2="200" stroke="#E60000" strokeWidth="1.5" opacity="0.08" />
+        <line x1="200" y1="100" x2="1000" y2="700" stroke="#F59E0B" strokeWidth="1.5" opacity="0.08" />
+        <line x1="100" y1="600" x2="900" y2="200" stroke="#E60000" strokeWidth="1.5" opacity="0.06" />
         {/* Puntos de ciudades */}
-        <circle cx="200" cy="150" r="4" fill="#F59E0B" opacity="0.3" />
-        <circle cx="800" cy="700" r="4" fill="#06B6D4" opacity="0.3" />
+        <circle cx="200" cy="150" r="4" fill="#F59E0B" opacity="0.25" />
+        <circle cx="800" cy="700" r="4" fill="#06B6D4" opacity="0.25" />
       </svg>
-      {/* Gradiente overlay */}
-      <div className="absolute inset-0 bg-gradient-hero opacity-95" />
+      {/* Gradiente overlay — más oscuro para mejor contraste */}
+      <div className="absolute inset-0 bg-gradient-hero opacity-[0.92]" />
+      {/* Overlay adicional para textos claros */}
+      <div className="absolute inset-0 bg-black/10" />
     </div>
   );
 }
@@ -198,7 +200,7 @@ export default function Hero({ minPrice }: HeroProps) {
             {/* Headline en Prata — AUDAZ */}
             <motion.h1
               variants={fadeUp}
-              className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6 max-w-xl"
+              className="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.1] mb-6 max-w-xl"
             >
               {t("headline")}
             </motion.h1>
@@ -243,7 +245,7 @@ export default function Hero({ minPrice }: HeroProps) {
         >
           <div className="flex flex-col items-center sm:items-start text-white">
             <div className="flex items-center gap-3 mb-2">
-              <Smartphone size={24} weight="bold" className="text-[#F59E0B]" />
+              <DeviceMobile size={24} weight="bold" className="text-[#F59E0B]" />
               <p className="text-3xl font-black font-mono">100K+</p>
             </div>
             <p className="text-white/70 text-sm">Viajeros confían</p>
@@ -251,7 +253,7 @@ export default function Hero({ minPrice }: HeroProps) {
 
           <div className="flex flex-col items-center sm:items-start text-white">
             <div className="flex items-center gap-3 mb-2">
-              <Zap size={24} weight="bold" className="text-[#06B6D4]" />
+              <Lightning size={24} weight="bold" className="text-[#06B6D4]" />
               <p className="text-3xl font-black font-mono">2 min</p>
             </div>
             <p className="text-white/70 text-sm">Activación con QR</p>
