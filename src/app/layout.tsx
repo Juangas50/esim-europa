@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Prata } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
 import MaintenanceBanner from "@/components/landing/MaintenanceBanner";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const prata = Prata({
+  variable: "--font-prata",
+  weight: ["400"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -42,7 +49,7 @@ export default function RootLayout({
     // Para rutas /es/ y /pt/, el lang se actualiza dinámicamente via JavaScript
     // en el navegador basado en el pathname. Las señales de contenido + hreflang
     // en el sitemap refuerzan la información de idioma para Google.
-    <html lang="es" suppressHydrationWarning className={`${inter.variable} h-full`}>
+    <html lang="es" suppressHydrationWarning className={`${inter.variable} ${prata.variable} h-full`}>
       <body className="min-h-full">
         {/* Maintenance mode banner */}
         <MaintenanceBanner />

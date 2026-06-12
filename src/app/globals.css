@@ -1,24 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fuente */
+  /* Fuentes */
   --font-sans: var(--font-inter);
+  --font-display: var(--font-prata);
 
-  /* RUTA34 Brand */
+  /* RUTA34 Brand Audaz */
   --color-ruta-red: #E60000;
   --color-ruta-red-hover: #CC0000;
-  --color-ruta-dark: #111111;
-  --color-ruta-blue: #6EC1E4;
-  --color-ruta-blue-soft: #A8D8F0;
-  --color-ruta-blue-pale: #EBF6FC;
+  --color-ruta-red-light: #FEE2E2;
 
-  /* Neutros */
-  --color-surface: #FFFFFF;
-  --color-bg: #F8F8F8;
-  --color-border: rgba(0, 0, 0, 0.07);
-  --color-ink: #111111;
-  --color-ink-2: #555555;
-  --color-ink-3: #999999;
+  /* Amanecer (Tierra/Cálido LATAM) */
+  --color-amanecer: #F59E0B;
+  --color-amanecer-dark: #D97706;
+  --color-amanecer-light: #FEF3C7;
+
+  /* Viaje (Teal/Libertad) */
+  --color-viaje: #06B6D4;
+  --color-viaje-dark: #0891B2;
+  --color-viaje-light: #CFFAFE;
+
+  /* Dark Mode */
+  --color-ruta-dark: #0F172A;
+  --color-ruta-dark-alt: #1E293B;
+
+  /* Neutros Premium */
+  --color-surface: #FEF2F2;
+  --color-bg: #FAFAFA;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-ink: #0F172A;
+  --color-ink-2: #475569;
+  --color-ink-3: #94A3B8;
+
+  /* Legacy (compatibility) */
+  --color-ruta-blue: #06B6D4;
+  --color-ruta-blue-soft: #A5F3FC;
+  --color-ruta-blue-pale: #ECFDF5;
 }
 
 /* Custom easing curves — Emil Kowalski */
@@ -33,10 +50,70 @@ html {
 }
 
 body {
-  background-color: #F8F8F8;
-  color: #111111;
+  background-color: #FAFAFA;
+  color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display Typography — Prata Serif Audaz */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(1.875rem, 4vw, 3rem);
+  line-height: 1.15;
+}
+
+h3, h4 {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+
+/* Gradientes Reutilizables */
+.gradient-amanecer {
+  background: linear-gradient(135deg, #F59E0B 0%, #E60000 100%);
+}
+
+.gradient-viaje {
+  background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(180deg, #E60000 0%, #D97706 50%, #F59E0B 100%);
+}
+
+/* Animación de líneas de rutas (stroke-dasharray) */
+@keyframes draw-path {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw-path {
+  animation: draw-path 2s ease-in-out forwards;
+  stroke-dasharray: 1000;
+}
+
+/* Sombra premium (difusa, direccional) */
+.shadow-premium {
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+}
+
+.shadow-premium-teal {
+  box-shadow: 0 20px 40px -15px rgba(6, 182, 212, 0.15);
 }
 
 /* Scrollbar sutil */
