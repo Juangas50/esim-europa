@@ -223,8 +223,19 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       toast('Error al actualizar el estado', 'error')
     } else {
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o))
-      if (selected?.id === orderId) setSelected(prev => prev ? { ...prev, status } : null)
-      toast('Estado actualizado')
+      if (selected?.id === orderId) {
+        if (status === 'cancelled') {
+          // Cerrar panel de detalles si se cancela
+          setSelected(null)
+          resetDeliveryForm(null)
+          toast('✅ Pedido cancelado')
+        } else {
+          setSelected(prev => prev ? { ...prev, status } : null)
+          toast('Estado actualizado')
+        }
+      } else {
+        toast('Estado actualizado')
+      }
     }
     setUpdating(null)
   }

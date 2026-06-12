@@ -79,10 +79,15 @@ export default async function PedidosAdminPage() {
     group.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     const first = group[0]
 
-    // Estado del grupo: paid si alguno está paid, qr_sent si TODOS están qr_sent
+    // Estado del grupo:
+    // - Si TODOS cancelados → cancelled
+    // - Si TODOS qr_sent → qr_sent
+    // - Si alguno paid → paid (tramitar)
+    // - Si no, mapear el estado del primero
+    const allCancelled = group.every(o => o.status === 'cancelled')
     const allQrSent = group.every(o => o.status === 'qr_sent')
     const anyPaid   = group.some(o => o.status === 'paid')
-    const groupStatus = allQrSent ? 'qr_sent' : anyPaid ? 'paid' : mapB2CStatus(first.status)
+    const groupStatus = allCancelled ? 'cancelled' : allQrSent ? 'qr_sent' : anyPaid ? 'paid' : mapB2CStatus(first.status)
 
     return {
       id:                   first.id,
