@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+
+
+<path d="M48 102 L128 154 L208 102" stroke="#111111" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M48 98 V194 H208 V98" stroke="#111111" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M74 82 L128 122 L182 82" stroke="#E30613" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="91" y="48" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="101" y="58" width="12" height="12" fill="#111111"/>
+<rect x="139" y="48" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="149" y="58" width="12" height="12" fill="#111111"/>
+<rect x="91" y="96" width="32" height="32" rx="2" stroke="#111111" stroke-width="5"/>
+<rect x="101" y="106" width="12" height="12" fill="#111111"/>
+<rect x="131" y="56" width="8" height="8" fill="#111111"/>
+<rect x="131" y="72" width="8" height="8" fill="#111111"/>
+<rect x="99" y="88" width="8" height="8" fill="#111111"/>
+<rect x="155" y="88" width="8" height="8" fill="#111111"/>
+<rect x="139" y="96" width="8" height="8" fill="#111111"/>
+<rect x="163" y="104" width="8" height="8" fill="#111111"/>
+<rect x="131" y="120" width="8" height="8" fill="#111111"/>
+<rect x="147" y="120" width="8" height="8" fill="#111111"/>
+<rect x="163" y="120" width="8" height="8" fill="#111111"/>
+<rect x="115" y="136" width="8" height="8" fill="#111111"/>
+<rect x="131" y="136" width="8" height="8" fill="#111111"/>
+<rect x="155" y="136" width="8" height="8" fill="#111111"/>
+
+</svg>

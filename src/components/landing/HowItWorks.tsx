@@ -69,12 +69,20 @@ export default function HowItWorks() {
                 {/* Indicador visual — solo desktop */}
                 <div className="hidden sm:flex col-span-3 items-center justify-end">
                   <div className={`
-                    w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg
-                    ${i === 0 ? "bg-[#E60000] text-white shadow-[0_4px_16px_-4px_rgba(230,0,0,0.35)]" : ""}
-                    ${i === 1 ? "bg-[#111111] text-white" : ""}
-                    ${i === 2 ? "bg-[#EBF6FC] text-[#2a7fa5] border border-[#6EC1E4]/30" : ""}
+                    w-16 h-16 rounded-2xl flex items-center justify-center p-3
+                    ${i === 0 ? "bg-[#E60000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.35)]" : ""}
+                    ${i === 1 ? "bg-[#111111]" : ""}
+                    ${i === 2 ? "bg-[#EBF6FC] border border-[#6EC1E4]/30" : ""}
                   `}>
-                    {num}
+                    <img
+                      src={`/icons/${[
+                        "qr-email.svg",
+                        "compatibilidad.svg",
+                        "activacion-rapida.svg"
+                      ][i]}`}
+                      alt=""
+                      className="w-full h-full"
+                    />
                   </div>
                 </div>
 

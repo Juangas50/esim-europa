@@ -351,15 +351,16 @@ export default function Plans({ plans }: PlansProps) {
         {/* Trust strip — escaneable, mobile-first */}
         <div className="flex flex-wrap gap-2 mb-8">
           {[
-            "📧 QR por email",
-            "📲 Instalás antes de viajar",
-            "✈️ Activás al llegar",
-            "💬 Conservás tu WhatsApp",
-            "🔒 Pago seguro con Stripe",
-            "🛟 Soporte por WhatsApp",
+            { icon: "qr-email.svg", label: "QR por email" },
+            { icon: "viaje.svg", label: "Activás al llegar" },
+            { icon: "whatsapp-soporte.svg", label: "Conservás tu WhatsApp" },
+            { icon: "pago-seguro.svg", label: "Pago seguro con Stripe" },
+            { icon: "soporte.svg", label: "Soporte por WhatsApp" },
+            { icon: "activacion-rapida.svg", label: "Activación en minutos" },
           ].map((item) => (
-            <span key={item} className="text-xs font-semibold text-[#555] bg-[#F5F5F5] border border-black/[0.07] px-3 py-1.5 rounded-full whitespace-nowrap">
-              {item}
+            <span key={item.label} className="flex items-center gap-2 text-xs font-semibold text-[#555] bg-[#F5F5F5] border border-black/[0.07] px-3 py-1.5 rounded-full whitespace-nowrap">
+              <img src={`/icons/${item.icon}`} alt="" className="w-4 h-4 flex-shrink-0" />
+              {item.label}
             </span>
           ))}
         </div>
