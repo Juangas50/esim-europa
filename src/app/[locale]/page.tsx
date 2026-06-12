@@ -102,11 +102,11 @@ export default async function HomePage({
       <Navbar />
       <main>
         <Hero minPrice={minPrice} />
-        <Definition />
         <Plans plans={plans} />
-        <Testimonials />
-        <Benefits />
         <HowItWorks />
+        <Definition />
+        <Benefits />
+        <Testimonials />
         <Compatibility />
         <FAQ />
       </main>
