@@ -39,9 +39,9 @@ function RouteBackground() {
         <circle cx="800" cy="700" r="4" fill="#06B6D4" opacity="0.25" />
       </svg>
       {/* Gradiente overlay — más oscuro para mejor contraste */}
-      <div className="absolute inset-0 bg-gradient-hero opacity-[0.92]" />
+      <div className="absolute inset-0 bg-gradient-hero opacity-[0.85]" />
       {/* Overlay adicional para textos claros */}
-      <div className="absolute inset-0 bg-black/10" />
+      <div className="absolute inset-0 bg-black/20" />
     </div>
   );
 }
@@ -248,7 +248,7 @@ export default function Hero({ minPrice }: HeroProps) {
               <DeviceMobile size={24} weight="bold" className="text-[#F59E0B]" />
               <p className="text-3xl font-black font-mono">100K+</p>
             </div>
-            <p className="text-white/70 text-sm">Viajeros confían</p>
+            <p className="text-white text-sm">Viajeros confían</p>
           </div>
 
           <div className="flex flex-col items-center sm:items-start text-white">
@@ -256,7 +256,7 @@ export default function Hero({ minPrice }: HeroProps) {
               <Lightning size={24} weight="bold" className="text-[#06B6D4]" />
               <p className="text-3xl font-black font-mono">2 min</p>
             </div>
-            <p className="text-white/70 text-sm">Activación con QR</p>
+            <p className="text-white text-sm">Activación con QR</p>
           </div>
 
           <div className="flex flex-col items-center sm:items-start text-white">
@@ -264,7 +264,7 @@ export default function Hero({ minPrice }: HeroProps) {
               <Globe size={24} weight="bold" className="text-[#06B6D4]" />
               <p className="text-3xl font-black font-mono">30+</p>
             </div>
-            <p className="text-white/70 text-sm">Países cubiertos</p>
+            <p className="text-white text-sm">Países cubiertos</p>
           </div>
         </motion.div>
       </div>
