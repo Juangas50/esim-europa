@@ -244,24 +244,24 @@ export default function Hero({ minPrice }: HeroProps) {
           className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-24 pt-16 border-t border-white/10"
         >
           <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <DeviceMobile size={24} weight="bold" className="text-[#F59E0B]" />
+            <div className="flex items-baseline gap-4 mb-2">
+              <DeviceMobile size={32} weight="bold" className="text-[#F59E0B]" />
               <p className="text-3xl font-black font-mono">100K+</p>
             </div>
             <p className="text-white text-sm">Viajeros confían</p>
           </div>
 
           <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <Lightning size={24} weight="bold" className="text-[#06B6D4]" />
+            <div className="flex items-baseline gap-4 mb-2">
+              <Lightning size={32} weight="bold" className="text-[#06B6D4]" />
               <p className="text-3xl font-black font-mono">2 min</p>
             </div>
             <p className="text-white text-sm">Activación con QR</p>
           </div>
 
           <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <Globe size={24} weight="bold" className="text-[#06B6D4]" />
+            <div className="flex items-baseline gap-4 mb-2">
+              <Globe size={32} weight="bold" className="text-[#06B6D4]" />
               <p className="text-3xl font-black font-mono">30+</p>
             </div>
             <p className="text-white text-sm">Países cubiertos</p>
