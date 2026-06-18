@@ -41,7 +41,7 @@ function RouteBackground() {
       {/* Gradiente overlay — más oscuro para mejor contraste */}
       <div className="absolute inset-0 bg-gradient-hero opacity-[0.85]" />
       {/* Overlay adicional para textos claros */}
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/30" />
     </div>
   );
 }
