@@ -66,6 +66,15 @@ export default async function TerminosPage({
 function TerminosES() {
   return (
     <LegalLayout title="Términos y condiciones" lastUpdated="2 de junio de 2026">
+      <Section title="Identificación del prestador">
+        <p>
+          El presente servicio es prestado por RUTA34 TELECOM, S.L., sociedad con domicilio en
+          España, en adelante &quot;RUTA34 Telecom&quot; o &quot;la empresa&quot;. Para cualquier
+          consulta relacionada con la identificación legal del prestador, podés escribir a
+          soporte@esimruta34.com.
+        </p>
+      </Section>
+
       <Section title="1. Objeto del servicio">
         <p>
           RUTA34 Telecom (en adelante, «la empresa») ofrece servicios de venta de eSIMs para su
@@ -178,10 +187,11 @@ function TerminosES() {
 
       <Section title="10. Legislación aplicable">
         <p>
-          Los presentes términos se rigen por la legislación española. Para la resolución de
-          controversias, las partes se someten a los juzgados y tribunales competentes de España,
-          sin perjuicio de los derechos que asistan a los consumidores conforme a la normativa de
-          su país de residencia.
+          Los presentes términos se rigen por la legislación española. RUTA34 TELECOM, S.L., como
+          entidad prestadora del servicio, se somete a los juzgados y tribunales competentes de
+          España para la resolución de controversias, sin perjuicio de los derechos que asistan a
+          los consumidores conforme a la normativa de protección al consumidor de su país de
+          residencia.
         </p>
       </Section>
 
@@ -199,6 +209,15 @@ function TerminosES() {
 function TerminosPT() {
   return (
     <LegalLayout title="Termos e condições" lastUpdated="2 de junho de 2026">
+      <Section title="Identificação do prestador">
+        <p>
+          O presente serviço é prestado pela RUTA34 TELECOM, S.L., sociedade com domicílio na
+          Espanha, doravante &quot;RUTA34 Telecom&quot; ou &quot;a empresa&quot;. Para qualquer
+          dúvida relacionada à identificação legal do prestador, você pode escrever para
+          soporte@esimruta34.com.
+        </p>
+      </Section>
+
       <Section title="1. Objeto do serviço">
         <p>
           A RUTA34 Telecom (doravante, «a empresa») oferece serviços de venda de eSIMs para uso
@@ -312,10 +331,10 @@ function TerminosPT() {
 
       <Section title="10. Legislação aplicável">
         <p>
-          Os presentes termos são regidos pela legislação espanhola. Para a resolução de
-          controvérsias, as partes se submetem aos tribunais competentes da Espanha, sem prejuízo
-          dos direitos que assistem aos consumidores conforme a legislação de seu país de
-          residência.
+          Os presentes termos são regidos pela legislação espanhola. A RUTA34 TELECOM, S.L., como
+          entidade prestadora do serviço, se submete aos tribunais competentes da Espanha para a
+          resolução de controvérsias, sem prejuízo dos direitos que assistem aos consumidores
+          conforme a legislação de proteção ao consumidor de seu país de residência.
         </p>
       </Section>
 
