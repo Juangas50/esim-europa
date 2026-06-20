@@ -4,7 +4,7 @@
  * Standard eSIM LPA URI format (GSMA SGP.22):
  *   LPA:1$SM-DP+_ADDRESS$ACTIVATION_CODE[$CONFIRMATION_CODE]
  *
- * Vodafone example:
+ * Example activation string:
  *   Cadena: 1$sm-v4-018-esagtm.pr.go-esim.com$549834DDB497BFEC54C2B89AFE84A611
  *   QR:     LPA:1$sm-v4-018-esagtm.pr.go-esim.com$549834DDB497BFEC54C2B89AFE84A611
  *   Código: 106129
@@ -17,7 +17,7 @@
 export const ACTIVATION_STRING_RE =
   /^1\$([a-zA-Z0-9._-]+)\$([A-Fa-f0-9]{16,64})$/
 
-// Código de confirmación: 4-8 dígitos numéricos (Vodafone usa 6)
+// Código de confirmación: 4-8 dígitos numéricos (típicamente 6)
 export const CONFIRMATION_CODE_RE = /^\d{4,8}$/
 
 export interface ParsedActivation {
@@ -29,7 +29,7 @@ export interface ParsedActivation {
 
 /**
  * Valida y parsea una cadena de activación eSIM.
- * El admin pega lo que ve en pantalla de Vodafone: "1$servidor$codigo"
+ * El admin pega lo que ve en pantalla del operador: "1$servidor$codigo"
  */
 export function parseActivationString(
   raw: string,

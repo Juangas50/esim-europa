@@ -19,7 +19,7 @@ All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges.
 - **Spain:** 60GB
 - **EU Roaming:** 30GB
 - **Total:** 90GB available
-- **Speed:** 4G/5G (Vodafone network)
+- **Speed:** 4G/5G (premium European network)
 
 ### Calls & SMS
 - **International Calls:** Unlimited minutes to Latin America (AR, BR, CL, UY)
@@ -52,7 +52,7 @@ All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges.
 - **Spain:** 240GB
 - **EU Roaming:** 30GB
 - **Total:** 270GB available
-- **Speed:** 4G/5G (Vodafone network)
+- **Speed:** 4G/5G (premium European network)
 
 ### Calls & SMS
 - **International Calls:** 2,000 minutes to Latin America
@@ -87,7 +87,7 @@ All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges.
 - **Spain:** 330GB
 - **EU Roaming:** 30GB
 - **Total:** 360GB available
-- **Speed:** 4G/5G (Vodafone network)
+- **Speed:** 4G/5G (premium European network)
 
 ### Calls & SMS
 - **International Calls:** 3,000 minutes to Latin America
@@ -120,7 +120,7 @@ All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges.
 - **Spain:** 380GB
 - **EU Roaming:** 30GB
 - **Total:** 410GB available
-- **Speed:** 4G/5G (Vodafone network)
+- **Speed:** 4G/5G (premium European network)
 
 ### Calls & SMS
 - **International Calls:** 3,000 minutes to Latin America
@@ -153,7 +153,7 @@ All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges.
 - **Spain:** 430GB
 - **EU Roaming:** 30GB
 - **Total:** 460GB available
-- **Speed:** 4G/5G (Vodafone network)
+- **Speed:** 4G/5G (premium European network)
 
 ### Calls & SMS
 - **International Calls:** 3,000 minutes to Latin America

@@ -62,9 +62,9 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
       <div style={{ width: 70, height: 70, borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid #22C55E', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 32 }}>✓</div>
       <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 10 }}>¡Pedido enviado!</h2>
       <p style={{ color: '#7A7A7A', lineHeight: 1.7, fontSize: 14, marginBottom: 24 }}>
-        {type === 'prepago' && !scheduled && 'El equipo RUTA34 activará la eSIM. Vodafone enviará el QR al cliente.'}
+        {type === 'prepago' && !scheduled && 'El equipo RUTA34 activará la eSIM. El QR se enviará al cliente vía email.'}
         {type === 'prepago' && scheduled && `Activación programada para el ${form.date}. El cliente recibirá confirmación ahora.`}
-        {type === 'dataonly' && 'Vodafone enviará el QR al cliente. Tiene 60 días para activarlo.'}
+        {type === 'dataonly' && 'El QR se enviará al cliente. Tiene 60 días para activarlo.'}
       </p>
       <div style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: 20, marginBottom: 24, textAlign: 'left' }}>
         <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Resumen</div>
@@ -231,7 +231,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   </div>
                   {!scheduled ? (
                     <div style={{ background: 'rgba(230,0,0,0.08)', border: '1px solid rgba(230,0,0,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
-                      ⚠️ <strong style={{ color: '#fff' }}>El plan empieza a correr hoy.</strong> RUTA34 activa la eSIM y Vodafone envía el QR al cliente.
+                      ⚠️ <strong style={{ color: '#fff' }}>El plan empieza a correr hoy.</strong> RUTA34 activa la eSIM y el QR se envía inmediatamente al cliente.
                     </div>
                   ) : (
                     <div>
@@ -251,7 +251,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
               {type === 'dataonly' && (
                 <div style={{ background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 9, padding: '12px 15px' }}>
                   <div style={{ fontWeight: 700, color: '#6EC1E4', fontSize: 12, marginBottom: 5 }}>ℹ️ ¿Cómo funciona DataOnly?</div>
-                  <div style={{ color: '#7A7A7A', fontSize: 12, lineHeight: 1.7 }}>Vodafone envía el QR al email del cliente. Tiene <strong style={{ color: '#fff' }}>60 días para escanearlo</strong>. El plan <strong style={{ color: '#fff' }}>no empieza hasta que lo active</strong>.</div>
+                  <div style={{ color: '#7A7A7A', fontSize: 12, lineHeight: 1.7 }}>Se envía el QR al email del cliente. Tiene <strong style={{ color: '#fff' }}>60 días para escanearlo</strong>. El plan <strong style={{ color: '#fff' }}>no empieza hasta que lo active</strong>.</div>
                 </div>
               )}
             </div>

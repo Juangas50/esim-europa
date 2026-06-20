@@ -12,7 +12,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "S",
     position: 1,
     data_gb: 5,
-    eu_data_gb: 15,   // ← actualizar con valor real de Vodafone
+    eu_data_gb: 15,   // ← actualizar con valores reales de roaming
     duration_days: 28,
     activation_days: 365,
     price_usd: 19.9,
@@ -33,7 +33,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "M",
     position: 2,
     data_gb: 10,
-    eu_data_gb: 23,   // ← actualizar con valor real de Vodafone
+    eu_data_gb: 23,   // ← actualizar con valores reales de roaming
     duration_days: 28,
     activation_days: 365,
     price_usd: 29.9,
@@ -54,7 +54,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "L",
     position: 3,
     data_gb: 20,
-    eu_data_gb: 31,   // ← actualizar con valor real de Vodafone
+    eu_data_gb: 31,   // ← actualizar con valores reales de roaming
     duration_days: 28,
     activation_days: 365,
     price_usd: 39.9,
@@ -76,7 +76,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "XL",
     position: 4,
     data_gb: 30,
-    eu_data_gb: 37,   // ← actualizar con valor real de Vodafone
+    eu_data_gb: 37,   // ← actualizar con valores reales de roaming
     duration_days: 28,
     activation_days: 365,
     price_usd: 49.9,
@@ -97,7 +97,7 @@ const LOCAL_PLANS: Plan[] = [
     size: "XXL",
     position: 5,
     data_gb: 50,
-    eu_data_gb: 52,   // ← actualizar con valor real de Vodafone
+    eu_data_gb: 52,   // ← actualizar con valores reales de roaming
     duration_days: 28,
     activation_days: 365,
     price_usd: 69.9,

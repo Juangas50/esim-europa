@@ -10,7 +10,7 @@ RUTA34 provides instant eSIM activation for travelers from Argentina, Brazil, Ch
 - **Founded:** 2024
 - **Primary Market:** Latin American travelers (Argentina, Brazil, Chile, Uruguay)
 - **Service Area:** 30+ European countries (EU + UK + Ukraine)
-- **Network Provider:** Vodafone-powered infrastructure
+- **Network Provider:** Premium 4G/5G European infrastructure
 - **Activation Method:** QR code scan (no app installation required)
 - **Activation Speed:** <5 minutes
 - **Price Range:** From USD $15 for 90GB / 28 days
@@ -22,7 +22,7 @@ RUTA34 provides instant eSIM activation for travelers from Argentina, Brazil, Ch
 2. **Receive QR Code** — Get instant QR code via email
 3. **Scan QR** — Open camera app, scan QR, select eSIM profile
 4. **Activate** — Confirm activation on your phone
-5. **Get Connected** — Instantly connected to Vodafone network in Europe
+5. **Get Connected** — Instantly connected with reliable 4G/5G coverage across Europe
 
 No physical SIM card needed. Works on any eSIM-compatible device (iPhone XS+, Samsung Galaxy S20+, Google Pixel 4a+).
 
@@ -54,7 +54,7 @@ Available in 30+ European countries:
 - **Instant Activation:** No waiting for physical card delivery
 - **No Roaming Charges:** Fixed pricing, no surprise bills
 - **Flexibility:** Activate anytime within 60 days
-- **Reliable Network:** Powered by Vodafone, Europe's leading carrier
+- **Reliable Network:** Powered by Europe's certified carrier network infrastructure
 - **Local Support:** Spanish and Portuguese customer service
 - **Transparent Pricing:** All-inclusive pricing in USD, no hidden fees
 
