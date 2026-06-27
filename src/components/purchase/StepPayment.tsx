@@ -70,6 +70,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
   const [method, setMethod] = useState<PaymentMethod>("stripe");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   // Step viewed once on mount
   useEffect(() => {
@@ -207,6 +208,45 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           El pago se procesa de forma segura con Stripe. Podés pagar con tarjeta, Apple Pay o Link si están disponibles.
         </p>
 
+        {/* Checkbox de T&C */}
+        <div className="rounded-xl bg-[#F8F8F8] border border-black/[0.06] p-4">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="w-5 h-5 mt-0.5 rounded border-2 border-[#ddd] bg-white checked:bg-[#E60000] checked:border-[#E60000] cursor-pointer accent-[#E60000]"
+            />
+            <span className="text-xs text-[#555] leading-relaxed flex-1">
+              {locale === "pt" ? (
+                <>
+                  Li e aceito os{" "}
+                  <a href={`/${locale}/termos`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                    Termos e Condições
+                  </a>
+                  {" "}e a{" "}
+                  <a href={`/${locale}/privacidade`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                    Política de Privacidade
+                  </a>
+                  . Entendo que, ao ativar o eSIM, o serviço começa a ser prestado imediatamente e aceito expressamente renunciar ao meu direito de arrependimento de 14 dias a partir do momento da ativação.
+                </>
+              ) : (
+                <>
+                  He leído y acepto los{" "}
+                  <a href={`/${locale}/terminos`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                    Términos y Condiciones
+                  </a>
+                  {" "}y la{" "}
+                  <a href={`/${locale}/privacidad`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                    Política de Privacidad
+                  </a>
+                  . Entiendo que, al activar la eSIM, el servicio comienza a prestarse de forma inmediata y acepto expresamente renunciar a mi derecho de desistimiento de 14 días a partir del momento de la activación.
+                </>
+              )}
+            </span>
+          </label>
+        </div>
+
         {/* Botones */}
         <div className="flex items-center gap-3 pt-2">
           <button
@@ -224,7 +264,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
             size="lg"
             className="flex-1"
             onClick={handlePay}
-            disabled={loading}
+            disabled={loading || !acceptedTerms}
           >
             {loading ? (
               <span className="flex items-center gap-2">

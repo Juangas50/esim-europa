@@ -7,7 +7,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-s",
     slug: "local-s",
-    name: "SIM Local S",
+    name: "Europa Básico",
     type: "local",
     size: "S",
     position: 1,
@@ -28,7 +28,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-m",
     slug: "local-m",
-    name: "SIM Local M",
+    name: "Europa Plus",
     type: "local",
     size: "M",
     position: 2,
@@ -49,7 +49,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-l",
     slug: "local-l",
-    name: "SIM Local L",
+    name: "Europa Total",
     type: "local",
     size: "L",
     position: 3,
@@ -71,7 +71,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-xl",
     slug: "local-xl",
-    name: "SIM Local XL",
+    name: "Europa Max",
     type: "local",
     size: "XL",
     position: 4,
@@ -92,7 +92,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-xxl",
     slug: "local-xxl",
-    name: "SIM Local XXL",
+    name: "Europa Premium",
     type: "local",
     size: "XXL",
     position: 5,

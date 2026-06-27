@@ -86,6 +86,10 @@ function TerminosES() {
           El servicio se presta sobre una red de telecomunicaciones española certificada con
           cobertura 4G/5G en España y más de 30 países europeos.
         </p>
+        <p>
+          La contratación del servicio está reservada a personas mayores de 18 años. Al completar
+          la compra, el cliente declara ser mayor de edad y tener capacidad legal para contratar.
+        </p>
       </Section>
 
       <Section title="2. Descripción del producto">
@@ -130,9 +134,27 @@ function TerminosES() {
           El cobro es único y no existe renovación automática. La empresa no almacena datos de
           tarjetas de pago; este proceso es gestionado íntegramente por los proveedores de pago.
         </p>
+        <p>
+          Los precios se muestran en dólares estadounidenses (USD). El importe final que el cliente
+          vea reflejado en su tarjeta o medio de pago puede verse afectado por el tipo de cambio
+          aplicado por su entidad bancaria o emisora de tarjeta, así como por impuestos, percepciones
+          o recargos propios de su país de residencia. RUTA34 TELECOM, S.L. no tiene control ni
+          responsabilidad sobre estos cargos adicionales, que son ajenos al precio publicado.
+        </p>
       </Section>
 
-      <Section title="5. Política de reembolso">
+      <Section title="5. Facturación">
+        <p>
+          El comprobante de pago emitido automáticamente por la pasarela de pago no constituye una
+          factura fiscal española. Si el cliente requiere factura, podrá solicitarla escribiendo a
+          soporte@esimruta34.com indicando el número de pedido y los datos fiscales necesarios
+          (nombre/razón social, domicilio, identificación fiscal de su país). La factura será
+          emitida por RUTA34 TELECOM, S.L. conforme a la normativa española aplicable, en un plazo
+          de hasta 7 días hábiles desde la solicitud.
+        </p>
+      </Section>
+
+      <Section title="6. Política de reembolso">
         <p>
           El cliente podrá solicitar la cancelación y reembolso completo dentro de las{" "}
           <strong>24 horas siguientes a la compra</strong>, siempre que el código QR no haya sido
@@ -150,7 +172,22 @@ function TerminosES() {
         </p>
       </Section>
 
-      <Section title="6. Limitaciones del servicio">
+      <Section title="7. Exclusión del derecho de desistimiento">
+        <p>
+          De conformidad con lo establecido en el artículo 25 de la Directiva 2011/83/UE, el cliente
+          reconoce que la prestación del servicio de eSIM comienza inmediatamente tras la activación
+          del código QR, y que el producto es intangible y no puede devolverse. Por esta razón, y en
+          aplicación de la legislación vigente, se excluye expresamente el derecho de desistimiento
+          una vez que el cliente ha instalado y activado la eSIM en su dispositivo.
+        </p>
+        <p>
+          No obstante, el cliente mantiene el derecho de solicitar el reembolso total dentro de las
+          <strong>24 horas siguientes a la compra</strong> si aún no ha instalado la eSIM. Tras
+          transcurrir este plazo, no procede reembolso bajo ninguna circunstancia.
+        </p>
+      </Section>
+
+      <Section title="8. Limitaciones del servicio">
         <p>
           La cobertura y la velocidad de datos dependen de la red del operador local en cada país
           europeo. RUTA34 Telecom no garantiza velocidades mínimas ni cobertura en zonas rurales o
@@ -160,7 +197,25 @@ function TerminosES() {
         </p>
       </Section>
 
-      <Section title="7. Uso aceptable">
+      <Section title="9. Límite de responsabilidad">
+        <p>
+          En la máxima medida permitida por la ley, RUTA34 TELECOM, S.L. declina toda responsabilidad
+          por:
+        </p>
+        <ul>
+          <li>Pérdida de datos, correos electrónicos o mensajes durante el uso de la eSIM.</li>
+          <li>Interrupción del servicio debido a fallos técnicos, de red o de terceros proveedores.</li>
+          <li>Daños indirectos, incidentales, especiales o consecuentes derivados del uso de la eSIM.</li>
+          <li>Conflictos entre la eSIM y dispositivos o software del cliente.</li>
+        </ul>
+        <p>
+          La responsabilidad total de RUTA34 TELECOM, S.L. ante el cliente, en cualquier
+          circunstancia y por cualquier concepto, no podrá exceder el monto total pagado por el
+          cliente por la compra del plan eSIM.
+        </p>
+      </Section>
+
+      <Section title="10. Uso aceptable">
         <p>
           Está prohibido el uso de las eSIMs para actividades ilegales, la reventa a terceros, o la
           conexión compartida (tethering) más allá de lo permitido por el plan adquirido. RUTA34
@@ -169,7 +224,7 @@ function TerminosES() {
         </p>
       </Section>
 
-      <Section title="8. Protección de datos">
+      <Section title="11. Protección de datos">
         <p>
           Los datos personales facilitados durante la compra se tratarán conforme a nuestra{" "}
           <a href="../privacidad">Política de privacidad</a> y en cumplimiento del Reglamento
@@ -177,7 +232,7 @@ function TerminosES() {
         </p>
       </Section>
 
-      <Section title="9. Modificaciones">
+      <Section title="12. Modificaciones">
         <p>
           RUTA34 Telecom se reserva el derecho de modificar estos términos en cualquier momento.
           Los cambios se publicarán en esta página con la fecha de actualización. El uso continuado
@@ -185,13 +240,40 @@ function TerminosES() {
         </p>
       </Section>
 
-      <Section title="10. Legislación aplicable">
+      <Section title="13. Legislación aplicable">
         <p>
           Los presentes términos se rigen por la legislación española. RUTA34 TELECOM, S.L., como
           entidad prestadora del servicio, se somete a los juzgados y tribunales competentes de
-          España para la resolución de controversias, sin perjuicio de los derechos que asistan a
-          los consumidores conforme a la normativa de protección al consumidor de su país de
-          residencia.
+          España para la resolución de controversias.
+        </p>
+        <p>
+          <strong>Para consumidores residentes en la Unión Europea:</strong> Los consumidores disfrutan
+          de la protección establecida en la Directiva 2011/83/UE (Derechos de los consumidores) y en
+          la legislación de protección al consumidor de su país de residencia, incluyendo el derecho
+          a acceder a procedimientos alternativos de resolución de conflictos (ADR) sin costo. Los
+          consumidores pueden presentar quejas ante la plataforma de resolución de controversias
+          en línea (ODR) de la Comisión Europea en <a href="https://ec.europa.eu/consumers/odr/">https://ec.europa.eu/consumers/odr/</a>.
+        </p>
+        <p>
+          <strong>Para consumidores residentes en Latinoamérica:</strong> Sin perjuicio de la
+          legislación española aplicable a estos términos, se reconoce que los consumidores
+          latinoamericanos están protegidos por las leyes de defensa del consumidor de sus
+          respectivos países, incluyendo (según corresponda): Ley de Protección al Consumidor de
+          México, Código de Defensa del Consumidor de Brasil, Ley 19.496 de Chile, Código de
+          Protección del Consumidor de Colombia, y legislación equivalente en otros países de
+          América Latina. Nada en estos términos limita los derechos irrenunciables que asisten a
+          los consumidores conforme a sus leyes locales.
+        </p>
+      </Section>
+
+      <Section title="14. Idioma del contrato">
+        <p>
+          Estos términos y condiciones se redactan originariamente en idioma español. En caso de
+          discrepancia, contradicción o conflicto de interpretación entre la versión en español y
+          cualquier otra versión en otro idioma, prevalecerá en todo momento la versión en idioma
+          español. El cliente reconoce haber recibido información suficiente en lengua de su
+          preferencia antes de confirmar la compra, y que la versión en español es considerada la
+          versión prevaleiente para efectos legales y de cumplimiento normativo.
         </p>
       </Section>
 
@@ -258,24 +340,23 @@ function TerminosPT() {
         </p>
       </Section>
 
-      <Section title="4. Preços e formas de pagamento">
+      <Section title="1. Objeto do serviço">
         <p>
-          Todos os preços são expressos em dólares americanos (USD) e incluem os impostos
-          aplicáveis. O pagamento é realizado no momento da compra por meio de:
+          A RUTA34 Telecom (doravante, «a empresa») oferece serviços de venda de eSIMs para uso
+          na Europa e Espanha, destinados a viajantes originários da América Latina. Ao concluir
+          uma compra em esimruta34.com, o cliente aceita integralmente os presentes termos e condições.
         </p>
-        <ul>
-          <li>
-            Cartão de crédito ou débito (Visa, Mastercard, American Express) via Stripe.
-          </li>
-        </ul>
         <p>
-          A cobrança é única e não há renovação automática. A empresa não armazena dados de
-          cartões de pagamento; esse processo é gerenciado integralmente pelos provedores de
-          pagamento.
+          O serviço é prestado sobre uma rede de telecomunicações espanhola certificada com
+          cobertura 4G/5G na Espanha e em mais de 30 países europeus.
+        </p>
+        <p>
+          A contratação do serviço é reservada a pessoas maiores de 18 anos. Ao concluir a compra,
+          o cliente declara ser maior de idade e ter capacidade legal para contratar.
         </p>
       </Section>
 
-      <Section title="5. Política de reembolso">
+      <Section title="2. Descrição do produto">
         <p>
           O cliente poderá solicitar o cancelamento e reembolso integral dentro das{" "}
           <strong>24 horas seguintes à compra</strong>, desde que o código QR não tenha sido

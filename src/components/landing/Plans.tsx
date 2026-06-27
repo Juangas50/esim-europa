@@ -176,7 +176,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           }`}
           style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
         >
-          {plan.size ? `${t("buyPlan")} ${plan.size}` : t("buyPlan")}
+          {plan.type === "local" ? `${t("buyPlan")} ${plan.name}` : t("buyPlan")}
           <ArrowRight size={13} weight="bold" />
         </a>
       </div>
