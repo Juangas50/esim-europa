@@ -1,0 +1,38 @@
+<svg viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Crema -->
+  <rect width="1080" height="1350" fill="#FAF7F2"/>
+
+  <!-- Navy accent stripe (left) -->
+  <rect width="120" height="1350" fill="#1B2F4E"/>
+
+  <!-- Main content area -->
+  <g transform="translate(200, 100)">
+    <!-- Flag emoji placeholder -->
+    <text x="0" y="0" font-size="120" font-weight="bold">🇪🇸</text>
+
+    <!-- Headline -->
+    <text x="0" y="200" font-family="'DM Serif Display', serif" font-size="72" font-weight="900" fill="#1B2F4E" line-height="1.1">
+      <tspan x="0" dy="0">Llega a España</tspan>
+      <tspan x="0" dy="90">y ya estás</tspan>
+      <tspan x="0" dy="90" fill="#C9973A">conectado</tspan>
+    </text>
+
+    <!-- Subheadline -->
+    <text x="0" y="500" font-family="Arial, sans-serif" font-size="36" fill="#64748B">
+      <tspan x="0" dy="0">Internet sin roaming • eSIM instantánea</tspan>
+      <tspan x="0" dy="50">Desde USD $4.99</tspan>
+    </text>
+
+    <!-- CTA Button -->
+    <rect x="0" y="600" width="600" height="100" fill="#C9973A" rx="20"/>
+    <text x="300" y="665" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#1B2F4E" text-anchor="middle">
+      Comprar eSIM
+    </text>
+  </g>
+
+  <!-- Logo RUTA34 (bottom right) -->
+  <g transform="translate(850, 1200)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="48" font-weight="900" fill="#1B2F4E">RUTA</text>
+    <text x="220" y="0" font-family="Arial, sans-serif" font-size="48" font-weight="900" fill="#C9973A">34</text>
+  </g>
+</svg>

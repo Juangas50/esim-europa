@@ -1,0 +1,44 @@
+<svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Navy gradient to Dorado -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B2F4E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2D4A72;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bgGradient)"/>
+
+  <!-- Animated accent circle (top right) -->
+  <circle cx="900" cy="200" r="300" fill="#C9973A" opacity="0.15"/>
+
+  <!-- Main content -->
+  <g transform="translate(80, 300)">
+    <!-- Big emoji -->
+    <text x="0" y="0" font-size="200" font-weight="bold">🌍</text>
+
+    <!-- Main text -->
+    <text x="0" y="300" font-family="'DM Serif Display', serif" font-size="96" font-weight="900" fill="#FAF7F2">
+      <tspan x="0" dy="0">Internet sin</tspan>
+      <tspan x="0" dy="110">roaming en</tspan>
+      <tspan x="0" dy="110" fill="#C9973A">Europa</tspan>
+    </text>
+
+    <!-- Subtext -->
+    <text x="0" y="800" font-family="Arial, sans-serif" font-size="48" fill="#FAF7F2" font-weight="bold">
+      <tspan x="0" dy="0">eSIM instantánea</tspan>
+      <tspan x="0" dy="70" fill="#E8C56A">34+ países</tspan>
+      <tspan x="0" dy="70" fill="#FAF7F2">Desde $4.99</tspan>
+    </text>
+
+    <!-- Call to action -->
+    <text x="0" y="1100" font-family="Arial, sans-serif" font-size="52" fill="#C9973A" font-weight="900">
+      💬 Link en bio
+    </text>
+  </g>
+
+  <!-- Bottom bar RUTA34 -->
+  <rect x="0" y="1750" width="1080" height="170" fill="#C9973A"/>
+  <text x="540" y="1850" font-family="Arial, sans-serif" font-size="72" font-weight="900" fill="#1B2F4E" text-anchor="middle">
+    @ruta34telecom
+  </text>
+</svg>
