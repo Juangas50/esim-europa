@@ -7,6 +7,7 @@ export interface Plan {
   id: string;
   slug: string;
   name: string;
+  vodafone_code?: string;    // Código Vodafone para activación (ej: "Vodafone S", "Vodafone M")
   type: PlanType;
   size?: PlanSize;           // S/M/L/XL/XXL — derivado de position o badge
   position?: number;         // 1 = más izquierda, 5 = más derecha en la home

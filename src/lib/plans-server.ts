@@ -15,6 +15,7 @@ import { PLANS } from "@/lib/plans";
 interface TariffRow {
   id: string;
   name: string;
+  vodafone_code: string | null;  // Código Vodafone para activación (ej: "Vodafone S", "Vodafone M")
   type: string;            // esim_type enum from B2B portal
   data_gb: number;
   validity_days: number | null;
@@ -128,6 +129,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
     id: t.id,
     slug: slugify(t.name),
     name: t.name,
+    vodafone_code: t.vodafone_code ?? undefined,
     type,
     // Talla S/M/L/XL/XXL solo para planes locales (data-only no tiene talla)
     size: type === "local" ? inferSize(t.name, t.badge, t.data_gb) : undefined,
