@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/auth/require-role'
 
 const VALID_TYPES = new Set(['local', 'dataonly'])
@@ -50,7 +50,7 @@ export async function createTariff(form: TariffForm) {
   const validated = validateTariffForm(form)
   if (!validated) return { error: { message: 'Invalid tariff data' } }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('tariffs')
     .insert({ ...validated, active: true })
@@ -61,7 +61,7 @@ export async function createTariff(form: TariffForm) {
 
 export async function deleteTariff(id: string) {
   await requireAdmin()
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { error } = await supabase.from('tariffs').delete().eq('id', id)
   return { error }
 }
@@ -71,11 +71,10 @@ export async function updateTariff(id: string, form: TariffForm) {
   const validated = validateTariffForm(form)
   if (!validated) return { error: { message: 'Invalid tariff data' } }
 
-  const supabase = await createClient()
-  const { vodafone_code, ...validatedWithoutVodafone } = validated
+  const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('tariffs')
-    .update(validatedWithoutVodafone)
+    .update(validated)
     .eq('id', id)
     .select()
     .single()

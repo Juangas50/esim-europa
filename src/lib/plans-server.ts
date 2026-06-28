@@ -170,7 +170,7 @@ export async function getPlans(opts?: { webOnly?: boolean }): Promise<Plan[]> {
     let query = supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
+        "id, name, vodafone_code, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
       )
       .eq("active", true);
 
@@ -206,7 +206,7 @@ export async function getPlanById(id: string, opts?: { webOnly?: boolean }): Pro
     let query = supabase
       .from("tariffs")
       .select(
-        "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
+        "id, name, vodafone_code, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible"
       )
       .eq("id", id);
 
