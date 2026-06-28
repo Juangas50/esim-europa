@@ -51,9 +51,10 @@ export async function createTariff(form: TariffForm) {
   if (!validated) return { error: { message: 'Invalid tariff data' } }
 
   const supabase = await createClient()
+  const { vodafone_code, ...validatedWithoutVodafone } = validated
   const { data, error } = await supabase
     .from('tariffs')
-    .insert({ ...validated, active: true })
+    .insert({ ...validatedWithoutVodafone, active: true })
     .select()
     .single()
   return { data, error }
@@ -72,9 +73,10 @@ export async function updateTariff(id: string, form: TariffForm) {
   if (!validated) return { error: { message: 'Invalid tariff data' } }
 
   const supabase = await createClient()
+  const { vodafone_code, ...validatedWithoutVodafone } = validated
   const { data, error } = await supabase
     .from('tariffs')
-    .update(validated)
+    .update(validatedWithoutVodafone)
     .eq('id', id)
     .select()
     .single()
