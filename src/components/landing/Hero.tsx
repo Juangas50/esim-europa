@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle, DeviceMobile, Lightning, Globe } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useState } from "react";
 import Badge from "@/components/ui/Badge";
 import Icon from "@/components/ui/Icon";
+import CountriesModal from "@/components/shared/CountriesModal";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 
@@ -156,19 +158,20 @@ function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* Un único badge flotante — sin competencia visual */}
-      <motion.div
+      {/* Un único badge flotante — clickeable para ver países */}
+      <motion.button
         initial={{ opacity: 0, x: 16, scale: 0.9 }}
         animate={{ opacity: 1, x: 0, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.7, ease: EASE_OUT }}
-        className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06]"
+        onClick={() => setShowCountries(true)}
+        className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06] hover:shadow-[0_12px_40px_-6px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
       >
         <p className="text-[9px] font-bold uppercase tracking-widest text-[#aaa] mb-0.5">Cobertura</p>
         <div className="flex items-center gap-2">
           <Icon name="europa-mundo" size="md" color="navy" />
           <p className="text-sm font-black text-[#1B2F4E]">30+ países</p>
         </div>
-      </motion.div>
+      </motion.button>
     </div>
   );
 }
@@ -179,6 +182,7 @@ interface HeroProps {
 
 export default function Hero({ minPrice }: HeroProps) {
   const t = useTranslations("hero");
+  const [showCountries, setShowCountries] = useState(false);
 
   return (
     <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-20 pb-20 px-4 overflow-hidden">
@@ -281,6 +285,9 @@ export default function Hero({ minPrice }: HeroProps) {
           </div>
         </motion.div>
       </div>
+
+      {/* Modal de países */}
+      <CountriesModal isOpen={showCountries} onClose={() => setShowCountries(false)} />
     </section>
   );
 }

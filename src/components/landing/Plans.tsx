@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, Star, Users, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { Check, ArrowRight, Star, Users, CaretLeft, CaretRight, Info } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
+import CountriesModal from "@/components/shared/CountriesModal";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
@@ -40,7 +41,7 @@ function sortMobileFirst(plans: Plan[]) {
 
 // ── Card unificada ────────────────────────────────────────────────────────────
 
-function PlanCard({ plan, index }: { plan: Plan; index: number }) {
+function PlanCard({ plan, index, onShowCountries }: { plan: Plan; index: number; onShowCountries: () => void }) {
   const t = useTranslations("plans");
   const locale = useLocale();
   const isPopular = plan.is_popular;
@@ -70,10 +71,24 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         </div>
       )}
 
-      {/* Nombre del plan */}
-      <h3 className={`text-lg font-black mb-4 ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
-        {plan.name}
-      </h3>
+      {/* Nombre del plan + info button */}
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <h3 className={`text-lg font-black ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
+          {plan.name}
+        </h3>
+        <button
+          onClick={onShowCountries}
+          className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+            isPopular
+              ? "hover:bg-white/10 text-white/60 hover:text-white"
+              : "hover:bg-[#F5F5F5] text-[#999] hover:text-[#555]"
+          }`}
+          title="Ver países de cobertura"
+          aria-label="Ver países de cobertura"
+        >
+          <Info size={16} weight="bold" />
+        </button>
+      </div>
 
       {/* Datos — dos zonas para SIM Local, zona única para DataOnly */}
       {plan.type === "local" && plan.eu_data_gb ? (
@@ -173,7 +188,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
 // ── Grid estático (≤ MAX_VISIBLE planes) ─────────────────────────────────────
 
-function PlansGrid({ plans }: { plans: Plan[] }) {
+function PlansGrid({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
   const cols =
     plans.length <= 3 ? "xl:grid-cols-3" :
     plans.length === 4 ? "lg:grid-cols-3 xl:grid-cols-4" :
@@ -182,7 +197,7 @@ function PlansGrid({ plans }: { plans: Plan[] }) {
   return (
     <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${cols} gap-4 sm:gap-6`}>
       {plans.map((plan, i) => (
-        <PlanCard key={plan.id} plan={plan} index={i} />
+        <PlanCard key={plan.id} plan={plan} index={i} onShowCountries={onShowCountries} />
       ))}
     </div>
   );
@@ -190,7 +205,7 @@ function PlansGrid({ plans }: { plans: Plan[] }) {
 
 // ── Carrusel (> MAX_VISIBLE planes) ──────────────────────────────────────────
 
-function PlansCarousel({ plans }: { plans: Plan[] }) {
+function PlansCarousel({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
   const [current, setCurrent] = useState(0);
   // Mobile: 1 plan visible + pico del siguiente (85% de ancho)
   // Desktop: 3 planes visibles (33%) o 5 (20%)
@@ -212,7 +227,7 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
               // sm: 3 columnas, lg: 5 columnas
               className="flex-none w-[85%] sm:w-[calc(33.33%-11px)] lg:w-[calc(20%-10px)]"
             >
-              <PlanCard plan={plan} index={i} />
+              <PlanCard plan={plan} index={i} onShowCountries={onShowCountries} />
             </div>
           ))}
         </motion.div>
@@ -254,7 +269,7 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
 
 // ── Plans section para un tab ─────────────────────────────────────────────────
 
-function TabContent({ plans }: { plans: Plan[] }) {
+function TabContent({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
   const sorted       = sortByPosition(plans);
   const sortedMobile = sortMobileFirst(plans);
   const [isMobile, setIsMobile] = useState(false);
@@ -270,10 +285,10 @@ function TabContent({ plans }: { plans: Plan[] }) {
 
   // Mobile: siempre carrusel con popular primero
   // Desktop: grid ≤5 planes, carrusel >5 planes
-  if (isMobile) return <PlansCarousel plans={sortedMobile} />;
+  if (isMobile) return <PlansCarousel plans={sortedMobile} onShowCountries={onShowCountries} />;
   return sorted.length > MAX_VISIBLE
-    ? <PlansCarousel plans={sortedMobile} />
-    : <PlansGrid plans={sorted} />;
+    ? <PlansCarousel plans={sortedMobile} onShowCountries={onShowCountries} />
+    : <PlansGrid plans={sorted} onShowCountries={onShowCountries} />;
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -287,6 +302,7 @@ export default function Plans({ plans }: PlansProps) {
   const hasData     = dataPlans.length > 0;
 
   const [tab, setTab] = useState<Tab>(hasLocal ? "local" : "dataonly");
+  const [showCountries, setShowCountries] = useState(false);
 
   // Track "view plans" event on component mount
   useEffect(() => {
@@ -392,11 +408,14 @@ export default function Plans({ plans }: PlansProps) {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.22, ease: EASE_OUT }}
           >
-            <TabContent plans={tab === "local" ? localPlans : dataPlans} />
+            <TabContent plans={tab === "local" ? localPlans : dataPlans} onShowCountries={() => setShowCountries(true)} />
           </motion.div>
         </AnimatePresence>
 
       </div>
+
+      {/* Modal de países */}
+      <CountriesModal isOpen={showCountries} onClose={() => setShowCountries(false)} />
     </section>
   );
 }
