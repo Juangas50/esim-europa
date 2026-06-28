@@ -22,10 +22,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const base =
-      "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2";
 
     // Emil Kowalski: scale(0.97) on :active, ease-out-expo
-    const press = "active:scale-[0.97]";
+    // Reduced motion support for accessibility
+    const press = "motion-safe:active:scale-[0.97] motion-reduce:active:scale-100";
 
     const variants = {
       primary:
