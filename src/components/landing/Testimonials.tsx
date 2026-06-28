@@ -88,10 +88,10 @@ export default function Testimonials() {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="mb-10 text-center"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
             {t("title")}
           </h2>
-          <p className="text-[#555555] text-base">{t("subtitle")}</p>
+          <p className="text-[#64748B] text-base">{t("subtitle")}</p>
         </motion.div>
 
         {/* Franja editorial de fotos — real travelers */}
@@ -135,19 +135,19 @@ export default function Testimonials() {
               <StarRating count={item.rating} />
 
               {/* Texto */}
-              <p className="text-[#333333] text-sm leading-relaxed flex-1">
+              <p className="text-[#1B2F4E] text-sm leading-relaxed flex-1">
                 &ldquo;{item.text}&rdquo;
               </p>
 
               {/* Footer */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#111111]/6">
+              <div className="flex items-center justify-between pt-2 border-t border-[#1B2F4E]/6">
                 <div className="flex items-center gap-2.5">
                   {/* Avatar con flag */}
                   <div className="w-9 h-9 rounded-full bg-[#F8F8F8] border border-black/8 flex items-center justify-center text-lg">
                     {item.flag}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#111111]">{item.name}</p>
+                    <p className="text-sm font-bold text-[#1B2F4E]">{item.name}</p>
                     <p className="text-xs text-[#999]">{item.country}</p>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default function Testimonials() {
           className="mt-8 flex items-center justify-center gap-3"
         >
           <StarRating count={5} />
-          <span className="text-sm font-semibold text-[#555]">
+          <span className="text-sm font-semibold text-[#64748B]">
             {t("aggregate")}
           </span>
         </motion.div>

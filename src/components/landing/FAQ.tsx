@@ -24,20 +24,20 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-[#111111]/8">
+    <div className="border-b border-[#1B2F4E]/8">
       <button
         onClick={onToggle}
         className="w-full flex items-start justify-between gap-4 py-6 text-left group"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-[#111111] text-base leading-snug pr-2 group-hover:text-[#E60000] transition-colors duration-200">
+        <span className="font-semibold text-[#1B2F4E] text-base leading-snug pr-2 group-hover:text-[#E60000] transition-colors duration-200">
           {question}
         </span>
         <div
           className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 border transition-colors duration-200 ${
             isOpen
-              ? "bg-[#E60000] border-[#E60000] text-white"
-              : "border-[#111111]/15 text-[#555]"
+              ? "bg-[#C9973A] border-[#C9973A] text-white"
+              : "border-[#1B2F4E]/15 text-[#555]"
           }`}
         >
           {isOpen ? <Minus size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
@@ -107,7 +107,7 @@ export default function FAQ() {
               transition={{ duration: 0.5, ease: EASE_OUT }}
               className="lg:sticky lg:top-32"
             >
-              <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-4">
+              <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-4">
                 {t("title")}
               </h2>
               <p className="text-[#555555]">
@@ -132,7 +132,7 @@ export default function FAQ() {
             transition={{ duration: 0.4, ease: EASE_OUT }}
             className="lg:col-span-8"
           >
-            <div className="border-t border-[#111111]/8">
+            <div className="border-t border-[#1B2F4E]/8">
               {FAQ_KEYS.map((key, i) => (
                 <div key={key} id={`faq-${key}`}>
                   <FAQItem
