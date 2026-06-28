@@ -7,7 +7,7 @@ const LOCAL_PLANS: Plan[] = [
   {
     id: "local-s",
     slug: "local-s",
-    name: "XXXXXXXXX_TESTING_1",
+    name: "Europa Básico",
     vodafone_code: "Vodafone S",
     type: "local",
     size: "S",
