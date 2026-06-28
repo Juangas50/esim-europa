@@ -25,7 +25,8 @@ function TariffForm({ initial, onSave, onCancel }: {
   onCancel: () => void
 }) {
   const [form, setForm] = useState({
-    name: initial?.name || '',
+    client_name: initial?.name || '',
+    vodafone_code: initial?.vodafone_code || '',
     type: initial?.type || 'prepago',
     data_gb: initial?.data_gb?.toString() || '',
     validity_days: initial?.validity_days?.toString() || '',
@@ -56,8 +57,12 @@ function TariffForm({ initial, onSave, onCancel }: {
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre *</label>
-          <input required style={inp} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Traveler 15GB" />
+          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Cliente *</label>
+          <input required style={inp} value={form.client_name} onChange={e => setForm({ ...form, client_name: e.target.value })} placeholder="Europa Básico" />
+        </div>
+        <div>
+          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Vodafone *</label>
+          <input required style={inp} value={form.vodafone_code} onChange={e => setForm({ ...form, vodafone_code: e.target.value })} placeholder="Vodafone S" />
         </div>
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Tipo *</label>

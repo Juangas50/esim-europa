@@ -6,7 +6,8 @@ import { requireAdmin } from '@/lib/auth/require-role'
 const VALID_TYPES = new Set(['local', 'dataonly'])
 
 type TariffForm = {
-  name: string
+  client_name: string
+  vodafone_code: string
   type: string
   data_gb: number | string
   validity_days?: number | string | null
@@ -18,8 +19,11 @@ type TariffForm = {
 }
 
 function validateTariffForm(form: TariffForm) {
-  const name = String(form.name ?? '').trim().slice(0, 120)
-  if (!name) return null
+  const client_name = String(form.client_name ?? '').trim().slice(0, 120)
+  if (!client_name) return null
+
+  const vodafone_code = String(form.vodafone_code ?? '').trim().slice(0, 50)
+  if (!vodafone_code) return null
 
   const type = String(form.type ?? '').trim()
   if (!VALID_TYPES.has(type)) return null
@@ -28,7 +32,8 @@ function validateTariffForm(form: TariffForm) {
   if (isNaN(data_gb) || data_gb < 0 || data_gb > 9999) return null
 
   return {
-    name,
+    name: client_name,
+    vodafone_code,
     type,
     data_gb,
     validity_days: form.validity_days ? Number(form.validity_days) : null,
