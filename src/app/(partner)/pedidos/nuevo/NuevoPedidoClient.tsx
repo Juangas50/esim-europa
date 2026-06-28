@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createOrder } from './actions'
 
@@ -18,7 +18,6 @@ const inp = { background: '#232323', border: '1px solid #2A2A2A', borderRadius: 
 export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId }: { tariffs: Tariff[]; pricing: Pricing[]; agencyId: string; sellerId: string }) {
   const router = useRouter()
   const [step, setStep] = useState(1)
-  const [substep, setSubstep] = useState(1) // 1: Cliente básico, 2: Validación, 3: Activación
   const [type, setType] = useState<string | null>(null)
   const [tariffId, setTariffId] = useState<string | null>(null)
   const [scheduled, setScheduled] = useState(false)
@@ -27,7 +26,6 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [orderRef, setOrderRef] = useState('')
-  const errorFieldRef = useRef<HTMLInputElement | null>(null)
 
   const tariff = tariffs.find(t => t.id === tariffId)
   const pvp = pricing.find(p => p.tariff_id === tariffId)?.pvp || 0
@@ -36,22 +34,10 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
   const touch = (f: string) => setTouched(p => ({ ...p, [f]: true }))
   const errors = {
     email: form.email && !isValidEmail(form.email) ? 'Email inválido' : '',
-    dob: form.dob && !isAdult(form.dob) ? 'Debes ser mayor de 18 años para contratar una eSIM' : '',
+    dob: form.dob && !isAdult(form.dob) ? 'El cliente debe ser mayor de 18 años' : '',
     date: form.date && (new Date(form.date) < new Date(todayStr()) || new Date(form.date) > new Date(maxDateStr())) ? 'La fecha debe estar entre hoy y 12 meses' : '',
   }
-
-  // Validación por sección
-  const substep1Valid = form.nombre && form.apellidos && form.email && !errors.email
-  const substep2Valid = form.pasaporte && form.nac && form.dob && isAdult(form.dob)
-  const substep3Valid = type === 'dataonly' || !scheduled || (form.date && !errors.date)
-  const step2Valid = substep1Valid && substep2Valid && substep3Valid
-
-  // Auto-focus en campo con error
-  useEffect(() => {
-    if (errorFieldRef.current) {
-      errorFieldRef.current.focus()
-    }
-  }, [touched])
+  const step2Valid = form.nombre && form.apellidos && form.pasaporte && isValidEmail(form.email) && isAdult(form.dob) && (type === 'dataonly' || !scheduled || (form.date && !errors.date))
 
   const FieldError = ({ field }: { field: string }) => errors[field as keyof typeof errors] && touched[field] ? (
     <div style={{ color: '#E60000', fontSize: 11, marginTop: 4, fontWeight: 600 }}>⚠ {errors[field as keyof typeof errors]}</div>
@@ -201,116 +187,78 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
       {step === 2 && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 20, alignItems: 'start' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-              {[1,2,3].map(i => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 8, background: substep >= i ? '#E60000' : '#2A2A2A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{i}</div>
-                  {i < 3 && <div style={{ width: 20, height: 2, background: substep > i ? '#E60000' : '#2A2A2A' }} />}
-                </div>
-              ))}
-            </div>
-
-            {/* SUBSTEP 1: Cliente Básico */}
-            {substep === 1 && (
-              <div>
-                <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>Datos del cliente</h2>
-                <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 18 }}>Información rápida para empezar</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre *</label>
-                    <input style={inp} ref={(el: HTMLInputElement | null) => { if (errors.nombre || touched.nombre) errorFieldRef.current = el }} value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} placeholder="Juan" /></div>
-                  <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Apellidos *</label>
-                    <input style={inp} value={form.apellidos} onChange={e => setForm({ ...form, apellidos: e.target.value })} placeholder="Pérez García" /></div>
-                  <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Email del cliente *</label>
-                    <input type="email" style={{ ...inp, borderColor: touched.email && errors.email ? '#E60000' : '#2A2A2A' }} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} onBlur={() => touch('email')} placeholder="juan@email.com" />
-                    <FieldError field="email" /></div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-                  <button onClick={() => setStep(1)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>← Atrás</button>
-                  <button onClick={() => { if (substep1Valid) setSubstep(2); else Object.keys(errors).forEach(f => touch(f)) }} disabled={!substep1Valid}
-                    style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: substep1Valid ? 'pointer' : 'not-allowed', opacity: substep1Valid ? 1 : 0.4, fontFamily: 'inherit' }}>Continuar →</button>
-                </div>
+            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>Datos del cliente</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre *</label>
+                  <input style={inp} value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} placeholder="Juan" /></div>
+                <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Apellidos *</label>
+                  <input style={inp} value={form.apellidos} onChange={e => setForm({ ...form, apellidos: e.target.value })} placeholder="Pérez García" /></div>
               </div>
-            )}
-
-            {/* SUBSTEP 2: Validación */}
-            {substep === 2 && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>N° Pasaporte *</label>
+                  <input style={inp} value={form.pasaporte} onChange={e => setForm({ ...form, pasaporte: e.target.value })} placeholder="AAA123456" /></div>
+                <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nacionalidad *</label>
+                  <select style={{ ...inp }} value={form.nac} onChange={e => setForm({ ...form, nac: e.target.value })}>
+                    {['Argentina','Uruguay','Chile','Brasil','Paraguay','Bolivia','Colombia','Venezuela','Perú','Otra'].map(n => <option key={n}>{n}</option>)}
+                  </select></div>
+              </div>
               <div>
-                <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>Documentación</h2>
-                <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 18 }}>Validamos la mayoría de edad y nacionalidad</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                    <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nacionalidad *</label>
-                      <select style={{ ...inp }} value={form.nac} onChange={e => setForm({ ...form, nac: e.target.value })}>
-                        {['Argentina','Uruguay','Chile','Brasil','Paraguay','Bolivia','Colombia','Venezuela','Perú','Otra'].map(n => <option key={n}>{n}</option>)}
-                      </select></div>
-                    <div><label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>N° Pasaporte *</label>
-                      <input style={inp} value={form.pasaporte} onChange={e => setForm({ ...form, pasaporte: e.target.value })} placeholder="AAA123456" /></div>
+                <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha de nacimiento * (debes ser mayor de 18 años)</label>
+                <input type="date" max={maxDobStr()} style={{ ...inp, borderColor: touched.dob && errors.dob ? '#E60000' : '#2A2A2A' }} value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} onBlur={() => touch('dob')} />
+                <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 6 }}>ℹ️ Requerido por regulaciones de telecomunicaciones</div>
+                <FieldError field="dob" />
+              </div>
+              <div>
+                <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Email del cliente *</label>
+                <input type="email" style={{ ...inp, borderColor: touched.email && errors.email ? '#E60000' : '#2A2A2A' }} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} onBlur={() => touch('email')} placeholder="juan@email.com" />
+                <FieldError field="email" />
+              </div>
+
+              {type === 'prepago' && (
+                <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 11 }}>📅 Fecha de activación</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
+                    {[
+                      { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#E60000' },
+                      { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#6EC1E4' },
+                    ].map(opt => (
+                      <button key={String(opt.key)} onClick={() => { setScheduled(opt.key as boolean); setForm(f => ({ ...f, date: '' })) }}
+                        style={{ padding: '11px', borderRadius: 9, border: `2px solid ${scheduled === opt.key ? opt.color : '#2A2A2A'}`, background: scheduled === opt.key ? `${opt.color}10` : '#232323', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
+                        <div style={{ fontSize: 13, marginBottom: 2, color: scheduled === opt.key ? '#fff' : '#AAAAAA', fontWeight: scheduled === opt.key ? 700 : 400 }}>{opt.label}</div>
+                        <div style={{ fontSize: 10, color: '#7A7A7A' }}>{opt.sub}</div>
+                      </button>
+                    ))}
                   </div>
-                  <div>
-                    <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha de nacimiento * (debes ser mayor de 18 años)</label>
-                    <input type="date" max={maxDobStr()} style={{ ...inp, borderColor: touched.dob && errors.dob ? '#E60000' : '#2A2A2A' }} ref={(el: HTMLInputElement | null) => { if (errors.dob) errorFieldRef.current = el }} value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} onBlur={() => touch('dob')} />
-                    <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 6 }}>ℹ️ Usamos esto para verificar que cumplís los requisitos de edad</div>
-                    <FieldError field="dob" /></div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-                  <button onClick={() => setSubstep(1)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>← Atrás</button>
-                  <button onClick={() => { if (substep2Valid) setSubstep(3); else Object.keys(errors).forEach(f => touch(f)) }} disabled={!substep2Valid}
-                    style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: substep2Valid ? 'pointer' : 'not-allowed', opacity: substep2Valid ? 1 : 0.4, fontFamily: 'inherit' }}>Continuar →</button>
-                </div>
-              </div>
-            )}
-
-            {/* SUBSTEP 3: Activación */}
-            {substep === 3 && (
-              <div>
-                <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>Cuándo empieza el plan</h2>
-                <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 18 }}>Los 28 días corren desde la activación</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {type === 'prepago' ? (
-                    <>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                        {[
-                          { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#E60000' },
-                          { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#6EC1E4' },
-                        ].map(opt => (
-                          <button key={String(opt.key)} onClick={() => { setScheduled(opt.key as boolean); setForm(f => ({ ...f, date: '' })) }}
-                            style={{ padding: '11px', borderRadius: 9, border: `2px solid ${scheduled === opt.key ? opt.color : '#2A2A2A'}`, background: scheduled === opt.key ? `${opt.color}10` : '#232323', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
-                            <div style={{ fontSize: 13, marginBottom: 2, color: scheduled === opt.key ? '#fff' : '#AAAAAA', fontWeight: scheduled === opt.key ? 700 : 400 }}>{opt.label}</div>
-                            <div style={{ fontSize: 10, color: '#7A7A7A' }}>{opt.sub}</div>
-                          </button>
-                        ))}
-                      </div>
-                      {!scheduled ? (
-                        <div style={{ background: 'rgba(230,0,0,0.08)', border: '1px solid rgba(230,0,0,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
-                          ⚠️ <strong style={{ color: '#fff' }}>El plan empieza hoy.</strong> RUTA34 activa la eSIM y el QR se envía inmediatamente al cliente.
-                        </div>
-                      ) : (
-                        <div>
-                          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha programada *</label>
-                          <input type="date" min={todayStr()} max={maxDateStr()} style={{ ...inp, borderColor: touched.date && errors.date ? '#E60000' : '#2A2A2A' }} value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} onBlur={() => touch('date')} />
-                          <FieldError field="date" />
-                          {form.date && !errors.date && (
-                            <div style={{ marginTop: 9, background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
-                              ✅ El cliente recibe <strong style={{ color: '#fff' }}>confirmación ahora</strong>. El QR se envía el <strong style={{ color: '#fff' }}>{form.date}</strong>.
-                            </div>
-                          )}
+                  {!scheduled ? (
+                    <div style={{ background: 'rgba(230,0,0,0.08)', border: '1px solid rgba(230,0,0,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
+                      ⚠️ <strong style={{ color: '#fff' }}>El plan empieza a correr hoy.</strong> RUTA34 activa la eSIM y el QR se envía inmediatamente al cliente.
+                    </div>
+                  ) : (
+                    <div>
+                      <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha programada *</label>
+                      <input type="date" min={todayStr()} max={maxDateStr()} style={{ ...inp, borderColor: touched.date && errors.date ? '#E60000' : '#2A2A2A' }} value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} onBlur={() => touch('date')} />
+                      <FieldError field="date" />
+                      {form.date && !errors.date && (
+                        <div style={{ marginTop: 9, background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
+                          ✅ El cliente recibe <strong style={{ color: '#fff' }}>confirmación ahora</strong>. El QR se envía el <strong style={{ color: '#fff' }}>{form.date}</strong>.
                         </div>
                       )}
-                    </>
-                  ) : (
-                    <div style={{ background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 9, padding: '12px 15px' }}>
-                      <div style={{ fontWeight: 700, color: '#6EC1E4', fontSize: 12, marginBottom: 5 }}>ℹ️ Cómo funciona DataOnly</div>
-                      <div style={{ color: '#7A7A7A', fontSize: 12, lineHeight: 1.7 }}>Se envía el QR al email del cliente. Tiene <strong style={{ color: '#fff' }}>60 días para escanearlo</strong>. El plan <strong style={{ color: '#fff' }}>no empieza hasta que lo active</strong>.</div>
                     </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22 }}>
-                  <button onClick={() => setSubstep(2)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>← Atrás</button>
-                  <button onClick={() => { touch('date'); if (substep3Valid) { /* handleSubmit se ejecutará con el botón en el resumen */ } }} disabled={!substep3Valid}
-                    style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: substep3Valid ? 'pointer' : 'not-allowed', opacity: substep3Valid ? 1 : 0.4, fontFamily: 'inherit' }}>Revisar →</button>
+              )}
+
+              {type === 'dataonly' && (
+                <div style={{ background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 9, padding: '12px 15px' }}>
+                  <div style={{ fontWeight: 700, color: '#6EC1E4', fontSize: 12, marginBottom: 5 }}>ℹ️ ¿Cómo funciona DataOnly?</div>
+                  <div style={{ color: '#7A7A7A', fontSize: 12, lineHeight: 1.7 }}>Se envía el QR al email del cliente. Tiene <strong style={{ color: '#fff' }}>60 días para escanearlo</strong>. El plan <strong style={{ color: '#fff' }}>no empieza hasta que lo active</strong>.</div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <div style={{ marginTop: 22 }}>
+              <button onClick={() => setStep(1)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '9px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>← Atrás</button>
+            </div>
           </div>
 
           {/* Resumen */}
@@ -330,8 +278,6 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                 { label: 'Tipo', value: type === 'prepago' ? 'eSIM Prepago' : 'DataOnly' },
                 { label: 'Cliente', value: form.nombre ? `${form.nombre} ${form.apellidos}`.trim() : '—' },
                 { label: 'Email', value: form.email && isValidEmail(form.email) ? form.email : '—' },
-                { label: 'DOB', value: form.dob ? form.dob : '—' },
-                { label: 'Pasaporte', value: form.pasaporte ? form.pasaporte : '—' },
                 { label: 'Activación', value: type === 'dataonly' ? 'Cliente activa (60 días)' : !scheduled ? 'Hoy' : form.date || '—' },
               ].map(r => (
                 <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
@@ -344,13 +290,11 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
               <span style={{ fontSize: 13, color: '#7A7A7A' }}>Total</span>
               <span style={{ fontSize: 26, fontWeight: 900, color: '#E60000' }}>${pvp}</span>
             </div>
-            {substep === 3 && (
-              <button onClick={handleSubmit} disabled={!step2Valid || loading}
-                style={{ width: '100%', background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: !step2Valid || loading ? 'not-allowed' : 'pointer', opacity: !step2Valid || loading ? 0.4 : 1, fontFamily: 'inherit' }}>
-                {loading ? 'Enviando...' : 'Confirmar pedido ✓'}
-              </button>
-            )}
-            {substep < 3 && <div style={{ fontSize: 11, color: '#7A7A7A', textAlign: 'center', padding: '10px 0' }}>Completá las secciones para revisar →</div>}
+            <button onClick={handleSubmit} disabled={!step2Valid || loading}
+              style={{ width: '100%', background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: !step2Valid || loading ? 'not-allowed' : 'pointer', opacity: !step2Valid || loading ? 0.4 : 1, fontFamily: 'inherit' }}>
+              {loading ? 'Enviando...' : 'Confirmar pedido ✓'}
+            </button>
+            {!step2Valid && <div style={{ marginTop: 10, fontSize: 11, color: '#7A7A7A', textAlign: 'center' }}>Completá todos los campos para continuar</div>}
           </div>
         </div>
       )}
