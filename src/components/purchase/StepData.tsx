@@ -15,12 +15,30 @@ import { useRef } from "react";
 
 const COUNTRIES = ["AR", "UY", "CL", "BR", "MX", "CO", "PE", "VE", "EC", "PY", "BO", "OTHER"] as const;
 
+const isAdult = (dob: string) => {
+  if (!dob) return false;
+  const birth = new Date(dob);
+  const today = new Date();
+  today.setFullYear(today.getFullYear() - 18);
+  return birth <= today;
+};
+
+const maxDobStr = () => {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 18);
+  return d.toISOString().split("T")[0];
+};
+
 const schema = z.object({
   customer_name: z.string().min(2, "Ingresá tu nombre"),
   customer_lastname: z.string().min(2, "Ingresá tu apellido"),
   customer_email: z.string().email("Email inválido"),
   confirm_email: z.string().email("Confirmá tu email"),
   customer_country: z.string().min(1, "Seleccioná tu país"),
+  customer_passport: z.string().min(5, "Ingresá un número de pasaporte válido"),
+  customer_dob: z.string().refine((d) => isAdult(d), {
+    message: "Debes ser mayor de 18 años para contratar una eSIM",
+  }),
   activation_type: z.enum(["now", "schedule"]),
   activation_date: z.string().optional(),
   device_confirmed: z.boolean().refine((v) => v === true, {
@@ -66,25 +84,38 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const t = useTranslations("purchase");
   const tCountries = useTranslations("purchase.countries");
   const [quantity, setQuantity] = useState(initialData.quantity ?? 1);
+  const [substep, setSubstep] = useState(1); // 1: básico, 2: validación, 3: activación
+  const errorFieldRef = useRef<HTMLInputElement | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
+    trigger,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: "onBlur",
     defaultValues: {
       customer_name: initialData.customer_name ?? "",
       customer_lastname: initialData.customer_lastname ?? "",
       customer_email: initialData.customer_email ?? "",
       confirm_email: "",
       customer_country: initialData.customer_country ?? "",
+      customer_passport: "",
+      customer_dob: "",
       activation_type: "now",
       activation_date: initialData.activation_date ?? "",
       device_confirmed: initialData.device_confirmed ?? false,
     },
   });
+
+  // Auto-focus en campo con error
+  useEffect(() => {
+    if (errorFieldRef.current) {
+      errorFieldRef.current.focus();
+    }
+  }, [errors]);
 
   // Fire checkout_step_viewed once when this step mounts
   useEffect(() => {
@@ -112,201 +143,341 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Form */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="lg:col-span-2 space-y-4"
-      >
-        {/* Cantidad de eSIMs */}
-        <div className="rounded-2xl bg-white border border-black/[0.07] p-5">
-          <p className="text-sm font-bold text-[#111111] mb-3">
-            ¿Cuántas eSIM necesitás?
-          </p>
-          <div className="flex gap-2 flex-wrap">
-            {[1,2,3,4,5,6,7,8,9,10].map(n => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => { setQuantity(n); if (n !== quantity) analytics.quantitySelected(n, plan) }}
-                className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
-                  quantity === n
-                    ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
-                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-2 space-y-6">
+        {/* Step Indicators */}
+        <div className="flex items-center gap-2">
+          {[1, 2, 3].map((step) => (
+            <div key={step} className="flex items-center gap-2">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                  substep >= step
+                    ? "bg-[#E60000] text-white"
+                    : "bg-gray-200 text-gray-600"
                 }`}
               >
-                {n}
+                {step}
+              </div>
+              {step < 3 && (
+                <div
+                  className={`w-8 h-0.5 transition-all ${
+                    substep > step ? "bg-[#E60000]" : "bg-gray-200"
+                  }`}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* SUBSTEP 1: Cliente Básico */}
+        {substep === 1 && (
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] mb-1">Tu información básica</h3>
+              <p className="text-sm text-[#777]">Necesitamos esto para enviarte los QR</p>
+            </div>
+
+            <div className="rounded-2xl bg-white border border-black/[0.07] p-5">
+              <p className="text-sm font-bold text-[#111111] mb-3">¿Cuántas eSIM necesitás?</p>
+              <div className="flex gap-2 flex-wrap">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => {
+                      setQuantity(n);
+                      if (n !== quantity) analytics.quantitySelected(n, plan);
+                    }}
+                    className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
+                      quantity === n
+                        ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
+                        : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+              {quantity > 1 && (
+                <p className="text-xs text-[#999] mt-3">
+                  Cada eSIM llega al mismo email con su propio código QR.
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label required>{t("form.name")}</Label>
+                <input
+                  {...register("customer_name")}
+                  ref={(el) => {
+                    if (errors.customer_name) errorFieldRef.current = el;
+                  }}
+                  className={inputClass}
+                  placeholder="Juan"
+                  autoComplete="given-name"
+                />
+                <FieldError message={errors.customer_name?.message} />
+              </div>
+              <div>
+                <Label required>{t("form.lastname")}</Label>
+                <input
+                  {...register("customer_lastname")}
+                  className={inputClass}
+                  placeholder="García"
+                  autoComplete="family-name"
+                />
+                <FieldError message={errors.customer_lastname?.message} />
+              </div>
+            </div>
+
+            <div>
+              <Label required>{t("form.email")}</Label>
+              <input
+                {...register("customer_email")}
+                type="email"
+                className={inputClass}
+                placeholder="juan@ejemplo.com"
+                autoComplete="email"
+              />
+              <FieldError message={errors.customer_email?.message} />
+            </div>
+
+            <div>
+              <Label required>Confirmá tu email</Label>
+              <input
+                {...register("confirm_email")}
+                type="email"
+                className={inputClass}
+                placeholder="juan@ejemplo.com"
+                autoComplete="off"
+                onPaste={(e) => e.preventDefault()}
+              />
+              <FieldError message={errors.confirm_email?.message} />
+              <p className="text-xs text-[#999] mt-1.5">
+                Te vamos a enviar los QR a este email. Revisalo antes de pagar.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={onBack}
+                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#111] px-4 py-3 rounded-xl hover:bg-[#111111]/5"
+              >
+                <ArrowLeft size={15} weight="bold" />
+                {t("form.back")}
               </button>
-            ))}
-          </div>
-          {quantity > 1 && (
-            <p className="text-xs text-[#999] mt-3">
-              Cada eSIM llega al mismo email con su propio código QR.
-            </p>
-          )}
-        </div>
-
-        {/* Nombre y Apellido */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <Label required>{t("form.name")}</Label>
-            <input
-              {...register("customer_name")}
-              className={inputClass}
-              placeholder="Juan"
-              autoComplete="given-name"
-            />
-            <FieldError message={errors.customer_name?.message} />
-          </div>
-          <div>
-            <Label required>{t("form.lastname")}</Label>
-            <input
-              {...register("customer_lastname")}
-              className={inputClass}
-              placeholder="García"
-              autoComplete="family-name"
-            />
-            <FieldError message={errors.customer_lastname?.message} />
-          </div>
-        </div>
-
-        {/* Email */}
-        <div>
-          <Label required>{t("form.email")}</Label>
-          <input
-            {...register("customer_email")}
-            type="email"
-            className={inputClass}
-            placeholder="juan@ejemplo.com"
-            autoComplete="email"
-          />
-          <FieldError message={errors.customer_email?.message} />
-        </div>
-
-        {/* Confirmar email */}
-        <div>
-          <Label required>Confirmá tu email</Label>
-          <input
-            {...register("confirm_email")}
-            type="email"
-            className={inputClass}
-            placeholder="juan@ejemplo.com"
-            autoComplete="off"
-            onPaste={(e) => e.preventDefault()}
-          />
-          <FieldError message={errors.confirm_email?.message} />
-          <p className="text-xs text-[#999] mt-1.5">
-            Te vamos a enviar los QR a este email. Revisalo antes de pagar.
-          </p>
-        </div>
-
-        {/* País */}
-        <div>
-          <Label required>{t("form.country")}</Label>
-          <select {...register("customer_country")} className={inputClass}>
-            <option value="">Seleccioná tu país</option>
-            {COUNTRIES.map((code) => (
-              <option key={code} value={code}>
-                {tCountries(code)}
-              </option>
-            ))}
-          </select>
-          <FieldError message={errors.customer_country?.message} />
-        </div>
-
-        {/* Fecha de activación — solo local */}
-        {isLocal && (
-          <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
-            <p className="text-sm font-bold text-[#111111] mb-0.5">¿Cuándo querés que empiecen los 28 días?</p>
-            <p className="text-xs text-[#777] mb-3">Los 28 días corren desde que te enviamos el QR (activación inmediata) o desde la fecha que elijas.</p>
-            <div className="space-y-2.5">
-              {/* Opción por defecto — destacada visualmente */}
-              <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
-                watch("activation_type") === "now" ? "border-[#6EC1E4] bg-white" : "border-transparent"
-              }`}>
-                <input
-                  type="radio"
-                  {...register("activation_type")}
-                  value="now"
-                  onChange={() => analytics.activationOptionSelected("now", plan)}
-                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
-                />
-                <div>
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <p className="text-sm font-semibold text-[#111]">Activación inmediata</p>
-                  </div>
-                  <p className="text-xs text-[#777]">Los 28 días empiezan desde que te enviamos el QR. Instalála antes de viajar y usala al llegar a Europa.</p>
-                </div>
-              </label>
-              {/* Opción programar */}
-              <label className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
-                watch("activation_type") === "schedule" ? "border-[#6EC1E4] bg-white" : "border-transparent"
-              }`}>
-                <input
-                  type="radio"
-                  {...register("activation_type")}
-                  value="schedule"
-                  onChange={() => analytics.activationOptionSelected("schedule", plan)}
-                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-[#111]">Programar una fecha de inicio</p>
-                  <p className="text-xs text-[#777] mt-0.5">Los 28 días empiezan en la fecha que elijas — ideal si tu viaje aún no está confirmado.</p>
-                  {watch("activation_type") === "schedule" && (
-                    <input
-                      type="date"
-                      {...register("activation_date")}
-                      className={`${inputClass} mt-3`}
-                      min={new Date().toISOString().split("T")[0]}
-                      max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
-                    />
-                  )}
-                </div>
-              </label>
+              <button
+                type="button"
+                onClick={async () => {
+                  const valid = await trigger(["customer_name", "customer_lastname", "customer_email", "confirm_email"]);
+                  if (valid) setSubstep(2);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#E60000] hover:bg-[#E60000]/90 px-4 py-3 rounded-xl"
+              >
+                Continuar
+                <ArrowRight size={15} weight="bold" />
+              </button>
             </div>
           </div>
         )}
 
-        {/* Device confirmation */}
-        <div className={`rounded-2xl border p-5 transition-colors duration-150 ${
-          errors.device_confirmed
-            ? "bg-red-50 border-red-300"
-            : "bg-[#F8F8F8] border-[#111111]/6"
-        }`}>
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              {...register("device_confirmed")}
-              className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
-            />
-            <span className="text-sm text-[#555] leading-snug">
-              Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
-              <a href="#compatibilidad" className="text-[#E60000] font-semibold hover:underline">
-                Ver celulares compatibles
-              </a>
-            </span>
-          </label>
-          <FieldError message={errors.device_confirmed?.message} />
-        </div>
+        {/* SUBSTEP 2: Validación (Documentos) */}
+        {substep === 2 && (
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] mb-1">Validación de identidad</h3>
+              <p className="text-sm text-[#777]">Requerido por regulaciones de telecomunicaciones</p>
+            </div>
 
-        {/* FAQ inline — P3 CRO */}
-        <PurchaseFAQ />
+            <div>
+              <Label required>{t("form.country")}</Label>
+              <select {...register("customer_country")} className={inputClass}>
+                <option value="">Seleccioná tu país</option>
+                {COUNTRIES.map((code) => (
+                  <option key={code} value={code}>
+                    {tCountries(code)}
+                  </option>
+                ))}
+              </select>
+              <FieldError message={errors.customer_country?.message} />
+            </div>
 
-        {/* Botones */}
-        <div className="flex items-center gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onBack}
-            className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#111] px-4 py-3 rounded-xl hover:bg-[#111111]/5 active:scale-[0.97] transition-all"
-            style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1)" }}
-          >
-            <ArrowLeft size={15} weight="bold" />
-            {t("form.back")}
-          </button>
+            <div>
+              <Label required>N° Pasaporte</Label>
+              <input
+                {...register("customer_passport")}
+                ref={(el) => {
+                  if (errors.customer_passport) errorFieldRef.current = el;
+                }}
+                className={inputClass}
+                placeholder="ABC123456"
+                autoComplete="off"
+              />
+              <FieldError message={errors.customer_passport?.message} />
+            </div>
 
-          <Button type="submit" variant="primary" size="lg" className="flex-1">
-            {t("form.next")}
-            <ArrowRight size={16} weight="bold" />
-          </Button>
-        </div>
+            <div>
+              <Label required>Fecha de nacimiento (debes ser mayor de 18 años)</Label>
+              <input
+                type="date"
+                {...register("customer_dob")}
+                ref={(el) => {
+                  if (errors.customer_dob) errorFieldRef.current = el;
+                }}
+                max={maxDobStr()}
+                className={inputClass}
+              />
+              <p className="text-xs text-[#777] mt-1.5">
+                ℹ️ Usamos esto para verificar que cumplís los requisitos de edad
+              </p>
+              <FieldError message={errors.customer_dob?.message} />
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setSubstep(1)}
+                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#111] px-4 py-3 rounded-xl hover:bg-[#111111]/5"
+              >
+                <ArrowLeft size={15} weight="bold" />
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const valid = await trigger(["customer_country", "customer_passport", "customer_dob"]);
+                  if (valid) setSubstep(3);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#E60000] hover:bg-[#E60000]/90 px-4 py-3 rounded-xl"
+              >
+                Continuar
+                <ArrowRight size={15} weight="bold" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* SUBSTEP 3: Activación */}
+        {substep === 3 && (
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] mb-1">Cuándo empieza tu plan</h3>
+              <p className="text-sm text-[#777]">Los 28 días corren desde la activación</p>
+            </div>
+
+            {isLocal && (
+              <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-5">
+                <div className="space-y-3">
+                  {/* Activación inmediata */}
+                  <label
+                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                      watch("activation_type") === "now"
+                        ? "border-[#6EC1E4] bg-white"
+                        : "border-transparent bg-white/50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      {...register("activation_type")}
+                      value="now"
+                      onChange={() => analytics.activationOptionSelected("now", plan)}
+                      className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-[#111]">🚀 Activación inmediata</p>
+                      <p className="text-xs text-[#777] mt-0.5">
+                        Los 28 días corren desde ahora. Conectado al aterrizar.
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Programar fecha */}
+                  <label
+                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                      watch("activation_type") === "schedule"
+                        ? "border-[#6EC1E4] bg-white"
+                        : "border-transparent bg-white/50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      {...register("activation_type")}
+                      value="schedule"
+                      onChange={() => analytics.activationOptionSelected("schedule", plan)}
+                      className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-[#111]">📆 Programar fecha</p>
+                      <p className="text-xs text-[#777] mt-0.5">
+                        Elegí cuándo empieza tu plan (hasta 12 meses).
+                      </p>
+                      {watch("activation_type") === "schedule" && (
+                        <input
+                          type="date"
+                          {...register("activation_date")}
+                          className={`${inputClass} mt-3`}
+                          min={new Date().toISOString().split("T")[0]}
+                          max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                            .toISOString()
+                            .split("T")[0]}
+                        />
+                      )}
+                    </div>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {!isLocal && (
+              <div className="rounded-2xl bg-[#EBF6FC] border border-[#6EC1E4]/30 p-4">
+                <p className="text-sm font-semibold text-[#6EC1E4] mb-2">ℹ️ Cómo funciona DataOnly</p>
+                <p className="text-sm text-[#777]">
+                  Se envía el QR al email. Tenés <strong>60 días para escanearlo</strong>. El plan{" "}
+                  <strong>no empieza hasta que lo actives</strong>.
+                </p>
+              </div>
+            )}
+
+            {/* Device confirmation */}
+            <div
+              className={`rounded-2xl border p-4 transition-colors duration-150 ${
+                errors.device_confirmed ? "bg-red-50 border-red-300" : "bg-[#F8F8F8] border-[#111111]/6"
+              }`}
+            >
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("device_confirmed")}
+                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                />
+                <span className="text-sm text-[#555] leading-snug">
+                  Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
+                  <a href="#compatibilidad" className="text-[#E60000] font-semibold hover:underline">
+                    Ver celulares compatibles
+                  </a>
+                </span>
+              </label>
+              <FieldError message={errors.device_confirmed?.message} />
+            </div>
+
+            {/* FAQ inline */}
+            <PurchaseFAQ />
+
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setSubstep(2)}
+                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#111] px-4 py-3 rounded-xl hover:bg-[#111111]/5"
+              >
+                <ArrowLeft size={15} weight="bold" />
+              </button>
+              <Button type="submit" variant="primary" size="lg" className="flex-1">
+                {t("form.next")}
+                <ArrowRight size={16} weight="bold" />
+              </Button>
+            </div>
+          </div>
+        )}
       </form>
 
       {/* Resumen del plan */}
