@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import DestinationHero from "@/components/landing/DestinationHero";
-import { Hero } from "@/components/landing";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
