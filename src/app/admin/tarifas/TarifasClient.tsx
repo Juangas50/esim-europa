@@ -13,6 +13,7 @@ type Tariff = {
   type: string
   data_gb: number
   validity_days: number | null
+  price_usd?: number
   badge: string
   highlight: boolean
   active: boolean
