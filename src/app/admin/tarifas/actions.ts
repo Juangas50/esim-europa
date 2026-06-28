@@ -37,7 +37,7 @@ function validateTariffForm(form: TariffForm) {
     type,
     data_gb,
     validity_days: form.validity_days ? Number(form.validity_days) : null,
-    badge: form.badge ? String(form.badge).trim().slice(0, 20) : null,
+    badge: form.badge ? String(form.badge).trim().slice(0, 1000) : null,
     highlight: Boolean(form.highlight),
     position: form.position != null ? Number(form.position) : null,
     price_usd: form.price_usd != null ? Number(form.price_usd) : null,
