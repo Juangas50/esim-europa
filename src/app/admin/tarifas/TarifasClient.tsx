@@ -31,6 +31,7 @@ function TariffForm({ initial, onSave, onCancel }: {
     type: initial?.type || 'prepago',
     data_gb: initial?.data_gb?.toString() || '',
     validity_days: initial?.validity_days?.toString() || '',
+    price_usd: initial?.price_usd?.toString() || '',
     badge: initial?.badge || '',
     highlight: initial?.highlight || false,
   })
@@ -56,7 +57,7 @@ function TariffForm({ initial, onSave, onCancel }: {
         {initial?.id ? 'Editar tarifa' : 'Nueva tarifa'}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Cliente *</label>
           <input required style={inp} value={form.client_name} onChange={e => setForm({ ...form, client_name: e.target.value })} placeholder="Europa Básico" />
@@ -72,9 +73,16 @@ function TariffForm({ initial, onSave, onCancel }: {
             <option value="dataonly">DataOnly</option>
           </select>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Datos (GB) *</label>
           <input required type="number" style={inp} value={form.data_gb} onChange={e => setForm({ ...form, data_gb: e.target.value })} placeholder="15" />
+        </div>
+        <div>
+          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Precio USD *</label>
+          <input required type="number" step="0.01" style={inp} value={form.price_usd} onChange={e => setForm({ ...form, price_usd: e.target.value })} placeholder="9.99" />
         </div>
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Días vigencia</label>
