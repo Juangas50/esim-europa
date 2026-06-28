@@ -54,7 +54,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
-      className={`relative flex flex-col rounded-2xl p-5 h-full ${
+      className={`relative flex flex-col rounded-2xl p-6 md:p-8 h-full ${
         isPopular
           ? "bg-[#1B2F4E] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
           : "bg-white border border-black/[0.07]"
@@ -127,9 +127,9 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
       )}
 
       {/* Features */}
-      <ul className="space-y-1.5 mb-6 flex-1">
+      <ul className="space-y-1 mb-6 flex-1">
         {keyFeatures.map((f, i) => (
-          <li key={i} className={`flex items-start gap-2 text-sm ${isPopular ? "text-white/70" : "text-[#555]"}`}>
+          <li key={i} className={`flex items-start gap-2 text-sm ${isPopular ? "text-white/70" : "text-[#333]"}`}>
             <Check size={13} weight="bold" className="text-[#059669] mt-0.5 shrink-0" />
             {f}
           </li>
@@ -141,7 +141,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
           {formatUSD(plan.price_usd)}
         </p>
-        <p className={`text-xs mb-4 ${isPopular ? "text-white/35" : "text-[#bbb]"}`}>
+        <p className={`text-xs mb-4 ${isPopular ? "text-white/40" : "text-[#666]"}`}>
           {t("perMonth")}
         </p>
 
@@ -156,7 +156,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
               size: plan.size,
             });
           }}
-          className={`flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm active:scale-[0.97] ${
+          className={`flex items-center justify-center gap-1.5 w-full py-3 min-h-[50px] rounded-xl font-bold text-sm leading-tight active:scale-[0.97] ${
             isPopular
               ? "bg-[#C9973A] text-[#1B2F4E] hover:bg-[#E8C56A] shadow-[0_4px_16px_-4px_rgba(201,151,58,0.4)]"
               : "border-2 border-[#1B2F4E] text-[#1B2F4E] hover:bg-[#1B2F4E] hover:text-white"
@@ -175,12 +175,12 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
 function PlansGrid({ plans }: { plans: Plan[] }) {
   const cols =
-    plans.length <= 3 ? "lg:grid-cols-3" :
-    plans.length === 4 ? "lg:grid-cols-4" :
-    "lg:grid-cols-5";
+    plans.length <= 3 ? "xl:grid-cols-3" :
+    plans.length === 4 ? "lg:grid-cols-3 xl:grid-cols-4" :
+    "lg:grid-cols-3 xl:grid-cols-5";
 
   return (
-    <div className={`grid grid-cols-2 sm:grid-cols-3 ${cols} gap-3 sm:gap-4`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${cols} gap-4 sm:gap-6`}>
       {plans.map((plan, i) => (
         <PlanCard key={plan.id} plan={plan} index={i} />
       ))}
@@ -201,9 +201,9 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
       {/* overflow-hidden en desktop, visible en mobile para el pico lateral */}
       <div className="overflow-hidden sm:overflow-hidden">
         <motion.div
-          animate={{ x: `calc(-${current} * (85% + 12px))` }}
+          animate={{ x: `calc(-${current} * (85% + 16px))` }}
           transition={{ duration: 0.4, ease: EASE_OUT }}
-          className="flex gap-3 sm:gap-4"
+          className="flex gap-4 sm:gap-6"
         >
           {plans.map((plan, i) => (
             <div
@@ -236,14 +236,14 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
         <button
           onClick={() => { setCurrent((c) => Math.max(0, c - 1)); analytics.swipePlanCarousel("prev") }}
           disabled={current === 0}
-          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2 transition-all"
         >
           <CaretLeft size={16} weight="bold" />
         </button>
         <button
           onClick={() => { setCurrent((c) => Math.min(maxIndex, c + 1)); analytics.swipePlanCarousel("next") }}
           disabled={current === maxIndex}
-          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2 transition-all"
         >
           <CaretRight size={16} weight="bold" />
         </button>

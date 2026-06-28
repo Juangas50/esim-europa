@@ -84,7 +84,7 @@ function Label({ children, required }: { children: React.ReactNode; required?: b
 }
 
 const inputClass =
-  "w-full rounded-xl border border-[#1B2F4E]/12 bg-white px-4 py-3 text-sm text-[#1B2F4E] placeholder:text-[#94A3B8] focus:outline-none focus:border-[#C9973A] focus:ring-2 focus:ring-[#C9973A]/10 transition-all duration-150";
+  "w-full rounded-xl border border-[#1B2F4E]/12 bg-white px-4 py-3 text-sm text-[#1B2F4E] placeholder:text-[#999] focus:outline-none focus:border-[#C9973A] focus:ring-2 focus:ring-[#C9973A]/10 transition-all duration-150";
 
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
@@ -207,10 +207,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
         {/* SUBSTEP 1: Cliente Básico */}
         {substep === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Tu información básica</h3>
-              <p className="text-sm text-[#777]">Necesitamos esto para enviarte los QR</p>
+              <p className="text-sm text-[#555]">Necesitamos esto para enviarte los QR</p>
             </div>
 
             <div className="rounded-2xl bg-white border border-black/[0.07] p-5">
@@ -241,7 +241,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <Label required>{t("form.name")}</Label>
                 <input
@@ -318,10 +318,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
         {/* SUBSTEP 2: Validación (Documentos) */}
         {substep === 2 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Validación de identidad</h3>
-              <p className="text-sm text-[#777]">Requerido por regulaciones de telecomunicaciones</p>
+              <p className="text-sm text-[#555]">Requerido por regulaciones de telecomunicaciones</p>
             </div>
 
             <div>
@@ -356,7 +356,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 max={maxDobStr()}
                 className={inputClass}
               />
-              <p className="text-xs text-[#777] mt-1.5">
+              <p className="text-xs text-[#555] mt-1.5">
                 ℹ️ Usamos esto para verificar que cumplís los requisitos de edad
               </p>
               <FieldError message={touchedFields.customer_dob ? errors.customer_dob?.message : undefined} />
@@ -387,10 +387,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
         {/* SUBSTEP 3: Activación */}
         {substep === 3 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
               <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Cuándo empieza tu plan</h3>
-              <p className="text-sm text-[#777]">Los 28 días corren desde la activación</p>
+              <p className="text-sm text-[#555]">Los 28 días corren desde la activación</p>
             </div>
 
             {isLocal && (
@@ -413,7 +413,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     />
                     <div>
                       <p className="text-sm font-semibold text-[#1B2F4E]">Activación inmediata</p>
-                      <p className="text-xs text-[#777] mt-0.5">
+                      <p className="text-xs text-[#555] mt-0.5">
                         Los 28 días corren desde ahora. Conectado al aterrizar.
                       </p>
                     </div>
@@ -436,7 +436,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-[#1B2F4E]">📆 Programar fecha</p>
-                      <p className="text-xs text-[#777] mt-0.5">
+                      <p className="text-xs text-[#555] mt-0.5">
                         Elegí cuándo empieza tu plan (hasta 12 meses).
                       </p>
                       {watch("activation_type") === "schedule" && (
@@ -459,7 +459,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             {!isLocal && (
               <div className="rounded-2xl bg-[#EBF6FC] border border-[#C9973A]/30 p-4">
                 <p className="text-sm font-semibold text-[#C9973A] mb-2">ℹ️ Cómo funciona DataOnly</p>
-                <p className="text-sm text-[#777]">
+                <p className="text-sm text-[#555]">
                   Se envía el QR al email. Tenés <strong>60 días para escanearlo</strong>. El plan{" "}
                   <strong>no empieza hasta que lo actives</strong>.
                 </p>
@@ -516,7 +516,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
           </p>
           <div className="border-b border-[#1B2F4E]/8 pb-4 mb-4">
             <p className="font-black text-lg text-[#1B2F4E]">{plan.name}</p>
-            <p className="text-sm text-[#777]">{plan.data_gb} GB · {plan.duration_days} días</p>
+            <p className="text-sm text-[#555]">{plan.data_gb} GB · {plan.duration_days} días</p>
           </div>
           {quantity > 1 && (
             <div className="flex justify-between text-sm text-[#999] mb-1">
