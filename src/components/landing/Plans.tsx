@@ -88,11 +88,6 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         )}
       </div>
 
-      {/* Nombre del plan */}
-      <h3 className={`text-lg font-black mb-4 ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
-        {plan.name}
-      </h3>
-
       {/* Datos — dos zonas para SIM Local, zona única para DataOnly */}
       {plan.type === "local" && plan.eu_data_gb ? (
         <div className="mb-5 rounded-xl overflow-hidden">
