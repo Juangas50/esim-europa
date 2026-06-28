@@ -46,7 +46,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
   const isPopular = plan.is_popular;
 
   const keyFeatures = plan.badge
-    ? plan.badge.split('\n').map(f => f.trim()).filter(Boolean)
+    ? plan.badge.split(/\r?\n/).map(f => f.trim()).filter(Boolean)
     : [];
 
   return (
