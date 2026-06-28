@@ -66,11 +66,11 @@ export default function Navbar() {
           )}
         >
           {/* Logo */}
-          <a href={`/${locale}`} className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#C9973A]">
-              <span className="text-white text-[11px] font-black tracking-tight leading-none">34</span>
+          <a href={`/${locale}`} className="flex items-center gap-2.5 shrink-0 whitespace-nowrap">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#C9973A] flex-shrink-0">
+              <span className="text-[#1B2F4E] text-xs font-black tracking-tight leading-none">34</span>
             </div>
-            <span className="font-bold text-[#1B2F4E] text-sm tracking-tight">
+            <span className="font-black text-white text-sm tracking-wider leading-none hidden sm:inline-block">
               RUTA34
             </span>
           </a>
