@@ -13,6 +13,12 @@ import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { useRef } from "react";
 
+// IP Geolocation mapping (ISO 3166-1 alpha-2 to our COUNTRIES format)
+const ISO_TO_COUNTRY_CODE: Record<string, typeof COUNTRIES[number]> = {
+  "AR": "AR", "UY": "UY", "CL": "CL", "BR": "BR", "MX": "MX", "CO": "CO",
+  "PE": "PE", "VE": "VE", "EC": "EC", "PY": "PY", "BO": "BO",
+};
+
 const COUNTRIES = ["AR", "UY", "CL", "BR", "MX", "CO", "PE", "VE", "EC", "PY", "BO", "OTHER"] as const;
 
 const isAdult = (dob: string) => {
@@ -93,6 +99,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isValid, touchedFields },
     trigger,
   } = useForm<FormValues>({
@@ -127,6 +134,29 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   // Fire checkout_step_viewed once when this step mounts
   useEffect(() => {
     analytics.checkoutStepViewed(2, "data", plan);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-detect country by IP geolocation
+  useEffect(() => {
+    const detectCountry = async () => {
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+        const isoCode = data.country_code;
+        const countryCode = ISO_TO_COUNTRY_CODE[isoCode];
+
+        // Only auto-fill if user hasn't already set a country
+        if (countryCode && !initialData.customer_country) {
+          setValue("customer_country", countryCode);
+        }
+      } catch (err) {
+        // Silently fail if geolocation doesn't work
+        console.debug("Country geolocation failed:", err);
+      }
+    };
+
+    detectCountry();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -311,7 +341,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <Label required>N° Pasaporte</Label>
               <input
                 {...register("customer_passport")}
-                ref={passportRef}
                 className={inputClass}
                 placeholder="ABC123456"
                 autoComplete="off"
@@ -324,7 +353,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <input
                 type="date"
                 {...register("customer_dob")}
-                ref={dobRef}
                 max={maxDobStr()}
                 className={inputClass}
               />
