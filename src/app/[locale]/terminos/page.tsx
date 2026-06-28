@@ -436,7 +436,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="text-lg font-bold text-[#111111] mb-3 tracking-tight">{title}</h2>
       <div className="space-y-3 text-[#444] leading-relaxed text-[15px]
         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5
-        [&_a]:text-[#E60000] [&_a]:underline [&_a]:hover:no-underline">
+        [&_a]:text-[#C9973A] [&_a]:underline [&_a]:hover:no-underline">
         {children}
       </div>
     </section>

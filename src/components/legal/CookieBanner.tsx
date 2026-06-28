@@ -90,14 +90,14 @@ export default function CookieBanner() {
             <div className="rounded-[1.2rem] bg-white p-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]">
               <div className="flex items-start gap-3 mb-4">
                 {/* Logo mini */}
-                <div className="w-8 h-8 rounded-lg bg-[#E60000] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-[#C9973A] flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-white text-[11px] font-black">34</span>
                 </div>
                 <p className="text-sm text-[#444] leading-relaxed">
                   {copy.text}{" "}
                   <a
                     href={`/${locale}/cookies`}
-                    className="text-[#E60000] font-semibold hover:underline"
+                    className="text-[#C9973A] font-semibold hover:underline"
                   >
                     {copy.more}
                   </a>
@@ -108,7 +108,7 @@ export default function CookieBanner() {
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   onClick={() => handleConsent("accepted")}
-                  className="flex-1 py-2.5 px-5 rounded-xl bg-[#E60000] text-white text-sm font-bold hover:bg-[#CC0000] active:scale-[0.97] transition-all"
+                  className="flex-1 py-2.5 px-5 rounded-xl bg-[#C9973A] text-white text-sm font-bold hover:bg-[#E8C56A] active:scale-[0.97] transition-all"
                   style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
                 >
                   {copy.accept}

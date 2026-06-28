@@ -91,7 +91,7 @@ function FAQItem({
         className="w-full flex items-center justify-between gap-3 py-3.5 text-left hover:bg-[#111111]/2 rounded-xl px-1 transition-colors"
       >
         <div className="flex items-center gap-2.5">
-          <span className="text-[#E60000] shrink-0">{icon}</span>
+          <span className="text-[#C9973A] shrink-0">{icon}</span>
           <span className="text-sm font-semibold text-[#111111]">{question}</span>
         </div>
         <CaretDown
@@ -121,7 +121,7 @@ function DeviceList({ label }: { label: string }) {
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#E60000] hover:underline mb-3"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C9973A] hover:underline mb-3"
       >
         <DeviceMobile size={13} weight="fill" />
         {expanded ? "Ocultar lista" : "Ver lista completa de modelos compatibles"}

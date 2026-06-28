@@ -3,9 +3,9 @@ import { createElement } from 'react'
 
 const styles = StyleSheet.create({
   page: { backgroundColor: '#FFFFFF', padding: 40, fontFamily: 'Helvetica' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32, paddingBottom: 20, borderBottom: '2px solid #E60000' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32, paddingBottom: 20, borderBottom: '2px solid #C9973A' },
   logoRuta: { fontSize: 28, fontFamily: 'Helvetica-Bold', color: '#111111' },
-  logo34: { fontSize: 28, fontFamily: 'Helvetica-Bold', color: '#E60000' },
+  logo34: { fontSize: 28, fontFamily: 'Helvetica-Bold', color: '#C9973A' },
   logoSub: { fontSize: 8, color: '#888888', letterSpacing: 4, marginTop: 2 },
   headerRight: { alignItems: 'flex-end' },
   invoiceTitle: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: '#111111', marginBottom: 4 },
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   totalSection: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8 },
   totalBox: { backgroundColor: '#111111', padding: 16, borderRadius: 6, minWidth: 200, alignItems: 'flex-end' },
   totalLabel: { fontSize: 10, color: '#888888', marginBottom: 4 },
-  totalAmount: { fontSize: 24, fontFamily: 'Helvetica-Bold', color: '#E60000' },
+  totalAmount: { fontSize: 24, fontFamily: 'Helvetica-Bold', color: '#C9973A' },
   footer: { position: 'absolute', bottom: 30, left: 40, right: 40, borderTop: '1px solid #EEEEEE', paddingTop: 12, flexDirection: 'row', justifyContent: 'space-between' },
   footerText: { fontSize: 9, color: '#AAAAAA' },
 })

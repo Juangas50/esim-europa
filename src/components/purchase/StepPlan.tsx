@@ -132,7 +132,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                   transition={{ duration: 0.15, ease: EASE_OUT }}
                   className={`w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 ${
                     isSelected
-                      ? "border-[#E60000] bg-white shadow-[0_4px_24px_-8px_rgba(230,0,0,0.2)]"
+                      ? "border-[#C9973A] bg-white shadow-[0_4px_24px_-8px_rgba(230,0,0,0.2)]"
                       : "border-transparent bg-white hover:border-[#111111]/12"
                   }`}
                 >
@@ -141,7 +141,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                       <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                         {plan.size && (
                           <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg font-black text-xs ${
-                            isSelected ? "bg-[#E60000]/10 text-[#E60000]" : "bg-[#F0F0F0] text-[#555]"
+                            isSelected ? "bg-[#C9973A]/10 text-[#C9973A]" : "bg-[#F0F0F0] text-[#555]"
                           }`}>
                             {plan.size}
                           </span>
@@ -182,7 +182,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                   {/* Radio indicator */}
                   <div
                     className={`mt-3 w-5 h-5 rounded-full border-2 flex items-center justify-center ml-auto transition-colors duration-200 ${
-                      isSelected ? "border-[#E60000] bg-[#E60000]" : "border-[#ddd]"
+                      isSelected ? "border-[#C9973A] bg-[#C9973A]" : "border-[#ddd]"
                     }`}
                   >
                     {isSelected && <Check size={12} weight="bold" className="text-white" />}
@@ -203,8 +203,8 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                 onClick={() => setQuantity(n)}
                 className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
                   quantity === n
-                    ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
-                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+                    ? "bg-[#C9973A] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
+                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#C9973A]/10 hover:text-[#C9973A]"
                 }`}
               >
                 {n}
@@ -234,7 +234,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
           <div className="space-y-2 mb-5">
             {selectedPlan?.features.slice(0, 4).map((f, i) => (
               <div key={i} className="flex items-center gap-2 text-sm text-[#555]">
-                <Check size={13} weight="bold" className="text-[#E60000] shrink-0" />
+                <Check size={13} weight="bold" className="text-[#C9973A] shrink-0" />
                 {f}
               </div>
             ))}

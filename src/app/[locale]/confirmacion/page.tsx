@@ -80,7 +80,7 @@ function ConfirmacionContent() {
             <ol className="space-y-3">
               {steps.map((step, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#E60000] text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-6 h-6 rounded-full bg-[#C9973A] text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <span className="text-sm text-[#555555] leading-snug">{step}</span>
@@ -127,7 +127,7 @@ export default function ConfirmacionPage() {
   return (
     <Suspense fallback={
       <div className="min-h-[100dvh] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#E60000]/30 border-t-[#E60000] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#C9973A]/30 border-t-[#C9973A] rounded-full animate-spin" />
       </div>
     }>
       <ConfirmacionContent />

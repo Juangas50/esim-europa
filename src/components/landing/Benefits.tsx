@@ -72,8 +72,8 @@ export default function Benefits() {
                 variants={fadeUp}
                 className="group rounded-[1.5rem] bg-white border border-black/[0.06] p-8 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-5 group-hover:bg-[#E60000]/6 transition-colors duration-300">
-                  <Icon size={22} weight="duotone" className="text-[#E60000]" />
+                <div className="w-12 h-12 rounded-2xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-5 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
+                  <Icon size={22} weight="duotone" className="text-[#C9973A]" />
                 </div>
                 <h3 className="text-xl font-bold text-[#111111] mb-2">
                   {t(`items.${key}.title`)}
@@ -93,8 +93,8 @@ export default function Benefits() {
               variants={fadeUp}
               className="group rounded-[1.5rem] bg-white border border-black/[0.06] p-7 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300 sm:col-span-1"
             >
-              <div className="w-11 h-11 rounded-xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-4 group-hover:bg-[#E60000]/6 transition-colors duration-300">
-                <CurrencyDollar size={20} weight="duotone" className="text-[#E60000]" />
+              <div className="w-11 h-11 rounded-xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-4 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
+                <CurrencyDollar size={20} weight="duotone" className="text-[#C9973A]" />
               </div>
               <h3 className="text-lg font-bold text-[#111111] mb-1.5">
                 {t("items.nopermanence.title")}

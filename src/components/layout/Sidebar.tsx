@@ -25,11 +25,11 @@ export default function Sidebar() {
       <div style={{ padding: '22px 20px 18px', borderBottom: '1px solid #2A2A2A' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
           <span style={{ fontSize: 24, fontWeight: 900, color: '#fff' }}>RUTA</span>
-          <span style={{ fontSize: 24, fontWeight: 900, color: '#E60000' }}>34</span>
+          <span style={{ fontSize: 24, fontWeight: 900, color: '#C9973A' }}>34</span>
         </div>
         <div style={{ fontSize: 8, letterSpacing: 6, color: '#7A7A7A', marginTop: 1 }}>TELECOM</div>
         <div style={{ marginTop: 10, background: 'rgba(230,0,0,0.15)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 5, padding: '3px 8px', display: 'inline-block' }}>
-          <span style={{ color: '#E60000', fontSize: 9, fontWeight: 800, letterSpacing: 1.5 }}>ADMINISTRADOR</span>
+          <span style={{ color: '#C9973A', fontSize: 9, fontWeight: 800, letterSpacing: 1.5 }}>ADMINISTRADOR</span>
         </div>
       </div>
 

@@ -30,7 +30,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
             style={{ width: '100%', background: '#181818', border: '1px solid #2A2A2A', borderRadius: 8, padding: '9px 13px 9px 33px', color: '#fff', fontSize: 13, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }} />
         </div>
         <button onClick={() => router.push('/pedidos/nuevo')}
-          style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           + Nuevo pedido
         </button>
       </div>
@@ -56,7 +56,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                   <span style={{ fontSize: 11, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</span>
                   <span style={{ color: '#444' }}>·</span>
                   <span style={{ fontSize: 12 }}>{o.tariffs?.name}</span>
-                  <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#E60000' : '#6EC1E4', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700 }}>
+                  <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700 }}>
                     {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                   </span>
                   {o.activation_date && <span style={{ fontSize: 11, color: '#7A7A7A' }}>{o.activation_date}</span>}
@@ -87,7 +87,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                     </td>
                     <td style={{ padding: '13px 16px', fontSize: 13 }}>{o.tariffs?.name}</td>
                     <td style={{ padding: '13px 16px' }}>
-                      <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#E60000' : '#6EC1E4', borderRadius: 5, padding: '3px 8px', fontSize: 10, fontWeight: 700 }}>
+                      <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '3px 8px', fontSize: 10, fontWeight: 700 }}>
                         {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                       </span>
                     </td>

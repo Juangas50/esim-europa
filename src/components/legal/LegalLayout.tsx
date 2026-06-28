@@ -38,7 +38,7 @@ export default function LegalLayout({ title, lastUpdated, children }: LegalLayou
       <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-black/[0.06] px-4 py-3">
         <div className="max-w-[800px] mx-auto flex items-center justify-between">
           <a href={`/${locale}`} className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#E60000] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#C9973A] flex items-center justify-center">
               <span className="text-white text-[11px] font-black">34</span>
             </div>
             <span className="font-bold text-[#111111] text-sm tracking-tight">RUTA34</span>

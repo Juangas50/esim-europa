@@ -23,7 +23,7 @@ export default async function FacturasPage() {
   const STATUS: Record<string, { label: string; color: string; bg: string }> = {
     pending: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
     paid:    { label: 'Pagada',    color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
-    overdue: { label: 'Vencida',   color: '#E60000', bg: 'rgba(230,0,0,0.15)'   },
+    overdue: { label: 'Vencida',   color: '#C9973A', bg: 'rgba(230,0,0,0.15)'   },
   }
 
   return (

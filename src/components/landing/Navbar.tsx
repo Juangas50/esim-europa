@@ -107,7 +107,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="#planes"
-              className="flex items-center gap-2 bg-[#C9973A] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#CC0000] active:scale-[0.97] transition-all"
+              className="flex items-center gap-2 bg-[#C9973A] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#E8C56A] active:scale-[0.97] transition-all"
               style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
             >
               {t("buyNow")}

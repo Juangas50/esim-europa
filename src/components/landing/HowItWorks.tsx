@@ -51,7 +51,7 @@ export default function HowItWorks() {
 
                 {/* Número grande */}
                 <div className="col-span-3 sm:col-span-2">
-                  <span className="text-5xl sm:text-6xl font-black text-[#111111]/8 group-hover:text-[#E60000]/20 transition-colors duration-300 select-none tabular-nums">
+                  <span className="text-5xl sm:text-6xl font-black text-[#111111]/8 group-hover:text-[#C9973A]/20 transition-colors duration-300 select-none tabular-nums">
                     {num}
                   </span>
                 </div>
@@ -70,7 +70,7 @@ export default function HowItWorks() {
                 <div className="hidden sm:flex col-span-3 items-center justify-end">
                   <div className={`
                     w-16 h-16 rounded-2xl flex items-center justify-center p-3
-                    ${i === 0 ? "bg-[#E60000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.35)]" : ""}
+                    ${i === 0 ? "bg-[#C9973A] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.35)]" : ""}
                     ${i === 1 ? "bg-[#111111]" : ""}
                     ${i === 2 ? "bg-[#EBF6FC] border border-[#6EC1E4]/30" : ""}
                   `}>
@@ -132,7 +132,7 @@ export default function HowItWorks() {
         >
           <a
             href="#planes"
-            className="inline-flex items-center gap-3 bg-[#E60000] text-white font-bold text-base px-8 py-4 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.35)]"
+            className="inline-flex items-center gap-3 bg-[#C9973A] text-white font-bold text-base px-8 py-4 rounded-full hover:bg-[#E8C56A] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.35)]"
             style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
           >
             {t("cta")}

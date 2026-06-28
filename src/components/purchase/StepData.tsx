@@ -72,13 +72,13 @@ function Label({ children, required }: { children: React.ReactNode; required?: b
   return (
     <label className="block text-sm font-semibold text-[#111111] mb-1.5">
       {children}
-      {required && <span className="text-[#E60000] ml-0.5">*</span>}
+      {required && <span className="text-[#C9973A] ml-0.5">*</span>}
     </label>
   );
 }
 
 const inputClass =
-  "w-full rounded-xl border border-[#111111]/12 bg-white px-4 py-3 text-sm text-[#111111] placeholder:text-[#bbb] focus:outline-none focus:border-[#E60000] focus:ring-2 focus:ring-[#E60000]/10 transition-all duration-150";
+  "w-full rounded-xl border border-[#111111]/12 bg-white px-4 py-3 text-sm text-[#111111] placeholder:text-[#bbb] focus:outline-none focus:border-[#C9973A] focus:ring-2 focus:ring-[#C9973A]/10 transition-all duration-150";
 
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
@@ -158,7 +158,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                   substep >= step
-                    ? "bg-[#E60000] text-white"
+                    ? "bg-[#C9973A] text-white"
                     : "bg-gray-200 text-gray-600"
                 }`}
               >
@@ -167,7 +167,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               {step < 3 && (
                 <div
                   className={`w-8 h-0.5 transition-all ${
-                    substep > step ? "bg-[#E60000]" : "bg-gray-200"
+                    substep > step ? "bg-[#C9973A]" : "bg-gray-200"
                   }`}
                 />
               )}
@@ -196,8 +196,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     }}
                     className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
                       quantity === n
-                        ? "bg-[#E60000] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
-                        : "bg-[#F0F0F0] text-[#555] hover:bg-[#E60000]/10 hover:text-[#E60000]"
+                        ? "bg-[#C9973A] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
+                        : "bg-[#F0F0F0] text-[#555] hover:bg-[#C9973A]/10 hover:text-[#C9973A]"
                     }`}
                   >
                     {n}
@@ -278,7 +278,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   const valid = await trigger(["customer_name", "customer_lastname", "customer_email", "confirm_email"]);
                   if (valid) setSubstep(2);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#E60000] hover:bg-[#E60000]/90 px-4 py-3 rounded-xl"
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#C9973A] hover:bg-[#C9973A]/90 px-4 py-3 rounded-xl"
               >
                 Continuar
                 <ArrowRight size={15} weight="bold" />
@@ -349,7 +349,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   const valid = await trigger(["customer_country", "customer_passport", "customer_dob"]);
                   if (valid) setSubstep(3);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#E60000] hover:bg-[#E60000]/90 px-4 py-3 rounded-xl"
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#C9973A] hover:bg-[#C9973A]/90 px-4 py-3 rounded-xl"
               >
                 Continuar
                 <ArrowRight size={15} weight="bold" />
@@ -382,7 +382,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       {...register("activation_type")}
                       value="now"
                       onChange={() => analytics.activationOptionSelected("now", plan)}
-                      className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div>
                       <p className="text-sm font-semibold text-[#111]">🚀 Activación inmediata</p>
@@ -405,7 +405,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       {...register("activation_type")}
                       value="schedule"
                       onChange={() => analytics.activationOptionSelected("schedule", plan)}
-                      className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-[#111]">📆 Programar fecha</p>
@@ -449,11 +449,11 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 <input
                   type="checkbox"
                   {...register("device_confirmed")}
-                  className="accent-[#E60000] w-4 h-4 mt-0.5 shrink-0"
+                  className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
                 />
                 <span className="text-sm text-[#555] leading-snug">
                   Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
-                  <a href="#compatibilidad" className="text-[#E60000] font-semibold hover:underline">
+                  <a href="#compatibilidad" className="text-[#C9973A] font-semibold hover:underline">
                     Ver celulares compatibles
                   </a>
                 </span>

@@ -54,7 +54,7 @@ export default function MobileBottomNav() {
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              color: active ? '#E60000' : '#555',
+              color: active ? '#C9973A' : '#555',
               transition: 'color 150ms ease',
             }}
           >
@@ -66,7 +66,7 @@ export default function MobileBottomNav() {
                 top: 0,
                 width: 28,
                 height: 2,
-                background: '#E60000',
+                background: '#C9973A',
                 borderRadius: '0 0 2px 2px',
               }} />
             )}

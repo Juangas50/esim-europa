@@ -12,7 +12,7 @@ export default function Badge({
   className,
 }: BadgeProps) {
   const variants = {
-    red: "bg-[#E60000] text-white",
+    red: "bg-[#C9973A] text-white",
     blue: "bg-[#EBF6FC] text-[#2a7fa5]",
     dark: "bg-[#111111] text-white",
     outline: "border border-[#111111]/12 text-[#555555] bg-white",

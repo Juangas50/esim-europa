@@ -41,7 +41,7 @@ export type UnifiedOrder = {
 // ── Estados ───────────────────────────────────────────────────────────────────
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-  paid:           { label: '⚡ Tramitar',         color: '#E60000', bg: 'rgba(230,0,0,0.18)'   },
+  paid:           { label: '⚡ Tramitar',         color: '#C9973A', bg: 'rgba(230,0,0,0.18)'   },
   scheduled:      { label: 'Programado',          color: '#6EC1E4', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado',           color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
@@ -314,7 +314,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               return (
                 <button key={f.id} onClick={() => setStatus(f.id)} style={{
                   padding: '6px 14px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
-                  border: `1px solid ${statusFilter === f.id ? '#E60000' : '#2A2A2A'}`,
+                  border: `1px solid ${statusFilter === f.id ? '#C9973A' : '#2A2A2A'}`,
                   background: statusFilter === f.id ? 'rgba(230,0,0,0.15)' : 'transparent',
                   color: statusFilter === f.id ? '#fff' : '#7A7A7A',
                   fontWeight: statusFilter === f.id ? 700 : 400, fontSize: 12,
@@ -337,7 +337,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                   <div
                     key={o.id}
                     onClick={() => { setSelected(o); resetDeliveryForm() }}
-                    style={{ background: '#181818', border: `1px solid ${selected?.id === o.id ? '#E60000' : '#2A2A2A'}`, borderRadius: 12, padding: 14, cursor: 'pointer' }}
+                    style={{ background: '#181818', border: `1px solid ${selected?.id === o.id ? '#C9973A' : '#2A2A2A'}`, borderRadius: 12, padding: 14, cursor: 'pointer' }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                       <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
@@ -354,7 +354,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
                       </div>
                       {isPending && (
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#E60000' }}>Tramitar →</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: '#C9973A' }}>Tramitar →</span>
                       )}
                     </div>
                   </div>
@@ -413,7 +413,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           <div style={{ fontSize: 13, marginBottom: 4 }}>{o.tariffs?.name ?? '—'}</div>
                           <span style={{
                             background: (o.type === 'prepago' || o.type === 'local') ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)',
-                            color: (o.type === 'prepago' || o.type === 'local') ? '#E60000' : '#6EC1E4',
+                            color: (o.type === 'prepago' || o.type === 'local') ? '#C9973A' : '#6EC1E4',
                             borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700,
                           }}>
                             {(o.type === 'prepago' || o.type === 'local') ? 'SIM Local' : 'DataOnly'}
@@ -437,7 +437,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           </select>
                         </td>
                         <td style={{ padding: '12px 14px' }}>
-                          <span style={{ color: isSelected ? '#E60000' : '#6EC1E4', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          <span style={{ color: isSelected ? '#C9973A' : '#6EC1E4', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
                             {isSelected ? '✕ Cerrar' : '👁 Ver'}
                           </span>
                         </td>
@@ -586,7 +586,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             {((selected.source === 'b2c' && selected.status === 'paid') ||
               (selected.source === 'b2b' && selected.status === 'pending_review')) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
-                <div style={{ fontSize: 11, color: '#E60000', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: '#C9973A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
                 </div>
 
@@ -618,7 +618,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         return (
                           <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#111', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2A2A2A'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                              <span style={{ fontSize: 11, fontWeight: 700, color: slotOk ? '#22C55E' : '#E60000' }}>eSIM {idx + 1} de {selected.group_count}</span>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: slotOk ? '#22C55E' : '#C9973A' }}>eSIM {idx + 1} de {selected.group_count}</span>
                               <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
                             </div>
                             <input value={act} onChange={e => { setGroupActivations(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
@@ -640,7 +640,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                             </div>
                             {groupError && <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 10 }}>⚠ {groupError}</div>}
                             <button onClick={handleGroupDeliver} disabled={!allReady || groupDelivering}
-                              style={{ width: '100%', padding: '10px 0', borderRadius: 8, border: 'none', background: allReady && !groupDelivering ? '#E60000' : '#2A2A2A', color: allReady && !groupDelivering ? '#fff' : '#555', fontWeight: 700, fontSize: 13, cursor: allReady && !groupDelivering ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
+                              style={{ width: '100%', padding: '10px 0', borderRadius: 8, border: 'none', background: allReady && !groupDelivering ? '#C9973A' : '#2A2A2A', color: allReady && !groupDelivering ? '#fff' : '#555', fontWeight: 700, fontSize: 13, cursor: allReady && !groupDelivering ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
                               {groupDelivering ? 'Generando QRs...' : `Generar y enviar ${selected.group_count} eSIMs →`}
                             </button>
                           </>
@@ -739,7 +739,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                       disabled={!canDeliver}
                       style={{
                         width: '100%', padding: '10px 0', borderRadius: 8, border: 'none',
-                        background: canDeliver ? '#E60000' : '#2A2A2A',
+                        background: canDeliver ? '#C9973A' : '#2A2A2A',
                         color: canDeliver ? '#fff' : '#555',
                         fontWeight: 700, fontSize: 13, cursor: canDeliver ? 'pointer' : 'not-allowed',
                         fontFamily: 'inherit', transition: 'background 0.15s',

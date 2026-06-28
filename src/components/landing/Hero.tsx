@@ -33,7 +33,7 @@ function RouteBackground() {
         <line x1="0" y1="0" x2="1200" y2="800" stroke="#06B6D4" strokeWidth="2" opacity="0.12" />
         {/* Líneas secundarias */}
         <line x1="200" y1="100" x2="1000" y2="700" stroke="#F59E0B" strokeWidth="1.5" opacity="0.08" />
-        <line x1="100" y1="600" x2="900" y2="200" stroke="#E60000" strokeWidth="1.5" opacity="0.06" />
+        <line x1="100" y1="600" x2="900" y2="200" stroke="#C9973A" strokeWidth="1.5" opacity="0.06" />
         {/* Puntos de ciudades */}
         <circle cx="200" cy="150" r="4" fill="#F59E0B" opacity="0.25" />
         <circle cx="800" cy="700" r="4" fill="#06B6D4" opacity="0.25" />
@@ -80,7 +80,7 @@ function HeroVisual() {
   return (
     <div className="relative w-full max-w-2xl mx-auto select-none" aria-hidden="true">
       {/* Glow de marca — acento sutil en una esquina, no blob genérico */}
-      <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#E60000]/20 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#C9973A]/20 blur-3xl pointer-events-none" />
 
       {/* Contenedor principal */}
       <motion.div
@@ -126,7 +126,7 @@ function HeroVisual() {
                   <span className="text-[10px] font-semibold text-white/55">Madrid, España 🇪🇸</span>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-xl bg-[#E60000] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
+              <div className="w-8 h-8 rounded-xl bg-[#C9973A] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
                 <span className="text-white text-[10px] font-black tracking-tighter">34</span>
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function Hero({ minPrice }: HeroProps) {
               <a
                 href="#planes"
                 onClick={() => analytics.viewPlansClicked()}
-                className="block w-full sm:w-auto bg-[#E60000] text-white font-bold text-lg px-12 py-5 rounded-xl hover:bg-[#CC0000] active:scale-[0.98] shadow-premium-teal transition-all duration-200 text-center"
+                className="block w-full sm:w-auto bg-[#C9973A] text-white font-bold text-lg px-12 py-5 rounded-xl hover:bg-[#E8C56A] active:scale-[0.98] shadow-premium-teal transition-all duration-200 text-center"
               >
                 COMPRAR AHORA
               </a>

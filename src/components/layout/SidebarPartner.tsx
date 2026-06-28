@@ -34,7 +34,7 @@ export default function SidebarPartner({ agencyName }: { agencyName: string }) {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 52, zIndex: 100, background: '#0A0A0A', borderBottom: '1px solid #2A2A2A', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
             <span style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>RUTA</span>
-            <span style={{ fontSize: 20, fontWeight: 900, color: '#E60000' }}>34</span>
+            <span style={{ fontSize: 20, fontWeight: 900, color: '#C9973A' }}>34</span>
           </div>
           <button onClick={() => setOpen(o => !o)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer', padding: 4, lineHeight: 1, fontFamily: 'inherit' }}>
             {open ? '✕' : '☰'}
@@ -72,7 +72,7 @@ export default function SidebarPartner({ agencyName }: { agencyName: string }) {
       <div style={{ padding: '22px 20px 18px', borderBottom: '1px solid #2A2A2A' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
           <span style={{ fontSize: 24, fontWeight: 900, color: '#fff' }}>RUTA</span>
-          <span style={{ fontSize: 24, fontWeight: 900, color: '#E60000' }}>34</span>
+          <span style={{ fontSize: 24, fontWeight: 900, color: '#C9973A' }}>34</span>
         </div>
         <div style={{ fontSize: 8, letterSpacing: 6, color: '#7A7A7A', marginTop: 1 }}>TELECOM</div>
         <div style={{ marginTop: 10, background: 'rgba(110,193,228,0.15)', border: '1px solid rgba(110,193,228,0.3)', borderRadius: 5, padding: '3px 8px', display: 'inline-block' }}>

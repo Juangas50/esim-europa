@@ -24,7 +24,7 @@ export default function MaintenanceBanner() {
         <div className="bg-white rounded-2xl shadow-2xl p-12">
           {/* Logo */}
           <div className="mb-6">
-            <div className="w-16 h-16 mx-auto rounded-lg bg-[#E60000] flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto rounded-lg bg-[#C9973A] flex items-center justify-center">
               <span className="text-white text-2xl font-black">34</span>
             </div>
           </div>

@@ -32,9 +32,9 @@ export default function Definition() {
 
           {/* Visual callout */}
           <div className="mt-8 flex items-center justify-center gap-4 text-sm text-[#666666] flex-wrap">
-            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#E60000] flex-shrink-0" />{t("no_physical_card")}</span>
-            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#E60000] flex-shrink-0" />{t("instant_activation")}</span>
-            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#E60000] flex-shrink-0" />{t("qr_scan")}</span>
+            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#C9973A] flex-shrink-0" />{t("no_physical_card")}</span>
+            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#C9973A] flex-shrink-0" />{t("instant_activation")}</span>
+            <span className="flex items-center gap-1.5"><CheckCircle size={16} weight="fill" className="text-[#C9973A] flex-shrink-0" />{t("qr_scan")}</span>
           </div>
         </motion.div>
       </div>

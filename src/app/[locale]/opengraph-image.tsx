@@ -70,7 +70,7 @@ export default async function OgImage({
             top: 0,
             width: "6px",
             height: "630px",
-            backgroundColor: "#E60000",
+            backgroundColor: "#C9973A",
           }}
         />
 
@@ -97,7 +97,7 @@ export default async function OgImage({
             width: "380px",
             height: "380px",
             borderRadius: "50%",
-            backgroundColor: "#E60000",
+            backgroundColor: "#C9973A",
             opacity: 0.06,
           }}
         />
@@ -119,7 +119,7 @@ export default async function OgImage({
                 width: "52px",
                 height: "52px",
                 borderRadius: "14px",
-                backgroundColor: "#E60000",
+                backgroundColor: "#C9973A",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -172,7 +172,7 @@ export default async function OgImage({
             </span>
             <span
               style={{
-                color: "#E60000",
+                color: "#C9973A",
                 fontSize: "84px",
                 fontWeight: 700,
                 lineHeight: 1.05,

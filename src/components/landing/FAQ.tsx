@@ -30,7 +30,7 @@ function FAQItem({
         className="w-full flex items-start justify-between gap-4 py-6 text-left group"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-[#1B2F4E] text-base leading-snug pr-2 group-hover:text-[#E60000] transition-colors duration-200">
+        <span className="font-semibold text-[#1B2F4E] text-base leading-snug pr-2 group-hover:text-[#C9973A] transition-colors duration-200">
           {question}
         </span>
         <div
@@ -116,7 +116,7 @@ export default function FAQ() {
                   href="https://wa.me/34600000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E60000] font-semibold hover:underline"
+                  className="text-[#C9973A] font-semibold hover:underline"
                 >
                   Escribinos por WhatsApp
                 </a>

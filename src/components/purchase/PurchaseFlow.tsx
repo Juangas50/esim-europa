@@ -55,7 +55,7 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
         {/* Header */}
         <div className="mb-10">
           <a href="/" className="flex items-center gap-2 mb-8 w-fit">
-            <div className="w-7 h-7 rounded-lg bg-[#E60000] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#C9973A] flex items-center justify-center">
               <span className="text-white text-[11px] font-black">34</span>
             </div>
             <span className="font-bold text-[#111111] text-sm tracking-tight">RUTA34</span>
@@ -77,13 +77,13 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                         step > s.id || (s.id === 1 && initialPlan)
                           ? "#111111"
                           : step === s.id
-                          ? "#E60000"
+                          ? "#C9973A"
                           : "#ffffff",
                       borderColor:
                         step > s.id || (s.id === 1 && initialPlan)
                           ? "#111111"
                           : step === s.id
-                          ? "#E60000"
+                          ? "#C9973A"
                           : "#dddddd",
                     }}
                     transition={{ duration: 0.25 }}

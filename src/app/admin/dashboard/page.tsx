@@ -28,7 +28,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   pending_review: { bg: 'rgba(245,158,11,0.15)',  color: '#F59E0B' },
-  paid:           { bg: 'rgba(230,0,0,0.18)',      color: '#E60000' },
+  paid:           { bg: 'rgba(230,0,0,0.18)',      color: '#C9973A' },
   scheduled:      { bg: 'rgba(110,193,228,0.15)', color: '#6EC1E4' },
   qr_sent:        { bg: 'rgba(167,139,250,0.15)', color: '#A78BFA' },
   activated:      { bg: 'rgba(34,197,94,0.15)',   color: '#22C55E' },
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
               </div>
               {toTramitar.length > 0 && (
                 <div style={{ fontSize: 13, color: '#AAAAAA' }}>
-                  ⚡ <strong style={{ color: '#E60000' }}>{toTramitar.length} pedido(s)</strong> para tramitar
+                  ⚡ <strong style={{ color: '#C9973A' }}>{toTramitar.length} pedido(s)</strong> para tramitar
                 </div>
               )}
               {scheduledToday.length > 0 && (
@@ -99,7 +99,7 @@ export default async function AdminDashboard() {
                 </div>
               )}
             </div>
-            <div style={{ color: '#E60000', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+            <div style={{ color: '#C9973A', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
               Tramitar →
             </div>
           </div>
@@ -109,9 +109,9 @@ export default async function AdminDashboard() {
       {/* ── Stats — 2 cols mobile, 4 cols desktop ───────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {[
-          { label: 'Pedidos este mes', value: thisMonth.length,      color: '#E60000' },
+          { label: 'Pedidos este mes', value: thisMonth.length,      color: '#C9973A' },
           { label: 'eSIM activas',     value: activated.length,       color: '#22C55E' },
-          { label: '⚡ Para tramitar', value: toTramitar.length,      color: '#E60000' },
+          { label: '⚡ Para tramitar', value: toTramitar.length,      color: '#C9973A' },
           { label: 'Activaciones hoy', value: scheduledToday.length,  color: '#6EC1E4' },
         ].map(s => (
           <Link key={s.label} href="/admin/pedidos" style={{ textDecoration: 'none' }}>
@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
       {/* ── Canal breakdown — 2 cols siempre ───────────────────────────── */}
       <div className="grid grid-cols-2 gap-3 mb-5">
         {[
-          { label: '🏢 Agencias',  value: b2bCount, sub: 'Portal B2B',      color: '#E60000' },
+          { label: '🏢 Agencias',  value: b2bCount, sub: 'Portal B2B',      color: '#C9973A' },
           { label: '💻 Web',       value: b2cCount, sub: 'esimruta34.com',  color: '#A78BFA' },
         ].map(s => (
           <Link key={s.label} href="/admin/pedidos" style={{ textDecoration: 'none' }}>
@@ -170,7 +170,7 @@ export default async function AdminDashboard() {
                         <td style={{ padding: '12px 16px', fontSize: 12, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</td>
                         <td style={{ padding: '12px 16px', fontSize: 13 }}>{o.customer_name} {o.customer_lastname}</td>
                         <td style={{ padding: '12px 16px' }}>
-                          <span style={{ background: o.source === 'b2c' ? 'rgba(167,139,250,0.15)' : 'rgba(230,0,0,0.15)', color: o.source === 'b2c' ? '#A78BFA' : '#E60000', borderRadius: 6, padding: '3px 10px', fontSize: 10, fontWeight: 700 }}>
+                          <span style={{ background: o.source === 'b2c' ? 'rgba(167,139,250,0.15)' : 'rgba(230,0,0,0.15)', color: o.source === 'b2c' ? '#A78BFA' : '#C9973A', borderRadius: 6, padding: '3px 10px', fontSize: 10, fontWeight: 700 }}>
                             {o.source === 'b2c' ? '💻 Web' : '🏢 Agencia'}
                           </span>
                         </td>
@@ -205,12 +205,12 @@ export default async function AdminDashboard() {
                       <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{o.customer_name} {o.customer_lastname}</div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <span style={{ fontSize: 10, color: o.source === 'b2c' ? '#A78BFA' : '#E60000', fontWeight: 700 }}>
+                          <span style={{ fontSize: 10, color: o.source === 'b2c' ? '#A78BFA' : '#C9973A', fontWeight: 700 }}>
                             {o.source === 'b2c' ? '💻 Web' : '🏢 Agencia'}
                           </span>
                           <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
                         </div>
-                        <span style={{ fontSize: 13, fontWeight: 800, color: isPending ? '#E60000' : '#fff' }}>
+                        <span style={{ fontSize: 13, fontWeight: 800, color: isPending ? '#C9973A' : '#fff' }}>
                           US${o.pvp_at_time.toFixed(2)}
                         </span>
                       </div>

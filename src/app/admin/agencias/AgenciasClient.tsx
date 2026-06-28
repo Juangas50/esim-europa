@@ -152,7 +152,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
             <button onClick={() => setEditing(true)} className="flex-1 sm:flex-none" style={{ padding: '8px 14px', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
               ✏️ Editar
             </button>
-            <button onClick={handleToggleActive} className="flex-1 sm:flex-none" style={{ padding: '8px 14px', background: managing.active ? 'rgba(230,0,0,0.1)' : 'rgba(34,197,94,0.1)', border: `1px solid ${managing.active ? 'rgba(230,0,0,0.3)' : 'rgba(34,197,94,0.3)'}`, borderRadius: 8, color: managing.active ? '#E60000' : '#22C55E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+            <button onClick={handleToggleActive} className="flex-1 sm:flex-none" style={{ padding: '8px 14px', background: managing.active ? 'rgba(230,0,0,0.1)' : 'rgba(34,197,94,0.1)', border: `1px solid ${managing.active ? 'rgba(230,0,0,0.3)' : 'rgba(34,197,94,0.3)'}`, borderRadius: 8, color: managing.active ? '#C9973A' : '#22C55E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
               {managing.active ? '🚫 Desactivar' : '✅ Activar'}
             </button>
           </div>
@@ -161,7 +161,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
             <input required style={{ ...inp }} value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} placeholder="Nombre agencia" />
             <input required type="email" style={{ ...inp }} value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} placeholder="Email" />
             <div className="flex gap-2">
-              <button type="submit" className="flex-1" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Guardar</button>
+              <button type="submit" className="flex-1" style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Guardar</button>
               <button type="button" className="flex-1" onClick={() => setEditing(false)} style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 8, padding: '9px 16px', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
             </div>
           </form>
@@ -174,7 +174,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
           { id: 'precios', label: '💰 Precios' },
           { id: 'pedidos', label: `📦 Pedidos (${orders.length})` },
         ].map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: '10px 18px', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t.id ? '#E60000' : 'transparent'}`, color: tab === t.id ? '#fff' : '#7A7A7A', fontWeight: tab === t.id ? 700 : 400, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1 }}>
+          <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: '10px 18px', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t.id ? '#C9973A' : 'transparent'}`, color: tab === t.id ? '#fff' : '#7A7A7A', fontWeight: tab === t.id ? 700 : 400, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1 }}>
             {t.label}
           </button>
         ))}
@@ -206,7 +206,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                       <PriceInput label="PVP que ve la agencia" defaultValue={pvp} onSave={val => handleSavePrice(t.id, cost, val)} />
                       <div style={{ textAlign: 'center', minWidth: 56 }}>
                         <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, textTransform: 'uppercase', marginBottom: 5 }}>Margen</div>
-                        <div style={{ fontSize: 20, fontWeight: 900, color: margin > 0 ? '#22C55E' : '#E60000' }}>${margin.toFixed(0)}</div>
+                        <div style={{ fontSize: 20, fontWeight: 900, color: margin > 0 ? '#22C55E' : '#C9973A' }}>${margin.toFixed(0)}</div>
                       </div>
                     </div>
                   </div>
@@ -276,7 +276,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                   alert(data.error || 'Error generando factura')
                 }
               }}
-              style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+              style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
             >
               🧾 Generar factura del mes
             </button>
@@ -344,7 +344,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
   return (
     <div>
       <div className="flex justify-end mb-4">
-        <button onClick={() => setAdding(!adding)} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button onClick={() => setAdding(!adding)} style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           + Nueva agencia
         </button>
       </div>
@@ -364,7 +364,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
             <button type="button" onClick={() => setAdding(false)} className="sm:w-auto" style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '10px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>Cancelar</button>
-            <button type="submit" className="sm:w-auto" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Crear agencia</button>
+            <button type="submit" className="sm:w-auto" style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Crear agencia</button>
           </div>
         </form>
       )}

@@ -374,7 +374,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm
         [&_th]:text-left [&_th]:font-semibold [&_th]:text-[#111] [&_th]:py-2 [&_th]:px-3 [&_th]:bg-[#F8F8F8] [&_th]:border [&_th]:border-black/8
         [&_td]:py-2 [&_td]:px-3 [&_td]:border [&_td]:border-black/8
-        [&_a]:text-[#E60000] [&_a]:underline [&_a]:hover:no-underline"
+        [&_a]:text-[#C9973A] [&_a]:underline [&_a]:hover:no-underline"
       >
         {children}
       </div>

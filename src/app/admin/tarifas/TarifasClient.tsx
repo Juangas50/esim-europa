@@ -112,7 +112,7 @@ function TariffForm({ initial, onSave, onCancel }: {
         <button type="button" onClick={onCancel} className="w-full sm:w-auto" style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '11px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
           Cancelar
         </button>
-        <button type="submit" disabled={loading} className="w-full sm:w-auto" style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button type="submit" disabled={loading} className="w-full sm:w-auto" style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           {loading ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
@@ -154,7 +154,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
         <div style={{ background: 'rgba(110,193,228,0.1)', border: '1px solid rgba(110,193,228,0.25)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#AAAAAA', flex: 1 }}>
           💡 Los precios <strong style={{ color: '#fff' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#6EC1E4' }}>Agencias → Gestionar</strong>
         </div>
-        <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+        <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           + Nueva tarifa
         </button>
       </div>
@@ -181,7 +181,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</span>
-                        {t.highlight && <span style={{ background: '#E60000', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
+                        {t.highlight && <span style={{ background: '#C9973A', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}
@@ -193,7 +193,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
                     <button onClick={() => { setEditing(t); setAdding(false) }} className="flex-1" style={{ padding: '8px 0', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 7, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
                       Editar
                     </button>
-                    <button onClick={() => handleDelete(t.id)} className="flex-1" style={{ padding: '8px 0', background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 7, color: '#E60000', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+                    <button onClick={() => handleDelete(t.id)} className="flex-1" style={{ padding: '8px 0', background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 7, color: '#C9973A', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
                       Eliminar
                     </button>
                   </div>

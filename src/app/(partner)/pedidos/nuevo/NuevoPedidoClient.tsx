@@ -40,7 +40,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
   const step2Valid = form.nombre && form.apellidos && form.pasaporte && isValidEmail(form.email) && isAdult(form.dob) && (type === 'dataonly' || !scheduled || (form.date && !errors.date))
 
   const FieldError = ({ field }: { field: string }) => errors[field as keyof typeof errors] && touched[field] ? (
-    <div style={{ color: '#E60000', fontSize: 11, marginTop: 4, fontWeight: 600 }}>⚠ {errors[field as keyof typeof errors]}</div>
+    <div style={{ color: '#C9973A', fontSize: 11, marginTop: 4, fontWeight: 600 }}>⚠ {errors[field as keyof typeof errors]}</div>
   ) : null
 
   async function handleSubmit() {
@@ -78,7 +78,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
           Nuevo pedido
         </button>
         <button onClick={() => router.push('/pedidos')}
-          style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
           Ver mis pedidos
         </button>
       </div>
@@ -92,7 +92,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
         return (
           <div key={n} style={{ display: 'flex', alignItems: 'center', flex: i < 1 ? 1 : 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-              <div style={{ width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, background: isDone ? '#22C55E' : active ? '#E60000' : '#232323', color: '#fff', border: `2px solid ${isDone ? '#22C55E' : active ? '#E60000' : '#2A2A2A'}` }}>
+              <div style={{ width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, background: isDone ? '#22C55E' : active ? '#C9973A' : '#232323', color: '#fff', border: `2px solid ${isDone ? '#22C55E' : active ? '#C9973A' : '#2A2A2A'}` }}>
                 {isDone ? '✓' : n}
               </div>
               <span style={{ fontSize: 12, color: active ? '#fff' : '#7A7A7A', fontWeight: active ? 700 : 400 }}>{s}</span>
@@ -116,7 +116,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
             {[
-              { key: 'prepago', icon: '📱', title: 'eSIM Prepago', desc: 'El plan arranca desde que se activa. Podés programar para cuando llegue a Europa.', tag: '⏱ 28 días desde activación', color: '#E60000', bg: 'rgba(230,0,0,0.08)' },
+              { key: 'prepago', icon: '📱', title: 'eSIM Prepago', desc: 'El plan arranca desde que se activa. Podés programar para cuando llegue a Europa.', tag: '⏱ 28 días desde activación', color: '#C9973A', bg: 'rgba(230,0,0,0.08)' },
               { key: 'dataonly', icon: '📡', title: 'eSIM DataOnly', desc: 'Solo datos. El cliente tiene 60 días para activar el QR. El plan no empieza hasta que lo escanee.', tag: '🕐 60 días para activar', color: '#6EC1E4', bg: 'rgba(110,193,228,0.08)' },
             ].map(opt => (
               <div key={opt.key} onClick={() => { setType(opt.key); setTariffId(null) }}
@@ -135,7 +135,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
             <div>
               <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
                 Elegí la tarifa
-                <span style={{ background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: type === 'prepago' ? '#E60000' : '#6EC1E4', borderRadius: 5, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>
+                <span style={{ background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>
                   {type === 'prepago' ? 'eSIM Prepago' : 'DataOnly'}
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   const tpvp = pricing.find(p => p.tariff_id === t.id)?.pvp
                   return (
                     <div key={t.id} onClick={() => setTariffId(t.id)}
-                      style={{ cursor: 'pointer', background: tariffId === t.id ? (type === 'prepago' ? 'rgba(230,0,0,0.08)' : 'rgba(110,193,228,0.08)') : '#181818', border: `2px solid ${tariffId === t.id ? (type === 'prepago' ? '#E60000' : '#6EC1E4') : '#2A2A2A'}`, borderRadius: 11, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s' }}>
+                      style={{ cursor: 'pointer', background: tariffId === t.id ? (type === 'prepago' ? 'rgba(230,0,0,0.08)' : 'rgba(110,193,228,0.08)') : '#181818', border: `2px solid ${tariffId === t.id ? (type === 'prepago' ? '#C9973A' : '#6EC1E4') : '#2A2A2A'}`, borderRadius: 11, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
                         <div style={{ width: 40, height: 40, borderRadius: 9, background: '#232323', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
                           {type === 'prepago' ? '📱' : '📡'}
@@ -152,7 +152,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
                             <span style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</span>
-                            {t.highlight && <span style={{ background: '#E60000', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
+                            {t.highlight && <span style={{ background: '#C9973A', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
                           </div>
                           <span style={{ color: '#7A7A7A', fontSize: 11 }}>{t.badge}{t.validity_days ? ` · ${t.validity_days} días` : ''}</span>
                         </div>
@@ -160,7 +160,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
                         {tpvp ? (
                           <>
-                            <div style={{ fontSize: 22, fontWeight: 900, color: '#E60000', lineHeight: 1 }}>${tpvp}</div>
+                            <div style={{ fontSize: 22, fontWeight: 900, color: '#C9973A', lineHeight: 1 }}>${tpvp}</div>
                             <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 2 }}>por el viaje</div>
                           </>
                         ) : (
@@ -176,7 +176,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 22 }}>
             <button onClick={() => setStep(2)} disabled={!type || !tariffId}
-              style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: !type || !tariffId ? 'not-allowed' : 'pointer', opacity: !type || !tariffId ? 0.4 : 1, fontFamily: 'inherit' }}>
+              style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: !type || !tariffId ? 'not-allowed' : 'pointer', opacity: !type || !tariffId ? 0.4 : 1, fontFamily: 'inherit' }}>
               Continuar →
             </button>
           </div>
@@ -205,13 +205,13 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
               </div>
               <div>
                 <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha de nacimiento * (debes ser mayor de 18 años)</label>
-                <input type="date" max={maxDobStr()} style={{ ...inp, borderColor: touched.dob && errors.dob ? '#E60000' : '#2A2A2A' }} value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} onBlur={() => touch('dob')} />
+                <input type="date" max={maxDobStr()} style={{ ...inp, borderColor: touched.dob && errors.dob ? '#C9973A' : '#2A2A2A' }} value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} onBlur={() => touch('dob')} />
                 <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 6 }}>ℹ️ Requerido por regulaciones de telecomunicaciones</div>
                 <FieldError field="dob" />
               </div>
               <div>
                 <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Email del cliente *</label>
-                <input type="email" style={{ ...inp, borderColor: touched.email && errors.email ? '#E60000' : '#2A2A2A' }} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} onBlur={() => touch('email')} placeholder="juan@email.com" />
+                <input type="email" style={{ ...inp, borderColor: touched.email && errors.email ? '#C9973A' : '#2A2A2A' }} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} onBlur={() => touch('email')} placeholder="juan@email.com" />
                 <FieldError field="email" />
               </div>
 
@@ -220,7 +220,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 11 }}>📅 Fecha de activación</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
                     {[
-                      { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#E60000' },
+                      { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#C9973A' },
                       { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#6EC1E4' },
                     ].map(opt => (
                       <button key={String(opt.key)} onClick={() => { setScheduled(opt.key as boolean); setForm(f => ({ ...f, date: '' })) }}
@@ -237,7 +237,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   ) : (
                     <div>
                       <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha programada *</label>
-                      <input type="date" min={todayStr()} max={maxDateStr()} style={{ ...inp, borderColor: touched.date && errors.date ? '#E60000' : '#2A2A2A' }} value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} onBlur={() => touch('date')} />
+                      <input type="date" min={todayStr()} max={maxDateStr()} style={{ ...inp, borderColor: touched.date && errors.date ? '#C9973A' : '#2A2A2A' }} value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} onBlur={() => touch('date')} />
                       <FieldError field="date" />
                       {form.date && !errors.date && (
                         <div style={{ marginTop: 9, background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 8, padding: '9px 13px', fontSize: 12, color: '#7A7A7A', lineHeight: 1.6 }}>
@@ -288,10 +288,10 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <span style={{ fontSize: 13, color: '#7A7A7A' }}>Total</span>
-              <span style={{ fontSize: 26, fontWeight: 900, color: '#E60000' }}>${pvp}</span>
+              <span style={{ fontSize: 26, fontWeight: 900, color: '#C9973A' }}>${pvp}</span>
             </div>
             <button onClick={handleSubmit} disabled={!step2Valid || loading}
-              style={{ width: '100%', background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: !step2Valid || loading ? 'not-allowed' : 'pointer', opacity: !step2Valid || loading ? 0.4 : 1, fontFamily: 'inherit' }}>
+              style={{ width: '100%', background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '13px', fontSize: 14, fontWeight: 700, cursor: !step2Valid || loading ? 'not-allowed' : 'pointer', opacity: !step2Valid || loading ? 0.4 : 1, fontFamily: 'inherit' }}>
               {loading ? 'Enviando...' : 'Confirmar pedido ✓'}
             </button>
             {!step2Valid && <div style={{ marginTop: 10, fontSize: 11, color: '#7A7A7A', textAlign: 'center' }}>Completá todos los campos para continuar</div>}

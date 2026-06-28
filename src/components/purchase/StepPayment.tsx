@@ -145,17 +145,17 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               whileTap={{ scale: 0.99 }}
               className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
                 method === "stripe"
-                  ? "border-[#E60000] bg-[#E60000]/3"
+                  ? "border-[#C9973A] bg-[#C9973A]/3"
                   : "border-[#111111]/8 hover:border-[#111111]/20"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    method === "stripe" ? "border-[#E60000]" : "border-[#ccc]"
+                    method === "stripe" ? "border-[#C9973A]" : "border-[#ccc]"
                   }`}>
                     {method === "stripe" && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#E60000]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#C9973A]" />
                     )}
                   </div>
                   <div>
@@ -215,17 +215,17 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               type="checkbox"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="w-5 h-5 mt-0.5 rounded border-2 border-[#ddd] bg-white checked:bg-[#E60000] checked:border-[#E60000] cursor-pointer accent-[#E60000]"
+              className="w-5 h-5 mt-0.5 rounded border-2 border-[#ddd] bg-white checked:bg-[#C9973A] checked:border-[#C9973A] cursor-pointer accent-[#C9973A]"
             />
             <span className="text-xs text-[#555] leading-relaxed flex-1">
               {locale === "pt" ? (
                 <>
                   Li e aceito os{" "}
-                  <a href={`/${locale}/termos`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/termos`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
                     Termos e Condições
                   </a>
                   {" "}e a{" "}
-                  <a href={`/${locale}/privacidade`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/privacidade`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
                     Política de Privacidade
                   </a>
                   . Entendo que, ao ativar o eSIM, o serviço começa a ser prestado imediatamente e aceito expressamente renunciar ao meu direito de arrependimento de 14 dias a partir do momento da ativação.
@@ -233,11 +233,11 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               ) : (
                 <>
                   He leído y acepto los{" "}
-                  <a href={`/${locale}/terminos`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/terminos`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
                     Términos y Condiciones
                   </a>
                   {" "}y la{" "}
-                  <a href={`/${locale}/privacidad`} target="_blank" rel="noopener noreferrer" className="text-[#E60000] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/privacidad`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
                     Política de Privacidad
                   </a>
                   . Entiendo que, al activar la eSIM, el servicio comienza a prestarse de forma inmediata y acepto expresamente renunciar a mi derecho de desistimiento de 14 días a partir del momento de la activación.

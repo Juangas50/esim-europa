@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
           <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: 2, marginBottom: 6 }}>
             <span style={{ fontSize: 48, fontWeight: 900, color: '#fff', letterSpacing: -2 }}>RUTA</span>
-            <span style={{ fontSize: 48, fontWeight: 900, color: '#E60000', letterSpacing: -2 }}>34</span>
+            <span style={{ fontSize: 48, fontWeight: 900, color: '#C9973A', letterSpacing: -2 }}>34</span>
           </div>
           <div style={{ fontSize: 10, letterSpacing: 8, color: '#7A7A7A', textTransform: 'uppercase', marginBottom: 20 }}>TELECOM</div>
           <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #2A2A2A, transparent)' }} />
@@ -67,13 +67,13 @@ export default function LoginPage() {
                 </div>
 
                 {error && (
-                  <div style={{ background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 8, padding: '10px 13px', color: '#E60000', fontSize: 13 }}>
+                  <div style={{ background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 8, padding: '10px 13px', color: '#C9973A', fontSize: 13 }}>
                     {error}
                   </div>
                 )}
 
                 <button type="submit" disabled={loading}
-                  style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginTop: 4 }}>
+                  style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginTop: 4 }}>
                   {loading ? 'Ingresando...' : 'Ingresar al portal'}
                 </button>
               </form>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                       style={{ background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '10px 13px', color: '#fff', fontSize: 13, outline: 'none' }} />
                   </div>
                   <button type="submit" disabled={loading}
-                    style={{ background: '#E60000', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                    style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                     {loading ? 'Enviando...' : 'Enviar link de recuperación'}
                   </button>
                 </form>

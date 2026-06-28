@@ -20,7 +20,7 @@ export default function TopBar() {
     }}>
       <h1 style={{ fontSize: 17, fontWeight: 800, margin: 0, color: '#fff' }}>{title}</h1>
       <div style={{
-        width: 30, height: 30, borderRadius: '50%', background: '#E60000',
+        width: 30, height: 30, borderRadius: '50%', background: '#C9973A',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 12, fontWeight: 800, color: '#fff'
       }}>A</div>

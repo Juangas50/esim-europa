@@ -81,7 +81,7 @@ export default function Compatibility() {
             {/* Link guía — ancla directo a la pregunta de compatibilidad en el FAQ */}
             <a
               href="#faq-compatible"
-              className="flex items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed border-[#111111]/15 text-sm font-semibold text-[#555] hover:border-[#E60000]/40 hover:text-[#E60000] transition-all duration-200"
+              className="flex items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed border-[#111111]/15 text-sm font-semibold text-[#555] hover:border-[#C9973A]/40 hover:text-[#C9973A] transition-all duration-200"
             >
               {t("checkGuide")} →
             </a>
