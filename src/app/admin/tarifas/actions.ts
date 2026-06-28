@@ -3,7 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/auth/require-role'
 
-const VALID_TYPES = new Set(['local', 'dataonly'])
+const VALID_TYPES = new Set(['local', 'dataonly', 'prepago'])
 
 type TariffForm = {
   client_name: string
