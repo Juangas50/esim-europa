@@ -232,7 +232,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="text-sm font-semibold text-[#111]">Activación inmediata</p>
-                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Recomendado</span>
                   </div>
                   <p className="text-xs text-[#777]">Los 28 días empiezan desde que te enviamos el QR. Instalála antes de viajar y usala al llegar a Europa.</p>
                 </div>
