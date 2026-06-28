@@ -204,8 +204,9 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   </select></div>
               </div>
               <div>
-                <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha de nacimiento * (mayor de 18 años)</label>
+                <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Fecha de nacimiento * (debes ser mayor de 18 años)</label>
                 <input type="date" max={maxDobStr()} style={{ ...inp, borderColor: touched.dob && errors.dob ? '#E60000' : '#2A2A2A' }} value={form.dob} onChange={e => setForm({ ...form, dob: e.target.value })} onBlur={() => touch('dob')} />
+                <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 6 }}>ℹ️ Requerido por regulaciones de telecomunicaciones</div>
                 <FieldError field="dob" />
               </div>
               <div>
@@ -219,8 +220,8 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 11 }}>📅 Fecha de activación</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
                     {[
-                      { key: false, label: '🚀 Activar hoy', sub: 'Plan empieza a correr ya', color: '#E60000' },
-                      { key: true,  label: '📆 Programar fecha', sub: 'Hasta 12 meses desde hoy', color: '#6EC1E4' },
+                      { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#E60000' },
+                      { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#6EC1E4' },
                     ].map(opt => (
                       <button key={String(opt.key)} onClick={() => { setScheduled(opt.key as boolean); setForm(f => ({ ...f, date: '' })) }}
                         style={{ padding: '11px', borderRadius: 9, border: `2px solid ${scheduled === opt.key ? opt.color : '#2A2A2A'}`, background: scheduled === opt.key ? `${opt.color}10` : '#232323', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
