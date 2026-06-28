@@ -9,6 +9,7 @@ const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 type Tariff = {
   id: string
   name: string
+  vodafone_code?: string
   type: string
   data_gb: number
   validity_days: number | null
