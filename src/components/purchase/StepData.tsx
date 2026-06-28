@@ -85,7 +85,9 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const tCountries = useTranslations("purchase.countries");
   const [quantity, setQuantity] = useState(initialData.quantity ?? 1);
   const [substep, setSubstep] = useState(1); // 1: básico, 2: validación, 3: activación
-  const errorFieldRef = useRef<HTMLInputElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const passportRef = useRef<HTMLInputElement | null>(null);
+  const dobRef = useRef<HTMLInputElement | null>(null);
 
   const {
     register,
@@ -112,8 +114,12 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
   // Auto-focus en campo con error
   useEffect(() => {
-    if (errorFieldRef.current) {
-      errorFieldRef.current.focus();
+    if (errors.customer_name && nameRef.current) {
+      nameRef.current.focus();
+    } else if (errors.customer_passport && passportRef.current) {
+      passportRef.current.focus();
+    } else if (errors.customer_dob && dobRef.current) {
+      dobRef.current.focus();
     }
   }, [errors]);
 
@@ -209,9 +215,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 <Label required>{t("form.name")}</Label>
                 <input
                   {...register("customer_name")}
-                  ref={(el) => {
-                    if (errors.customer_name) errorFieldRef.current = el;
-                  }}
+                  ref={nameRef}
                   className={inputClass}
                   placeholder="Juan"
                   autoComplete="given-name"
@@ -307,9 +311,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <Label required>N° Pasaporte</Label>
               <input
                 {...register("customer_passport")}
-                ref={(el) => {
-                  if (errors.customer_passport) errorFieldRef.current = el;
-                }}
+                ref={passportRef}
                 className={inputClass}
                 placeholder="ABC123456"
                 autoComplete="off"
@@ -322,9 +324,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <input
                 type="date"
                 {...register("customer_dob")}
-                ref={(el) => {
-                  if (errors.customer_dob) errorFieldRef.current = el;
-                }}
+                ref={dobRef}
                 max={maxDobStr()}
                 className={inputClass}
               />
