@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1370" viewBox="0 0 800 1370">
+<rect width="100%" height="100%" fill="#FAF7F2"/>
+<rect x="30" y="30" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,58) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="170" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">2 minutos</text>
+<rect x="220" y="30" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,58) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 2L5 13h6l-1 9 9-12h-6l0-8z"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="170" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">5g velocidad</text>
+<rect x="410" y="30" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,58) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="170" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">activar</text>
+<rect x="600" y="30" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,58) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 13l8-2.5 7-6c1-.8 2.4.2 2 1.4l-2 5.1 2 2.4c.5.6.1 1.6-.7 1.6h-5.2L11 21l-1.2-.2.7-5.3-4.2-2.3c-.8-.4-.7-1.6.2-1.9z"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="170" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">avion</text>
+<rect x="30" y="220" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,248) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/><path d="M12 6v12" stroke-dasharray="2 2"/><path d="M8 11h2M8 14h2"/><path d="M15.5 12.5l2.5-1.5-1.5 2.5.5 1.5-1.5-.5-1.5 2 .3-2.3-1.8-.7 2.2-.5.8-2"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="360" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">boarding pass</text>
+<rect x="220" y="220" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,248) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="3" width="8" height="18" rx="2"/><circle cx="12" cy="18" r="0.8"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="360" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">celular</text>
+<rect x="410" y="220" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,248) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 7l-4 5 4 5"/><path d="M15 7l4 5-4 5"/><path d="M12 4v16"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="360" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">comparar</text>
+<rect x="600" y="220" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,248) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="M8 11l8-5M8 13l8 5"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="360" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">compartir</text>
+<rect x="30" y="410" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,438) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5h2l2 10h9l2-7H7"/><circle cx="10" cy="19" r="1.2"/><circle cx="17" cy="19" r="1.2"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="550" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">comprar</text>
+<rect x="220" y="410" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,438) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="3" width="7" height="18" rx="2"/><circle cx="9.5" cy="18" r="0.8"/><path d="M16 9c1.7 1.2 2.8 3.1 2.8 5s-1.1 3.8-2.8 5"/><path d="M14.6 11.5c0.9.7 1.4 1.6 1.4 2.5s-.5 1.8-1.4 2.5"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="550" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">conectado</text>
+<rect x="410" y="410" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,438) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M9 12h6"/><path d="M12 9l3 3-3 3"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="550" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">cta accion</text>
+<rect x="600" y="410" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,438) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="16" height="12" rx="2"/><path d="M5 7l7 5 7-5"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="550" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">email qr</text>
+<rect x="30" y="600" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,628) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="6" width="12" height="14" rx="2"/><path d="M9 6V4h6v2"/><path d="M10 10v6M14 10v6"/><circle cx="9" cy="21" r="1"/><circle cx="15" cy="21" r="1"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="740" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">equipaje</text>
+<rect x="220" y="600" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,628) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M8 3v2M12 3v2M16 3v2M8 19v2M12 19v2M16 19v2M3 8h2M3 12h2M3 16h2M19 8h2M19 12h2M19 16h2"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="740" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">esim chip</text>
+<rect x="410" y="600" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,628) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 0 0 18M12 3a14 14 0 0 1 0 18M6 6.5c1.6 1 4 1.5 6 1.5s4.4-.5 6-1.5M6 17.5c1.6-1 4-1.5 6-1.5s4.4.5 6 1.5"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="740" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">europa mundo</text>
+<rect x="600" y="600" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,628) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M8 12.2l2.5 2.5L16.5 9"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="740" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">exito check</text>
+<rect x="30" y="790" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,818) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.6 2.6 0 1 1 4.6 1.7c-.9 1-1.8 1.5-1.8 3.3"/><circle cx="12" cy="17.5" r="0.9" fill="#1B2F4E" stroke="none"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="930" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">faq</text>
+<rect x="220" y="790" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,818) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 10v6"/><circle cx="12" cy="7" r="0.8" fill="#1B2F4E" stroke="none"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="930" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">info tooltip</text>
+<rect x="410" y="790" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,818) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="930" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">mapa</text>
+<rect x="600" y="790" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,818) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="930" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">pago seguro</text>
+<rect x="30" y="980" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,1008) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="9" r="3"/><path d="M9 9h6M12 6a6 6 0 0 0 0 6M12 6a6 6 0 0 1 0 6M8.5 15h7"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="1120" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">pasaporte</text>
+<rect x="220" y="980" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,1008) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="5" cy="7" r="1" fill="#1B2F4E" stroke="none"/><circle cx="5" cy="12" r="1" fill="#1B2F4E" stroke="none"/><circle cx="5" cy="17" r="1" fill="#1B2F4E" stroke="none"/><path d="M9 7h10M9 12h10M9 17h10"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="1120" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">planes lista</text>
+<rect x="410" y="980" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,1008) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="5" height="5" rx="0.6"/><rect x="15" y="4" width="5" height="5" rx="0.6"/><rect x="4" y="15" width="5" height="5" rx="0.6"/><path d="M15 15h2M19 15h1M15 19v1M18 18h2M18 12v1"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="1120" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">qr code</text>
+<rect x="600" y="980" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,1008) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="1120" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">seguridad</text>
+<rect x="30" y="1170" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(79,1198) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9c4.5-4 13.5-4 18 0"/><path d="M6 12c3-2.7 9-2.7 12 0"/><path d="M9 15c1.5-1.3 4.5-1.3 6 0"/><circle cx="12" cy="19" r="1"/>
+    </g>
+    
+    </g>
+<text x="115.0" y="1310" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">senal wifi</text>
+<rect x="220" y="1170" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(269,1198) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6A2.5 2.5 0 0 1 16.5 15H10l-4 4v-4.5A2.5 2.5 0 0 1 5 12.5z"/>
+    </g>
+    
+    </g>
+<text x="305.0" y="1310" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">soporte</text>
+<rect x="410" y="1170" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(459,1198) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 21s6-5.3 6-10a6 6 0 1 0-12 0c0 4.7 6 10 6 10z"/><circle cx="12" cy="11" r="2.2"/>
+    </g>
+    
+    </g>
+<text x="495.0" y="1310" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">ubicacion</text>
+<rect x="600" y="1170" width="170" height="170" rx="22" fill="white" stroke="#E7E1D6"/>
+<g transform="translate(649,1198) scale(3)">
+    <g fill="none" stroke="#1B2F4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4l2.6 5.3 5.9.9-4.3 4.1 1 5.7L12 17.2 6.8 20l1-5.7-4.3-4.1 5.9-.9z"/>
+    </g>
+    
+    </g>
+<text x="685.0" y="1310" text-anchor="middle" fill="#1B2F4E" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="16">valoracion</text>
+</svg>
