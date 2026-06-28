@@ -130,6 +130,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
     slug: slugify(t.name),
     name: t.name,
     vodafone_code: t.vodafone_code ?? undefined,
+    badge: t.badge ?? undefined,
     type,
     // Talla S/M/L/XL/XXL solo para planes locales (data-only no tiene talla)
     size: type === "local" ? inferSize(t.name, t.badge, t.data_gb) : undefined,
