@@ -61,32 +61,15 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           : "bg-white border border-black/[0.07]"
       }`}
     >
-      {/* Top: talla (solo local) + popular badge */}
-      <div className="flex items-start justify-between mb-4">
-        {/* Talla S/M/L/XL/XXL — solo para SIM Local */}
-        {plan.size ? (
-          <span className={`inline-flex items-center justify-center w-10 h-10 rounded-xl font-black text-base ${
-            isPopular ? "bg-white/15 text-white" : "bg-[#F0F0F0] text-[#1B2F4E]"
-          }`}>
-            {plan.size}
-          </span>
-        ) : (
-          /* Para data-only: número de orden visual o vacío */
-          <span className={`inline-flex items-center justify-center w-10 h-10 rounded-xl font-black text-xs ${
-            isPopular ? "bg-white/10 text-white/60" : "bg-[#F0F0F0] text-[#999]"
-          }`}>
-            {plan.data_gb}
-            <span className={`text-[9px] ml-0.5 font-bold ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
-          </span>
-        )}
-
-        {isPopular && (
+      {/* Top: popular badge only (size hidden for cleaner web UX) */}
+      {isPopular && (
+        <div className="flex items-start justify-end mb-4">
           <Badge variant="red" className="text-[10px]">
             <Star size={9} weight="fill" />
             {t("popular")}
           </Badge>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Nombre del plan */}
       <h3 className={`text-lg font-black mb-4 ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
