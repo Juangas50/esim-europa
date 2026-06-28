@@ -93,11 +93,12 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors, isValid, touchedFields },
     trigger,
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    mode: "onBlur",
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       customer_name: initialData.customer_name ?? "",
       customer_lastname: initialData.customer_lastname ?? "",
@@ -220,7 +221,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   placeholder="Juan"
                   autoComplete="given-name"
                 />
-                <FieldError message={errors.customer_name?.message} />
+                <FieldError message={touchedFields.customer_name ? errors.customer_name?.message : undefined} />
               </div>
               <div>
                 <Label required>{t("form.lastname")}</Label>
@@ -230,7 +231,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   placeholder="García"
                   autoComplete="family-name"
                 />
-                <FieldError message={errors.customer_lastname?.message} />
+                <FieldError message={touchedFields.customer_lastname ? errors.customer_lastname?.message : undefined} />
               </div>
             </div>
 
@@ -243,7 +244,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 placeholder="juan@ejemplo.com"
                 autoComplete="email"
               />
-              <FieldError message={errors.customer_email?.message} />
+              <FieldError message={touchedFields.customer_email ? errors.customer_email?.message : undefined} />
             </div>
 
             <div>
@@ -256,7 +257,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 autoComplete="off"
                 onPaste={(e) => e.preventDefault()}
               />
-              <FieldError message={errors.confirm_email?.message} />
+              <FieldError message={touchedFields.confirm_email ? errors.confirm_email?.message : undefined} />
               <p className="text-xs text-[#999] mt-1.5">
                 Te vamos a enviar los QR a este email. Revisalo antes de pagar.
               </p>
@@ -304,7 +305,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   </option>
                 ))}
               </select>
-              <FieldError message={errors.customer_country?.message} />
+              <FieldError message={touchedFields.customer_country ? errors.customer_country?.message : undefined} />
             </div>
 
             <div>
@@ -316,7 +317,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 placeholder="ABC123456"
                 autoComplete="off"
               />
-              <FieldError message={errors.customer_passport?.message} />
+              <FieldError message={touchedFields.customer_passport ? errors.customer_passport?.message : undefined} />
             </div>
 
             <div>
@@ -331,7 +332,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               <p className="text-xs text-[#777] mt-1.5">
                 ℹ️ Usamos esto para verificar que cumplís los requisitos de edad
               </p>
-              <FieldError message={errors.customer_dob?.message} />
+              <FieldError message={touchedFields.customer_dob ? errors.customer_dob?.message : undefined} />
             </div>
 
             <div className="flex gap-3 pt-4">
@@ -457,7 +458,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                   </a>
                 </span>
               </label>
-              <FieldError message={errors.device_confirmed?.message} />
+              <FieldError message={touchedFields.device_confirmed ? errors.device_confirmed?.message : undefined} />
             </div>
 
             {/* FAQ inline */}
