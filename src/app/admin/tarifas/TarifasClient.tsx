@@ -12,6 +12,7 @@ type Tariff = {
   vodafone_code?: string
   type: string
   data_gb: number
+  eu_data_gb?: number
   validity_days: number | null
   price_usd?: number
   badge: string
@@ -31,6 +32,7 @@ function TariffForm({ initial, onSave, onCancel }: {
     vodafone_code: initial?.vodafone_code || '',
     type: initial?.type || 'prepago',
     data_gb: initial?.data_gb?.toString() || '',
+    eu_data_gb: initial?.eu_data_gb?.toString() || '',
     validity_days: initial?.validity_days?.toString() || '',
     price_usd: initial?.price_usd?.toString() || '',
     badge: initial?.badge || '',
@@ -76,10 +78,14 @@ function TariffForm({ initial, onSave, onCancel }: {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Datos (GB) *</label>
           <input required type="number" style={inp} value={form.data_gb} onChange={e => setForm({ ...form, data_gb: e.target.value })} placeholder="15" />
+        </div>
+        <div>
+          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>GB Roaming UE</label>
+          <input type="number" style={inp} value={form.eu_data_gb} onChange={e => setForm({ ...form, eu_data_gb: e.target.value })} placeholder="10" />
         </div>
         <div>
           <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Precio USD *</label>

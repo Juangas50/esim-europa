@@ -10,6 +10,7 @@ type TariffForm = {
   vodafone_code: string
   type: string
   data_gb: number | string
+  eu_data_gb?: number | string | null
   validity_days?: number | string | null
   badge?: string | null
   highlight?: boolean
@@ -36,6 +37,7 @@ function validateTariffForm(form: TariffForm) {
     vodafone_code,
     type,
     data_gb,
+    eu_data_gb: form.eu_data_gb != null ? Number(form.eu_data_gb) : null,
     validity_days: form.validity_days ? Number(form.validity_days) : null,
     badge: form.badge ? String(form.badge).trim().slice(0, 1000) : null,
     highlight: Boolean(form.highlight),
