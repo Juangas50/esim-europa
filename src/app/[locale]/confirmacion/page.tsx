@@ -51,7 +51,7 @@ function ConfirmacionContent() {
           {/* Título */}
           <motion.h1
             variants={fadeUp}
-            className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight mb-3"
+            className="text-2xl sm:text-3xl font-black text-[#1B2F4E] tracking-tight mb-3"
           >
             {t("title")}
           </motion.h1>
@@ -68,7 +68,7 @@ function ConfirmacionContent() {
             <p className="text-xs font-bold uppercase tracking-widest text-[#999] mb-1">
               {t("orderRef")}
             </p>
-            <p className="text-lg font-black text-[#111111] font-mono">{orderRef}</p>
+            <p className="text-lg font-black text-[#1B2F4E] font-mono">{orderRef}</p>
           </motion.div>
 
           {/* Próximos pasos */}
@@ -76,7 +76,7 @@ function ConfirmacionContent() {
             variants={fadeUp}
             className="bg-white border border-black/[0.07] rounded-2xl p-6 mb-6 text-left"
           >
-            <h3 className="font-black text-[#111111] mb-4">{t("nextSteps")}</h3>
+            <h3 className="font-black text-[#1B2F4E] mb-4">{t("nextSteps")}</h3>
             <ol className="space-y-3">
               {steps.map((step, i) => (
                 <li key={i} className="flex items-start gap-3">
@@ -104,7 +104,7 @@ function ConfirmacionContent() {
             href="https://wa.me/34600000000"
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center py-3.5 rounded-xl bg-[#111111] text-white font-semibold text-sm mb-3 hover:bg-[#333] active:scale-[0.97] transition-all"
+            className="block w-full text-center py-3.5 rounded-xl bg-[#1B2F4E] text-white font-semibold text-sm mb-3 hover:bg-[#333] active:scale-[0.97] transition-all"
             style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
           >
             {t("support")}
@@ -113,7 +113,7 @@ function ConfirmacionContent() {
           <motion.a
             variants={fadeUp}
             href={`/${locale}`}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#999] hover:text-[#111] transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#999] hover:text-[#1B2F4E] transition-colors"
           >
             {t("backHome")}
           </motion.a>

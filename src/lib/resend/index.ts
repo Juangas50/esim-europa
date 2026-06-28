@@ -41,7 +41,7 @@ export async function sendPurchaseConfirmation({
   <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
 
     <!-- Header -->
-    <div style="background:#111111;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
+    <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
       <div style="display:inline-flex;align-items:center;gap:8px;">
         <div style="width:32px;height:32px;background:#E60000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:white;">34</div>
         <span style="color:white;font-weight:700;font-size:15px;">RUTA34 Telecom</span>
@@ -51,7 +51,7 @@ export async function sendPurchaseConfirmation({
     <!-- Body -->
     <div style="background:white;border-radius:0 0 16px 16px;padding:32px;border:1px solid rgba(0,0,0,0.06);border-top:none;">
 
-      <h1 style="font-size:22px;font-weight:900;color:#111111;margin:0 0 8px;line-height:1.2;">
+      <h1 style="font-size:22px;font-weight:900;color:#1B2F4E;margin:0 0 8px;line-height:1.2;">
         ¡Listo, ${firstName}! Tu eSIM está en camino.
       </h1>
       <p style="color:#555555;font-size:15px;line-height:1.6;margin:0 0 24px;">
@@ -64,7 +64,7 @@ export async function sendPurchaseConfirmation({
         <p style="margin:0 0 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#999;">
           Referencia del pedido
         </p>
-        <p style="margin:0;font-size:18px;font-weight:900;color:#111111;font-family:monospace;">
+        <p style="margin:0;font-size:18px;font-weight:900;color:#1B2F4E;font-family:monospace;">
           ${orderRef}
         </p>
       </div>
@@ -80,7 +80,7 @@ export async function sendPurchaseConfirmation({
       </div>
 
       <!-- Instrucciones -->
-      <h2 style="font-size:15px;font-weight:700;color:#111111;margin:0 0 12px;">Cómo activar tu eSIM:</h2>
+      <h2 style="font-size:15px;font-weight:700;color:#1B2F4E;margin:0 0 12px;">Cómo activar tu eSIM:</h2>
       <ol style="margin:0 0 24px;padding-left:20px;color:#555555;font-size:14px;line-height:1.8;">
         <li><strong>iPhone:</strong> Ajustes → Datos móviles → Añadir plan de datos</li>
         <li><strong>Android:</strong> Ajustes → Conexiones → Administrador de SIM → Añadir eSIM</li>

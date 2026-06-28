@@ -152,7 +152,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
         <div style={{ background: 'rgba(110,193,228,0.1)', border: '1px solid rgba(110,193,228,0.25)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#AAAAAA', flex: 1 }}>
-          💡 Los precios <strong style={{ color: '#fff' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#6EC1E4' }}>Agencias → Gestionar</strong>
+          💡 Los precios <strong style={{ color: '#fff' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#C9973A' }}>Agencias → Gestionar</strong>
         </div>
         <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           + Nueva tarifa

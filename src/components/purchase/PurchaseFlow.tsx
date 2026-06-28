@@ -58,10 +58,10 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
             <div className="w-7 h-7 rounded-lg bg-[#C9973A] flex items-center justify-center">
               <span className="text-white text-[11px] font-black">34</span>
             </div>
-            <span className="font-bold text-[#111111] text-sm tracking-tight">RUTA34</span>
+            <span className="font-bold text-[#1B2F4E] text-sm tracking-tight">RUTA34</span>
           </a>
 
-          <h1 className="text-2xl font-black text-[#111111] tracking-tight mb-6">
+          <h1 className="text-2xl font-black text-[#1B2F4E] tracking-tight mb-6">
             {t("title")}
           </h1>
 
@@ -75,13 +75,13 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                     animate={{
                       backgroundColor:
                         step > s.id || (s.id === 1 && initialPlan)
-                          ? "#111111"
+                          ? "#1B2F4E"
                           : step === s.id
                           ? "#C9973A"
                           : "#ffffff",
                       borderColor:
                         step > s.id || (s.id === 1 && initialPlan)
-                          ? "#111111"
+                          ? "#1B2F4E"
                           : step === s.id
                           ? "#C9973A"
                           : "#dddddd",
@@ -97,13 +97,13 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                       </span>
                     )}
                   </motion.div>
-                  <span className={`text-sm font-semibold hidden sm:block ${step === s.id ? "text-[#111111]" : "text-[#999]"}`}>
+                  <span className={`text-sm font-semibold hidden sm:block ${step === s.id ? "text-[#1B2F4E]" : "text-[#999]"}`}>
                     {s.label}
                   </span>
                 </div>
                 {/* Línea */}
                 {i < steps.length - 1 && (
-                  <div className="flex-1 mx-3 h-px bg-[#111111]/10" />
+                  <div className="flex-1 mx-3 h-px bg-[#1B2F4E]/10" />
                 )}
               </div>
             ))}

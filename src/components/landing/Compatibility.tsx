@@ -31,7 +31,7 @@ export default function Compatibility() {
             transition={{ duration: 0.5, ease: EASE_OUT }}
           >
             <Badge variant="outline" className="mb-5">{t("eyebrow")}</Badge>
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-4">
               {t("title")}
             </h2>
             <p className="text-[#555555] leading-relaxed mb-8 max-w-[420px]">
@@ -62,7 +62,7 @@ export default function Compatibility() {
                 transition={{ duration: 0.4, delay: 0.08 * i, ease: EASE_OUT }}
                 className="flex items-center justify-between p-5 rounded-2xl bg-[#F8F8F8] border border-black/[0.05] hover:border-black/10 transition-colors"
               >
-                <span className="font-semibold text-[#111111]">
+                <span className="font-semibold text-[#1B2F4E]">
                   {t(`devices.${key}`)}
                 </span>
                 <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default function Compatibility() {
             {/* Link guía — ancla directo a la pregunta de compatibilidad en el FAQ */}
             <a
               href="#faq-compatible"
-              className="flex items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed border-[#111111]/15 text-sm font-semibold text-[#555] hover:border-[#C9973A]/40 hover:text-[#C9973A] transition-all duration-200"
+              className="flex items-center justify-center w-full p-4 rounded-2xl border-2 border-dashed border-[#1B2F4E]/15 text-sm font-semibold text-[#555] hover:border-[#C9973A]/40 hover:text-[#C9973A] transition-all duration-200"
             >
               {t("checkGuide")} →
             </a>

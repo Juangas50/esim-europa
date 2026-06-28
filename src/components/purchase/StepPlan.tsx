@@ -93,7 +93,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                 key={tab}
                 onClick={() => handleTabChange(tab)}
                 className={`relative px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 ${
-                  activeTab === tab ? "text-[#111111]" : "text-[#888] hover:text-[#555]"
+                  activeTab === tab ? "text-[#1B2F4E]" : "text-[#888] hover:text-[#555]"
                 }`}
               >
                 {activeTab === tab && (
@@ -133,7 +133,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                   className={`w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 ${
                     isSelected
                       ? "border-[#C9973A] bg-white shadow-[0_4px_24px_-8px_rgba(230,0,0,0.2)]"
-                      : "border-transparent bg-white hover:border-[#111111]/12"
+                      : "border-transparent bg-white hover:border-[#1B2F4E]/12"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -146,7 +146,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                             {plan.size}
                           </span>
                         )}
-                        <span className="font-black text-base text-[#111111]">{plan.name}</span>
+                        <span className="font-black text-base text-[#1B2F4E]">{plan.name}</span>
                         {plan.is_popular && (
                           <Badge variant="red">
                             <Star size={9} weight="fill" />
@@ -156,7 +156,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                         <Badge variant="outline">{t(`${plan.type}.badge`)}</Badge>
                       </div>
                       <div className="flex items-center gap-3 text-sm flex-wrap">
-                        <span className="font-bold text-[#111]">{plan.data_gb} GB</span>
+                        <span className="font-bold text-[#1B2F4E]">{plan.data_gb} GB</span>
                         <span className="text-[#999]">·</span>
                         <span className="text-[#555]">{plan.duration_days} días</span>
                         {plan.type === "dataonly" && (
@@ -174,7 +174,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-2xl font-black text-[#111111]">{formatUSD(plan.price_usd)}</p>
+                      <p className="text-2xl font-black text-[#1B2F4E]">{formatUSD(plan.price_usd)}</p>
                       <p className="text-xs text-[#999]">{t("perMonth")}</p>
                     </div>
                   </div>
@@ -195,7 +195,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
 
         {/* Cantidad */}
         <div className="bg-white rounded-2xl border border-black/[0.07] p-5">
-          <p className="font-bold text-sm text-[#111111] mb-3">¿Cuántas eSIM necesitás?</p>
+          <p className="font-bold text-sm text-[#1B2F4E] mb-3">¿Cuántas eSIM necesitás?</p>
           <div className="flex gap-2 flex-wrap">
             {[1,2,3,4,5,6,7,8,9,10].map(n => (
               <button
@@ -226,8 +226,8 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             {t("summary")}
           </h3>
 
-          <div className="border-b border-[#111111]/8 pb-4 mb-4">
-            <p className="font-black text-lg text-[#111111] mb-0.5">{selectedPlan?.name}</p>
+          <div className="border-b border-[#1B2F4E]/8 pb-4 mb-4">
+            <p className="font-black text-lg text-[#1B2F4E] mb-0.5">{selectedPlan?.name}</p>
             <p className="text-sm text-[#777]">{selectedPlan ? t(`${selectedPlan.type}.badge`) : ""}</p>
           </div>
 
@@ -240,7 +240,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             ))}
           </div>
 
-          <div className="border-t border-[#111111]/8 pt-4 mb-5">
+          <div className="border-t border-[#1B2F4E]/8 pt-4 mb-5">
             {quantity > 1 && (
               <div className="flex justify-between text-sm text-[#999] mb-1">
                 <span>{quantity} × {selectedPlan ? formatUSD(selectedPlan.price_usd) : "—"}</span>
@@ -248,7 +248,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             )}
             <div className="flex justify-between items-baseline">
               <span className="font-semibold text-[#555]">Total</span>
-              <span className="text-2xl font-black text-[#111111]">
+              <span className="text-2xl font-black text-[#1B2F4E]">
                 {selectedPlan ? formatUSD(selectedPlan.price_usd * quantity) : "—"}
               </span>
             </div>

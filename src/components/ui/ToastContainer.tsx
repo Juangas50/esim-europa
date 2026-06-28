@@ -8,7 +8,7 @@ type Toast = { id: number; message: string; type: 'success' | 'error' | 'info' }
 const COLORS = {
   success: { bg: '#166534', border: '#22C55E', icon: '✅' },
   error:   { bg: '#7F1D1D', border: '#EF4444', icon: '❌' },
-  info:    { bg: '#1E3A5F', border: '#6EC1E4', icon: 'ℹ️' },
+  info:    { bg: '#1E3A5F', border: '#C9973A', icon: 'ℹ️' },
 }
 
 export default function ToastContainer() {

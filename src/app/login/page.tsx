@@ -80,7 +80,7 @@ export default function LoginPage() {
 
               <div style={{ textAlign: 'right', marginTop: 14 }}>
                 <span onClick={() => setResetMode(true)}
-                  style={{ color: '#6EC1E4', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                  style={{ color: '#C9973A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
                   ¿Olvidaste tu contraseña?
                 </span>
               </div>

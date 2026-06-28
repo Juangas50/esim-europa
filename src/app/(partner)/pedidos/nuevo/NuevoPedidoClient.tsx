@@ -70,7 +70,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
         <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Resumen</div>
         <div style={{ fontWeight: 800, fontSize: 15 }}>{tariff?.name}</div>
         <div style={{ fontSize: 13, color: '#7A7A7A', marginTop: 4 }}>{form.nombre} {form.apellidos} · {form.email}</div>
-        <div style={{ marginTop: 10, fontFamily: 'monospace', fontSize: 12, color: '#6EC1E4' }}>{orderRef}</div>
+        <div style={{ marginTop: 10, fontFamily: 'monospace', fontSize: 12, color: '#C9973A' }}>{orderRef}</div>
       </div>
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
         <button onClick={() => { setDone(false); setStep(1); setType(null); setTariffId(null); setScheduled(false); setForm({ nombre: '', apellidos: '', pasaporte: '', nac: 'Argentina', dob: '', email: '', date: '' }); setTouched({}) }}
@@ -117,7 +117,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
             {[
               { key: 'prepago', icon: '📱', title: 'eSIM Prepago', desc: 'El plan arranca desde que se activa. Podés programar para cuando llegue a Europa.', tag: '⏱ 28 días desde activación', color: '#C9973A', bg: 'rgba(230,0,0,0.08)' },
-              { key: 'dataonly', icon: '📡', title: 'eSIM DataOnly', desc: 'Solo datos. El cliente tiene 60 días para activar el QR. El plan no empieza hasta que lo escanee.', tag: '🕐 60 días para activar', color: '#6EC1E4', bg: 'rgba(110,193,228,0.08)' },
+              { key: 'dataonly', icon: '📡', title: 'eSIM DataOnly', desc: 'Solo datos. El cliente tiene 60 días para activar el QR. El plan no empieza hasta que lo escanee.', tag: '🕐 60 días para activar', color: '#C9973A', bg: 'rgba(110,193,228,0.08)' },
             ].map(opt => (
               <div key={opt.key} onClick={() => { setType(opt.key); setTariffId(null) }}
                 style={{ cursor: 'pointer', background: type === opt.key ? opt.bg : '#181818', border: `2px solid ${type === opt.key ? opt.color : '#2A2A2A'}`, borderRadius: 13, padding: 18, transition: 'all 0.18s' }}>
@@ -135,7 +135,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
             <div>
               <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
                 Elegí la tarifa
-                <span style={{ background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>
+                <span style={{ background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: type === 'prepago' ? '#C9973A' : '#C9973A', borderRadius: 5, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>
                   {type === 'prepago' ? 'eSIM Prepago' : 'DataOnly'}
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   const tpvp = pricing.find(p => p.tariff_id === t.id)?.pvp
                   return (
                     <div key={t.id} onClick={() => setTariffId(t.id)}
-                      style={{ cursor: 'pointer', background: tariffId === t.id ? (type === 'prepago' ? 'rgba(230,0,0,0.08)' : 'rgba(110,193,228,0.08)') : '#181818', border: `2px solid ${tariffId === t.id ? (type === 'prepago' ? '#C9973A' : '#6EC1E4') : '#2A2A2A'}`, borderRadius: 11, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s' }}>
+                      style={{ cursor: 'pointer', background: tariffId === t.id ? (type === 'prepago' ? 'rgba(230,0,0,0.08)' : 'rgba(110,193,228,0.08)') : '#181818', border: `2px solid ${tariffId === t.id ? (type === 'prepago' ? '#C9973A' : '#C9973A') : '#2A2A2A'}`, borderRadius: 11, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
                         <div style={{ width: 40, height: 40, borderRadius: 9, background: '#232323', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
                           {type === 'prepago' ? '📱' : '📡'}
@@ -221,7 +221,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
                     {[
                       { key: false, label: '🚀 Activar hoy', sub: 'Los 28 días corren desde ahora. Conectado al aterrizar.', color: '#C9973A' },
-                      { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#6EC1E4' },
+                      { key: true,  label: '📆 Programar fecha', sub: 'Elegí cuándo empieza tu plan (hasta 12 meses).', color: '#C9973A' },
                     ].map(opt => (
                       <button key={String(opt.key)} onClick={() => { setScheduled(opt.key as boolean); setForm(f => ({ ...f, date: '' })) }}
                         style={{ padding: '11px', borderRadius: 9, border: `2px solid ${scheduled === opt.key ? opt.color : '#2A2A2A'}`, background: scheduled === opt.key ? `${opt.color}10` : '#232323', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}>
@@ -251,7 +251,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
 
               {type === 'dataonly' && (
                 <div style={{ background: 'rgba(110,193,228,0.08)', border: '1px solid rgba(110,193,228,0.22)', borderRadius: 9, padding: '12px 15px' }}>
-                  <div style={{ fontWeight: 700, color: '#6EC1E4', fontSize: 12, marginBottom: 5 }}>ℹ️ ¿Cómo funciona DataOnly?</div>
+                  <div style={{ fontWeight: 700, color: '#C9973A', fontSize: 12, marginBottom: 5 }}>ℹ️ ¿Cómo funciona DataOnly?</div>
                   <div style={{ color: '#7A7A7A', fontSize: 12, lineHeight: 1.7 }}>Se envía el QR al email del cliente. Tiene <strong style={{ color: '#fff' }}>60 días para escanearlo</strong>. El plan <strong style={{ color: '#fff' }}>no empieza hasta que lo active</strong>.</div>
                 </div>
               )}

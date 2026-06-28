@@ -121,7 +121,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
                 </span>
                 <span className={`text-xs font-bold ${isPopular ? "text-white/30" : "text-[#ccc]"}`}>GB</span>
               </div>
-              <span className="text-[11px] font-bold text-[#6EC1E4]">
+              <span className="text-[11px] font-bold text-[#C9973A]">
                 🇪🇺 Roaming UE
               </span>
             </div>
@@ -249,14 +249,14 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
         <button
           onClick={() => { setCurrent((c) => Math.max(0, c - 1)); analytics.swipePlanCarousel("prev") }}
           disabled={current === 0}
-          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
           <CaretLeft size={16} weight="bold" />
         </button>
         <button
           onClick={() => { setCurrent((c) => Math.min(maxIndex, c + 1)); analytics.swipePlanCarousel("next") }}
           disabled={current === maxIndex}
-          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
           <CaretRight size={16} weight="bold" />
         </button>

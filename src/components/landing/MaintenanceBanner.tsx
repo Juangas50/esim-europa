@@ -30,7 +30,7 @@ export default function MaintenanceBanner() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-black text-[#111111] mb-3">
+          <h1 className="text-3xl font-black text-[#1B2F4E] mb-3">
             ¡Muy pronto!
           </h1>
 

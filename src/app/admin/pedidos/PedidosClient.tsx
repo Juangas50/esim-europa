@@ -42,7 +42,7 @@ export type UnifiedOrder = {
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
   paid:           { label: '⚡ Tramitar',         color: '#C9973A', bg: 'rgba(230,0,0,0.18)'   },
-  scheduled:      { label: 'Programado',          color: '#6EC1E4', bg: 'rgba(110,193,228,0.15)' },
+  scheduled:      { label: 'Programado',          color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado',           color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   expired:        { label: 'Expirado',             color: '#7A7A7A', bg: 'rgba(122,122,122,0.15)' },
@@ -71,7 +71,7 @@ const SOURCE_FILTERS = [
 
 function SourceBadge({ source }: { source: 'b2b' | 'b2c' }) {
   if (source === 'b2c') return (
-    <span style={{ background: 'rgba(110,193,228,0.12)', color: '#6EC1E4', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>
+    <span style={{ background: 'rgba(110,193,228,0.12)', color: '#C9973A', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>
       💻 Web
     </span>
   )
@@ -266,7 +266,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
         {[
           { label: 'Total pedidos',    value: orders.length,  color: '#fff'    },
-          { label: '💻 Desde la web', value: totalB2C,       color: '#6EC1E4' },
+          { label: '💻 Desde la web', value: totalB2C,       color: '#C9973A' },
           { label: '🏢 Agencias',     value: totalB2B,       color: '#A78BFA' },
         ].map(s => (
           <div key={s.label} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 10, padding: '12px 18px', minWidth: 130 }}>
@@ -284,9 +284,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             {SOURCE_FILTERS.map(f => (
               <button key={f.id} onClick={() => setSource(f.id)} style={{
                 padding: '6px 14px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
-                border: `1px solid ${sourceFilter === f.id ? '#6EC1E4' : '#2A2A2A'}`,
+                border: `1px solid ${sourceFilter === f.id ? '#C9973A' : '#2A2A2A'}`,
                 background: sourceFilter === f.id ? 'rgba(110,193,228,0.15)' : 'transparent',
-                color: sourceFilter === f.id ? '#6EC1E4' : '#7A7A7A',
+                color: sourceFilter === f.id ? '#C9973A' : '#7A7A7A',
                 fontWeight: sourceFilter === f.id ? 700 : 400, fontSize: 12,
               }}>
                 {f.label}
@@ -340,7 +340,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     style={{ background: '#181818', border: `1px solid ${selected?.id === o.id ? '#C9973A' : '#2A2A2A'}`, borderRadius: 12, padding: 14, cursor: 'pointer' }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
                       <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>
                         {st.label}
                       </span>
@@ -413,7 +413,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           <div style={{ fontSize: 13, marginBottom: 4 }}>{o.tariffs?.name ?? '—'}</div>
                           <span style={{
                             background: (o.type === 'prepago' || o.type === 'local') ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)',
-                            color: (o.type === 'prepago' || o.type === 'local') ? '#C9973A' : '#6EC1E4',
+                            color: (o.type === 'prepago' || o.type === 'local') ? '#C9973A' : '#C9973A',
                             borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700,
                           }}>
                             {(o.type === 'prepago' || o.type === 'local') ? 'SIM Local' : 'DataOnly'}
@@ -437,7 +437,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           </select>
                         </td>
                         <td style={{ padding: '12px 14px' }}>
-                          <span style={{ color: isSelected ? '#C9973A' : '#6EC1E4', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          <span style={{ color: isSelected ? '#C9973A' : '#C9973A', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
                             {isSelected ? '✕ Cerrar' : '👁 Ver'}
                           </span>
                         </td>
@@ -471,7 +471,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             }}>
               <div>
                 <span style={{ fontWeight: 800, fontSize: 14 }}>Detalle pedido</span>
-                {isMobile && <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4', marginTop: 2 }}>{selected.order_ref}</div>}
+                {isMobile && <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A', marginTop: 2 }}>{selected.order_ref}</div>}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SourceBadge source={selected.source} />
@@ -520,7 +520,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             {selected.status === 'qr_sent' && (selected.activation_string || selected.group_count > 1) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 14 }}>
                 <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 6 }}>Cadena de activación enviada</div>
-                <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
+                <div style={{ background: '#1B2F4E', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
                   {selected.activation_string}
                 </div>
                 {selected.confirmation_code && (
@@ -547,7 +547,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           placeholder={selected.customer_email}
                           style={{
                             width: '100%', boxSizing: 'border-box',
-                            background: '#111', borderRadius: 8, padding: '8px 10px', color: '#fff',
+                            background: '#1B2F4E', borderRadius: 8, padding: '8px 10px', color: '#fff',
                             fontSize: 12, fontFamily: 'inherit', outline: 'none',
                             border: `1px solid ${resendEmail && resendEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
                           }}
@@ -602,7 +602,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                       <div style={{ marginBottom: 14 }}>
                         <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Email del cliente</div>
                         <input value={deliverEmail} onChange={e => { setDeliverEmail(e.target.value); setGroupError(null) }} type="email"
-                          style={{ width: '100%', boxSizing: 'border-box', background: '#111', border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`, borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none' }} />
+                          style={{ width: '100%', boxSizing: 'border-box', background: '#1B2F4E', border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`, borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none' }} />
                         {deliverEmail && deliverEmail !== selected.customer_email && (
                           <div style={{ fontSize: 10, color: '#F59E0B', marginTop: 4 }}>⚠ Email diferente al registrado</div>
                         )}
@@ -616,10 +616,10 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         const validCode = validateConfirmationCode(code)
                         const slotOk = parsedAct.ok && validCode
                         return (
-                          <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#111', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2A2A2A'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
+                          <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#1B2F4E', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2A2A2A'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                               <span style={{ fontSize: 11, fontWeight: 700, color: slotOk ? '#22C55E' : '#C9973A' }}>eSIM {idx + 1} de {selected.group_count}</span>
-                              <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                              <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
                             </div>
                             <input value={act} onChange={e => { setGroupActivations(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
                               placeholder="1$servidor$CÓDIGO" style={{ width: '100%', boxSizing: 'border-box', background: '#0A0A0A', border: `1px solid ${act && !parsedAct.ok ? '#EF4444' : act && parsedAct.ok ? '#22C55E' : '#2A2A2A'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 11, fontFamily: 'monospace', outline: 'none', marginBottom: 6 }} />
@@ -669,7 +669,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         placeholder={selected.customer_email}
                         style={{
                           width: '100%', boxSizing: 'border-box',
-                          background: '#111', borderRadius: 8, padding: '8px 10px', color: '#fff',
+                          background: '#1B2F4E', borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 12, fontFamily: 'inherit', outline: 'none',
                           border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
                         }}
@@ -690,7 +690,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         placeholder="1$servidor$CÓDIGO"
                         style={{
                           width: '100%', boxSizing: 'border-box',
-                          background: '#111', border: `1px solid ${activation && !activationParsed.ok ? '#EF4444' : activation && activationParsed.ok ? '#22C55E' : '#2A2A2A'}`,
+                          background: '#1B2F4E', border: `1px solid ${activation && !activationParsed.ok ? '#EF4444' : activation && activationParsed.ok ? '#22C55E' : '#2A2A2A'}`,
                           borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 11, fontFamily: 'monospace', outline: 'none',
                         }}
@@ -717,7 +717,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         maxLength={8}
                         style={{
                           width: '100%', boxSizing: 'border-box',
-                          background: '#111', border: `1px solid ${confirmation && !confirmationValid ? '#EF4444' : confirmation && confirmationValid ? '#22C55E' : '#2A2A2A'}`,
+                          background: '#1B2F4E', border: `1px solid ${confirmation && !confirmationValid ? '#EF4444' : confirmation && confirmationValid ? '#22C55E' : '#2A2A2A'}`,
                           borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 13, fontFamily: 'monospace', letterSpacing: 4, outline: 'none',
                         }}

@@ -41,11 +41,11 @@ export default function LegalLayout({ title, lastUpdated, children }: LegalLayou
             <div className="w-7 h-7 rounded-lg bg-[#C9973A] flex items-center justify-center">
               <span className="text-white text-[11px] font-black">34</span>
             </div>
-            <span className="font-bold text-[#111111] text-sm tracking-tight">RUTA34</span>
+            <span className="font-bold text-[#1B2F4E] text-sm tracking-tight">RUTA34</span>
           </a>
           <a
             href={`/${locale}`}
-            className="flex items-center gap-1.5 text-sm text-[#555] hover:text-[#111] transition-colors"
+            className="flex items-center gap-1.5 text-sm text-[#555] hover:text-[#1B2F4E] transition-colors"
           >
             <ArrowLeft size={14} weight="bold" />
             {c.back}
@@ -56,7 +56,7 @@ export default function LegalLayout({ title, lastUpdated, children }: LegalLayou
       {/* Contenido */}
       <div className="max-w-[800px] mx-auto px-4 py-12">
         <div className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
             {title}
           </h1>
           <p className="text-sm text-[#999]">
@@ -72,13 +72,13 @@ export default function LegalLayout({ title, lastUpdated, children }: LegalLayou
         <div className="max-w-[800px] mx-auto flex flex-col sm:flex-row justify-between gap-2 text-xs text-[#999]">
           <span>© {new Date().getFullYear()} RUTA34 Telecom. {c.rights}</span>
           <div className="flex gap-4">
-            <a href={`/${locale}/terminos`} className="hover:text-[#111] transition-colors">
+            <a href={`/${locale}/terminos`} className="hover:text-[#1B2F4E] transition-colors">
               {c.terms}
             </a>
-            <a href={`/${locale}/privacidad`} className="hover:text-[#111] transition-colors">
+            <a href={`/${locale}/privacidad`} className="hover:text-[#1B2F4E] transition-colors">
               {c.privacy}
             </a>
-            <a href={`/${locale}/cookies`} className="hover:text-[#111] transition-colors">
+            <a href={`/${locale}/cookies`} className="hover:text-[#1B2F4E] transition-colors">
               {c.cookies}
             </a>
           </div>

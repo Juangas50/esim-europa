@@ -19,7 +19,7 @@ export default function Definition() {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="text-center"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#111111] mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1B2F4E] mb-6">
             {t("title")}
           </h2>
 

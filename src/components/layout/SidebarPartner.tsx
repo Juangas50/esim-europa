@@ -76,7 +76,7 @@ export default function SidebarPartner({ agencyName }: { agencyName: string }) {
         </div>
         <div style={{ fontSize: 8, letterSpacing: 6, color: '#7A7A7A', marginTop: 1 }}>TELECOM</div>
         <div style={{ marginTop: 10, background: 'rgba(110,193,228,0.15)', border: '1px solid rgba(110,193,228,0.3)', borderRadius: 5, padding: '3px 8px', display: 'inline-block' }}>
-          <span style={{ color: '#6EC1E4', fontSize: 9, fontWeight: 800, letterSpacing: 1.5 }}>PARTNER</span>
+          <span style={{ color: '#C9973A', fontSize: 9, fontWeight: 800, letterSpacing: 1.5 }}>PARTNER</span>
         </div>
       </div>
 

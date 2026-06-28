@@ -52,7 +52,7 @@ export default function Benefits() {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight">
             {t("title")}
           </h2>
         </motion.div>
@@ -75,7 +75,7 @@ export default function Benefits() {
                 <div className="w-12 h-12 rounded-2xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-5 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
                   <Icon size={22} weight="duotone" className="text-[#C9973A]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#111111] mb-2">
+                <h3 className="text-xl font-bold text-[#1B2F4E] mb-2">
                   {t(`items.${key}.title`)}
                 </h3>
                 <p className="text-[#555555] leading-relaxed">
@@ -96,7 +96,7 @@ export default function Benefits() {
               <div className="w-11 h-11 rounded-xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-4 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
                 <CurrencyDollar size={20} weight="duotone" className="text-[#C9973A]" />
               </div>
-              <h3 className="text-lg font-bold text-[#111111] mb-1.5">
+              <h3 className="text-lg font-bold text-[#1B2F4E] mb-1.5">
                 {t("items.nopermanence.title")}
               </h3>
               <p className="text-sm text-[#555555] leading-relaxed">
@@ -107,7 +107,7 @@ export default function Benefits() {
             {/* Card grande con acento oscuro — double bezel (soft-skill) */}
             <motion.div
               variants={fadeUp}
-              className="rounded-[1.5rem] bg-[#111111] p-7 sm:col-span-2 relative overflow-hidden"
+              className="rounded-[1.5rem] bg-[#1B2F4E] p-7 sm:col-span-2 relative overflow-hidden"
             >
               {/* Foto de fondo editorial */}
               <Image
@@ -119,7 +119,7 @@ export default function Benefits() {
                 sizes="(max-width: 640px) 100vw, 800px"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-[#111111]/40" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#1B2F4E] via-[#1B2F4E]/80 to-[#1B2F4E]/40" />
               <div className="relative">
                 <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center mb-4">
                   <Globe size={20} weight="duotone" className="text-white" />
@@ -145,7 +145,7 @@ export default function Benefits() {
                   ))}
                   <button
                     onClick={() => setCountriesOpen(o => !o)}
-                    className="text-xs font-semibold text-[#6EC1E4] bg-[#6EC1E4]/15 border border-[#6EC1E4]/25 px-3 py-1 rounded-full hover:bg-[#6EC1E4]/25 transition-colors"
+                    className="text-xs font-semibold text-[#C9973A] bg-[#C9973A]/15 border border-[#C9973A]/25 px-3 py-1 rounded-full hover:bg-[#C9973A]/25 transition-colors"
                   >
                     {countriesOpen ? "Ver menos ↑" : `+${ALL_COUNTRIES.length} países ↓`}
                   </button>

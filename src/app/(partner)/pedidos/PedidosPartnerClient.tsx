@@ -6,7 +6,7 @@ import { useWindowSize } from '@/hooks/useWindowSize'
 
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-  scheduled:      { label: 'Programado',         color: '#6EC1E4', bg: 'rgba(110,193,228,0.15)' },
+  scheduled:      { label: 'Programado',         color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado',          color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',            color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   cancelled:      { label: 'Cancelado',           color: '#7A7A7A', bg: 'rgba(122,122,122,0.15)' },
@@ -56,7 +56,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                   <span style={{ fontSize: 11, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</span>
                   <span style={{ color: '#444' }}>·</span>
                   <span style={{ fontSize: 12 }}>{o.tariffs?.name}</span>
-                  <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700 }}>
+                  <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#C9973A', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700 }}>
                     {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                   </span>
                   {o.activation_date && <span style={{ fontSize: 11, color: '#7A7A7A' }}>{o.activation_date}</span>}
@@ -87,7 +87,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                     </td>
                     <td style={{ padding: '13px 16px', fontSize: 13 }}>{o.tariffs?.name}</td>
                     <td style={{ padding: '13px 16px' }}>
-                      <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#6EC1E4', borderRadius: 5, padding: '3px 8px', fontSize: 10, fontWeight: 700 }}>
+                      <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#C9973A', borderRadius: 5, padding: '3px 8px', fontSize: 10, fontWeight: 700 }}>
                         {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                       </span>
                     </td>

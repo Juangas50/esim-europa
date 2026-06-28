@@ -29,7 +29,7 @@ export default function HowItWorks() {
           className="mb-16"
         >
           <Badge variant="outline" className="mb-4">{t("eyebrow")}</Badge>
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight">
             {t("title")}
           </h2>
         </motion.div>
@@ -45,20 +45,20 @@ export default function HowItWorks() {
               transition={{ duration: 0.5, delay: i * 0.1, ease: EASE_OUT }}
             >
               {/* Separador superior */}
-              <div className="h-px bg-[#111111]/8" />
+              <div className="h-px bg-[#1B2F4E]/8" />
 
               <div className="grid grid-cols-12 gap-6 py-10 sm:py-12 group">
 
                 {/* Número grande */}
                 <div className="col-span-3 sm:col-span-2">
-                  <span className="text-5xl sm:text-6xl font-black text-[#111111]/8 group-hover:text-[#C9973A]/20 transition-colors duration-300 select-none tabular-nums">
+                  <span className="text-5xl sm:text-6xl font-black text-[#1B2F4E]/8 group-hover:text-[#C9973A]/20 transition-colors duration-300 select-none tabular-nums">
                     {num}
                   </span>
                 </div>
 
                 {/* Contenido */}
                 <div className="col-span-9 sm:col-span-7 flex flex-col justify-center">
-                  <h3 className="text-xl sm:text-2xl font-black text-[#111111] mb-2 tracking-tight">
+                  <h3 className="text-xl sm:text-2xl font-black text-[#1B2F4E] mb-2 tracking-tight">
                     {t(`steps.${key}.title`)}
                   </h3>
                   <p className="text-[#555555] leading-relaxed max-w-[480px]">
@@ -71,8 +71,8 @@ export default function HowItWorks() {
                   <div className={`
                     w-16 h-16 rounded-2xl flex items-center justify-center p-3
                     ${i === 0 ? "bg-[#C9973A] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.35)]" : ""}
-                    ${i === 1 ? "bg-[#111111]" : ""}
-                    ${i === 2 ? "bg-[#EBF6FC] border border-[#6EC1E4]/30" : ""}
+                    ${i === 1 ? "bg-[#1B2F4E]" : ""}
+                    ${i === 2 ? "bg-[#EBF6FC] border border-[#C9973A]/30" : ""}
                   `}>
                     <img
                       src={`/icons/${[
@@ -91,7 +91,7 @@ export default function HowItWorks() {
           ))}
 
           {/* Separador final */}
-          <div className="h-px bg-[#111111]/8" />
+          <div className="h-px bg-[#1B2F4E]/8" />
         </div>
 
         {/* Panel editorial de imagen — momento de llegada */}
@@ -111,7 +111,7 @@ export default function HowItWorks() {
             sizes="(max-width: 1200px) 100vw, 1200px"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#111111]/80 via-[#111111]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1B2F4E]/80 via-[#1B2F4E]/30 to-transparent" />
           <div className="absolute inset-0 flex items-end p-8">
             <div>
               <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-1">Paso 03</p>

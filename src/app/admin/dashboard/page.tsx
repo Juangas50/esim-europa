@@ -29,7 +29,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   pending_review: { bg: 'rgba(245,158,11,0.15)',  color: '#F59E0B' },
   paid:           { bg: 'rgba(230,0,0,0.18)',      color: '#C9973A' },
-  scheduled:      { bg: 'rgba(110,193,228,0.15)', color: '#6EC1E4' },
+  scheduled:      { bg: 'rgba(110,193,228,0.15)', color: '#C9973A' },
   qr_sent:        { bg: 'rgba(167,139,250,0.15)', color: '#A78BFA' },
   activated:      { bg: 'rgba(34,197,94,0.15)',   color: '#22C55E' },
   expired:        { bg: 'rgba(122,122,122,0.15)', color: '#7A7A7A' },
@@ -112,7 +112,7 @@ export default async function AdminDashboard() {
           { label: 'Pedidos este mes', value: thisMonth.length,      color: '#C9973A' },
           { label: 'eSIM activas',     value: activated.length,       color: '#22C55E' },
           { label: '⚡ Para tramitar', value: toTramitar.length,      color: '#C9973A' },
-          { label: 'Activaciones hoy', value: scheduledToday.length,  color: '#6EC1E4' },
+          { label: 'Activaciones hoy', value: scheduledToday.length,  color: '#C9973A' },
         ].map(s => (
           <Link key={s.label} href="/admin/pedidos" style={{ textDecoration: 'none' }}>
             <div style={{ background: '#181818', borderRadius: 12, border: '1px solid #2A2A2A', padding: '14px 16px' }}>
@@ -145,7 +145,7 @@ export default async function AdminDashboard() {
       <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
         <div style={{ padding: '14px 18px', borderBottom: '1px solid #2A2A2A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 800, fontSize: 14 }}>Últimos pedidos</span>
-          <Link href="/admin/pedidos" style={{ color: '#6EC1E4', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>Ver todos →</Link>
+          <Link href="/admin/pedidos" style={{ color: '#C9973A', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>Ver todos →</Link>
         </div>
 
         {allOrders.length === 0 ? (
@@ -197,7 +197,7 @@ export default async function AdminDashboard() {
                   <Link key={o.id} href="/admin/pedidos" style={{ textDecoration: 'none', display: 'block' }}>
                     <div style={{ padding: '14px 16px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                        <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                        <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
                         <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: sc.bg, color: sc.color, flexShrink: 0, marginLeft: 8 }}>
                           {STATUS_LABELS[o.status] ?? o.status}
                         </span>

@@ -68,7 +68,7 @@ function QRPlaceholder() {
         const row = Math.floor(i / size);
         const col = i % size;
         return cell ? (
-          <rect key={i} x={col * 6 + 1} y={row * 6 + 1} width={5} height={5} rx={1} fill="#111111" />
+          <rect key={i} x={col * 6 + 1} y={row * 6 + 1} width={5} height={5} rx={1} fill="#1B2F4E" />
         ) : null;
       })}
     </svg>
@@ -160,7 +160,7 @@ function HeroVisual() {
         className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06]"
       >
         <p className="text-[9px] font-bold uppercase tracking-widest text-[#aaa] mb-0.5">Cobertura</p>
-        <p className="text-sm font-black text-[#111]">30+ países 🇪🇸🇪🇺</p>
+        <p className="text-sm font-black text-[#1B2F4E]">30+ países 🇪🇸🇪🇺</p>
       </motion.div>
     </div>
   );

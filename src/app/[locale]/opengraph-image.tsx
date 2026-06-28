@@ -55,7 +55,7 @@ export default async function OgImage({
         style={{
           width: "1200px",
           height: "630px",
-          backgroundColor: "#111111",
+          backgroundColor: "#1B2F4E",
           display: "flex",
           position: "relative",
           overflow: "hidden",
@@ -83,7 +83,7 @@ export default async function OgImage({
             width: "520px",
             height: "520px",
             borderRadius: "50%",
-            backgroundColor: "#6EC1E4",
+            backgroundColor: "#C9973A",
             opacity: 0.07,
           }}
         />

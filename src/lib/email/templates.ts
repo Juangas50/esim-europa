@@ -366,7 +366,7 @@ export function emailEntregaB2C(data: {
       <div style="font-size:15px;font-weight:800;margin-bottom:20px;">Cómo activar tu eSIM</div>
 
       <!-- iPhone -->
-      <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="background:#1B2F4E;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="font-size:18px;">🍎</span>
           <span style="font-size:13px;font-weight:700;color:#fff;">iPhone (iOS 14.4 o superior)</span>
@@ -381,7 +381,7 @@ export function emailEntregaB2C(data: {
       </div>
 
       <!-- Android -->
-      <div style="background:#111;border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="background:#1B2F4E;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="font-size:18px;">🤖</span>
           <span style="font-size:13px;font-weight:700;color:#fff;">Android (Samsung, Pixel, Motorola y otros)</span>
@@ -394,7 +394,7 @@ export function emailEntregaB2C(data: {
       </div>
 
       <!-- Manual fallback -->
-      <div style="background:#111;border-radius:10px;padding:14px;">
+      <div style="background:#1B2F4E;border-radius:10px;padding:14px;">
         <div style="font-size:12px;font-weight:700;color:#7A7A7A;margin-bottom:8px;">📋 ¿No podés escanear el QR? Activación manual</div>
         <div style="font-size:12px;color:#AAAAAA;line-height:1.7;">
           Ingresá manualmente la cadena de activación en tu celular:<br>

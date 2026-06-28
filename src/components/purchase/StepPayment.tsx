@@ -136,7 +136,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
 
         {/* Método de pago */}
         <div className="bg-white rounded-2xl border border-black/[0.07] p-6">
-          <h3 className="font-bold text-[#111111] mb-4">{t("payment.method")}</h3>
+          <h3 className="font-bold text-[#1B2F4E] mb-4">{t("payment.method")}</h3>
           <div className="space-y-3">
 
             {/* Stripe */}
@@ -146,7 +146,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
                 method === "stripe"
                   ? "border-[#C9973A] bg-[#C9973A]/3"
-                  : "border-[#111111]/8 hover:border-[#111111]/20"
+                  : "border-[#1B2F4E]/8 hover:border-[#1B2F4E]/20"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -159,7 +159,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#111]">{t("payment.card")}</p>
+                    <p className="font-semibold text-sm text-[#1B2F4E]">{t("payment.card")}</p>
                     <p className="text-xs text-[#999]">{t("payment.cardSub")}</p>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   transition={{ duration: 0.2, ease: EASE_OUT }}
-                  className="flex items-center gap-2 mt-3 pt-3 border-t border-[#111111]/6"
+                  className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1B2F4E]/6"
                 >
                   <VisaLogo />
                   <MastercardLogo />
@@ -252,7 +252,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#111] px-4 py-3 rounded-xl hover:bg-[#111111]/5 active:scale-[0.97] transition-all"
+            className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#1B2F4E] px-4 py-3 rounded-xl hover:bg-[#1B2F4E]/5 active:scale-[0.97] transition-all"
             style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1)" }}
           >
             <ArrowLeft size={15} weight="bold" />
@@ -292,31 +292,31 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
             {t("summary")}
           </p>
 
-          <div className="space-y-2 border-b border-[#111111]/8 pb-4 mb-4">
+          <div className="space-y-2 border-b border-[#1B2F4E]/8 pb-4 mb-4">
             <div className="flex justify-between text-sm">
               <span className="text-[#555]">
                 {plan.name}{(formData.quantity ?? 1) > 1 ? ` × ${formData.quantity}` : ""}
               </span>
-              <span className="font-semibold text-[#111]">
+              <span className="font-semibold text-[#1B2F4E]">
                 {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-[#555]">Email</span>
-              <span className="text-[#111] text-xs truncate max-w-[140px]">{formData.customer_email}</span>
+              <span className="text-[#1B2F4E] text-xs truncate max-w-[140px]">{formData.customer_email}</span>
             </div>
           </div>
 
           <div className="flex justify-between items-baseline mb-1">
             <span className="font-semibold text-[#555]">Total</span>
-            <span className="text-2xl font-black text-[#111111]">
+            <span className="text-2xl font-black text-[#1B2F4E]">
               {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
             </span>
           </div>
           <p className="text-xs text-[#999] text-right">USD · pago único · sin renovación automática</p>
 
           {/* Mini trust badge en summary */}
-          <div className="mt-4 pt-3 border-t border-[#111111]/6 flex items-center gap-1.5 justify-center">
+          <div className="mt-4 pt-3 border-t border-[#1B2F4E]/6 flex items-center gap-1.5 justify-center">
             <Lock size={11} weight="fill" className="text-[#999]" />
             <span className="text-[11px] text-[#aaa]">{t("payment.noStore")}</span>
           </div>

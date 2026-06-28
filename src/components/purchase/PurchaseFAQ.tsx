@@ -84,15 +84,15 @@ function FAQItem({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-[#111111]/6 last:border-0">
+    <div className="border-b border-[#1B2F4E]/6 last:border-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-3 py-3.5 text-left hover:bg-[#111111]/2 rounded-xl px-1 transition-colors"
+        className="w-full flex items-center justify-between gap-3 py-3.5 text-left hover:bg-[#1B2F4E]/2 rounded-xl px-1 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <span className="text-[#C9973A] shrink-0">{icon}</span>
-          <span className="text-sm font-semibold text-[#111111]">{question}</span>
+          <span className="text-sm font-semibold text-[#1B2F4E]">{question}</span>
         </div>
         <CaretDown
           size={15}
@@ -132,7 +132,7 @@ function DeviceList({ label }: { label: string }) {
         <div className="space-y-3 mt-1">
           {DEVICE_BRANDS.map((b) => (
             <div key={b.brand}>
-              <p className="text-xs font-bold text-[#111] mb-0.5">{b.brand}</p>
+              <p className="text-xs font-bold text-[#1B2F4E] mb-0.5">{b.brand}</p>
               <p className="text-xs text-[#777] leading-relaxed">{b.models}</p>
             </div>
           ))}
@@ -150,7 +150,7 @@ export default function PurchaseFAQ() {
   const t = useTranslations("purchase.faq");
 
   return (
-    <div className="rounded-2xl bg-white border border-[#111111]/[0.07] p-5">
+    <div className="rounded-2xl bg-white border border-[#1B2F4E]/[0.07] p-5">
       <p className="text-xs font-bold uppercase tracking-wider text-[#999] mb-1">{t("title")}</p>
 
       <FAQItem

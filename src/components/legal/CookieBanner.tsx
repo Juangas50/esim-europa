@@ -115,7 +115,7 @@ export default function CookieBanner() {
                 </button>
                 <button
                   onClick={() => handleConsent("rejected")}
-                  className="flex-1 py-2.5 px-5 rounded-xl border border-[#111111]/12 text-[#555] text-sm font-semibold hover:bg-[#111111]/5 active:scale-[0.97] transition-all"
+                  className="flex-1 py-2.5 px-5 rounded-xl border border-[#1B2F4E]/12 text-[#555] text-sm font-semibold hover:bg-[#1B2F4E]/5 active:scale-[0.97] transition-all"
                   style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
                 >
                   {copy.reject}

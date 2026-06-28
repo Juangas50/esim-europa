@@ -8,7 +8,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#111111] text-white py-16 px-4">
+    <footer className="bg-[#1B2F4E] text-white py-16 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Top */}
@@ -31,7 +31,7 @@ export default function Footer() {
               href="https://wa.me/34600000000"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-[#6EC1E4] hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-[#C9973A] hover:text-white transition-colors"
             >
               {t("support")} →
             </a>

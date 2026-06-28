@@ -12,7 +12,7 @@ const inp = { background: '#232323', border: '1px solid #2A2A2A', borderRadius: 
 
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente',  color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-  scheduled:      { label: 'Programado', color: '#6EC1E4', bg: 'rgba(110,193,228,0.15)' },
+  scheduled:      { label: 'Programado', color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado', color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',   color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   cancelled:      { label: 'Cancelado',  color: '#7A7A7A', bg: 'rgba(122,122,122,0.15)' },
@@ -214,7 +214,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
               })}
             </div>
           ))}
-          {saving && <div style={{ color: '#6EC1E4', fontSize: 12, marginTop: 10 }}>Guardando...</div>}
+          {saving && <div style={{ color: '#C9973A', fontSize: 12, marginTop: 10 }}>Guardando...</div>}
         </div>
       )}
 
@@ -292,7 +292,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                 return (
                   <div key={o.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#6EC1E4' }}>{o.order_ref}</span>
+                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
                       <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>{st.label}</span>
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{o.customer_name} {o.customer_lastname}</div>

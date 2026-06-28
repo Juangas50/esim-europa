@@ -277,13 +277,13 @@ function CookiesPT() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
-      <h2 className="text-lg font-bold text-[#111111] mb-3 tracking-tight">{title}</h2>
+      <h2 className="text-lg font-bold text-[#1B2F4E] mb-3 tracking-tight">{title}</h2>
       <div
         className="space-y-3 text-[#444] leading-relaxed text-[15px]
         [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5
         [&_code]:font-mono [&_code]:text-[13px] [&_code]:bg-[#F0F0F0] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded
         [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm
-        [&_th]:text-left [&_th]:font-semibold [&_th]:text-[#111] [&_th]:py-2 [&_th]:px-3 [&_th]:bg-[#F8F8F8] [&_th]:border [&_th]:border-black/8
+        [&_th]:text-left [&_th]:font-semibold [&_th]:text-[#1B2F4E] [&_th]:py-2 [&_th]:px-3 [&_th]:bg-[#F8F8F8] [&_th]:border [&_th]:border-black/8
         [&_td]:py-2 [&_td]:px-3 [&_td]:border [&_td]:border-black/8 [&_td:first-child]:font-mono [&_td:first-child]:text-xs
         [&_a]:text-[#C9973A] [&_a]:underline [&_a]:hover:no-underline"
       >
