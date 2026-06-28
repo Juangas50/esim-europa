@@ -45,10 +45,9 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
   const locale = useLocale();
   const isPopular = plan.is_popular;
 
-  const keyFeatures =
-    plan.type === "local"
-      ? ["Número español incluido", "Llamadas y SMS ilimitados", `${plan.duration_days} días de validez`]
-      : [`${plan.countries_count}+ países`, "Solo datos · sin llamadas", `${plan.duration_days} días`];
+  const keyFeatures = plan.badge
+    ? plan.badge.split('\n').map(f => f.trim()).filter(Boolean)
+    : [];
 
   return (
     <motion.div

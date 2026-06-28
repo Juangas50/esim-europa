@@ -84,28 +84,17 @@ function TariffForm({ initial, onSave, onCancel }: {
 
       <div style={{ marginBottom: 12 }}>
         <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
-          Descripción
+          Características (una por línea)
         </label>
-        {isMobile ? (
-          <textarea
-            value={form.badge}
-            onChange={e => setForm({ ...form, badge: e.target.value })}
-            rows={4}
-            placeholder="Descripción del plan..."
-            style={{ ...inp, resize: 'vertical', minHeight: 90 }}
-          />
-        ) : (
-          <div data-color-mode="dark">
-            <MDEditor
-              value={form.badge}
-              onChange={val => setForm({ ...form, badge: val || '' })}
-              height={160}
-              preview="edit"
-            />
-          </div>
-        )}
+        <textarea
+          value={form.badge}
+          onChange={e => setForm({ ...form, badge: e.target.value })}
+          rows={6}
+          placeholder="Ejemplo:&#10;Número español incluido&#10;Llamadas y SMS ilimitados&#10;28 días de validez"
+          style={{ ...inp, resize: 'vertical', minHeight: 120, fontFamily: 'monospace', fontSize: 12 }}
+        />
         <div style={{ fontSize: 11, color: '#7A7A7A', marginTop: 6 }}>
-          Podés usar **negrita**, _cursiva_, listas y más.
+          Una característica por línea. Aparecerán en orden en la web.
         </div>
       </div>
 
