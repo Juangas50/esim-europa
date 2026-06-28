@@ -302,7 +302,7 @@ export default function Plans({ plans }: PlansProps) {
   }, [plans]);
 
   return (
-    <section id="planes" className="py-24 px-4 bg-white">
+    <section id="planes" className="py-16 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
@@ -311,7 +311,7 @@ export default function Plans({ plans }: PlansProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-10"
+          className="mb-6"
         >
           <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
             {t("title")}
@@ -336,7 +336,7 @@ export default function Plans({ plans }: PlansProps) {
         </motion.div>
 
         {/* Trust strip — escaneable, mobile-first */}
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-6">
           {[
             { icon: "qr-email.svg", label: "QR por email" },
             { icon: "viaje.svg", label: "Activás al llegar" },
@@ -354,7 +354,7 @@ export default function Plans({ plans }: PlansProps) {
 
         {/* Tab switcher — solo si hay ambos tipos */}
         {hasLocal && hasData && (
-          <div className="mb-8 inline-flex rounded-2xl bg-[#F0F0F0] p-1.5 gap-1">
+          <div className="mb-6 inline-flex rounded-2xl bg-[#F0F0F0] p-1.5 gap-1">
             {([
               { key: "local"   as Tab, emoji: "", label: t("tabLocal"),  sub: t("tabLocalSub") },
               { key: "dataonly"as Tab, emoji: "", label: t("tabData"),   sub: t("tabDataSub")  },
