@@ -245,33 +245,39 @@ export default function Hero({ minPrice }: HeroProps) {
           </div>
         </motion.div>
 
-        {/* Trust Stats — 3 columnas abajo */}
+        {/* Trust Stats — mejor visual con separadores */}
         <motion.div
           variants={fadeUp}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-24 pt-16 border-t border-white/10"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 mt-24 pt-16 border-t border-white/10"
         >
-          <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-baseline gap-4 mb-2">
-              <DeviceMobile size={32} weight="bold" className="text-[#F59E0B]" />
-              <p className="text-3xl font-black font-mono">100K+</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-white">
+            <div className="flex-shrink-0 p-3 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
+              <DeviceMobile size={40} weight="bold" className="text-[#F59E0B]" />
             </div>
-            <p className="text-white text-sm">Viajeros confían</p>
+            <div className="flex-1">
+              <p className="text-4xl font-black font-mono leading-none mb-1">100K+</p>
+              <p className="text-white/80 text-sm font-medium">Viajeros confían</p>
+            </div>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-baseline gap-4 mb-2">
-              <Lightning size={32} weight="bold" className="text-[#06B6D4]" />
-              <p className="text-3xl font-black font-mono">2 min</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-white">
+            <div className="flex-shrink-0 p-3 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
+              <Lightning size={40} weight="bold" className="text-[#06B6D4]" />
             </div>
-            <p className="text-white text-sm">Activación con QR</p>
+            <div className="flex-1">
+              <p className="text-4xl font-black font-mono leading-none mb-1">2 min</p>
+              <p className="text-white/80 text-sm font-medium">Activación con QR</p>
+            </div>
           </div>
 
-          <div className="flex flex-col items-center sm:items-start text-white">
-            <div className="flex items-baseline gap-4 mb-2">
-              <Globe size={32} weight="bold" className="text-[#06B6D4]" />
-              <p className="text-3xl font-black font-mono">30+</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-white">
+            <div className="flex-shrink-0 p-3 bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10">
+              <Globe size={40} weight="bold" className="text-[#06B6D4]" />
             </div>
-            <p className="text-white text-sm">Países cubiertos</p>
+            <div className="flex-1">
+              <p className="text-4xl font-black font-mono leading-none mb-1">30+</p>
+              <p className="text-white/80 text-sm font-medium">Países cubiertos</p>
+            </div>
           </div>
         </motion.div>
       </div>
