@@ -61,16 +61,16 @@ export default function Navbar() {
           className={cn(
             "flex items-center gap-6 px-4 py-2.5 rounded-full transition-all duration-300",
             scrolled
-              ? "bg-white/95 backdrop-blur-md shadow-[0_8px_32px_-8px_rgba(0,0,0,0.14)] border border-black/[0.06]"
-              : "bg-white/85 backdrop-blur-sm border border-black/[0.05]"
+              ? "bg-[#1B2F4E]/95 backdrop-blur-md shadow-[0_8px_32px_-8px_rgba(27,47,78,0.14)] border border-[#C9973A]/[0.06]"
+              : "bg-[#1B2F4E]/85 backdrop-blur-sm border border-[#C9973A]/[0.05]"
           )}
         >
           {/* Logo */}
           <a href={`/${locale}`} className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#E60000]">
+            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#C9973A]">
               <span className="text-white text-[11px] font-black tracking-tight leading-none">34</span>
             </div>
-            <span className="font-bold text-[#111111] text-sm tracking-tight">
+            <span className="font-bold text-[#1B2F4E] text-sm tracking-tight">
               RUTA34
             </span>
           </a>
@@ -81,7 +81,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-[#555555] hover:text-[#111111] transition-colors duration-200"
+                className="text-sm text-[#FAF7F2] hover:text-[#1B2F4E] transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -94,7 +94,7 @@ export default function Navbar() {
             <button
               onClick={switchLocale}
               title={otherLocale === "pt" ? "Ver em Português" : "Ver en Español"}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#555555] hover:text-[#111111] px-2.5 py-1.5 rounded-full border border-black/10 hover:bg-black/5 transition-all duration-150"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#FAF7F2] hover:text-[#1B2F4E] px-2.5 py-1.5 rounded-full border border-black/10 hover:bg-black/5 transition-all duration-150"
             >
               <span className="text-base leading-none">
                 {otherLocale === "pt" ? "🇧🇷" : "🇦🇷"}
@@ -107,7 +107,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="#planes"
-              className="flex items-center gap-2 bg-[#E60000] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#CC0000] active:scale-[0.97] transition-all"
+              className="flex items-center gap-2 bg-[#C9973A] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#CC0000] active:scale-[0.97] transition-all"
               style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
             >
               {t("buyNow")}
@@ -116,7 +116,7 @@ export default function Navbar() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-1 text-[#111111] ml-2"
+            className="md:hidden p-1 text-[#1B2F4E] ml-2"
             onClick={() => setOpen((v) => !v)}
             aria-label="Abrir menú"
           >
@@ -169,7 +169,7 @@ export default function Navbar() {
                   duration: 0.4,
                   ease: EASE_OUT,
                 }}
-                className="text-3xl font-bold text-[#111111] tracking-tight"
+                className="text-3xl font-bold text-[#1B2F4E] tracking-tight"
               >
                 {link.label}
               </motion.a>
@@ -181,7 +181,7 @@ export default function Navbar() {
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.4, ease: EASE_OUT }}
-              className="bg-[#E60000] text-white text-xl font-bold px-10 py-4 rounded-full mt-4"
+              className="bg-[#C9973A] text-white text-xl font-bold px-10 py-4 rounded-full mt-4"
             >
               {t("buyNow")}
             </motion.a>

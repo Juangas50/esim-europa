@@ -47,7 +47,7 @@ function QRPlaceholder() {
         const row = Math.floor(i / size);
         const col = i % size;
         return cell ? (
-          <rect key={i} x={col * 6 + 1} y={row * 6 + 1} width={5} height={5} rx={1} fill="#111111" />
+          <rect key={i} x={col * 6 + 1} y={row * 6 + 1} width={5} height={5} rx={1} fill="#1B2F4E" />
         ) : null;
       })}
     </svg>
@@ -59,7 +59,7 @@ function HeroVisual() {
   return (
     <div className="relative w-full max-w-sm mx-auto select-none" aria-hidden="true">
       {/* Glow de marca — acento sutil en una esquina, no blob genérico */}
-      <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#E60000]/20 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-6 -right-6 w-52 h-52 rounded-full bg-[#C9973A]/20 blur-3xl pointer-events-none" />
 
       {/* Contenedor principal */}
       <motion.div
@@ -105,7 +105,7 @@ function HeroVisual() {
                   <span className="text-[10px] font-semibold text-white/55">Madrid, España 🇪🇸</span>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-xl bg-[#E60000] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
+              <div className="w-8 h-8 rounded-xl bg-[#C9973A] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
                 <span className="text-white text-[10px] font-black tracking-tighter">34</span>
               </div>
             </div>
@@ -139,7 +139,7 @@ function HeroVisual() {
         className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06]"
       >
         <p className="text-[9px] font-bold uppercase tracking-widest text-[#aaa] mb-0.5">Cobertura</p>
-        <p className="text-sm font-black text-[#111]">30+ países 🇪🇸🇪🇺</p>
+        <p className="text-sm font-black text-[#1B2F4E]">30+ países 🇪🇸🇪🇺</p>
       </motion.div>
     </div>
   );
@@ -180,7 +180,7 @@ export default function Hero({ minPrice }: HeroProps) {
             {/* Headline */}
             <motion.h1
               variants={fadeUp}
-              className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-[#111111] tracking-tight leading-[1.05] mb-5 max-w-[520px]"
+              className="text-4xl sm:text-5xl lg:text-[3.6rem] font-black text-[#1B2F4E] tracking-tight leading-[1.05] mb-5 max-w-[520px]"
             >
               {t("headline")}
             </motion.h1>
@@ -188,7 +188,7 @@ export default function Hero({ minPrice }: HeroProps) {
             {/* Sub */}
             <motion.p
               variants={fadeUp}
-              className="text-base sm:text-lg text-[#555555] leading-relaxed mb-8 max-w-[460px]"
+              className="text-base sm:text-lg text-[#64748B] leading-relaxed mb-8 max-w-[460px]"
             >
               {t("sub")}
             </motion.p>
@@ -201,7 +201,7 @@ export default function Hero({ minPrice }: HeroProps) {
               <a
                 href="#planes"
                 onClick={() => analytics.viewPlansClicked()}
-                className="inline-flex items-center gap-2.5 bg-[#E60000] text-white font-bold text-base px-7 py-3.5 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.4)]"
+                className="inline-flex items-center gap-2.5 bg-[#C9973A] text-white font-bold text-base px-7 py-3.5 rounded-full hover:bg-[#CC0000] active:scale-[0.97] shadow-[0_4px_20px_-4px_rgba(230,0,0,0.4)]"
                 style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
               >
                 {t("cta")}
@@ -212,7 +212,7 @@ export default function Hero({ minPrice }: HeroProps) {
 
               <a
                 href="#como-funciona"
-                className="inline-flex items-center gap-2 text-[#111111] font-semibold text-base px-5 py-3.5 rounded-full border border-[#111111]/12 hover:bg-[#111111]/5 active:scale-[0.97]"
+                className="inline-flex items-center gap-2 text-[#1B2F4E] font-semibold text-base px-5 py-3.5 rounded-full border border-[#1B2F4E]/12 hover:bg-[#111111]/5 active:scale-[0.97]"
                 style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
               >
                 {t("ctaSecondary")}
@@ -221,7 +221,7 @@ export default function Hero({ minPrice }: HeroProps) {
 
             {/* Precio ancla — reduce friction */}
             {minPrice != null && (
-              <motion.p variants={fadeUp} className="text-sm text-[#555555] font-semibold mb-8">
+              <motion.p variants={fadeUp} className="text-sm text-[#64748B] font-semibold mb-8">
                 {t("priceAnchor", { price: formatUSD(minPrice) })}
               </motion.p>
             )}
@@ -230,8 +230,8 @@ export default function Hero({ minPrice }: HeroProps) {
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">
               {trustItems.map((item, i) => (
                 <div key={i} className="flex items-center gap-1.5">
-                  <CheckCircle size={16} weight="fill" className="text-[#E60000]" />
-                  <span className="text-sm font-semibold text-[#555555]">{item.label}</span>
+                  <CheckCircle size={16} weight="fill" className="text-[#059669]" />
+                  <span className="text-sm font-semibold text-[#64748B]">{item.label}</span>
                 </div>
               ))}
             </motion.div>
