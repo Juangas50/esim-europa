@@ -216,7 +216,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 <Label required>{t("form.name")}</Label>
                 <input
                   {...register("customer_name")}
-                  ref={nameRef}
                   className={inputClass}
                   placeholder="Juan"
                   autoComplete="given-name"
