@@ -8,7 +8,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#111111] text-white py-16 px-4">
+    <footer className="bg-[#1B2F4E] text-white py-16 px-4">
       <div className="max-w-[1200px] mx-auto">
 
         {/* Top */}
@@ -17,7 +17,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-xl bg-[#E60000] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-[#C9973A] flex items-center justify-center">
                 <span className="text-white text-xs font-black">34</span>
               </div>
               <span className="font-bold text-white text-base tracking-tight">RUTA34 Telecom</span>

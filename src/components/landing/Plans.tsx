@@ -56,7 +56,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
       transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
       className={`relative flex flex-col rounded-2xl p-5 h-full ${
         isPopular
-          ? "bg-[#111111] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
+          ? "bg-[#1B2F4E] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
           : "bg-white border border-black/[0.07]"
       }`}
     >
@@ -65,7 +65,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         {/* Talla S/M/L/XL/XXL — solo para SIM Local */}
         {plan.size ? (
           <span className={`inline-flex items-center justify-center w-10 h-10 rounded-xl font-black text-base ${
-            isPopular ? "bg-white/15 text-white" : "bg-[#F0F0F0] text-[#111]"
+            isPopular ? "bg-white/15 text-white" : "bg-[#F0F0F0] text-[#1B2F4E]"
           }`}>
             {plan.size}
           </span>
@@ -99,7 +99,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           <div className={`px-3.5 py-3 ${isPopular ? "bg-white/12" : "bg-[#F5F5F5]"}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-baseline gap-1">
-                <span className={`text-3xl font-black leading-none ${isPopular ? "text-white" : "text-[#111]"}`}>
+                <span className={`text-3xl font-black leading-none ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
                   {plan.data_gb}
                 </span>
                 <span className={`text-sm font-bold ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
@@ -133,7 +133,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
         </div>
       ) : (
         <div className="mb-5">
-          <span className={`text-4xl font-black leading-none ${isPopular ? "text-white" : "text-[#111111]"}`}>
+          <span className={`text-4xl font-black leading-none ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
             {plan.data_gb}
           </span>
           <span className={`text-lg font-bold ml-1 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
@@ -147,7 +147,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
       <ul className="space-y-1.5 mb-6 flex-1">
         {keyFeatures.map((f, i) => (
           <li key={i} className={`flex items-start gap-2 text-sm ${isPopular ? "text-white/70" : "text-[#555]"}`}>
-            <Check size={13} weight="bold" className="text-[#E60000] mt-0.5 shrink-0" />
+            <Check size={13} weight="bold" className="text-[#059669] mt-0.5 shrink-0" />
             {f}
           </li>
         ))}
@@ -155,7 +155,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
       {/* Precio + CTA */}
       <div className="mt-auto">
-        <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#111111]"}`}>
+        <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
           {formatUSD(plan.price_usd)}
         </p>
         <p className={`text-xs mb-4 ${isPopular ? "text-white/35" : "text-[#bbb]"}`}>
@@ -167,8 +167,8 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
           onClick={() => analytics.planSelected(plan)}
           className={`flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm active:scale-[0.97] ${
             isPopular
-              ? "bg-[#E60000] text-white hover:bg-[#CC0000] shadow-[0_4px_16px_-4px_rgba(230,0,0,0.4)]"
-              : "border-2 border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white"
+              ? "bg-[#C9973A] text-[#1B2F4E] hover:bg-[#E8C56A] shadow-[0_4px_16px_-4px_rgba(201,151,58,0.4)]"
+              : "border-2 border-[#1B2F4E] text-[#1B2F4E] hover:bg-[#1B2F4E] hover:text-white"
           }`}
           style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
         >
@@ -234,7 +234,7 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
             key={i}
             onClick={() => { setCurrent(i); analytics.swipePlanCarousel("dot", p.id) }}
             className={`rounded-full transition-all duration-200 ${
-              i === current ? "w-6 h-2 bg-[#E60000]" : "w-2 h-2 bg-[#111111]/15"
+              i === current ? "w-6 h-2 bg-[#C9973A]" : "w-2 h-2 bg-[#1B2F4E]/15"
             }`}
           />
         ))}
@@ -245,14 +245,14 @@ function PlansCarousel({ plans }: { plans: Plan[] }) {
         <button
           onClick={() => { setCurrent((c) => Math.max(0, c - 1)); analytics.swipePlanCarousel("prev") }}
           disabled={current === 0}
-          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#111111] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
           <CaretLeft size={16} weight="bold" />
         </button>
         <button
           onClick={() => { setCurrent((c) => Math.min(maxIndex, c + 1)); analytics.swipePlanCarousel("next") }}
           disabled={current === maxIndex}
-          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#111111] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+          className="w-10 h-10 rounded-full border-2 border-[#111111]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#111111] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
         >
           <CaretRight size={16} weight="bold" />
         </button>
@@ -309,7 +309,7 @@ export default function Plans({ plans }: PlansProps) {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="mb-10"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-2">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
             {t("title")}
           </h2>
           <div className="flex flex-wrap items-center gap-4 mb-4">
@@ -323,11 +323,11 @@ export default function Plans({ plans }: PlansProps) {
           <a
             href="#faq-needs"
             onClick={() => analytics.gbGuideOpened()}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[#555] bg-amber-50 border border-amber-200 rounded-full px-4 py-2 hover:bg-amber-100 hover:text-[#111] transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#555] bg-amber-50 border border-amber-200 rounded-full px-4 py-2 hover:bg-amber-100 hover:text-[#1B2F4E] transition-colors duration-200"
           >
             <span>💡</span>
             <span>¿Cuántos GB necesito para mi viaje?</span>
-            <span className="text-[#E60000] font-bold">Ver guía →</span>
+            <span className="text-[#059669] font-bold">Ver guía →</span>
           </a>
         </motion.div>
 
@@ -358,7 +358,7 @@ export default function Plans({ plans }: PlansProps) {
                 key={key}
                 onClick={() => setTab(key)}
                 className={`relative flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-bold transition-colors duration-200 ${
-                  tab === key ? "text-[#111111]" : "text-[#888] hover:text-[#555]"
+                  tab === key ? "text-[#1B2F4E]" : "text-[#888] hover:text-[#555]"
                 }`}
               >
                 {tab === key && (

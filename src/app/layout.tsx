@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSerif = DM_Serif_Display({
+  variable: "--font-dm-serif",
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+  style: ["normal", "italic"],
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -13,7 +22,7 @@ export const metadata: Metadata = {
   title: "RUTA34 Telecom — eSIM para Europa",
   description:
     "Llegás a Europa y ya estás conectado. eSIM instantánea para argentinos, uruguayos, chilenos y brasileños que viajan a Europa.",
-  author: "RUTA34 Telecom",
+  authors: [{ name: "RUTA34 Telecom" }],
   creator: "RUTA34 Telecom",
   keywords: "eSIM Europa, chip digital, internet sin roaming, eSIM Argentina, eSIM Brasil",
   openGraph: {
@@ -41,7 +50,7 @@ export default function RootLayout({
     // Para rutas /es/ y /pt/, el lang se actualiza dinámicamente via JavaScript
     // en el navegador basado en el pathname. Las señales de contenido + hreflang
     // en el sitemap refuerzan la información de idioma para Google.
-    <html lang="es" suppressHydrationWarning className={`${inter.variable} h-full`}>
+    <html lang="es" suppressHydrationWarning className={`${dmSerif.variable} ${jakarta.variable} h-full`}>
       <body className="min-h-full">
         {/* GTM noscript — debe ir inmediatamente después de <body> */}
         <GTMNoScript />
