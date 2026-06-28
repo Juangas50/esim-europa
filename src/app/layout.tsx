@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Prata } from "next/font/google";
+import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
 import MaintenanceBanner from "@/components/landing/MaintenanceBanner";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSerif = DM_Serif_Display({
+  variable: "--font-dm-serif",
+  weight: ["400"],
   subsets: ["latin"],
   display: "swap",
 });
 
-const prata = Prata({
-  variable: "--font-prata",
-  weight: ["400"],
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -49,7 +50,7 @@ export default function RootLayout({
     // Para rutas /es/ y /pt/, el lang se actualiza dinámicamente via JavaScript
     // en el navegador basado en el pathname. Las señales de contenido + hreflang
     // en el sitemap refuerzan la información de idioma para Google.
-    <html lang="es" suppressHydrationWarning className={`${inter.variable} ${prata.variable} h-full`}>
+    <html lang="es" suppressHydrationWarning className={`${dmSerif.variable} ${jakarta.variable} h-full`}>
       <body className="min-h-full">
         {/* Maintenance mode banner */}
         <MaintenanceBanner />

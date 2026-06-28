@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import Icon from "@/components/ui/Icon";
 
 interface DestinationHeroProps {
   country: string;
@@ -32,7 +33,7 @@ export default function DestinationHero({
         <div className="space-y-8">
           {/* Country Badge */}
           <div className="flex items-center gap-3">
-            <span className="text-5xl">{flag}</span>
+            <Icon name="ubicacion" size="lg" color="dorado" />
             <span className="text-lg font-bold text-[#1B2F4E] tracking-tight">
               {country}
             </span>

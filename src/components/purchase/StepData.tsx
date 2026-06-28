@@ -385,7 +385,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div>
-                      <p className="text-sm font-semibold text-[#1B2F4E]">🚀 Activación inmediata</p>
+                      <p className="text-sm font-semibold text-[#1B2F4E]">Activación inmediata</p>
                       <p className="text-xs text-[#777] mt-0.5">
                         Los 28 días corren desde ahora. Conectado al aterrizar.
                       </p>

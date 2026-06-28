@@ -104,7 +104,6 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                   />
                 )}
                 <span className="relative flex items-center gap-1.5">
-                  <span>{tab === "local" ? "🇪🇸" : "✈️"}</span>
                   <span>{tab === "local" ? t("tabLocal") : t("tabData")}</span>
                 </span>
               </button>
@@ -168,7 +167,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                         {plan.type === "local" && (
                           <>
                             <span className="text-[#999]">·</span>
-                            <span className="text-[#555]">Número 🇪🇸 · Llamadas · SMS</span>
+                            <span className="text-[#555]">Número español · Llamadas · SMS</span>
                           </>
                         )}
                       </div>

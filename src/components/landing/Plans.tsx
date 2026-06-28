@@ -47,7 +47,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
 
   const keyFeatures =
     plan.type === "local"
-      ? ["Número español 🇪🇸 incluido", "Llamadas y SMS ilimitados", `${plan.duration_days} días de validez`]
+      ? ["Número español incluido", "Llamadas y SMS ilimitados", `${plan.duration_days} días de validez`]
       : [`${plan.countries_count}+ países`, "Solo datos · sin llamadas", `${plan.duration_days} días`];
 
   return (
@@ -101,7 +101,7 @@ function PlanCard({ plan, index }: { plan: Plan; index: number }) {
                 <span className={`text-sm font-bold ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
               </div>
               <span className={`text-xs font-bold ${isPopular ? "text-white/70" : "text-[#555]"}`}>
-                🇪🇸 España
+                España
               </span>
             </div>
             <p className={`text-[10px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/30" : "text-[#bbb]"}`}>
@@ -369,8 +369,8 @@ export default function Plans({ plans }: PlansProps) {
         {hasLocal && hasData && (
           <div className="mb-8 inline-flex rounded-2xl bg-[#F0F0F0] p-1.5 gap-1">
             {([
-              { key: "local"   as Tab, emoji: "🇪🇸", label: t("tabLocal"),  sub: t("tabLocalSub") },
-              { key: "dataonly"as Tab, emoji: "✈️",  label: t("tabData"),   sub: t("tabDataSub")  },
+              { key: "local"   as Tab, emoji: "", label: t("tabLocal"),  sub: t("tabLocalSub") },
+              { key: "dataonly"as Tab, emoji: "", label: t("tabData"),   sub: t("tabDataSub")  },
             ]).map(({ key, emoji, label, sub }) => (
               <button
                 key={key}

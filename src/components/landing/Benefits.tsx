@@ -24,16 +24,16 @@ const TOP_ITEMS = [
   { key: "instant", Icon: Lightning },
 ] as const;
 
-const MAIN_COUNTRIES = ["🇪🇸 España", "🇫🇷 Francia", "🇮🇹 Italia", "🇩🇪 Alemania", "🇵🇹 Portugal"];
+const MAIN_COUNTRIES = ["España", "Francia", "Italia", "Alemania", "Portugal"];
 
 const ALL_COUNTRIES = [
-  "🇦🇹 Austria", "🇧🇪 Bélgica", "🇧🇬 Bulgaria", "🇭🇷 Croacia", "🇨🇾 Chipre",
-  "🇨🇿 Rep. Checa", "🇩🇰 Dinamarca", "🇸🇰 Eslovaquia", "🇸🇮 Eslovenia", "🇪🇪 Estonia",
-  "🇫🇮 Finlandia", "🇬🇷 Grecia", "🇭🇺 Hungría", "🇮🇪 Irlanda", "🇱🇻 Letonia",
-  "🇱🇹 Lituania", "🇱🇺 Luxemburgo", "🇲🇹 Malta", "🇳🇱 Holanda", "🇵🇱 Polonia",
-  "🇷🇴 Rumania", "🇸🇪 Suecia", "🇬🇧 Reino Unido", "🇮🇸 Islandia", "🇱🇮 Liechtenstein",
-  "🇳🇴 Noruega", "🇨🇭 Suiza", "🇹🇷 Turquía", "🇽🇰 Kosovo", "🇻🇦 Vaticano",
-  "🇲🇨 Mónaco", "🇺🇦 Ucrania", "🇲🇩 Moldavia", "🇺🇸 Estados Unidos",
+  "Austria", "Bélgica", "Bulgaria", "Croacia", "Chipre",
+  "Rep. Checa", "Dinamarca", "Eslovaquia", "Eslovenia", "Estonia",
+  "Finlandia", "Grecia", "Hungría", "Irlanda", "Letonia",
+  "Lituania", "Luxemburgo", "Malta", "Holanda", "Polonia",
+  "Rumania", "Suecia", "Reino Unido", "Islandia", "Liechtenstein",
+  "Noruega", "Suiza", "Turquía", "Kosovo", "Vaticano",
+  "Mónaco", "Ucrania", "Moldavia", "Estados Unidos",
 ];
 
 export default function Benefits() {

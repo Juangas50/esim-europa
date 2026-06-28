@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle, DeviceMobile, Lightning, Globe } from "@phosph
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Badge from "@/components/ui/Badge";
+import Icon from "@/components/ui/Icon";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 
@@ -123,7 +124,10 @@ function HeroVisual() {
                     ))}
                   </div>
                   <span className="text-[10px] font-black text-emerald-400">5G</span>
-                  <span className="text-[10px] font-semibold text-white/55">Madrid, España 🇪🇸</span>
+                  <div className="flex items-center gap-1">
+                    <Icon name="ubicacion" size="sm" color="white" className="opacity-55" />
+                    <span className="text-[10px] font-semibold text-white/55">Madrid, España</span>
+                  </div>
                 </div>
               </div>
               <div className="w-8 h-8 rounded-xl bg-[#C9973A] flex items-center justify-center shadow-[0_4px_16px_-2px_rgba(230,0,0,0.55)]">
@@ -160,7 +164,10 @@ function HeroVisual() {
         className="absolute -right-4 top-7 bg-white rounded-2xl px-3.5 py-2.5 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.18)] border border-black/[0.06]"
       >
         <p className="text-[9px] font-bold uppercase tracking-widest text-[#aaa] mb-0.5">Cobertura</p>
-        <p className="text-sm font-black text-[#1B2F4E]">30+ países 🇪🇸🇪🇺</p>
+        <div className="flex items-center gap-2">
+          <Icon name="europa-mundo" size="md" color="navy" />
+          <p className="text-sm font-black text-[#1B2F4E]">30+ países</p>
+        </div>
       </motion.div>
     </div>
   );

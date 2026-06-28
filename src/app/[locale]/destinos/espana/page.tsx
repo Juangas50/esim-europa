@@ -19,7 +19,7 @@ export default function SpainPage() {
     <>
       <DestinationHero
         country="España"
-        flag="🇪🇸"
+        flag=""
         headline="Llega a España y ya tenés internet"
         subheadline="Cobertura nacional en Vodafone, Movistar y Orange. Activá en minutos, usá al llegar."
         coverage="99% nacional"
