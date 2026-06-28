@@ -41,7 +41,6 @@ function validateTariffForm(form: TariffForm) {
     highlight: Boolean(form.highlight),
     position: form.position != null ? Number(form.position) : null,
     price_usd: form.price_usd != null ? Number(form.price_usd) : null,
-    description: form.description ? String(form.description).slice(0, 2000) : null,
   }
 }
 
