@@ -44,18 +44,28 @@ function ConfirmacionContent() {
         </div>
       </header>
 
-      {/* Hero Section — Split Layout */}
-      <div className="relative min-h-[50vh] sm:min-h-[55vh] flex items-stretch overflow-hidden">
-        {/* Left Content Area */}
-        <div className="w-full sm:w-1/2 bg-white px-6 sm:px-12 py-12 sm:py-20 flex flex-col justify-center relative z-10">
+      {/* Hero Section — Image with Gradient Overlay */}
+      <div className="relative min-h-[50vh] sm:min-h-[55vh] overflow-hidden">
+        {/* Background Image */}
+        <img
+          src="/images/confirmacion-hero.png"
+          alt="Europa viaje"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Gradient Overlay - Dark left to transparent right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(0,0,0,0.15)] to-transparent z-10" />
+
+        {/* Content Overlay */}
+        <div className="relative z-20 px-6 sm:px-12 py-12 sm:py-20 h-full flex flex-col justify-center max-w-2xl">
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
             className="mb-8"
           >
-            <div className="w-12 h-12 rounded-full bg-[var(--color-gold)] flex items-center justify-center shadow-lg">
-              <CheckCircle size={28} weight="fill" className="text-white" />
+            <div className="w-12 h-12 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center">
+              <CheckCircle size={28} weight="fill" className="text-[var(--color-gold)]" />
             </div>
           </motion.div>
 
@@ -64,22 +74,13 @@ function ConfirmacionContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-3xl sm:text-5xl font-black text-[var(--color-navy)] leading-tight mb-4">
+            <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
               Tu próximo viaje<br />empieza ahora.
             </h1>
-            <p className="text-base text-[var(--color-ink)] leading-relaxed max-w-md">
+            <p className="text-base text-white/90 leading-relaxed max-w-md">
               Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
             </p>
           </motion.div>
-        </div>
-
-        {/* Right Image Area */}
-        <div className="hidden sm:block sm:w-1/2 relative overflow-hidden">
-          <img
-            src="/images/confirmacion-hero.png"
-            alt="Europa viaje"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
         </div>
       </div>
 
