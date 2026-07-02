@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle } from "@phosphor-icons/react";
+import { CheckCircle, ShoppingBag, Envelope, Phone, PaperPlane } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
 import { analytics } from "@/lib/analytics";
@@ -159,34 +159,75 @@ function ConfirmacionContent() {
             {/* Connection Lines */}
             <div className="hidden sm:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold)] to-transparent" />
 
-            {[
-              { num: "1", icon: "🛍", title: "Compra realizada", desc: "Hemos recibido tu pago correctamente.", check: true },
-              { num: "2", icon: "✉", title: "Email en camino", desc: "En breve recibirás tu código QR y las instrucciones.", check: true },
-              { num: "3", icon: "📱", title: "Instala la eSIM", desc: "Te tomará menos de 5 minutos.", check: false },
-              { num: "4", icon: "✈", title: "Disfruta tu viaje", desc: "Activa al aterrizar y navega sin roaming.", check: false },
-            ].map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="flex flex-col items-center text-center relative z-10"
-              >
-                <div className="relative mb-4">
-                  <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
-                    {step.num}
-                  </div>
-                  {step.check && (
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
-                    </div>
-                  )}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0 }}
+              className="flex flex-col items-center text-center relative z-10"
+            >
+              <div className="relative mb-4">
+                <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
+                  1
                 </div>
-                <p className="text-2xl mb-2">{step.icon}</p>
-                <p className="font-bold text-[var(--color-navy)] mb-1">{step.title}</p>
-                <p className="text-xs text-[var(--color-ink-2)] leading-snug">{step.desc}</p>
-              </motion.div>
-            ))}
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+              </div>
+              <div className="mb-2"><ShoppingBag size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
+              <p className="font-bold text-[var(--color-navy)] mb-1">Compra realizada</p>
+              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Hemos recibido tu pago correctamente.</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col items-center text-center relative z-10"
+            >
+              <div className="relative mb-4">
+                <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
+                  2
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+              </div>
+              <div className="mb-2"><Envelope size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
+              <p className="font-bold text-[var(--color-navy)] mb-1">Email en camino</p>
+              <p className="text-xs text-[var(--color-ink-2)] leading-snug">En breve recibirás tu código QR y las instrucciones.</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col items-center text-center relative z-10"
+            >
+              <div className="relative mb-4">
+                <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
+                  3
+                </div>
+              </div>
+              <div className="mb-2"><Phone size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
+              <p className="font-bold text-[var(--color-navy)] mb-1">Instala la eSIM</p>
+              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Te tomará menos de 5 minutos.</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col items-center text-center relative z-10"
+            >
+              <div className="relative mb-4">
+                <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
+                  4
+                </div>
+              </div>
+              <div className="mb-2"><PaperPlane size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
+              <p className="font-bold text-[var(--color-navy)] mb-1">Disfruta tu viaje</p>
+              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Activa al aterrizar y navega sin roaming.</p>
+            </motion.div>
           </div>
         </motion.div>
 
