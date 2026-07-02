@@ -78,10 +78,10 @@ function ConfirmacionContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
+              <h1 className="text-3xl sm:text-5xl font-black text-[var(--color-navy)] leading-tight mb-4">
                 Tu próximo viaje<br />empieza ahora.
               </h1>
-              <p className="text-base text-white/90 leading-relaxed max-w-md">
+              <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-md">
                 Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
               </p>
             </motion.div>
