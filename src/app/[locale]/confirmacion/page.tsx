@@ -240,26 +240,26 @@ function ConfirmacionContent() {
           <h3 className="text-3xl sm:text-4xl font-black text-[var(--color-navy)] text-center mb-10">¿Necesitas ayuda?</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {/* WhatsApp — Larger */}
+            {/* WhatsApp */}
             <motion.a
               href="https://wa.me/34600000000"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4 }}
-              className="sm:col-span-1 sm:row-span-2 bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col justify-center"
+              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col items-center justify-center"
             >
-              <div className="w-16 h-16 rounded-full bg-[#25D366]/10 flex items-center justify-center mx-auto mb-6">
-                <span className="text-4xl">💬</span>
+              <div className="w-16 h-16 rounded-full bg-[#25D366]/10 flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">💬</span>
               </div>
-              <h4 className="font-black text-lg text-[var(--color-navy)] mb-3">Escribir por WhatsApp</h4>
-              <p className="text-sm text-[var(--color-ink-2)]">Estamos aquí para ayudarte las 24 horas.</p>
+              <h4 className="font-bold text-[var(--color-navy)] mb-2">Escribir por WhatsApp</h4>
+              <p className="text-xs text-[var(--color-ink-2)]">Estamos aquí para ayudarte las 24 horas.</p>
             </motion.a>
 
             {/* Guide */}
             <motion.a
-              href="#"
+              href={`/${locale}/help/install/iphone`}
               whileHover={{ y: -4 }}
-              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all"
+              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col items-center justify-center"
             >
               <div className="w-14 h-14 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">📖</span>
@@ -270,9 +270,9 @@ function ConfirmacionContent() {
 
             {/* FAQ */}
             <motion.a
-              href="#"
+              href={`/${locale}/help/faq`}
               whileHover={{ y: -4 }}
-              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all"
+              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col items-center justify-center"
             >
               <div className="w-14 h-14 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">❓</span>

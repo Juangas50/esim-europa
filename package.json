@@ -6,7 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:qa": "playwright test",
+    "test:qa:b2c": "playwright test b2c.spec.ts",
+    "test:qa:b2b": "playwright test b2b.spec.ts",
+    "test:qa:admin": "playwright test admin.spec.ts",
+    "test:qa:responsive": "playwright test responsive.spec.ts",
+    "test:qa:performance": "playwright test performance.spec.ts",
+    "test:qa:security": "playwright test security.spec.ts",
+    "test:qa:edge": "playwright test edge-cases.spec.ts",
+    "test:qa:report": "playwright show-report"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -32,6 +41,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
