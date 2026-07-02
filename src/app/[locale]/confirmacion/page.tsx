@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, ShoppingBag, Envelope, Phone, PaperPlane } from "@phosphor-icons/react";
+import { CheckCircle, ShoppingBag, Envelope, Phone, AirplaneInFlight } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
 import { analytics } from "@/lib/analytics";
@@ -224,7 +224,7 @@ function ConfirmacionContent() {
                   4
                 </div>
               </div>
-              <div className="mb-2"><PaperPlane size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
+              <div className="mb-2"><AirplaneInFlight size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
               <p className="font-bold text-[var(--color-navy)] mb-1">Disfruta tu viaje</p>
               <p className="text-xs text-[var(--color-ink-2)] leading-snug">Activa al aterrizar y navega sin roaming.</p>
             </motion.div>
