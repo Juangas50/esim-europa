@@ -602,9 +602,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </div>
             )}
 
-            {/* ── Formulario entrega eSIM — estados válidos para entrega ──── */}
-            {((selected.source === 'b2c' && selected.status === 'paid') ||
-              (selected.source === 'b2b' && (selected.status === 'pending_review' || selected.status === 'scheduled'))) && (
+            {/* ── Formulario entrega eSIM — permite entrega en estados "tramitar" ──── */}
+            {((selected.status === 'pending_review' || selected.status === 'paid' || selected.status === 'scheduled') && selected.status !== 'qr_sent') && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#C9973A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
