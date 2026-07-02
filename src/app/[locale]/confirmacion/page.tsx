@@ -48,7 +48,7 @@ function ConfirmacionContent() {
       <div className="relative h-[35vh] sm:h-[45vh] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--color-warm-white)] z-10" />
         <img
-          src="/images/imagen8.png"
+          src="/images/confirmacion-hero.png"
           alt="Europa viaje"
           className="absolute inset-0 w-full h-full object-cover"
         />
