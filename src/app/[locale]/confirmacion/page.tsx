@@ -45,7 +45,7 @@ function ConfirmacionContent() {
       </header>
 
       {/* Hero Section — Image with Gradient Overlay */}
-      <div className="relative min-h-[50vh] sm:min-h-[55vh] overflow-hidden">
+      <div className="relative h-[45vh] sm:h-[50vh] overflow-hidden">
         {/* Background Image */}
         <img
           src="/images/confirmacion-hero.png"
@@ -57,9 +57,9 @@ function ConfirmacionContent() {
         <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,0,0,0.4)] via-[rgba(0,0,0,0.15)] to-transparent z-10" />
 
         {/* Content Overlay */}
-        <div className="relative z-20 px-6 sm:px-12 py-12 sm:py-20 h-full flex flex-col justify-center max-w-2xl">
+        <div className="relative z-20 px-6 sm:px-12 py-10 sm:py-14 h-full flex flex-col justify-center max-w-2xl">
           {/* White Gradient Background Behind Text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-white/40 to-transparent rounded-lg z-0" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/20 rounded-lg z-0" />
 
           <div className="relative z-10">
             <motion.div
