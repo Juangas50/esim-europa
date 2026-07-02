@@ -276,7 +276,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', minHeight: '100vh' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
 
           {/* Filtros canal + búsqueda */}
@@ -451,39 +451,59 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
           )} {/* fin !isMobile */}
         </div>
 
-        {/* Panel detalle — full screen en mobile, sidebar en desktop */}
+        {/* Modal overlay — Detalle pedido */}
         {selected && (
-          <div style={isMobile ? {
-            position: 'fixed', inset: 0, zIndex: 50,
-            background: '#0C0C0C', overflowY: 'auto',
-            paddingBottom: 80, // espacio para bottom nav
-          } : {
-            width: 300, flexShrink: 0, background: '#181818',
-            border: '1px solid #2A2A2A', borderRadius: 14,
-            padding: 20, position: 'sticky', top: 24,
-          }}>
-            <div style={isMobile ? {
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '16px 16px 12px', borderBottom: '1px solid #2A2A2A', marginBottom: 0,
-              position: 'sticky', top: 0, background: '#0C0C0C', zIndex: 10,
-            } : {
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16,
+          <>
+            {/* Overlay oscuro */}
+            <div
+              onClick={() => { setSelected(null); resetDeliveryForm(null) }}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 40,
+                background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+              }}
+            />
+
+            {/* Modal */}
+            <div style={{
+              position: 'fixed', inset: 0, zIndex: 50,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '20px',
             }}>
-              <div>
-                <span style={{ fontWeight: 800, fontSize: 14 }}>Detalle pedido</span>
-                {isMobile && <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A', marginTop: 2 }}>{selected.order_ref}</div>}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <SourceBadge source={selected.source} />
-                <button
-                  onClick={() => { setSelected(null); resetDeliveryForm(null) }}
-                  style={{ background: isMobile ? '#232323' : 'none', border: isMobile ? '1px solid #2A2A2A' : 'none', borderRadius: 8, color: '#fff', cursor: 'pointer', fontSize: isMobile ? 14 : 18, padding: isMobile ? '6px 12px' : 0, fontFamily: 'inherit', fontWeight: 700 }}
-                >
-                  {isMobile ? '← Volver' : '×'}
-                </button>
-              </div>
-            </div>
-            <div style={{ padding: isMobile ? '0 16px' : 0 }}>
+              <div style={{
+                background: '#181818', border: '1px solid #2A2A2A', borderRadius: 16,
+                width: '100%', maxWidth: '600px', maxHeight: '90vh',
+                display: 'flex', flexDirection: 'column',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+              }}>
+                {/* Header sticky */}
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '20px 24px', borderBottom: '1px solid #2A2A2A',
+                  flexShrink: 0, position: 'sticky', top: 0, background: '#181818', zIndex: 10,
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 4 }}>Detalle pedido</div>
+                    <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{selected.order_ref}</div>
+                  </div>
+                  <button
+                    onClick={() => { setSelected(null); resetDeliveryForm(null) }}
+                    style={{
+                      background: 'transparent', border: 'none', color: '#7A7A7A',
+                      cursor: 'pointer', fontSize: 24, padding: 0, fontFamily: 'inherit',
+                      transition: 'color 0.2s', width: 32, height: 32,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#7A7A7A'}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {/* Contenido scrolleable */}
+                <div style={{
+                  overflowY: 'auto', flex: 1, padding: '24px',
+                }}>
             {([
               { label: 'Referencia',    value: selected.order_ref },
               { label: 'Canal',         value: selected.source === 'b2c' ? '💻 esimruta34.com' : '🏢 Agencia' },
@@ -582,9 +602,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               </div>
             )}
 
-            {/* ── Formulario entrega eSIM — B2C pagado + B2B pendiente ──── */}
+            {/* ── Formulario entrega eSIM — estados válidos para entrega ──── */}
             {((selected.source === 'b2c' && selected.status === 'paid') ||
-              (selected.source === 'b2b' && selected.status === 'pending_review')) && (
+              (selected.source === 'b2b' && (selected.status === 'pending_review' || selected.status === 'scheduled'))) && (
               <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#C9973A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
@@ -752,8 +772,10 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 </>)} {/* cierre group_count === 1 */}
               </div>
             )}
-            </div> {/* cierre del div padding mobile */}
-          </div>
+                </div> {/* cierre contenido scrolleable */}
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

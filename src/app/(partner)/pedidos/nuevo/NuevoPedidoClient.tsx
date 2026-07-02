@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createOrder } from './actions'
 
@@ -17,6 +17,7 @@ const inp = { background: '#232323', border: '1px solid #2A2A2A', borderRadius: 
 
 export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId }: { tariffs: Tariff[]; pricing: Pricing[]; agencyId: string; sellerId: string }) {
   const router = useRouter()
+  const continueButtonRef = useRef<HTMLButtonElement>(null)
   const [step, setStep] = useState(1)
   const [type, setType] = useState<string | null>(null)
   const [tariffId, setTariffId] = useState<string | null>(null)
@@ -26,6 +27,12 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [orderRef, setOrderRef] = useState('')
+
+  useEffect(() => {
+    if (tariffId && continueButtonRef.current) {
+      continueButtonRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [tariffId])
 
   const tariff = tariffs.find(t => t.id === tariffId)
   const pvp = pricing.find(p => p.tariff_id === tariffId)?.pvp || 0
@@ -175,7 +182,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
           )}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 22 }}>
-            <button onClick={() => setStep(2)} disabled={!type || !tariffId}
+            <button ref={continueButtonRef} onClick={() => setStep(2)} disabled={!type || !tariffId}
               style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 22px', fontSize: 13, fontWeight: 700, cursor: !type || !tariffId ? 'not-allowed' : 'pointer', opacity: !type || !tariffId ? 0.4 : 1, fontFamily: 'inherit' }}>
               Continuar →
             </button>
