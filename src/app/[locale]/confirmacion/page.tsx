@@ -90,13 +90,13 @@ function ConfirmacionContent() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-0 sm:py-4 -mt-8 sm:-mt-12">
 
         {/* Tarjeta de Pedido */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E9E2D8] shadow-sm mb-16"
+          className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E9E2D8] shadow-sm mb-12 relative z-20"
         >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
             {/* Plan Info - Left */}
