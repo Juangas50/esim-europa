@@ -96,47 +96,52 @@ function ConfirmacionContent() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E9E2D8] shadow-sm mb-16"
+          className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E9E2D8] shadow-sm mb-16"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {/* Plan Icon + Info */}
-            <div className="sm:col-span-1 flex flex-col">
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-gold)] mb-4">Tu pedido</p>
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-[#F5F1E8] flex items-center justify-center flex-shrink-0">
-                  <span className="text-3xl">📱</span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8">
+            {/* Plan Info - Left */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-gold)] mb-3">Tu pedido</p>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#F5F1E8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-2xl">📱</span>
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-2xl font-black text-[var(--color-navy)] mb-4">{planName}</h2>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-xs text-[var(--color-ink-2)]">Cobertura</p>
-                      <p className="font-bold text-[var(--color-navy)]">{coverage} países</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-[var(--color-ink-2)]">Datos</p>
-                      <p className="font-bold text-[var(--color-navy)]">{data} GB</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-[var(--color-ink-2)]">Validez</p>
-                      <p className="font-bold text-[var(--color-navy)]">{validity} días</p>
-                    </div>
+                <h2 className="text-2xl font-black text-[var(--color-navy)]">{planName}</h2>
+              </div>
+              {/* Data in horizontal line */}
+              <div className="flex flex-wrap gap-6 sm:gap-8">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🌍</span>
+                  <div>
+                    <p className="text-xs text-[var(--color-ink-2)]">Cobertura</p>
+                    <p className="font-bold text-[var(--color-navy)]">{coverage} países</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📊</span>
+                  <div>
+                    <p className="text-xs text-[var(--color-ink-2)]">Datos</p>
+                    <p className="font-bold text-[var(--color-navy)]">{data} GB</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">📅</span>
+                  <div>
+                    <p className="text-xs text-[var(--color-ink-2)]">Validez</p>
+                    <p className="font-bold text-[var(--color-navy)]">{validity} días</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Divider */}
-            <div className="hidden sm:block h-auto border-l border-[#E9E2D8]" />
-
-            {/* Referencia */}
-            <div className="sm:col-span-1 flex flex-col justify-center">
+            {/* Referencia - Right */}
+            <div className="sm:text-right">
               <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-3">Referencia del pedido</p>
-              <p className="text-2xl font-black text-[var(--color-navy)] font-mono mb-6 break-all">{orderRef}</p>
-              <p className="text-sm">
-                <span className="font-bold text-[var(--color-navy)]">Fecha de compra</span><br />
-                <span className="text-[var(--color-ink-2)]">{purchaseDate}</span>
-              </p>
+              <p className="text-xl font-black text-[var(--color-navy)] font-mono mb-4 break-all">{orderRef}</p>
+              <div className="text-sm">
+                <p className="text-xs text-[var(--color-ink-2)]">Fecha de compra</p>
+                <p className="font-bold text-[var(--color-navy)]">{purchaseDate}</p>
+              </div>
             </div>
           </div>
         </motion.div>
