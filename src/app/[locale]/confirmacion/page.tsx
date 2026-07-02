@@ -58,29 +58,34 @@ function ConfirmacionContent() {
 
         {/* Content Overlay */}
         <div className="relative z-20 px-6 sm:px-12 py-12 sm:py-20 h-full flex flex-col justify-center max-w-2xl">
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
-            className="mb-8"
-          >
-            <div className="w-12 h-12 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center">
-              <CheckCircle size={28} weight="fill" className="text-[var(--color-gold)]" />
-            </div>
-          </motion.div>
+          {/* White Gradient Background Behind Text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/15 to-transparent rounded-lg z-0" />
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
-              Tu próximo viaje<br />empieza ahora.
-            </h1>
-            <p className="text-base text-white/90 leading-relaxed max-w-md">
-              Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
-            </p>
-          </motion.div>
+          <div className="relative z-10">
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+              className="mb-8"
+            >
+              <div className="w-12 h-12 rounded-full border-2 border-[var(--color-gold)] flex items-center justify-center">
+                <CheckCircle size={28} weight="fill" className="text-[var(--color-gold)]" />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
+                Tu próximo viaje<br />empieza ahora.
+              </h1>
+              <p className="text-base text-white/90 leading-relaxed max-w-md">
+                Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </div>
 
