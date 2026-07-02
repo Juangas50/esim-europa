@@ -3,10 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, Book, Question, MagnifyingGlass } from "@phosphor-icons/react";
+import { CheckCircle } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
-import { fadeUp, stagger } from "@/lib/motion";
 import { analytics } from "@/lib/analytics";
 
 function ConfirmacionContent() {
@@ -15,11 +14,11 @@ function ConfirmacionContent() {
   const searchParams = useSearchParams();
   const orderRef = searchParams.get("ref") ?? "—";
   const planId = searchParams.get("plan") ?? "";
-  const planName = searchParams.get("planName") ?? "eSIM RUTA34";
+  const planName = searchParams.get("planName") ?? "Europa Plus";
   const coverage = searchParams.get("coverage") ?? "39";
   const data = searchParams.get("data") ?? "10";
   const validity = searchParams.get("validity") ?? "30";
-  const purchaseDate = searchParams.get("date") ?? new Date().toLocaleDateString("es-ES");
+  const purchaseDate = new Date().toLocaleDateString("es-ES");
 
   useEffect(() => {
     if (orderRef !== "—") {
@@ -29,102 +28,104 @@ function ConfirmacionContent() {
     }
   }, []);
 
-  const steps = [
-    { num: "1", icon: "🛍️", title: "Compra realizada", desc: "Hemos recibido tu pago correctamente." },
-    { num: "2", icon: "✉️", title: "Email en camino", desc: "En breve recibirás tu código QR y las instrucciones." },
-    { num: "3", icon: "📱", title: "Instala la eSIM", desc: "Te tomará menos de 5 minutos." },
-    { num: "4", icon: "✈️", title: "Disfruta tu viaje", desc: "Activa al aterrizar y navega sin roaming." },
-  ];
-
   return (
     <div className="bg-[var(--color-warm-white)] min-h-[100dvh]">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-[#E9E2D8]">
+      <header className="bg-white sticky top-0 z-40 border-b border-[#E9E2D8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="text-2xl font-black text-[var(--color-navy)]">RUTA<span className="text-[var(--color-gold)]">34</span></div>
-          <div className="flex items-center gap-2 text-sm text-[var(--color-ink-2)]">
+          <div className="text-2xl font-black text-[var(--color-navy)]">
+            RUTA<span className="text-[var(--color-gold)]">34</span>
+            <div className="text-xs font-bold tracking-widest text-[var(--color-ink-2)]">TELECOM</div>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
             <div className="w-2 h-2 rounded-full bg-[#22C55E]" />
-            Pago seguro
+            <span className="text-[var(--color-ink-2)]">Pago seguro</span>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className="relative h-[45vh] sm:h-[50vh] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-navy)]/40 to-transparent z-10" />
+      {/* Hero Section — Full Width Image */}
+      <div className="relative h-[35vh] sm:h-[45vh] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--color-warm-white)] z-10" />
         <img
           src="/images/imagen8.png"
-          alt="Europa"
+          alt="Europa viaje"
           className="absolute inset-0 w-full h-full object-cover"
         />
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 flex flex-col items-center justify-center z-20 text-white text-center px-4"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+          className="absolute top-8 left-1/2 -translate-x-1/2 z-20"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
-            className="w-20 h-20 rounded-full bg-[var(--color-gold)]/90 flex items-center justify-center mb-6 shadow-xl"
-          >
+          <div className="w-20 h-20 rounded-full bg-[var(--color-gold)] flex items-center justify-center shadow-xl">
             <CheckCircle size={48} weight="fill" className="text-white" />
-          </motion.div>
-          <h1 className="text-4xl sm:text-5xl font-black leading-tight mb-3">
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0 flex flex-col items-center justify-center z-20 text-center px-4 pt-16"
+        >
+          <h1 className="text-4xl sm:text-5xl font-black text-[var(--color-navy)] leading-tight mb-4">
             Tu próximo viaje<br />empieza ahora.
           </h1>
-          <p className="text-lg sm:text-xl opacity-95 max-w-md">
-            Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
+          <p className="text-base sm:text-lg text-[var(--color-ink)] max-w-lg leading-relaxed">
+            Tu eSIM ya está confirmada.<br />En breve recibirás todo lo que necesitas<br />para tener conexión en Europa.
           </p>
         </motion.div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        {/* Tarjeta de Pedido Premium */}
+
+        {/* Tarjeta de Pedido */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E9E2D8] shadow-lg mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E9E2D8] shadow-sm mb-16"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Izquierda: Plan Info */}
-            <div className="flex flex-col justify-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-[var(--color-gold)] mb-3">Tu pedido</p>
-              <h2 className="text-3xl font-black text-[var(--color-navy)] mb-6">{planName}</h2>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--color-gold)]/10 flex items-center justify-center text-[var(--color-gold)] font-bold">🌍</div>
-                  <div>
-                    <p className="text-xs text-[var(--color-ink-2)]">Cobertura</p>
-                    <p className="font-bold text-[var(--color-navy)]">{coverage} países</p>
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            {/* Plan Icon + Info */}
+            <div className="sm:col-span-1 flex flex-col">
+              <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-gold)] mb-4">Tu pedido</p>
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-[#F5F1E8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-3xl">📱</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--color-gold)]/10 flex items-center justify-center text-[var(--color-gold)] font-bold">📊</div>
-                  <div>
-                    <p className="text-xs text-[var(--color-ink-2)]">Datos</p>
-                    <p className="font-bold text-[var(--color-navy)]">{data} GB</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--color-gold)]/10 flex items-center justify-center text-[var(--color-gold)] font-bold">📅</div>
-                  <div>
-                    <p className="text-xs text-[var(--color-ink-2)]">Validez</p>
-                    <p className="font-bold text-[var(--color-navy)]">{validity} días</p>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-black text-[var(--color-navy)] mb-4">{planName}</h2>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-[var(--color-ink-2)]">Cobertura</p>
+                      <p className="font-bold text-[var(--color-navy)]">{coverage} países</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[var(--color-ink-2)]">Datos</p>
+                      <p className="font-bold text-[var(--color-navy)]">{data} GB</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[var(--color-ink-2)]">Validez</p>
+                      <p className="font-bold text-[var(--color-navy)]">{validity} días</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Derecha: Referencia */}
-            <div className="flex flex-col justify-center items-center sm:items-end text-center sm:text-right">
-              <p className="text-sm font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-3">Referencia del pedido</p>
-              <p className="text-3xl font-black text-[var(--color-navy)] font-mono mb-6 break-all">{orderRef}</p>
-              <p className="text-sm text-[var(--color-ink-2)]">
-                <strong>Fecha de compra</strong><br />{purchaseDate}
+            {/* Divider */}
+            <div className="hidden sm:block h-auto border-l border-[#E9E2D8]" />
+
+            {/* Referencia */}
+            <div className="sm:col-span-1 flex flex-col justify-center">
+              <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-3">Referencia del pedido</p>
+              <p className="text-2xl font-black text-[var(--color-navy)] font-mono mb-6 break-all">{orderRef}</p>
+              <p className="text-sm">
+                <span className="font-bold text-[var(--color-navy)]">Fecha de compra</span><br />
+                <span className="text-[var(--color-ink-2)]">{purchaseDate}</span>
               </p>
             </div>
           </div>
@@ -132,33 +133,43 @@ function ConfirmacionContent() {
 
         {/* Timeline 4 Pasos */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="mb-16"
         >
-          <p className="text-sm font-bold uppercase tracking-widest text-[var(--color-gold)] text-center mb-4">¿QUÉ SUCEDE AHORA?</p>
-          <h3 className="text-2xl sm:text-3xl font-black text-[var(--color-navy)] text-center mb-8">Tu eSIM en 4 simples pasos</h3>
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-gold)] text-center mb-4">¿QUÉ SUCEDE AHORA?</p>
+          <h3 className="text-3xl sm:text-4xl font-black text-[var(--color-navy)] text-center mb-10">Tu eSIM en 4 simples pasos</h3>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-            {steps.map((step, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 relative">
+            {/* Connection Lines */}
+            <div className="hidden sm:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold)] to-transparent" />
+
+            {[
+              { num: "1", icon: "🛍", title: "Compra realizada", desc: "Hemos recibido tu pago correctamente.", check: true },
+              { num: "2", icon: "✉", title: "Email en camino", desc: "En breve recibirás tu código QR y las instrucciones.", check: true },
+              { num: "3", icon: "📱", title: "Instala la eSIM", desc: "Te tomará menos de 5 minutos.", check: false },
+              { num: "4", icon: "✈", title: "Disfruta tu viaje", desc: "Activa al aterrizar y navega sin roaming.", check: false },
+            ].map((step, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="text-center"
+                className="flex flex-col items-center text-center relative z-10"
               >
-                <div className="flex flex-col items-center">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[var(--color-gold)]/10 border-2 border-[var(--color-gold)] flex items-center justify-center text-2xl mb-3 font-bold text-[var(--color-gold)]">
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
                     {step.num}
                   </div>
-                  {i < steps.length - 1 && (
-                    <div className="hidden sm:block absolute left-[calc(50%+32px)] w-[calc(100%-64px)] h-1 bg-gradient-to-r from-[var(--color-gold)] to-transparent -z-10" />
+                  {step.check && (
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
+                      <span className="text-white text-xs">✓</span>
+                    </div>
                   )}
-                  <p className="text-sm font-bold text-[var(--color-navy)]">{step.title}</p>
-                  <p className="text-xs text-[var(--color-ink-2)] mt-1">{step.desc}</p>
                 </div>
+                <p className="text-2xl mb-2">{step.icon}</p>
+                <p className="font-bold text-[var(--color-navy)] mb-1">{step.title}</p>
+                <p className="text-xs text-[var(--color-ink-2)] leading-snug">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -166,62 +177,61 @@ function ConfirmacionContent() {
 
         {/* Help Section */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <h3 className="text-2xl sm:text-3xl font-black text-[var(--color-navy)] text-center mb-8">¿Necesitas ayuda?</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* WhatsApp */}
+          <h3 className="text-3xl sm:text-4xl font-black text-[var(--color-navy)] text-center mb-10">¿Necesitas ayuda?</h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* WhatsApp — Larger */}
             <motion.a
               href="https://wa.me/34600000000"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4 }}
-              className="bg-white border border-[#E9E2D8] rounded-2xl p-6 text-center hover:shadow-lg transition-all"
+              className="sm:col-span-1 sm:row-span-2 bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col justify-center"
             >
-              <div className="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💬</span>
+              <div className="w-16 h-16 rounded-full bg-[#25D366]/10 flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">💬</span>
               </div>
-              <h4 className="font-bold text-[var(--color-navy)] mb-2">Escribir por WhatsApp</h4>
+              <h4 className="font-black text-lg text-[var(--color-navy)] mb-3">Escribir por WhatsApp</h4>
               <p className="text-sm text-[var(--color-ink-2)]">Estamos aquí para ayudarte las 24 horas.</p>
             </motion.a>
 
-            {/* Guía + FAQ */}
-            <div className="grid grid-cols-1 gap-6">
-              <motion.a
-                href="#"
-                whileHover={{ y: -4 }}
-                className="bg-white border border-[#E9E2D8] rounded-2xl p-6 text-center hover:shadow-lg transition-all"
-              >
-                <div className="w-12 h-12 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
-                  <Book size={24} className="text-[var(--color-gold)]" />
-                </div>
-                <h4 className="font-bold text-[var(--color-navy)] mb-2">Guía de instalación</h4>
-                <p className="text-xs text-[var(--color-ink-2)]">Paso a paso para iPhone y Android</p>
-              </motion.a>
+            {/* Guide */}
+            <motion.a
+              href="#"
+              whileHover={{ y: -4 }}
+              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all"
+            >
+              <div className="w-14 h-14 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">📖</span>
+              </div>
+              <h4 className="font-bold text-[var(--color-navy)] mb-2">Guía de instalación</h4>
+              <p className="text-xs text-[var(--color-ink-2)]">Paso a paso para iPhone y Android</p>
+            </motion.a>
 
-              <motion.a
-                href="#"
-                whileHover={{ y: -4 }}
-                className="bg-white border border-[#E9E2D8] rounded-2xl p-6 text-center hover:shadow-lg transition-all"
-              >
-                <div className="w-12 h-12 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
-                  <Question size={24} className="text-[var(--color-gold)]" />
-                </div>
-                <h4 className="font-bold text-[var(--color-navy)] mb-2">Preguntas frecuentes</h4>
-                <p className="text-xs text-[var(--color-ink-2)]">Resolvemos las dudas más comunes</p>
-              </motion.a>
-            </div>
+            {/* FAQ */}
+            <motion.a
+              href="#"
+              whileHover={{ y: -4 }}
+              className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all"
+            >
+              <div className="w-14 h-14 rounded-full bg-[var(--color-gold)]/10 flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">❓</span>
+              </div>
+              <h4 className="font-bold text-[var(--color-navy)] mb-2">Preguntas frecuentes</h4>
+              <p className="text-xs text-[var(--color-ink-2)]">Resolvemos las dudas más comunes</p>
+            </motion.a>
           </div>
         </motion.div>
 
         {/* Back Button */}
-        <div className="text-center">
+        <div className="text-center mb-8">
           <motion.a
             href={`/${locale}`}
-            whileHover={{ x: -4 }}
+            whileHover={{ x: -2 }}
             className="inline-flex items-center gap-2 text-[var(--color-navy)] font-semibold hover:text-[var(--color-gold)] transition-colors"
           >
             ← Volver al inicio
@@ -230,14 +240,15 @@ function ConfirmacionContent() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-[#E9E2D8] bg-white py-8 mt-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[var(--color-ink-2)]">
-          <div className="flex items-center gap-4">
-            <span>🔒 Pago 100% seguro</span>
-            <span>🛡️ Tus datos protegidos</span>
-            <span>📞 Soporte 24/7</span>
-          </div>
-          <p>© RUTA34 Telecom 2026</p>
+      <footer className="border-t border-[#E9E2D8] bg-white py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-center items-center gap-4 text-xs text-[var(--color-ink-2)]">
+          <span>🔒 Pago 100% seguro</span>
+          <span>•</span>
+          <span>🛡️ Tus datos protegidos</span>
+          <span>•</span>
+          <span>📞 Soporte 24/7</span>
+          <span>•</span>
+          <span>© RUTA34 Telecom 2026</span>
         </div>
       </footer>
     </div>
