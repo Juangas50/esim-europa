@@ -90,7 +90,7 @@ function ConfirmacionContent() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-0 sm:py-4 -mt-8 sm:-mt-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-0 sm:py-4 -mt-2 sm:-mt-4">
 
         {/* Tarjeta de Pedido */}
         <motion.div
