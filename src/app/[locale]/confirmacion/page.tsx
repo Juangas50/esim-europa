@@ -59,7 +59,7 @@ function ConfirmacionContent() {
         {/* Content Overlay */}
         <div className="relative z-20 px-6 sm:px-12 py-10 sm:py-14 h-full flex flex-col justify-center max-w-2xl">
           {/* White Gradient Background Behind Text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/20 rounded-lg z-0" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-transparent z-0" />
 
           <div className="relative z-10">
             <motion.div
