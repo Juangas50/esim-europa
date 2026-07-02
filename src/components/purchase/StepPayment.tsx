@@ -44,9 +44,9 @@ function AmexLogo() {
 
 function StripeBadge() {
   return (
-    <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#F8F8F8] border border-black/8 px-3 py-1.5">
+    <div className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-warm-white)] border border-[var(--color-border)] px-3 py-1.5">
       <ShieldCheck size={13} weight="fill" className="text-[#635BFF]" />
-      <span className="text-[11px] font-semibold text-[#555]">Procesado por</span>
+      <span className="text-[11px] font-semibold text-[var(--color-ink-2)]">Procesado por</span>
       <svg width="38" height="14" viewBox="0 0 60 25" fill="none" aria-label="Stripe">
         <path d="M59.6 13.1c0-4.8-2.3-8.6-6.7-8.6-4.4 0-7.1 3.8-7.1 8.6 0 5.7 3.2 8.5 7.7 8.5 2.2 0 3.9-.5 5.2-1.2v-3.7c-1.3.6-2.7 1-4.6 1-1.8 0-3.4-.6-3.6-2.8h9.1v-1.8zm-9.2-1.8c0-2.1 1.3-3 2.5-3 1.2 0 2.4.9 2.4 3h-4.9zM40.5 4.5c-1.8 0-3 .8-3.6 1.4l-.2-1.1h-4v21.1l4.5-1v-5.1c.7.5 1.7.9 3 .9 3 0 5.8-2.4 5.8-7.7-.1-4.9-2.8-7.5-5.5-7.5zm-1 11.4c-1 0-1.6-.4-2-1V9.7c.5-.5 1.1-.9 2-.9 1.5 0 2.5 1.7 2.5 3.6 0 1.9-1 3.5-2.5 3.5zM33 3.3l-4.6 1v3.8l4.6-1V3.3zM28.5 4.8h4.6v16h-4.6V4.8zM23.3 6.1l-.3-1.3h-4v16h4.5v-10.8c1.1-1.4 2.9-1.1 3.5-1V4.8c-.6-.1-2.8-.3-3.7 1.3zM14.2 1.4L9.8 2.3l-.1 14.4c0 2.7 2 4.6 4.7 4.6 1.5 0 2.6-.3 3.2-.6V17c-.6.2-3.4 1.1-3.4-1.6V8.7h3.4V4.8h-3.4L14.2 1.4zM3.9 9.2C3.9 8.5 4.5 8 5.7 8c1.6 0 3.6.5 5.2 1.3V5c-1.7-.7-3.4-1-5.2-1C2.1 4 0 6.1 0 9.4c0 5.1 7 4.3 7 6.5 0 .9-.8 1.2-1.9 1.2-1.6 0-3.7-.7-5.4-1.6V19c1.8.8 3.7 1.2 5.4 1.2 4.1 0 6.9-2 6.9-5.5-.1-5.5-7.1-4.5-7.1-5.5z" fill="#635BFF"/>
       </svg>
@@ -130,40 +130,46 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Payment options */}
-      <div className="lg:col-span-2 space-y-5">
+      <motion.div
+        initial={{ opacity: 0, x: -16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
+        className="lg:col-span-2 space-y-6"
+      >
 
         {/* Método de pago */}
-        <div className="bg-white rounded-2xl border border-black/[0.07] p-6">
-          <h3 className="font-bold text-[#1B2F4E] mb-4">{t("payment.method")}</h3>
+        <div className="bg-white rounded-2xl border border-[var(--color-border)] p-6 shadow-sm">
+          <h3 className="font-bold text-lg text-[var(--color-navy)] mb-6">{t("payment.method")}</h3>
           <div className="space-y-3">
 
             {/* Stripe */}
             <motion.button
               onClick={() => setMethod("stripe")}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.99 }}
-              className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
+              className={`w-full text-left rounded-2xl border-2 p-5 transition-all ${
                 method === "stripe"
-                  ? "border-[#C9973A] bg-[#C9973A]/3"
-                  : "border-[#1B2F4E]/8 hover:border-[#1B2F4E]/20"
+                  ? "border-[var(--color-gold)] bg-[var(--color-gold)]/5"
+                  : "border-[var(--color-border)] hover:border-[var(--color-gold)]/50"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    method === "stripe" ? "border-[#C9973A]" : "border-[#ccc]"
+                    method === "stripe" ? "border-[var(--color-gold)]" : "border-[var(--color-border)]"
                   }`}>
                     {method === "stripe" && (
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#C9973A]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-gold)]" />
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#1B2F4E]">{t("payment.card")}</p>
-                    <p className="text-xs text-[#999]">{t("payment.cardSub")}</p>
+                    <p className="font-semibold text-sm text-[var(--color-navy)]">{t("payment.card")}</p>
+                    <p className="text-xs text-[var(--color-ink-2)]">{t("payment.cardSub")}</p>
                   </div>
                 </div>
-                <CreditCard size={22} className="text-[#999]" />
+                <CreditCard size={22} className="text-[var(--color-ink-2)]" />
               </div>
 
               {/* Card logos — solo visible cuando está seleccionado */}
@@ -186,46 +192,56 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
         </div>
 
         {/* Trust badges — P1 CRO */}
-        <div className="rounded-2xl bg-[#F8F8F8] border border-black/[0.06] p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1, ease: EASE_OUT }}
+          className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-border)] p-6"
+        >
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-sm text-[#555]">
-              <Lock size={14} weight="fill" className="text-emerald-500" />
+            <div className="flex items-center gap-2 text-sm text-[var(--color-ink)]">
+              <Lock size={14} weight="fill" className="text-[var(--color-gold)]" />
               <span className="font-semibold">{t("payment.secure")}</span>
             </div>
             <StripeBadge />
           </div>
-        </div>
+        </motion.div>
 
         {/* Error */}
         {error && (
-          <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: EASE_OUT }}
+            className="rounded-xl bg-[#FEE2E2] border border-[#FECACA] p-4 text-sm text-[#C1502F]"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {/* Info Stripe */}
-        <p className="text-xs text-[#999] text-center">
+        <p className="text-xs text-[var(--color-ink-2)] text-center">
           El pago se procesa de forma segura con Stripe. Podés pagar con tarjeta, Apple Pay o Link si están disponibles.
         </p>
 
         {/* Checkbox de T&C */}
-        <div className="rounded-xl bg-[#F8F8F8] border border-black/[0.06] p-4">
+        <div className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-border)] p-6">
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="w-5 h-5 mt-0.5 rounded border-2 border-[#ddd] bg-white checked:bg-[#C9973A] checked:border-[#C9973A] cursor-pointer accent-[#C9973A]"
+              className="w-5 h-5 mt-0.5 rounded border-2 border-[var(--color-border)] bg-white checked:bg-[var(--color-gold)] checked:border-[var(--color-gold)] cursor-pointer accent-[var(--color-gold)]"
             />
-            <span className="text-xs text-[#555] leading-relaxed flex-1">
+            <span className="text-xs text-[var(--color-ink)] leading-relaxed flex-1">
               {locale === "pt" ? (
                 <>
                   Li e aceito os{" "}
-                  <a href={`/${locale}/termos`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/termos`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] font-semibold underline hover:no-underline">
                     Termos e Condições
                   </a>
                   {" "}e a{" "}
-                  <a href={`/${locale}/privacidade`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/privacidade`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] font-semibold underline hover:no-underline">
                     Política de Privacidade
                   </a>
                   . Entendo que, ao ativar o eSIM, o serviço começa a ser prestado imediatamente e aceito expressamente renunciar ao meu direito de arrependimento de 14 dias a partir do momento da ativação.
@@ -233,11 +249,11 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               ) : (
                 <>
                   He leído y acepto los{" "}
-                  <a href={`/${locale}/terminos`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/terminos`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] font-semibold underline hover:no-underline">
                     Términos y Condiciones
                   </a>
                   {" "}y la{" "}
-                  <a href={`/${locale}/privacidad`} target="_blank" rel="noopener noreferrer" className="text-[#C9973A] font-semibold underline hover:no-underline">
+                  <a href={`/${locale}/privacidad`} target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] font-semibold underline hover:no-underline">
                     Política de Privacidad
                   </a>
                   . Entiendo que, al activar la eSIM, el servicio comienza a prestarse de forma inmediata y acepto expresamente renunciar a mi derecho de desistimiento de 14 días a partir del momento de la activación.
@@ -248,16 +264,17 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
         </div>
 
         {/* Botones */}
-        <div className="flex items-center gap-3 pt-2">
-          <button
+        <div className="flex items-center gap-3 pt-6">
+          <motion.button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#1B2F4E] px-4 py-3 rounded-xl hover:bg-[#1B2F4E]/5 active:scale-[0.97] transition-all"
-            style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1)" }}
+            whileHover={{ x: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-navy)] px-4 py-3 rounded-xl hover:bg-[var(--color-warm-white)] transition-colors"
           >
-            <ArrowLeft size={15} weight="bold" />
+            <ArrowLeft size={16} weight="bold" />
             {t("form.back")}
-          </button>
+          </motion.button>
 
           <Button
             variant="primary"
@@ -283,44 +300,49 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
             )}
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Resumen final */}
       <div className="lg:col-span-1">
-        <div className="sticky top-6 rounded-2xl bg-white border border-black/[0.07] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#999] mb-4">
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+          className="sticky top-6 rounded-2xl bg-white border border-[var(--color-border)] p-6 shadow-sm"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-6">
             {t("summary")}
           </p>
 
-          <div className="space-y-2 border-b border-[#1B2F4E]/8 pb-4 mb-4">
+          <div className="space-y-2 border-b border-[var(--color-border)] pb-6 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-[#555]">
+              <span className="text-[var(--color-ink)]">
                 {plan.name}{(formData.quantity ?? 1) > 1 ? ` × ${formData.quantity}` : ""}
               </span>
-              <span className="font-semibold text-[#1B2F4E]">
+              <span className="font-semibold text-[var(--color-navy)]">
                 {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-[#555]">Email</span>
-              <span className="text-[#1B2F4E] text-xs truncate max-w-[140px]">{formData.customer_email}</span>
+              <span className="text-[var(--color-ink)]">Email</span>
+              <span className="text-[var(--color-navy)] text-xs truncate max-w-[140px]">{formData.customer_email}</span>
             </div>
           </div>
 
           <div className="flex justify-between items-baseline mb-1">
-            <span className="font-semibold text-[#555]">Total</span>
-            <span className="text-2xl font-black text-[#1B2F4E]">
+            <span className="font-semibold text-[var(--color-ink)]">Total</span>
+            <span className="text-4xl font-black text-[var(--color-navy)]">
               {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
             </span>
           </div>
-          <p className="text-xs text-[#999] text-right">USD · pago único · sin renovación automática</p>
+          <p className="text-xs text-[var(--color-ink-2)] text-right">USD · pago único · sin renovación automática</p>
 
           {/* Mini trust badge en summary */}
-          <div className="mt-4 pt-3 border-t border-[#1B2F4E]/6 flex items-center gap-1.5 justify-center">
-            <Lock size={11} weight="fill" className="text-[#999]" />
-            <span className="text-[11px] text-[#aaa]">{t("payment.noStore")}</span>
+          <div className="mt-4 pt-3 border-t border-[var(--color-border)] flex items-center gap-1.5 justify-center">
+            <Lock size={12} weight="fill" className="text-[var(--color-ink-2)]" />
+            <span className="text-[11px] text-[var(--color-ink-2)]">{t("payment.noStore")}</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

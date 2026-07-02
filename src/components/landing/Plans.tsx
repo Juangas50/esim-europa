@@ -1,26 +1,20 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, Star, Users, CaretLeft, CaretRight, Info } from "@phosphor-icons/react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Check, Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
-import CountriesModal from "@/components/shared/CountriesModal";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
 import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
-const MAX_VISIBLE = 5;
 
 interface PlansProps {
   plans: Plan[];
 }
-
-type Tab = "local" | "dataonly";
-
-// ── Ordenar por position (nulls al final) → precio ───────────────────────────
 
 function sortByPosition(plans: Plan[]) {
   return [...plans].sort((a, b) => {
@@ -31,22 +25,11 @@ function sortByPosition(plans: Plan[]) {
   });
 }
 
-// En mobile el plan recomendado va primero para mayor visibilidad
-function sortMobileFirst(plans: Plan[]) {
-  const sorted = sortByPosition(plans);
-  const popular = sorted.find((p) => p.is_popular);
-  if (!popular) return sorted;
-  return [popular, ...sorted.filter((p) => !p.is_popular)];
-}
-
-// ── Card unificada ────────────────────────────────────────────────────────────
-
-function PlanCard({ plan, index, onShowCountries }: { plan: Plan; index: number; onShowCountries: () => void }) {
+function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPopular: boolean }) {
   const t = useTranslations("plans");
   const locale = useLocale();
-  const isPopular = plan.is_popular;
 
-  const keyFeatures = plan.badge
+  const features = plan.badge
     ? plan.badge.split(/\r?\n/).map(f => f.trim()).filter(Boolean)
     : [];
 
@@ -55,256 +38,117 @@ function PlanCard({ plan, index, onShowCountries }: { plan: Plan; index: number;
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
-      className={`relative flex flex-col rounded-2xl p-6 md:p-8 h-full ${
+      className={`relative flex flex-col h-full rounded-2xl p-5 transition-all ${
         isPopular
-          ? "bg-[#1B2F4E] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4)]"
-          : "bg-white border border-black/[0.07]"
+          ? "bg-[var(--color-navy)] shadow-lg ring-2 ring-[var(--color-gold)]"
+          : "bg-white border border-[var(--color-border)]"
       }`}
     >
-      {/* Top: popular badge only (size hidden for cleaner web UX) */}
+      {/* Badge */}
       {isPopular && (
-        <div className="flex items-start justify-end mb-4">
-          <Badge variant="red" className="text-[10px]">
-            <Star size={9} weight="fill" />
-            {t("popular")}
+        <div className="mb-1.5">
+          <Badge variant="red" className="inline-flex gap-2">
+            <Star size={12} weight="fill" />
+            <span>{t("popular")}</span>
           </Badge>
         </div>
       )}
 
-      {/* Nombre del plan + info button */}
-      <div className="flex items-center justify-between gap-2 mb-4">
-        <h3 className={`text-lg font-black ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
-          {plan.name}
-        </h3>
-        <button
-          onClick={onShowCountries}
-          className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
-            isPopular
-              ? "hover:bg-white/10 text-white/60 hover:text-white"
-              : "hover:bg-[#F5F5F5] text-[#999] hover:text-[#555]"
-          }`}
-          title="Ver países de cobertura"
-          aria-label="Ver países de cobertura"
-        >
-          <Info size={16} weight="bold" />
-        </button>
-      </div>
+      {/* Plan Name */}
+      <h3 className={`text-xl font-black mb-2.5 ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
+        {plan.name}
+      </h3>
 
-      {/* Datos — dos zonas para SIM Local, zona única para DataOnly */}
-      {plan.type === "local" && plan.eu_data_gb ? (
-        <div className="mb-5 rounded-xl overflow-hidden">
-          {/* Zona España — primaria */}
-          <div className={`px-3.5 py-3 ${isPopular ? "bg-white/12" : "bg-[#F5F5F5]"}`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-baseline gap-1">
-                <span className={`text-3xl font-black leading-none ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
-                  {plan.data_gb}
-                </span>
-                <span className={`text-sm font-bold ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
-              </div>
-              <span className={`text-xs font-bold ${isPopular ? "text-white/70" : "text-[#555]"}`}>
-                España
-              </span>
-            </div>
-            <p className={`text-[10px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/30" : "text-[#bbb]"}`}>
-              4G / 5G
-            </p>
-          </div>
-          {/* Zona UE — secundaria */}
-          <div className={`px-3.5 py-2.5 border-t ${
-            isPopular
-              ? "bg-white/6 border-white/10"
-              : "bg-white border-black/6"
-          }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-baseline gap-1">
-                <span className={`text-xl font-black leading-none ${isPopular ? "text-white/85" : "text-[#222]"}`}>
-                  {plan.eu_data_gb}
-                </span>
-                <span className={`text-xs font-bold ${isPopular ? "text-white/30" : "text-[#ccc]"}`}>GB</span>
-              </div>
-              <span className="text-[11px] font-bold text-[#C9973A]">
-                🇪🇺 Roaming UE
-              </span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-5">
-          <span className={`text-4xl font-black leading-none ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
+      {/* Data Amount - Prominent */}
+      <div className="mb-2.5">
+        <div className="flex items-baseline gap-2 mb-0.5">
+          <span className={`text-5xl font-black leading-none ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
             {plan.data_gb}
           </span>
-          <span className={`text-lg font-bold ml-1 ${isPopular ? "text-white/40" : "text-[#bbb]"}`}>GB</span>
-          <p className={`text-[11px] font-semibold uppercase tracking-wider mt-0.5 ${isPopular ? "text-white/40" : "text-[#aaa]"}`}>
-            4G / 5G
+          <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
+            GB
+          </span>
+        </div>
+        <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
+          {t("coverage")}
+        </p>
+      </div>
+
+      {/* EU Data (if applicable) */}
+      {plan.eu_data_gb ? (
+        <div className="mb-2.5 pb-2.5 border-b border-white/10">
+          <p className={`text-xs font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
+            🇪🇺 {t("euRoaming")}
+          </p>
+          <p className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
+            {plan.eu_data_gb} GB
           </p>
         </div>
-      )}
+      ) : null}
+
+      {/* Duration */}
+      {plan.duration_days ? (
+        <div className="mb-2.5">
+          <p className={`text-xs font-semibold ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
+            {plan.duration_days} {t("daysDuration")}
+          </p>
+        </div>
+      ) : null}
 
       {/* Features */}
-      <ul className="space-y-1 mb-6 flex-1">
-        {keyFeatures.map((f, i) => (
-          <li key={i} className={`flex items-start gap-2 text-sm ${isPopular ? "text-white/70" : "text-[#333]"}`}>
-            <Check size={13} weight="bold" className="text-[#059669] mt-0.5 shrink-0" />
-            {f}
-          </li>
-        ))}
-      </ul>
+      <div className="mb-3 flex-1">
+        <ul className="space-y-0.5">
+          {features.map((feature, i) => (
+            <li key={i} className={`flex items-start gap-2 text-xs ${isPopular ? "text-white/80" : "text-[var(--color-ink)]"}`}>
+              <Check size={14} weight="bold" className={`mt-0.5 shrink-0 ${isPopular ? "text-[var(--color-gold)]" : "text-[var(--color-gold)]"}`} />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {/* Precio + CTA */}
-      <div className="mt-auto">
-        <p className={`text-2xl font-black ${isPopular ? "text-white" : "text-[#1B2F4E]"}`}>
+      {/* Divider */}
+      {plan.eu_data_gb || features.length > 0 ? <div className="mb-2.5 border-t border-white/10" /> : null}
+
+      {/* Price */}
+      <div className="mb-2">
+        <p className={`text-3xl font-black leading-none mb-0.5 ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
           {formatUSD(plan.price_usd)}
         </p>
-        <p className={`text-xs mb-4 ${isPopular ? "text-white/40" : "text-[#666]"}`}>
+        <p className={`text-xs ${isPopular ? "text-white/50" : "text-[var(--color-ink-2)]"}`}>
           {t("perMonth")}
         </p>
-
-        <a
-          href={`/${locale}/compra?plan=${plan.id}`}
-          onClick={() => {
-            analytics.planSelected(plan);
-            trackSelectPlan({
-              id: plan.id,
-              name: plan.name,
-              price: plan.price_usd,
-              size: plan.size,
-            });
-          }}
-          className={`flex items-center justify-center gap-1.5 w-full py-3 min-h-[50px] rounded-xl font-bold text-sm leading-tight active:scale-[0.97] ${
-            isPopular
-              ? "bg-[#C9973A] text-[#1B2F4E] hover:bg-[#E8C56A] shadow-[0_4px_16px_-4px_rgba(201,151,58,0.4)]"
-              : "border-2 border-[#1B2F4E] text-[#1B2F4E] hover:bg-[#1B2F4E] hover:text-white"
-          }`}
-          style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease, color 200ms ease" }}
-        >
-          {plan.name}
-          <ArrowRight size={13} weight="bold" />
-        </a>
       </div>
+
+      {/* CTA Button */}
+      <a
+        href={`/${locale}/compra?plan=${plan.id}`}
+        onClick={() => {
+          analytics.planSelected(plan);
+          trackSelectPlan({
+            id: plan.id,
+            name: plan.name,
+            price: plan.price_usd,
+            size: plan.size,
+          });
+        }}
+        className={`w-full py-3 rounded-xl font-bold text-center transition-all active:scale-[0.97] ${
+          isPopular
+            ? "bg-[var(--color-gold)] text-[var(--color-navy)] hover:bg-[var(--color-gold-light)] shadow-lg"
+            : "border-2 border-[var(--color-navy)] text-[var(--color-navy)] hover:bg-[var(--color-navy)] hover:text-white"
+        }`}
+      >
+        {t("buyPlan")}
+      </a>
     </motion.div>
   );
 }
 
-// ── Grid estático (≤ MAX_VISIBLE planes) ─────────────────────────────────────
-
-function PlansGrid({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
-  const cols =
-    plans.length <= 3 ? "xl:grid-cols-3" :
-    plans.length === 4 ? "lg:grid-cols-3 xl:grid-cols-4" :
-    "lg:grid-cols-3 xl:grid-cols-5";
-
-  return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${cols} gap-4 sm:gap-6`}>
-      {plans.map((plan, i) => (
-        <PlanCard key={plan.id} plan={plan} index={i} onShowCountries={onShowCountries} />
-      ))}
-    </div>
-  );
-}
-
-// ── Carrusel (> MAX_VISIBLE planes) ──────────────────────────────────────────
-
-function PlansCarousel({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
-  const [current, setCurrent] = useState(0);
-  // Mobile: 1 plan visible + pico del siguiente (85% de ancho)
-  // Desktop: 3 planes visibles (33%) o 5 (20%)
-  const maxIndex = Math.max(0, plans.length - 1);
-
-  return (
-    <div className="relative">
-      {/* overflow-hidden en desktop, visible en mobile para el pico lateral */}
-      <div className="overflow-hidden sm:overflow-hidden">
-        <motion.div
-          animate={{ x: `calc(-${current} * (85% + 16px))` }}
-          transition={{ duration: 0.4, ease: EASE_OUT }}
-          className="flex gap-4 sm:gap-6"
-        >
-          {plans.map((plan, i) => (
-            <div
-              key={plan.id}
-              // Mobile: 85% de ancho → 1 plan + pico del siguiente
-              // sm: 3 columnas, lg: 5 columnas
-              className="flex-none w-[85%] sm:w-[calc(33.33%-11px)] lg:w-[calc(20%-10px)]"
-            >
-              <PlanCard plan={plan} index={i} onShowCountries={onShowCountries} />
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Dots — visibles en mobile */}
-      <div className="flex items-center justify-center gap-2 mt-5">
-        {plans.map((p, i) => (
-          <button
-            key={i}
-            onClick={() => { setCurrent(i); analytics.swipePlanCarousel("dot", p.id) }}
-            className={`rounded-full transition-all duration-200 ${
-              i === current ? "w-6 h-2 bg-[#C9973A]" : "w-2 h-2 bg-[#1B2F4E]/15"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Flechas — solo desktop */}
-      <div className="hidden sm:flex items-center justify-center gap-3 mt-4">
-        <button
-          onClick={() => { setCurrent((c) => Math.max(0, c - 1)); analytics.swipePlanCarousel("prev") }}
-          disabled={current === 0}
-          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2 transition-all"
-        >
-          <CaretLeft size={16} weight="bold" />
-        </button>
-        <button
-          onClick={() => { setCurrent((c) => Math.min(maxIndex, c + 1)); analytics.swipePlanCarousel("next") }}
-          disabled={current === maxIndex}
-          className="w-10 h-10 rounded-full border-2 border-[#1B2F4E]/12 flex items-center justify-center hover:bg-[#1B2F4E] hover:text-white hover:border-[#1B2F4E] disabled:opacity-25 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2 transition-all"
-        >
-          <CaretRight size={16} weight="bold" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ── Plans section para un tab ─────────────────────────────────────────────────
-
-function TabContent({ plans, onShowCountries }: { plans: Plan[]; onShowCountries: () => void }) {
-  const sorted       = sortByPosition(plans);
-  const sortedMobile = sortMobileFirst(plans);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check, { passive: true });
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  if (sorted.length === 0) return null;
-
-  // Mobile: siempre carrusel con popular primero
-  // Desktop: grid ≤5 planes, carrusel >5 planes
-  if (isMobile) return <PlansCarousel plans={sortedMobile} onShowCountries={onShowCountries} />;
-  return sorted.length > MAX_VISIBLE
-    ? <PlansCarousel plans={sortedMobile} onShowCountries={onShowCountries} />
-    : <PlansGrid plans={sorted} onShowCountries={onShowCountries} />;
-}
-
-// ── Main ─────────────────────────────────────────────────────────────────────
-
 export default function Plans({ plans }: PlansProps) {
   const t = useTranslations("plans");
+  const locale = useLocale();
+  const sorted = sortByPosition(plans);
 
-  const localPlans  = plans.filter((p) => p.type === "local");
-  const dataPlans   = plans.filter((p) => p.type === "dataonly");
-  const hasLocal    = localPlans.length > 0;
-  const hasData     = dataPlans.length > 0;
-
-  const [tab, setTab] = useState<Tab>(hasLocal ? "local" : "dataonly");
-  const [showCountries, setShowCountries] = useState(false);
-
-  // Track "view plans" event on component mount
   useEffect(() => {
     if (plans.length > 0) {
       trackViewPlans(
@@ -317,105 +161,54 @@ export default function Plans({ plans }: PlansProps) {
     }
   }, [plans]);
 
-  return (
-    <section id="planes" className="py-16 px-4 bg-white">
-      <div className="max-w-7xl mx-auto">
+  if (sorted.length === 0) return null;
 
+  const popularPlan = sorted.find((p) => p.is_popular);
+
+  return (
+    <section id="planes" className="py-12 px-4 bg-[var(--color-warm-white)]">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-6"
+          className="max-w-3xl mx-auto mb-8 text-center"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
+          <h2 className="text-4xl sm:text-5xl font-black text-[var(--color-navy)] mb-3">
             {t("title")}
           </h2>
-          <div className="flex flex-wrap items-center gap-4 mb-4">
-            <p className="text-[#555555] text-base">{t("subtitle")}</p>
-            <div className="inline-flex items-center gap-1.5 bg-[#F0FDF4] border border-emerald-200 rounded-full px-3 py-1">
-              <Users size={13} weight="fill" className="text-emerald-500" />
-              <span className="text-xs font-semibold text-emerald-700">{t("socialProof")}</span>
-            </div>
-          </div>
-          {/* Mini CTA → FAQ cuántos GB necesito */}
-          <a
-            href="#faq-needs"
-            onClick={() => analytics.gbGuideOpened()}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[#555] bg-amber-50 border border-amber-200 rounded-full px-4 py-2 hover:bg-amber-100 hover:text-[#1B2F4E] transition-colors duration-200"
-          >
-            <span>💡</span>
-            <span>¿Cuántos GB necesito para mi viaje?</span>
-            <span className="text-[#059669] font-bold">Ver guía →</span>
-          </a>
+          <p className="text-base text-[var(--color-ink-2)]">
+            {t("subtitle")}
+          </p>
         </motion.div>
 
-        {/* Trust strip — escaneable, mobile-first */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {[
-            { icon: "qr-email.svg", label: "QR por email" },
-            { icon: "viaje.svg", label: "Activás al llegar" },
-            { icon: "whatsapp-soporte.svg", label: "Conservás tu WhatsApp" },
-            { icon: "pago-seguro.svg", label: "Pago seguro con Stripe" },
-            { icon: "soporte.svg", label: "Soporte por WhatsApp" },
-            { icon: "activacion-rapida.svg", label: "Activación en minutos" },
-          ].map((item) => (
-            <span key={item.label} className="flex items-center gap-2 text-xs font-semibold text-[#555] bg-[#F5F5F5] border border-black/[0.07] px-3 py-1.5 rounded-full whitespace-nowrap">
-              <img src={`/icons/${item.icon}`} alt="" className="w-4 h-4 flex-shrink-0" />
-              {item.label}
-            </span>
+        {/* Plans Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {sorted.map((plan, i) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              index={i}
+              isPopular={plan.id === popularPlan?.id}
+            />
           ))}
         </div>
 
-        {/* Tab switcher — solo si hay ambos tipos */}
-        {hasLocal && hasData && (
-          <div className="mb-6 inline-flex rounded-2xl bg-[#F0F0F0] p-1.5 gap-1">
-            {([
-              { key: "local"   as Tab, emoji: "", label: t("tabLocal"),  sub: t("tabLocalSub") },
-              { key: "dataonly"as Tab, emoji: "", label: t("tabData"),   sub: t("tabDataSub")  },
-            ]).map(({ key, emoji, label, sub }) => (
-              <button
-                key={key}
-                onClick={() => setTab(key)}
-                className={`relative flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-bold transition-colors duration-200 ${
-                  tab === key ? "text-[#1B2F4E]" : "text-[#888] hover:text-[#555]"
-                }`}
-              >
-                {tab === key && (
-                  <motion.div
-                    layoutId="plans-tab-bg"
-                    className="absolute inset-0 rounded-xl bg-white shadow-sm"
-                    transition={{ duration: 0.25, ease: EASE_OUT }}
-                  />
-                )}
-                <span className="relative">{emoji}</span>
-                <span className="relative">{label}</span>
-                <span className={`relative text-[11px] font-medium hidden sm:block ${tab === key ? "text-[#999]" : "text-[#ccc]"}`}>
-                  {sub}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Contenido del tab activo */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.22, ease: EASE_OUT }}
-          >
-            <TabContent plans={tab === "local" ? localPlans : dataPlans} onShowCountries={() => setShowCountries(true)} />
-          </motion.div>
-        </AnimatePresence>
-
+        {/* Footer Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, delay: 0.2, ease: EASE_OUT }}
+          className="mt-20 pt-12 border-t border-[var(--color-border)] text-center"
+        >
+          <p className="text-sm text-[var(--color-ink-2)]">
+            {t("noAutoRenew")} • {t("activateAnytime")}
+          </p>
+        </motion.div>
       </div>
-
-      {/* Modal de países */}
-      <CountriesModal isOpen={showCountries} onClose={() => setShowCountries(false)} />
     </section>
   );
 }

@@ -14,16 +14,12 @@ export default function TopBar() {
   const title = TITLES[pathname] || ''
 
   return (
-    <div style={{
-      background: '#181818', borderBottom: '1px solid #2A2A2A',
-      padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-    }}>
-      <h1 style={{ fontSize: 17, fontWeight: 800, margin: 0, color: '#fff' }}>{title}</h1>
-      <div style={{
-        width: 30, height: 30, borderRadius: '50%', background: '#C9973A',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 12, fontWeight: 800, color: '#fff'
-      }}>A</div>
+    <div className="flex items-center justify-between px-6 py-3.5 border-b border-[var(--color-border)]"
+         style={{ background: 'var(--color-ruta-dark)' }}>
+      <h1 className="text-base font-bold text-white m-0">{title}</h1>
+      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[var(--color-gold)] text-white text-xs font-black">
+        A
+      </div>
     </div>
   )
 }

@@ -16,7 +16,15 @@
     "trust3": "QR por email",
     "trust4": "Mantém seu WhatsApp",
     "trust5": "Suporte pelo WhatsApp",
-    "priceAnchor": "A partir de {price} · Sem renovação automática"
+    "priceAnchor": "A partir de {price} · Sem renovação automática",
+    "activateIn2Min": "Ativa em 2 minutos",
+    "activation": "Ativação instantânea",
+    "connected": "Internet ativada",
+    "countries": "Países",
+    "heroAlt": "Viajante com celular usando eSIM na Europa",
+    "noAutoRenew": "Sem renovação automática",
+    "support": "Suporte 24/7",
+    "travelers": "Viajantes satisfeitos"
   },
   "benefits": {
     "title": "Internet como em casa, mas na Europa",
@@ -48,6 +56,10 @@
     "dataGb": "GB de dados",
     "countries": "países",
     "buyPlan": "Escolher plano",
+    "activateAnytime": "Ativa quando você quiser",
+    "coverage": "Cobertura em 30+ países",
+    "daysDuration": "dias",
+    "euRoaming": "Roaming UE",
     "summary": "Resumo do pedido",
     "tabLocal": "eSIM Espanha",
     "tabLocalSub": "Número · Ligações · SMS · Dados",

@@ -22,7 +22,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const base =
-      "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9973A] focus:ring-offset-2";
+      "inline-flex items-center justify-center gap-2 font-medium rounded-full transition-all select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-2";
 
     // Emil Kowalski: scale(0.97) on :active, ease-out-expo
     // Reduced motion support for accessibility
@@ -30,13 +30,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-[#C9973A] text-[#1B2F4E] hover:bg-[#E8C56A] shadow-[0_2px_12px_-2px_rgba(201,151,58,0.35)]",
+        "bg-[var(--color-gold)] text-[var(--color-navy)] hover:bg-[var(--color-gold-light)] shadow-lg",
       secondary:
-        "bg-[#1B2F4E] text-white hover:bg-[#0F1A2E]",
+        "bg-[var(--color-navy)] text-white hover:bg-[var(--color-navy-medium)]",
       outline:
-        "border border-[#1B2F4E]/15 text-[#1B2F4E] hover:bg-[#1B2F4E]/5 bg-white",
+        "border border-[var(--color-navy)]/15 text-[var(--color-navy)] hover:bg-[var(--color-navy)]/5 bg-white",
       ghost:
-        "text-[#1B2F4E] hover:bg-[#1B2F4E]/6",
+        "text-[var(--color-navy)] hover:bg-[var(--color-navy)]/6",
     };
 
     const sizes = {

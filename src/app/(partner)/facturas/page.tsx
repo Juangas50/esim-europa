@@ -21,63 +21,63 @@ export default async function FacturasPage() {
     .order('created_at', { ascending: false })
 
   const STATUS: Record<string, { label: string; color: string; bg: string }> = {
-    pending: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-    paid:    { label: 'Pagada',    color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
-    overdue: { label: 'Vencida',   color: '#C9973A', bg: 'rgba(230,0,0,0.15)'   },
+    pending: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
+    paid:    { label: 'Pagada',    color: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+    overdue: { label: 'Vencida',   color: '#C9973A', bg: 'rgba(201,151,58,0.1)'  },
   }
 
   return (
     <div>
-      <div style={{ marginBottom: 22 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>Mis facturas</h2>
-        <p style={{ color: '#7A7A7A', fontSize: 13, marginTop: 6 }}>
+      <div className="mb-6">
+        <h2 className="text-lg font-black text-[var(--color-navy)] m-0">Mis facturas</h2>
+        <p className="text-[#8A8A8A] text-sm mt-1.5">
           Facturación mensual basada en pedidos activados. El pago se gestiona con tu ejecutivo RUTA34.
         </p>
       </div>
 
       {!invoices || invoices.length === 0 ? (
-        <div style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: 60, textAlign: 'center' }}>
-          <div style={{ fontSize: 36, marginBottom: 16 }}>🧾</div>
-          <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8 }}>Sin facturas todavía</div>
-          <div style={{ color: '#7A7A7A', fontSize: 13 }}>Las facturas se generan mensualmente desde RUTA34.</div>
+        <div className="bg-white border border-[#E9E2D8] rounded-2xl p-16 text-center">
+          <div className="text-4xl mb-4">🧾</div>
+          <div className="font-bold text-base text-[var(--color-navy)] mb-2">Sin facturas todavía</div>
+          <div className="text-[#8A8A8A] text-sm">Las facturas se generan mensualmente desde RUTA34.</div>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="flex flex-col gap-3">
           {invoices.map(inv => {
             const st = STATUS[inv.status] || STATUS.pending
             return (
-              <div key={inv.id} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: 20 }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+              <div key={inv.id} className="bg-white border border-[#E9E2D8] rounded-2xl p-5 hover:shadow-sm transition-shadow">
+                <div className="flex items-start justify-between flex-wrap gap-3">
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                      <span style={{ fontSize: 22 }}>🧾</span>
+                    <div className="flex items-center gap-2.5 mb-1.5">
+                      <span className="text-2xl">🧾</span>
                       <div>
-                        <div style={{ fontWeight: 800, fontSize: 15 }}>{inv.invoice_ref}</div>
-                        <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 2 }}>
+                        <div className="font-black text-base text-[var(--color-navy)]">{inv.invoice_ref}</div>
+                        <div className="text-xs text-[#8A8A8A] mt-0.5">
                           {new Date(inv.period_start).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })} · Vence: {new Date(inv.due_date).toLocaleDateString('es-AR')}
                         </div>
                       </div>
                     </div>
 
                     {inv.invoice_lines && inv.invoice_lines.length > 0 && (
-                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #2A2A2A' }}>
-                        <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 }}>Desglose</div>
+                      <div className="mt-3 pt-3 border-t border-[#E9E2D8]">
+                        <div className="text-xs text-[#8A8A8A] font-bold uppercase tracking-widest mb-2">Desglose</div>
                         {inv.invoice_lines.map((line: any) => (
-                          <div key={line.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 5, gap: 20 }}>
-                            <span style={{ color: '#AAAAAA' }}>{line.tariff_name} × {line.units} ud <span style={{ fontSize: 11, color: '#7A7A7A' }}>(${line.cost_price}c/u)</span></span>
-                            <span style={{ fontWeight: 700 }}>${line.total}</span>
+                          <div key={line.id} className="flex justify-between text-sm mb-1 gap-5">
+                            <span className="text-[#AAAAAA]">{line.tariff_name} × {line.units} ud <span className="text-xs text-[#8A8A8A]">(${line.cost_price}c/u)</span></span>
+                            <span className="font-bold text-[var(--color-navy)]">${line.total}</span>
                           </div>
                         ))}
                       </div>
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
-                    <div style={{ fontSize: 28, fontWeight: 900 }}>${inv.total_amount}</div>
-                    <span style={{ background: st.bg, color: st.color, border: `1px solid ${st.color}44`, borderRadius: 6, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>{st.label}</span>
+                  <div className="flex flex-col items-end gap-2.5">
+                    <div className="text-3xl font-black text-[var(--color-gold)]">${inv.total_amount}</div>
+                    <span className="px-3 py-1 rounded text-xs font-bold" style={{ background: st.bg, color: st.color, border: `1px solid ${st.color}40` }}>{st.label}</span>
                     {inv.pdf_url && (
                       <a href={inv.pdf_url} target="_blank" rel="noopener noreferrer"
-                        style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '7px 14px', color: '#AAAAAA', fontSize: 12, fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                        className="flex items-center gap-1.5 bg-white border border-[#E9E2D8] hover:border-[#C9973A] rounded-lg px-3 py-1.5 text-[#8A8A8A] text-xs font-semibold no-underline cursor-pointer transition-colors">
                         ⬇ Descargar PDF
                       </a>
                     )}

@@ -8,6 +8,11 @@ import Benefits from "@/components/landing/Benefits";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Compatibility from "@/components/landing/Compatibility";
 import FAQ from "@/components/landing/FAQ";
+import PaymentMethods from "@/components/landing/PaymentMethods";
+import TrustBadges from "@/components/landing/TrustBadges";
+import Guarantees from "@/components/landing/Guarantees";
+import Contact from "@/components/landing/Contact";
+import SocialLinks from "@/components/landing/SocialLinks";
 import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 import { getPlans } from "@/lib/plans-server";
@@ -109,6 +114,11 @@ export default async function HomePage({
         <Testimonials />
         <Compatibility />
         <FAQ />
+        <PaymentMethods />
+        <TrustBadges />
+        <Guarantees />
+        <Contact />
+        <SocialLinks />
       </main>
       <Footer />
     </>

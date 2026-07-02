@@ -9,19 +9,20 @@ import Image from "next/image";
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20, scale: 0.97 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
 };
 
 const stagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.1 } },
 };
 
-// Items con referencia directa al componente (no indexado)
-const TOP_ITEMS = [
+const BENEFIT_ITEMS = [
   { key: "apps", Icon: DeviceMobile },
   { key: "instant", Icon: Lightning },
+  { key: "nopermanence", Icon: CurrencyDollar },
+  { key: "coverage", Icon: Globe },
 ] as const;
 
 const MAIN_COUNTRIES = ["España", "Francia", "Italia", "Alemania", "Portugal"];
@@ -41,144 +42,148 @@ export default function Benefits() {
   const [countriesOpen, setCountriesOpen] = useState(false);
 
   return (
-    <section className="py-24 px-4">
+    <section className="py-24 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header — left aligned (taste-skill anti-center bias) */}
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-12"
+          className="mb-20 max-w-2xl"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight">
+          <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-4 leading-tight">
             {t("title")}
           </h2>
         </motion.div>
 
-        {/* Grid asimétrico — taste-skill: NO 3-equal-cards */}
+        {/* Grid Premium Editorial — 4 bloques en 2 filas */}
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Primera fila: 2 cards grandes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {TOP_ITEMS.map(({ key, Icon }) => (
+          {BENEFIT_ITEMS.map(({ key, Icon }, i) => {
+            const isLast = key === "coverage";
+            const cardClass = isLast
+              ? "md:col-span-2"
+              : "";
+
+            return (
               <motion.div
                 key={key}
                 variants={fadeUp}
-                className="group rounded-[1.5rem] bg-white border border-black/[0.06] p-8 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300"
+                className={`group rounded-2xl bg-white border border-[var(--color-border)] p-8 hover:shadow-lg transition-shadow duration-300 ${cardClass}`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-5 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
-                  <Icon size={22} weight="duotone" className="text-[#C9973A]" />
-                </div>
-                <h3 className="text-xl font-bold text-[#1B2F4E] mb-2">
-                  {t(`items.${key}.title`)}
-                </h3>
-                <p className="text-[#555555] leading-relaxed">
-                  {t(`items.${key}.desc`)}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+                {isLast ? (
+                  // Card Grande: Coverage con imagen editorial
+                  <div className="relative">
+                    {/* Background imagen */}
+                    <div className="absolute inset-0 rounded-2xl overflow-hidden -z-10">
+                      <Image
+                        src="/images/imagen4.png"
+                        alt=""
+                        aria-hidden="true"
+                        fill
+                        className="object-cover object-center opacity-15"
+                        sizes="100vw"
+                        loading="lazy"
+                      />
+                    </div>
 
-          {/* Segunda fila: asimétrica 1/3 + 2/3 */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Left: Text content */}
+                      <div>
+                        <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/10 flex items-center justify-center mb-6">
+                          <Icon size={24} weight="duotone" className="text-[var(--color-gold)]" />
+                        </div>
+                        <h3 className="text-2xl font-black text-[var(--color-navy)] mb-3">
+                          {t(`items.${key}.title`)}
+                        </h3>
+                        <p className="text-base text-[var(--color-ink)] leading-relaxed mb-6">
+                          {t(`items.${key}.desc`)}
+                        </p>
 
-            {/* Card compacta */}
-            <motion.div
-              variants={fadeUp}
-              className="group rounded-[1.5rem] bg-white border border-black/[0.06] p-7 hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.1)] transition-shadow duration-300 sm:col-span-1"
-            >
-              <div className="w-11 h-11 rounded-xl bg-[#F8F8F8] border border-black/5 flex items-center justify-center mb-4 group-hover:bg-[#C9973A]/6 transition-colors duration-300">
-                <CurrencyDollar size={20} weight="duotone" className="text-[#C9973A]" />
-              </div>
-              <h3 className="text-lg font-bold text-[#1B2F4E] mb-1.5">
-                {t("items.nopermanence.title")}
-              </h3>
-              <p className="text-sm text-[#555555] leading-relaxed">
-                {t("items.nopermanence.desc")}
-              </p>
-            </motion.div>
-
-            {/* Card grande con acento oscuro — double bezel (soft-skill) */}
-            <motion.div
-              variants={fadeUp}
-              className="rounded-[1.5rem] bg-[#1B2F4E] p-7 sm:col-span-2 relative overflow-hidden"
-            >
-              {/* Foto de fondo editorial */}
-              <Image
-                src="/images/imagen4.png"
-                alt=""
-                aria-hidden="true"
-                fill
-                className="object-cover object-center opacity-25"
-                sizes="(max-width: 640px) 100vw, 800px"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#1B2F4E] via-[#1B2F4E]/80 to-[#1B2F4E]/40" />
-              <div className="relative">
-                <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center mb-4">
-                  <Globe size={20} weight="duotone" className="text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-1.5">
-                  {t("items.coverage.title")}
-                </h3>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  {t("items.coverage.desc")}
-                </p>
-                {/* Badge 5G + línea española */}
-                <div className="flex items-center gap-2 mt-4 mb-3">
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-white font-black text-[10px] tracking-tight px-2 py-1">
-                    5G
-                  </span>
-                  <span className="text-xs font-semibold text-white/60">Línea española 🇪🇸 — cobertura en toda Europa</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {MAIN_COUNTRIES.map((c) => (
-                    <span key={c} className="text-xs font-semibold text-white/70 bg-white/10 px-3 py-1 rounded-full">
-                      {c}
-                    </span>
-                  ))}
-                  <button
-                    onClick={() => setCountriesOpen(o => !o)}
-                    className="text-xs font-semibold text-[#C9973A] bg-[#C9973A]/15 border border-[#C9973A]/25 px-3 py-1 rounded-full hover:bg-[#C9973A]/25 transition-colors"
-                  >
-                    {countriesOpen ? "Ver menos ↑" : `+${ALL_COUNTRIES.length} países ↓`}
-                  </button>
-                </div>
-
-                <AnimatePresence>
-                  {countriesOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-white/10">
-                        {ALL_COUNTRIES.map((c) => (
-                          <span key={c} className="text-xs font-semibold text-white/60 bg-white/8 px-3 py-1 rounded-full">
-                            {c}
+                        {/* Badge 5G + línea española */}
+                        <div className="flex items-center gap-2 mb-4">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-black text-xs tracking-tight px-3 py-1">
+                            5G
                           </span>
-                        ))}
+                          <span className="text-xs font-semibold text-[var(--color-ink-2)]">Línea española — Europa</span>
+                        </div>
+
+                        {/* Main countries */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {MAIN_COUNTRIES.map((c) => (
+                            <span key={c} className="text-xs font-semibold text-[var(--color-navy)] bg-[var(--color-gold)]/8 px-3 py-1 rounded-full border border-[var(--color-gold)]/20">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Expand button */}
+                        <button
+                          onClick={() => setCountriesOpen(o => !o)}
+                          className="text-xs font-semibold text-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors"
+                        >
+                          {countriesOpen ? `Ver menos ${ALL_COUNTRIES.length} países ↑` : `+ ${ALL_COUNTRIES.length} países más ↓`}
+                        </button>
+
+                        {/* Expandable countries */}
+                        <AnimatePresence>
+                          {countriesOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
+                                {ALL_COUNTRIES.map((c) => (
+                                  <span key={c} className="text-xs font-semibold text-[var(--color-ink-2)] bg-[var(--color-gold)]/5 px-3 py-1 rounded-full border border-[var(--color-border)]">
+                                    {c}
+                                  </span>
+                                ))}
+                              </div>
+                              <p className="text-xs text-[var(--color-ink-2)] mt-3 leading-relaxed">
+                                Según normativa europea: hasta 23 GB, después 1,33 €/GB.
+                              </p>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
-                      <p className="text-[10px] text-white/35 mt-3 leading-relaxed">
-                        Según normativa europea: hasta 23 GB incluidos en tarifa, después 1,33 €/GB.
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
 
-              </div>
-            </motion.div>
-
-          </div>
+                      {/* Right: Placeholder para imagen (visual balance) */}
+                      <div className="hidden lg:flex items-center justify-center">
+                        <div className="w-full h-64 rounded-xl bg-gradient-to-br from-[var(--color-gold)]/10 to-[var(--color-navy)]/5 flex items-center justify-center">
+                          <span className="text-sm text-[var(--color-ink-2)]">Cobertura Europa</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Cards regulares: Iconos + Texto
+                  <>
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--color-gold)]/10 flex items-center justify-center mb-6 group-hover:bg-[var(--color-gold)]/15 transition-colors">
+                      <Icon size={24} weight="duotone" className="text-[var(--color-gold)]" />
+                    </div>
+                    <h3 className="text-xl font-black text-[var(--color-navy)] mb-3">
+                      {t(`items.${key}.title`)}
+                    </h3>
+                    <p className="text-base text-[var(--color-ink)] leading-relaxed">
+                      {t(`items.${key}.desc`)}
+                    </p>
+                  </>
+                )}
+              </motion.div>
+            );
+          })}
         </motion.div>
+
       </div>
     </section>
   );

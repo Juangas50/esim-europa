@@ -11,26 +11,35 @@ const TESTIMONIALS_ES = [
   {
     name: "Lucía F.",
     country: "Argentina",
+    destination: "Madrid",
     flag: "🇦🇷",
     text: "Me salvó el viaje. Llegué a Madrid y ya tenía internet, sin hacer nada en el aeropuerto. El QR con todas las instrucciones me llegó directo al email. Increíble.",
     plan: "SIM Local M · 270 GB",
     rating: 5,
+    image: "/images/imagen3.png",
+    journey: "Viaje a España",
   },
   {
     name: "Carlos M.",
     country: "México",
+    destination: "Europa",
     flag: "🇲🇽",
     text: "Lo usé en un viaje de 3 semanas por España, Francia e Italia. Funcionó perfecto en todos lados. Muy fácil de instalar, escaneás el QR y listo.",
     plan: "SIM Local L · 330 GB",
     rating: 5,
+    image: "/images/imagen5.png",
+    journey: "3 semanas por Europa",
   },
   {
     name: "Ana Beatriz S.",
     country: "Brasil",
+    destination: "Lisboa",
     flag: "🇧🇷",
     text: "Facilísimo. Instalé el QR antes de embarcar y cuando llegué a Lisboa ya estaba conectada. Sin colas, sin estrés. Lo recomiendo a todos los que viajan a Europa.",
     plan: "SIM Local M · 270 GB",
     rating: 5,
+    image: "/images/imagen6.png",
+    journey: "Viaje a Portugal",
   },
 ];
 
@@ -38,26 +47,35 @@ const TESTIMONIALS_PT = [
   {
     name: "Lucía F.",
     country: "Argentina",
+    destination: "Madrid",
     flag: "🇦🇷",
     text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR com todas as instruções chegou direto no meu email. Incrível.",
     plan: "SIM Local M · 270 GB",
     rating: 5,
+    image: "/images/imagen3.png",
+    journey: "Viagem para Espanha",
   },
   {
     name: "Carlos M.",
     country: "México",
+    destination: "Europa",
     flag: "🇲🇽",
     text: "Usei numa viagem de 3 semanas pela Espanha, França e Itália. Funcionou perfeitamente em todos os lugares. Muito fácil de instalar.",
     plan: "SIM Local L · 330 GB",
     rating: 5,
+    image: "/images/imagen5.png",
+    journey: "3 semanas pela Europa",
   },
   {
     name: "Ana Beatriz S.",
     country: "Brasil",
+    destination: "Lisboa",
     flag: "🇧🇷",
     text: "Muito fácil! Instalei o QR antes de embarcar e quando cheguei em Lisboa já estava conectada. Sem fila, sem estresse. Super recomendo.",
     plan: "SIM Local M · 270 GB",
     rating: 5,
+    image: "/images/imagen6.png",
+    journey: "Viagem para Portugal",
   },
 ];
 
@@ -65,7 +83,7 @@ function StarRating({ count }: { count: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} size={14} weight="fill" className="text-[#F59E0B]" />
+        <Star key={i} size={16} weight="fill" className="text-[var(--color-gold)]" />
       ))}
     </div>
   );
@@ -77,100 +95,109 @@ export default function Testimonials() {
   const TESTIMONIALS = locale === "pt" ? TESTIMONIALS_PT : TESTIMONIALS_ES;
 
   return (
-    <section className="py-20 px-4 bg-[#F8F8F8]">
+    <section className="py-24 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-10 text-center"
+          className="mb-20 text-center max-w-2xl mx-auto"
         >
-          <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-2">
+          <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-4 leading-tight">
             {t("title")}
           </h2>
-          <p className="text-[#64748B] text-base">{t("subtitle")}</p>
+          <p className="text-lg text-[var(--color-ink-2)]">
+            {t("subtitle")}
+          </p>
         </motion.div>
 
-        {/* Franja editorial de fotos — real travelers */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.55, ease: EASE_OUT }}
-          className="grid grid-cols-3 gap-2 mb-10 rounded-2xl overflow-hidden"
-        >
-          {[
-            { src: "/images/imagen3.png", alt: "Familia latinoamericana en Madrid" },
-            { src: "/images/imagen5.png", alt: "Pareja mayor en Roma" },
-            { src: "/images/imagen6.png", alt: "Pareja en puerto mediterráneo" },
-          ].map((img, i) => (
-            <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover object-center hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 100vw, 400px"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Grid testimonios */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Historias Visuales — Grid Asimétrico */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {TESTIMONIALS.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease: EASE_OUT }}
-              className="bg-white rounded-2xl border border-black/[0.06] p-6 flex flex-col gap-4"
+              transition={{ duration: 0.5, delay: i * 0.1, ease: EASE_OUT }}
+              className="flex flex-col lg:flex-row gap-6 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
             >
-              {/* Stars */}
-              <StarRating count={item.rating} />
-
-              {/* Texto */}
-              <p className="text-[#1B2F4E] text-sm leading-relaxed flex-1">
-                &ldquo;{item.text}&rdquo;
-              </p>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-2 border-t border-[#1B2F4E]/6">
-                <div className="flex items-center gap-2.5">
-                  {/* Avatar con flag */}
-                  <div className="w-9 h-9 rounded-full bg-[#F8F8F8] border border-black/8 flex items-center justify-center text-lg">
-                    {item.flag}
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-[#1B2F4E]">{item.name}</p>
-                    <p className="text-xs text-[#999]">{item.country}</p>
-                  </div>
+              {/* Imagen — Protagonista Visual */}
+              <div className="flex-shrink-0 w-full lg:w-1/3 aspect-[4/3] lg:aspect-auto lg:h-full relative overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={`${item.name} viajando a ${item.destination}`}
+                  fill
+                  className="object-cover object-center hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                />
+                {/* Overlay con destino */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <p className="font-semibold text-lg">{item.destination}</p>
+                  <p className="text-sm text-white/80">{item.journey}</p>
                 </div>
-                <span className="text-[10px] font-semibold bg-[#F8F8F8] text-[#777] rounded-full px-2.5 py-1 border border-black/5">
-                  {item.plan}
-                </span>
+              </div>
+
+              {/* Contenido — Contexto e Historia */}
+              <div className="flex-1 p-8 flex flex-col justify-between">
+                {/* Rating y Contexto */}
+                <div>
+                  <div className="mb-4">
+                    <StarRating count={item.rating} />
+                  </div>
+
+                  {/* Header: Nombre + Origen */}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-[var(--color-warm-white)] border-2 border-[var(--color-gold)] flex items-center justify-center text-2xl flex-shrink-0">
+                        {item.flag}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-[var(--color-navy)]">{item.name}</h3>
+                        <p className="text-sm text-[var(--color-ink-2)]">De {item.country}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Historia */}
+                  <blockquote className="mb-6">
+                    <p className="text-base leading-relaxed text-[var(--color-ink)] italic">
+                      &ldquo;{item.text}&rdquo;
+                    </p>
+                  </blockquote>
+                </div>
+
+                {/* Plan Badge */}
+                <div className="flex items-center justify-between pt-6 border-t border-[var(--color-border)]">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-2)]">
+                    {item.plan}
+                  </span>
+                  <div className="text-2xl">✓</div>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Aggregate rating */}
+        {/* Aggregate Rating Section */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.3, ease: EASE_OUT }}
-          className="mt-8 flex items-center justify-center gap-3"
+          className="bg-[var(--color-navy)] rounded-3xl p-8 sm:p-12 text-center"
         >
-          <StarRating count={5} />
-          <span className="text-sm font-semibold text-[#64748B]">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <StarRating count={5} />
+            <span className="text-white text-lg font-bold">5.0</span>
+          </div>
+          <p className="text-white text-base sm:text-lg">
             {t("aggregate")}
-          </span>
+          </p>
         </motion.div>
 
       </div>

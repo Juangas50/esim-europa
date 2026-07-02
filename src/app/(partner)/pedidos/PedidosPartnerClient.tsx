@@ -3,13 +3,16 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWindowSize } from '@/hooks/useWindowSize'
+import { motion } from 'framer-motion'
+
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1]
 
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
-  pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
-  scheduled:      { label: 'Programado',         color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
-  qr_sent:        { label: 'QR Enviado',          color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
-  activated:      { label: 'Activado',            color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
-  cancelled:      { label: 'Cancelado',           color: '#7A7A7A', bg: 'rgba(122,122,122,0.15)' },
+  pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)' },
+  scheduled:      { label: 'Programado',         color: '#C9973A', bg: 'rgba(201,151,58,0.1)' },
+  qr_sent:        { label: 'QR Enviado',         color: '#6EE7B7', bg: 'rgba(110,231,183,0.1)' },
+  activated:      { label: 'Activado',           color: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+  cancelled:      { label: 'Cancelado',          color: '#7A7A7A', bg: 'rgba(122,122,122,0.1)' },
 }
 
 export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
@@ -22,56 +25,83 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
   )
 
   return (
-    <div>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: 1, minWidth: 180, maxWidth: 320 }}>
-          <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: '#7A7A7A', fontSize: 14 }}>🔍</span>
-          <input placeholder="Buscar por cliente o referencia…" value={search} onChange={e => setSearch(e.target.value)}
-            style={{ width: '100%', background: '#181818', border: '1px solid #2A2A2A', borderRadius: 8, padding: '9px 13px 9px 33px', color: '#fff', fontSize: 13, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
+      {/* Header + Search */}
+      <motion.div className="flex gap-3 mb-6 justify-between items-center flex-wrap" initial={{ y: -8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.3, ease: EASE_OUT }}>
+        <div className="relative flex-1 min-w-[180px] max-w-[320px]">
+          <input
+            placeholder="Buscar por cliente o referencia…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full bg-white border border-[var(--color-border)] border-[#E9E2D8] rounded-lg px-4 py-2 pl-9 text-sm text-[var(--color-navy)] placeholder-[#8A8A8A] outline-none transition-all hover:border-[#C9973A] focus:border-[#C9973A] focus:ring-1 focus:ring-[#C9973A]/30"
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A8A8A]">🔍</span>
         </div>
-        <button onClick={() => router.push('/pedidos/nuevo')}
-          style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '10px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <motion.button
+          onClick={() => router.push('/pedidos/nuevo')}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-[var(--color-gold)] hover:bg-[#B8853D] text-[var(--color-navy)] font-bold text-sm px-5 py-2 rounded-lg transition-colors"
+        >
           + Nuevo pedido
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
+      {/* Empty State */}
       {filtered.length === 0 ? (
-        <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13 }}>
+        <motion.div
+          className="bg-white border border-[#E9E2D8] rounded-2xl p-10 text-center text-[#8A8A8A]"
+          initial={{ y: 8, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
+        >
           {orders.length === 0 ? 'Todavía no hiciste ningún pedido.' : 'No se encontraron resultados.'}
-        </div>
+        </motion.div>
       ) : isMobile ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {filtered.map(o => {
+        /* Mobile Cards */
+        <motion.div className="flex flex-col gap-3" initial="hidden" animate="show" variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } }}>
+          {filtered.map((o, idx) => {
             const st = STATUSES[o.status] || STATUSES.pending_review
             return (
-              <div key={o.id} style={{ background: '#181818', borderRadius: 12, border: '1px solid #2A2A2A', padding: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+              <motion.div
+                key={o.id}
+                className="bg-white border border-[#E9E2D8] rounded-xl p-4"
+                variants={{ hidden: { y: 8, opacity: 0 }, show: { y: 0, opacity: 1, transition: { ease: EASE_OUT } } }}
+                whileHover={{ y: -2, transition: { duration: 0.2, ease: EASE_OUT } }}
+              >
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 14 }}>{o.customer_name} {o.customer_lastname}</div>
-                    <div style={{ fontSize: 11, color: '#7A7A7A', marginTop: 2 }}>{o.customer_email}</div>
+                    <div className="font-bold text-sm text-[var(--color-navy)]">{o.customer_name} {o.customer_lastname}</div>
+                    <div className="text-xs text-[#8A8A8A] mt-1">{o.customer_email}</div>
                   </div>
-                  <span style={{ background: st.bg, color: st.color, borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0, marginLeft: 8 }}>{st.label}</span>
+                  <span className="text-xs font-bold px-3 py-1 rounded-md flex-shrink-0 ml-2" style={{ background: st.bg, color: st.color }}>{st.label}</span>
                 </div>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 11, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</span>
-                  <span style={{ color: '#444' }}>·</span>
-                  <span style={{ fontSize: 12 }}>{o.tariffs?.name}</span>
-                  <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#C9973A', borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700 }}>
+                <div className="flex gap-2 items-center flex-wrap text-xs">
+                  <span className="font-mono text-[#8A8A8A]">{o.order_ref}</span>
+                  <span className="text-[#C9973A]">·</span>
+                  <span className="text-[var(--color-navy)]">{o.tariffs?.name}</span>
+                  <span className="px-2 py-1 rounded text-[10px] font-bold" style={{ background: o.type === 'prepago' ? 'rgba(245,158,11,0.1)' : 'rgba(110,231,183,0.1)', color: o.type === 'prepago' ? '#F59E0B' : '#6EE7B7' }}>
                     {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                   </span>
-                  {o.activation_date && <span style={{ fontSize: 11, color: '#7A7A7A' }}>{o.activation_date}</span>}
+                  {o.activation_date && <span className="text-[#8A8A8A]">{o.activation_date}</span>}
                 </div>
-              </div>
+              </motion.div>
             )
           })}
-        </div>
+        </motion.div>
       ) : (
-        <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        /* Desktop Table */
+        <motion.div
+          className="bg-white border border-[#E9E2D8] rounded-2xl overflow-hidden"
+          initial={{ y: 8, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
+        >
+          <table className="w-full border-collapse">
             <thead>
-              <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
+              <tr className="border-b border-[#E9E2D8]">
                 {['Ref', 'Cliente', 'Tarifa', 'Tipo', 'Activación', 'Estado'].map(h => (
-                  <th key={h} style={{ padding: '11px 16px', textAlign: 'left', fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase' }}>{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#8A8A8A]">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -79,29 +109,35 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
               {filtered.map((o, i) => {
                 const st = STATUSES[o.status] || STATUSES.pending_review
                 return (
-                  <tr key={o.id} style={{ borderBottom: i < filtered.length - 1 ? '1px solid #2A2A2A' : 'none' }}>
-                    <td style={{ padding: '13px 16px', fontSize: 11, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</td>
-                    <td style={{ padding: '13px 16px' }}>
-                      <div style={{ fontWeight: 700, fontSize: 13 }}>{o.customer_name} {o.customer_lastname}</div>
-                      <div style={{ fontSize: 11, color: '#7A7A7A' }}>{o.customer_email}</div>
+                  <motion.tr
+                    key={o.id}
+                    className={`${i < filtered.length - 1 ? 'border-b border-[#E9E2D8]' : ''} hover:bg-[#FFFCF7] transition-colors`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: i * 0.02 }}
+                  >
+                    <td className="px-4 py-3 text-xs font-mono text-[#8A8A8A]">{o.order_ref}</td>
+                    <td className="px-4 py-3">
+                      <div className="font-bold text-sm text-[var(--color-navy)]">{o.customer_name} {o.customer_lastname}</div>
+                      <div className="text-xs text-[#8A8A8A]">{o.customer_email}</div>
                     </td>
-                    <td style={{ padding: '13px 16px', fontSize: 13 }}>{o.tariffs?.name}</td>
-                    <td style={{ padding: '13px 16px' }}>
-                      <span style={{ background: o.type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', color: o.type === 'prepago' ? '#C9973A' : '#C9973A', borderRadius: 5, padding: '3px 8px', fontSize: 10, fontWeight: 700 }}>
+                    <td className="px-4 py-3 text-sm text-[var(--color-navy)]">{o.tariffs?.name}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs font-bold px-2 py-1 rounded" style={{ background: o.type === 'prepago' ? 'rgba(245,158,11,0.1)' : 'rgba(110,231,183,0.1)', color: o.type === 'prepago' ? '#F59E0B' : '#6EE7B7' }}>
                         {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
                       </span>
                     </td>
-                    <td style={{ padding: '13px 16px', fontSize: 12, color: '#7A7A7A' }}>{o.activation_date || 'Cliente activa'}</td>
-                    <td style={{ padding: '13px 16px' }}>
-                      <span style={{ background: st.bg, color: st.color, borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{st.label}</span>
+                    <td className="px-4 py-3 text-sm text-[#8A8A8A]">{o.activation_date || 'Cliente activa'}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs font-bold px-3 py-1 rounded" style={{ background: st.bg, color: st.color }}>{st.label}</span>
                     </td>
-                  </tr>
+                  </motion.tr>
                 )
               })}
             </tbody>
           </table>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   )
 }

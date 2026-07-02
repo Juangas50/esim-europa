@@ -53,7 +53,7 @@ export default function Navbar() {
   return (
     <>
       {/* Floating navbar */}
-      <nav className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4">
+      <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
         <motion.div
           initial={{ y: -16, opacity: 0 }}
           animate={{ y: hidden ? "-200%" : 0, opacity: hidden ? 0 : 1 }}
@@ -61,14 +61,14 @@ export default function Navbar() {
           className={cn(
             "flex items-center gap-6 px-4 py-2.5 rounded-full transition-all duration-300",
             scrolled
-              ? "bg-[#1B2F4E]/95 backdrop-blur-md shadow-[0_8px_32px_-8px_rgba(27,47,78,0.14)] border border-[#C9973A]/[0.06]"
-              : "bg-[#1B2F4E]/85 backdrop-blur-sm border border-[#C9973A]/[0.05]"
+              ? "bg-[var(--color-navy)]/95 backdrop-blur-md shadow-lg border border-[var(--color-gold)]/[0.06]"
+              : "bg-[var(--color-navy)]/70 backdrop-blur-md border border-white/10"
           )}
         >
           {/* Logo */}
           <a href={`/${locale}`} className="flex items-center gap-2.5 shrink-0 whitespace-nowrap">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#C9973A] flex-shrink-0">
-              <span className="text-[#1B2F4E] text-xs font-black tracking-tight leading-none">34</span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[var(--color-gold)] flex-shrink-0">
+              <span className="text-[var(--color-navy)] text-xs font-black tracking-tight leading-none">34</span>
             </div>
             <span className="font-black text-white text-sm tracking-wider leading-none hidden sm:inline-block">
               RUTA34
@@ -81,7 +81,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-[#FAF7F2] hover:text-[#1B2F4E] transition-colors duration-200"
+                className="text-sm text-[#FAF7F2] hover:text-[var(--color-navy)] transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -107,7 +107,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="#planes"
-              className="flex items-center gap-2 bg-[#C9973A] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#E8C56A] active:scale-[0.97] transition-all"
+              className="flex items-center gap-2 bg-[var(--color-gold)] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[var(--color-gold-light)] active:scale-[0.97] transition-all"
               style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
             >
               {t("buyNow")}
@@ -169,7 +169,7 @@ export default function Navbar() {
                   duration: 0.4,
                   ease: EASE_OUT,
                 }}
-                className="text-3xl font-bold text-[#1B2F4E] tracking-tight"
+                className="text-3xl font-bold text-[var(--color-navy)] tracking-tight"
               >
                 {link.label}
               </motion.a>
@@ -181,7 +181,7 @@ export default function Navbar() {
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.4, ease: EASE_OUT }}
-              className="bg-[#C9973A] text-white text-xl font-bold px-10 py-4 rounded-full mt-4"
+              className="bg-[var(--color-gold)] text-white text-xl font-bold px-10 py-4 rounded-full mt-4"
             >
               {t("buyNow")}
             </motion.a>

@@ -17,34 +17,41 @@ function FAQItem({
   answer,
   isOpen,
   onToggle,
+  index,
 }: {
   question: string;
   answer: string;
   isOpen: boolean;
   onToggle: () => void;
+  index: number;
 }) {
   return (
-    <div className="border-b border-[#1B2F4E]/8">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: EASE_OUT }}
+      className="group rounded-2xl border border-[var(--color-border)] bg-white hover:shadow-md transition-shadow duration-300"
+    >
       <button
         onClick={onToggle}
-        className="w-full flex items-start justify-between gap-4 py-6 text-left group"
+        className="w-full flex items-start justify-between gap-4 p-6 text-left"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-[#1B2F4E] text-base leading-snug pr-2 group-hover:text-[#C9973A] transition-colors duration-200">
+        <span className="font-bold text-[var(--color-navy)] text-base leading-snug group-hover:text-[var(--color-gold)] transition-colors duration-200">
           {question}
         </span>
         <div
-          className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 border transition-colors duration-200 ${
+          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 transition-all duration-300 ${
             isOpen
-              ? "bg-[#C9973A] border-[#C9973A] text-white"
-              : "border-[#1B2F4E]/15 text-[#555]"
+              ? "bg-[var(--color-gold)] text-[var(--color-navy)]"
+              : "border-2 border-[var(--color-border)] text-[var(--color-ink-2)]"
           }`}
         >
-          {isOpen ? <Minus size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+          {isOpen ? <Minus size={16} weight="bold" /> : <Plus size={16} weight="bold" />}
         </div>
       </button>
 
-      {/* AnimatePresence para transición suave — Emil Kowalski */}
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
@@ -55,17 +62,18 @@ function FAQItem({
             transition={{ duration: 0.3, ease: EASE_OUT }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-[#555555] leading-relaxed max-w-[640px] whitespace-pre-line">
-              {answer}
-            </p>
+            <div className="px-6 pb-6 border-t border-[var(--color-border)]">
+              <p className="text-[var(--color-ink)] leading-relaxed max-w-[640px] whitespace-pre-line">
+                {answer}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
-// índice de cada key en FAQ_KEYS
 const KEY_INDEX: Record<string, number> = Object.fromEntries(
   FAQ_KEYS.map((k, i) => [k, i])
 );
@@ -74,11 +82,10 @@ export default function FAQ() {
   const t = useTranslations("faq");
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  // Auto-abrir ítem cuando se navega directo por hash (ej: #faq-compatible)
   useEffect(() => {
-    const hash = window.location.hash; // e.g. "#faq-compatible"
+    const hash = window.location.hash;
     if (!hash.startsWith("#faq-")) return;
-    const key = hash.replace("#faq-", ""); // e.g. "compatible"
+    const key = hash.replace("#faq-", "");
     const idx = KEY_INDEX[key];
     if (idx != null) {
       setOpenIndex(idx);
@@ -93,60 +100,46 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-24 px-4">
+    <section id="faq" className="py-24 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-
-          {/* Left — título (sticky en desktop) */}
-          <div className="lg:col-span-4">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, ease: EASE_OUT }}
-              className="lg:sticky lg:top-32"
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, ease: EASE_OUT }}
+          className="mb-16"
+        >
+          <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-6 leading-tight">
+            {t("title")}
+          </h2>
+          <p className="text-lg text-[var(--color-ink-2)] max-w-2xl">
+            ¿Otra duda?{" "}
+            <a
+              href="https://wa.me/34600000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--color-gold)] font-semibold hover:text-[var(--color-gold)] transition-colors"
             >
-              <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight mb-4">
-                {t("title")}
-              </h2>
-              <p className="text-[#555555]">
-                ¿Otra duda?{" "}
-                <a
-                  href="https://wa.me/34600000000"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#C9973A] font-semibold hover:underline"
-                >
-                  Escribinos por WhatsApp
-                </a>
-              </p>
-            </motion.div>
-          </div>
+              Escribinos por WhatsApp →
+            </a>
+          </p>
+        </motion.div>
 
-          {/* Right — accordion */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.4, ease: EASE_OUT }}
-            className="lg:col-span-8"
-          >
-            <div className="border-t border-[#1B2F4E]/8">
-              {FAQ_KEYS.map((key, i) => (
-                <div key={key} id={`faq-${key}`}>
-                  <FAQItem
-                    question={t(`items.${key}.q`)}
-                    answer={t(`items.${key}.a`)}
-                    isOpen={openIndex === i}
-                    onToggle={() => toggle(i)}
-                  />
-                </div>
-              ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {FAQ_KEYS.map((key, i) => (
+            <div key={key} id={`faq-${key}`}>
+              <FAQItem
+                question={t(`items.${key}.q`)}
+                answer={t(`items.${key}.a`)}
+                isOpen={openIndex === i}
+                onToggle={() => toggle(i)}
+                index={i}
+              />
             </div>
-          </motion.div>
-
+          ))}
         </div>
+
       </div>
     </section>
   );

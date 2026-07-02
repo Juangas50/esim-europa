@@ -81,25 +81,30 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left: tab + plan list */}
-      <div className="lg:col-span-2 space-y-4">
+      <div className="lg:col-span-2 space-y-6">
 
         {/* Tab switcher — only if both types exist */}
         {hasLocal && hasData && (
-          <div className="inline-flex rounded-xl bg-[#F0F0F0] p-1 gap-1">
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: EASE_OUT }}
+            className="inline-flex rounded-2xl bg-[var(--color-warm-white)] p-2 gap-1 border border-[var(--color-border)]"
+          >
             {(["local", "dataonly"] as ActiveTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={`relative px-4 py-2 rounded-lg text-sm font-bold transition-colors duration-200 ${
-                  activeTab === tab ? "text-[#1B2F4E]" : "text-[#888] hover:text-[#555]"
+                className={`relative px-4 py-2 rounded-xl text-sm font-bold transition-colors duration-200 ${
+                  activeTab === tab ? "text-[var(--color-navy)]" : "text-[var(--color-ink-2)] hover:text-[var(--color-navy)]"
                 }`}
               >
                 {activeTab === tab && (
                   <motion.div
                     layoutId="checkout-tab-bg"
-                    className="absolute inset-0 rounded-lg bg-white shadow-sm"
+                    className="absolute inset-0 rounded-xl bg-white border border-[var(--color-border)] shadow-sm"
                     transition={{ duration: 0.2, ease: EASE_OUT }}
                   />
                 )}
@@ -108,7 +113,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                 </span>
               </button>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Plan cards */}
@@ -118,70 +123,71 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: EASE_OUT }}
-            className="space-y-3"
+            transition={{ duration: 0.3, ease: EASE_OUT }}
+            className="space-y-4"
           >
-            {tabPlans.map((plan) => {
+            {tabPlans.map((plan, idx) => {
               const isSelected = plan.id === selected;
               return (
                 <motion.button
                   key={plan.id}
                   onClick={() => setSelected(plan.id)}
+                  whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.99 }}
-                  transition={{ duration: 0.15, ease: EASE_OUT }}
-                  className={`w-full text-left rounded-2xl border-2 p-5 transition-all duration-200 ${
+                  transition={{ duration: 0.2, ease: EASE_OUT }}
+                  className={`w-full text-left rounded-2xl border-2 p-6 transition-all duration-200 ${
                     isSelected
-                      ? "border-[#C9973A] bg-white shadow-[0_4px_24px_-8px_rgba(230,0,0,0.2)]"
-                      : "border-transparent bg-white hover:border-[#1B2F4E]/12"
+                      ? "border-[var(--color-gold)] bg-white shadow-md"
+                      : "border-[var(--color-border)] bg-white hover:shadow-sm hover:border-[var(--color-gold)]/50"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <div className="flex items-center gap-3 mb-3 flex-wrap">
                         {plan.size && (
-                          <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg font-black text-xs ${
-                            isSelected ? "bg-[#C9973A]/10 text-[#C9973A]" : "bg-[#F0F0F0] text-[#555]"
+                          <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg font-black text-xs ${
+                            isSelected ? "bg-[var(--color-gold)]/10 text-[var(--color-gold)]" : "bg-[var(--color-warm-white)] text-[var(--color-ink)]"
                           }`}>
                             {plan.size}
                           </span>
                         )}
-                        <span className="font-black text-base text-[#1B2F4E]">{plan.name}</span>
+                        <span className="font-black text-lg text-[var(--color-navy)]">{plan.name}</span>
                         {plan.is_popular && (
                           <Badge variant="red">
-                            <Star size={9} weight="fill" />
+                            <Star size={10} weight="fill" />
                             {t("popular")}
                           </Badge>
                         )}
                         <Badge variant="outline">{t(`${plan.type}.badge`)}</Badge>
                       </div>
-                      <div className="flex items-center gap-3 text-sm flex-wrap">
-                        <span className="font-bold text-[#1B2F4E]">{plan.data_gb} GB</span>
-                        <span className="text-[#999]">·</span>
-                        <span className="text-[#555]">{plan.duration_days} días</span>
+                      <div className="flex items-center gap-2 text-sm flex-wrap">
+                        <span className="font-bold text-[var(--color-navy)]">{plan.data_gb} GB</span>
+                        <span className="text-[var(--color-ink-2)]">·</span>
+                        <span className="text-[var(--color-ink-2)]">{plan.duration_days} días</span>
                         {plan.type === "dataonly" && (
                           <>
-                            <span className="text-[#999]">·</span>
-                            <span className="text-[#555]">{plan.countries_count}+ países</span>
+                            <span className="text-[var(--color-ink-2)]">·</span>
+                            <span className="text-[var(--color-ink-2)]">{plan.countries_count}+ países</span>
                           </>
                         )}
                         {plan.type === "local" && (
                           <>
-                            <span className="text-[#999]">·</span>
-                            <span className="text-[#555]">Número español · Llamadas · SMS</span>
+                            <span className="text-[var(--color-ink-2)]">·</span>
+                            <span className="text-[var(--color-ink-2)]">Número español · Llamadas · SMS</span>
                           </>
                         )}
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-2xl font-black text-[#1B2F4E]">{formatUSD(plan.price_usd)}</p>
-                      <p className="text-xs text-[#999]">{t("perMonth")}</p>
+                      <p className="text-3xl font-black text-[var(--color-navy)]">{formatUSD(plan.price_usd)}</p>
+                      <p className="text-xs text-[var(--color-ink-2)] mt-1">{t("perMonth")}</p>
                     </div>
                   </div>
 
                   {/* Radio indicator */}
                   <div
-                    className={`mt-3 w-5 h-5 rounded-full border-2 flex items-center justify-center ml-auto transition-colors duration-200 ${
-                      isSelected ? "border-[#C9973A] bg-[#C9973A]" : "border-[#ddd]"
+                    className={`mt-4 w-5 h-5 rounded-full border-2 flex items-center justify-center ml-auto transition-colors duration-200 ${
+                      isSelected ? "border-[var(--color-gold)] bg-[var(--color-gold)]" : "border-[var(--color-border)]"
                     }`}
                   >
                     {isSelected && <Check size={12} weight="bold" className="text-white" />}
@@ -193,65 +199,77 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
         </AnimatePresence>
 
         {/* Cantidad */}
-        <div className="bg-white rounded-2xl border border-black/[0.07] p-5">
-          <p className="font-bold text-sm text-[#1B2F4E] mb-3">¿Cuántas eSIM necesitás?</p>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1, ease: EASE_OUT }}
+          className="bg-white rounded-2xl border border-[var(--color-border)] p-6"
+        >
+          <p className="font-bold text-sm text-[var(--color-navy)] mb-4">¿Cuántas eSIM necesitás?</p>
           <div className="flex gap-2 flex-wrap">
             {[1,2,3,4,5,6,7,8,9,10].map(n => (
-              <button
+              <motion.button
                 key={n}
                 onClick={() => setQuantity(n)}
-                className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`w-11 h-11 rounded-lg font-black text-sm transition-all duration-150 ${
                   quantity === n
-                    ? "bg-[#C9973A] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
-                    : "bg-[#F0F0F0] text-[#555] hover:bg-[#C9973A]/10 hover:text-[#C9973A]"
+                    ? "bg-[var(--color-gold)] text-white shadow-md"
+                    : "bg-[var(--color-warm-white)] text-[var(--color-navy)] hover:bg-[var(--color-gold)]/10 hover:text-[var(--color-gold)]"
                 }`}
               >
                 {n}
-              </button>
+              </motion.button>
             ))}
           </div>
           {quantity > 1 && (
-            <p className="text-xs text-[#999] mt-3">
+            <p className="text-xs text-[var(--color-ink-2)] mt-4">
               Cada persona recibe su propio QR al email ingresado.
             </p>
           )}
-        </div>
+        </motion.div>
       </div>
 
       {/* Right: summary + CTA */}
       <div className="lg:col-span-1">
-        <div className="sticky top-6 rounded-2xl bg-white border border-black/[0.07] p-6">
-          <h3 className="font-bold text-sm text-[#999] uppercase tracking-wider mb-4">
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+          className="sticky top-6 rounded-2xl bg-white border border-[var(--color-border)] p-6 shadow-sm"
+        >
+          <h3 className="font-bold text-xs text-[var(--color-ink-2)] uppercase tracking-widest mb-6">
             {t("summary")}
           </h3>
 
-          <div className="border-b border-[#1B2F4E]/8 pb-4 mb-4">
-            <p className="font-black text-lg text-[#1B2F4E] mb-0.5">{selectedPlan?.name}</p>
-            <p className="text-sm text-[#777]">{selectedPlan ? t(`${selectedPlan.type}.badge`) : ""}</p>
+          <div className="border-b border-[var(--color-border)] pb-6 mb-6">
+            <p className="font-black text-xl text-[var(--color-navy)] mb-1">{selectedPlan?.name}</p>
+            <p className="text-sm text-[var(--color-ink-2)]">{selectedPlan ? t(`${selectedPlan.type}.badge`) : ""}</p>
           </div>
 
-          <div className="space-y-2 mb-5">
+          <div className="space-y-2 mb-6">
             {selectedPlan?.features.slice(0, 4).map((f, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-[#555]">
-                <Check size={13} weight="bold" className="text-[#C9973A] shrink-0" />
+              <div key={i} className="flex items-center gap-2 text-sm text-[var(--color-ink)]">
+                <Check size={14} weight="bold" className="text-[var(--color-gold)] shrink-0" />
                 {f}
               </div>
             ))}
           </div>
 
-          <div className="border-t border-[#1B2F4E]/8 pt-4 mb-5">
+          <div className="border-t border-[var(--color-border)] pt-6 mb-6">
             {quantity > 1 && (
-              <div className="flex justify-between text-sm text-[#999] mb-1">
+              <div className="flex justify-between text-sm text-[var(--color-ink-2)] mb-2">
                 <span>{quantity} × {selectedPlan ? formatUSD(selectedPlan.price_usd) : "—"}</span>
               </div>
             )}
-            <div className="flex justify-between items-baseline">
-              <span className="font-semibold text-[#555]">Total</span>
-              <span className="text-2xl font-black text-[#1B2F4E]">
+            <div className="flex justify-between items-baseline mb-1">
+              <span className="font-semibold text-[var(--color-ink)]">Total</span>
+              <span className="text-4xl font-black text-[var(--color-navy)]">
                 {selectedPlan ? formatUSD(selectedPlan.price_usd * quantity) : "—"}
               </span>
             </div>
-            <p className="text-xs text-[#999] text-right">USD · pago único</p>
+            <p className="text-xs text-[var(--color-ink-2)] text-right">USD · pago único</p>
           </div>
 
           <Button
@@ -268,7 +286,7 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             Continuar
             <ArrowRight size={16} weight="bold" />
           </Button>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

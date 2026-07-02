@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { CaretDown, DeviceMobile, WhatsappLogo, QrCode } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
+
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 // ── Lista completa de dispositivos compatibles ───────────────────────────────
 const DEVICE_BRANDS = [
@@ -84,28 +87,37 @@ function FAQItem({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-[#1B2F4E]/6 last:border-0">
-      <button
+    <div className="border-b border-[var(--color-border)] last:border-0">
+      <motion.button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-3 py-3.5 text-left hover:bg-[#1B2F4E]/2 rounded-xl px-1 transition-colors"
+        whileHover={{ backgroundColor: "var(--color-warm-white)" }}
+        className="w-full flex items-center justify-between gap-3 py-4 text-left rounded-xl px-2 transition-colors"
       >
-        <div className="flex items-center gap-2.5">
-          <span className="text-[#C9973A] shrink-0">{icon}</span>
-          <span className="text-sm font-semibold text-[#1B2F4E]">{question}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-[var(--color-gold)] shrink-0">{icon}</span>
+          <span className="text-base font-semibold text-[var(--color-navy)]">{question}</span>
         </div>
-        <CaretDown
-          size={15}
-          weight="bold"
-          className={`text-[#999] shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-        />
-      </button>
+        <motion.div
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
+          className="text-[var(--color-ink-2)] shrink-0"
+        >
+          <CaretDown size={16} weight="bold" />
+        </motion.div>
+      </motion.button>
 
-      {open && (
-        <div className="pb-4 px-1 pl-8">
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: open ? 1 : 0, height: open ? "auto" : 0 }}
+        exit={{ opacity: 0, height: 0 }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
+        className="overflow-hidden"
+      >
+        <div className="pb-4 px-2 pl-12">
           {children}
         </div>
-      )}
+      </motion.div>
     </div>
   );
 }
@@ -116,31 +128,42 @@ function DeviceList({ label }: { label: string }) {
 
   return (
     <div>
-      <p className="text-sm text-[#555] leading-relaxed mb-3">{label}</p>
+      <p className="text-sm text-[var(--color-ink)] leading-relaxed mb-4">{label}</p>
 
-      <button
+      <motion.button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C9973A] hover:underline mb-3"
+        whileHover={{ x: 2 }}
+        whileTap={{ scale: 0.98 }}
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-gold)] hover:underline mb-3 transition-transform"
       >
-        <DeviceMobile size={13} weight="fill" />
+        <DeviceMobile size={14} weight="fill" />
         {expanded ? "Ocultar lista" : "Ver lista completa de modelos compatibles"}
-        <CaretDown size={11} weight="bold" className={`transition-transform duration-150 ${expanded ? "rotate-180" : ""}`} />
-      </button>
+        <motion.div
+          animate={{ rotate: expanded ? 180 : 0 }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
+        >
+          <CaretDown size={12} weight="bold" />
+        </motion.div>
+      </motion.button>
 
-      {expanded && (
-        <div className="space-y-3 mt-1">
-          {DEVICE_BRANDS.map((b) => (
-            <div key={b.brand}>
-              <p className="text-xs font-bold text-[#1B2F4E] mb-0.5">{b.brand}</p>
-              <p className="text-xs text-[#777] leading-relaxed">{b.models}</p>
-            </div>
-          ))}
-          <p className="text-xs text-[#555] bg-[#FFF8F0] border border-orange-200 rounded-lg p-2.5 leading-relaxed">
-            ⚠️ Si compraste tu iPhone en EE.UU. sin ranura SIM física (iPhone 16 en adelante), solo podés usar eSIM — es totalmente compatible.
-          </p>
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
+        exit={{ opacity: 0, height: 0 }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
+        className="overflow-hidden space-y-3 mt-3"
+      >
+        {DEVICE_BRANDS.map((b) => (
+          <div key={b.brand}>
+            <p className="text-xs font-bold text-[var(--color-navy)] mb-1">{b.brand}</p>
+            <p className="text-xs text-[var(--color-ink-2)] leading-relaxed">{b.models}</p>
+          </div>
+        ))}
+        <p className="text-xs text-[var(--color-ink)] bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 rounded-lg p-3 leading-relaxed">
+          Si compraste tu iPhone en EE.UU. sin ranura SIM física (iPhone 16 en adelante), solo podés usar eSIM — es totalmente compatible.
+        </p>
+      </motion.div>
     </div>
   );
 }
@@ -150,8 +173,13 @@ export default function PurchaseFAQ() {
   const t = useTranslations("purchase.faq");
 
   return (
-    <div className="rounded-2xl bg-white border border-[#1B2F4E]/[0.07] p-5">
-      <p className="text-xs font-bold uppercase tracking-wider text-[#999] mb-1">{t("title")}</p>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: EASE_OUT }}
+      className="rounded-2xl bg-white border border-[var(--color-border)] p-6 shadow-sm"
+    >
+      <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-6">{t("title")}</p>
 
       <FAQItem
         icon={<DeviceMobile size={16} weight="fill" />}
@@ -164,15 +192,15 @@ export default function PurchaseFAQ() {
         icon={<WhatsappLogo size={16} weight="fill" />}
         question={t("whatsapp.q")}
       >
-        <p className="text-sm text-[#555] leading-relaxed">{t("whatsapp.a")}</p>
+        <p className="text-sm text-[var(--color-ink)] leading-relaxed">{t("whatsapp.a")}</p>
       </FAQItem>
 
       <FAQItem
         icon={<QrCode size={16} weight="fill" />}
         question={t("qr.q")}
       >
-        <p className="text-sm text-[#555] leading-relaxed">{t("qr.a")}</p>
+        <p className="text-sm text-[var(--color-ink)] leading-relaxed">{t("qr.a")}</p>
       </FAQItem>
-    </div>
+    </motion.div>
   );
 }

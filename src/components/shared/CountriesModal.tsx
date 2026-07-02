@@ -71,7 +71,7 @@ export default function CountriesModal({ isOpen, onClose }: CountriesModalProps)
               {/* Footer info */}
               <div className="mt-8 pt-6 border-t border-black/[0.06]">
                 <p className="text-sm text-[#555] text-center">
-                  Si tu país no está en la lista, selecciona "Otro" en el formulario de compra.
+                  Si tu país no está en la lista, selecciona &quot;Otro&quot; en el formulario de compra.
                 </p>
               </div>
             </div>

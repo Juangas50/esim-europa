@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
@@ -12,6 +13,8 @@ import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { useRef } from "react";
+
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 // IP Geolocation mapping (ISO 3166-1 alpha-2 to our COUNTRIES format)
 const ISO_TO_COUNTRY_CODE: Record<string, typeof COUNTRIES[number]> = {
@@ -67,7 +70,7 @@ interface StepDataProps {
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p className="flex items-center gap-1.5 text-xs text-[#DC2626] mt-2.5">
+    <p className="flex items-center gap-1.5 text-xs text-[#C1502F] mt-2.5">
       <WarningCircle size={16} weight="fill" className="flex-shrink-0" />
       {message}
     </p>
@@ -76,15 +79,15 @@ function FieldError({ message }: { message?: string }) {
 
 function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="block text-sm font-semibold text-[#1B2F4E] mb-1.5">
+    <label className="block text-sm font-semibold text-[var(--color-navy)] mb-2">
       {children}
-      {required && <span className="text-[#DC2626] ml-0.5">*</span>}
+      {required && <span className="text-[var(--color-gold)] ml-0.5">*</span>}
     </label>
   );
 }
 
 const inputClass =
-  "w-full rounded-xl border border-[#1B2F4E]/12 bg-white px-4 py-3 text-sm text-[#1B2F4E] placeholder:text-[#999] focus:outline-none focus:border-[#C9973A] focus:ring-2 focus:ring-[#C9973A]/10 transition-all duration-150";
+  "w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-base text-[var(--color-navy)] placeholder:text-[var(--color-ink-2)] focus:outline-none focus:border-[var(--color-gold)] focus:ring-2 focus:ring-[var(--color-gold)]/20 transition-all duration-150";
 
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
@@ -182,14 +185,19 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-2 space-y-6">
         {/* Step Indicators */}
-        <div className="flex items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
+          className="flex items-center gap-2"
+        >
           {[1, 2, 3].map((step) => (
             <div key={step} className="flex items-center gap-2">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                   substep >= step
-                    ? "bg-[#C9973A] text-white"
-                    : "bg-gray-200 text-gray-600"
+                    ? "bg-[var(--color-gold)] text-white"
+                    : "bg-[var(--color-warm-white)] text-[var(--color-ink-2)]"
                 }`}
               >
                 {step}
@@ -197,24 +205,24 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               {step < 3 && (
                 <div
                   className={`w-8 h-0.5 transition-all ${
-                    substep > step ? "bg-[#C9973A]" : "bg-gray-200"
+                    substep > step ? "bg-[var(--color-gold)]" : "bg-[var(--color-border)]"
                   }`}
                 />
               )}
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* SUBSTEP 1: Cliente Básico */}
         {substep === 1 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Tu información básica</h3>
-              <p className="text-sm text-[#555]">Necesitamos esto para enviarte los QR</p>
+              <h3 className="text-2xl font-bold text-[var(--color-navy)] mb-1">Tu información básica</h3>
+              <p className="text-base text-[var(--color-ink)]">Necesitamos esto para enviarte los QR</p>
             </div>
 
-            <div className="rounded-2xl bg-white border border-black/[0.07] p-5">
-              <p className="text-sm font-bold text-[#1B2F4E] mb-3">¿Cuántas eSIM necesitás?</p>
+            <div className="rounded-2xl bg-white border border-[var(--color-border)] p-6">
+              <p className="text-sm font-bold text-[var(--color-navy)] mb-4">¿Cuántas eSIM necesitás?</p>
               <div className="flex gap-2 flex-wrap">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                   <button
@@ -224,10 +232,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       setQuantity(n);
                       if (n !== quantity) analytics.quantitySelected(n, plan);
                     }}
-                    className={`w-10 h-10 rounded-xl font-black text-sm transition-all duration-150 ${
+                    className={`w-11 h-11 rounded-lg font-black text-sm transition-all duration-150 ${
                       quantity === n
-                        ? "bg-[#C9973A] text-white shadow-[0_4px_12px_-4px_rgba(230,0,0,0.4)]"
-                        : "bg-[#F0F0F0] text-[#555] hover:bg-[#C9973A]/10 hover:text-[#C9973A]"
+                        ? "bg-[var(--color-gold)] text-white shadow-md"
+                        : "bg-[var(--color-warm-white)] text-[var(--color-navy)] hover:bg-[var(--color-gold)]/10 hover:text-[var(--color-gold)]"
                     }`}
                   >
                     {n}
@@ -235,7 +243,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 ))}
               </div>
               {quantity > 1 && (
-                <p className="text-xs text-[#999] mt-3">
+                <p className="text-xs text-[var(--color-ink-2)] mt-3">
                   Cada eSIM llega al mismo email con su propio código QR.
                 </p>
               )}
@@ -287,31 +295,35 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 onPaste={(e) => e.preventDefault()}
               />
               <FieldError message={touchedFields.confirm_email ? errors.confirm_email?.message : undefined} />
-              <p className="text-xs text-[#999] mt-1.5">
+              <p className="text-xs text-[var(--color-ink-2)] mt-1.5">
                 Te vamos a enviar los QR a este email. Revisalo antes de pagar.
               </p>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <button
+            <div className="flex gap-3 pt-6">
+              <motion.button
                 type="button"
                 onClick={onBack}
-                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#1B2F4E] px-4 py-3 rounded-xl hover:bg-[#1B2F4E]/5"
+                whileHover={{ x: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-navy)] px-4 py-3 rounded-xl hover:bg-[var(--color-warm-white)] transition-colors"
               >
-                <ArrowLeft size={15} weight="bold" />
+                <ArrowLeft size={16} weight="bold" />
                 {t("form.back")}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 type="button"
                 onClick={async () => {
                   const valid = await trigger(["customer_name", "customer_lastname", "customer_email", "confirm_email"]);
                   if (valid) setSubstep(2);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#C9973A] hover:bg-[#C9973A]/90 px-4 py-3 rounded-xl"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-[var(--color-navy)] bg-[var(--color-gold)] hover:bg-[var(--color-gold)]/90 px-4 py-3 rounded-xl shadow-md transition-all"
               >
                 Continuar
-                <ArrowRight size={15} weight="bold" />
-              </button>
+                <ArrowRight size={16} weight="bold" />
+              </motion.button>
             </div>
           </div>
         )}
@@ -320,8 +332,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         {substep === 2 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Validación de identidad</h3>
-              <p className="text-sm text-[#555]">Requerido por regulaciones de telecomunicaciones</p>
+              <h3 className="text-2xl font-bold text-[var(--color-navy)] mb-1">Validación de identidad</h3>
+              <p className="text-base text-[var(--color-ink)]">Requerido por regulaciones de telecomunicaciones</p>
             </div>
 
             <div>
@@ -356,31 +368,35 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 max={maxDobStr()}
                 className={inputClass}
               />
-              <p className="text-xs text-[#555] mt-1.5">
-                ℹ️ Usamos esto para verificar que cumplís los requisitos de edad
+              <p className="text-xs text-[var(--color-ink-2)] mt-1.5">
+                Usamos esto para verificar que cumplís los requisitos de edad
               </p>
               <FieldError message={touchedFields.customer_dob ? errors.customer_dob?.message : undefined} />
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <button
+            <div className="flex gap-3 pt-6">
+              <motion.button
                 type="button"
                 onClick={() => setSubstep(1)}
-                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#1B2F4E] px-4 py-3 rounded-xl hover:bg-[#1B2F4E]/5"
+                whileHover={{ x: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-navy)] px-4 py-3 rounded-xl hover:bg-[var(--color-warm-white)] transition-colors"
               >
-                <ArrowLeft size={15} weight="bold" />
-              </button>
-              <button
+                <ArrowLeft size={16} weight="bold" />
+              </motion.button>
+              <motion.button
                 type="button"
                 onClick={async () => {
                   const valid = await trigger(["customer_country", "customer_passport", "customer_dob"]);
                   if (valid) setSubstep(3);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-white bg-[#C9973A] hover:bg-[#C9973A]/90 px-4 py-3 rounded-xl"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-[var(--color-navy)] bg-[var(--color-gold)] hover:bg-[var(--color-gold)]/90 px-4 py-3 rounded-xl shadow-md transition-all"
               >
                 Continuar
-                <ArrowRight size={15} weight="bold" />
-              </button>
+                <ArrowRight size={16} weight="bold" />
+              </motion.button>
             </div>
           </div>
         )}
@@ -389,19 +405,19 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         {substep === 3 && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-[#1B2F4E] mb-1">Cuándo empieza tu plan</h3>
-              <p className="text-sm text-[#555]">Los 28 días corren desde la activación</p>
+              <h3 className="text-2xl font-bold text-[var(--color-navy)] mb-1">Cuándo empieza tu plan</h3>
+              <p className="text-base text-[var(--color-ink)]">Los 28 días corren desde la activación</p>
             </div>
 
             {isLocal && (
-              <div className="rounded-2xl bg-[#EBF6FC] border border-[#C9973A]/30 p-5">
+              <div className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 p-6">
                 <div className="space-y-3">
                   {/* Activación inmediata */}
                   <label
-                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
                       watch("activation_type") === "now"
-                        ? "border-[#C9973A] bg-white"
-                        : "border-transparent bg-white/50"
+                        ? "border-[var(--color-gold)] bg-white"
+                        : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
                     }`}
                   >
                     <input
@@ -409,11 +425,11 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       {...register("activation_type")}
                       value="now"
                       onChange={() => analytics.activationOptionSelected("now", plan)}
-                      className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div>
-                      <p className="text-sm font-semibold text-[#1B2F4E]">Activación inmediata</p>
-                      <p className="text-xs text-[#555] mt-0.5">
+                      <p className="text-sm font-semibold text-[var(--color-navy)]">Activación inmediata</p>
+                      <p className="text-xs text-[var(--color-ink-2)] mt-1">
                         Los 28 días corren desde ahora. Conectado al aterrizar.
                       </p>
                     </div>
@@ -421,10 +437,10 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
                   {/* Programar fecha */}
                   <label
-                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${
+                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
                       watch("activation_type") === "schedule"
-                        ? "border-[#C9973A] bg-white"
-                        : "border-transparent bg-white/50"
+                        ? "border-[var(--color-gold)] bg-white"
+                        : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
                     }`}
                   >
                     <input
@@ -432,11 +448,11 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       {...register("activation_type")}
                       value="schedule"
                       onChange={() => analytics.activationOptionSelected("schedule", plan)}
-                      className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
+                      className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-[#1B2F4E]">📆 Programar fecha</p>
-                      <p className="text-xs text-[#555] mt-0.5">
+                      <p className="text-sm font-semibold text-[var(--color-navy)]">Programar fecha</p>
+                      <p className="text-xs text-[var(--color-ink-2)] mt-1">
                         Elegí cuándo empieza tu plan (hasta 12 meses).
                       </p>
                       {watch("activation_type") === "schedule" && (
@@ -457,9 +473,9 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             )}
 
             {!isLocal && (
-              <div className="rounded-2xl bg-[#EBF6FC] border border-[#C9973A]/30 p-4">
-                <p className="text-sm font-semibold text-[#C9973A] mb-2">ℹ️ Cómo funciona DataOnly</p>
-                <p className="text-sm text-[#555]">
+              <div className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 p-6">
+                <p className="text-sm font-semibold text-[var(--color-gold)] mb-3">Cómo funciona DataOnly</p>
+                <p className="text-sm text-[var(--color-ink)]">
                   Se envía el QR al email. Tenés <strong>60 días para escanearlo</strong>. El plan{" "}
                   <strong>no empieza hasta que lo actives</strong>.
                 </p>
@@ -468,19 +484,19 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
             {/* Device confirmation */}
             <div
-              className={`rounded-2xl border p-4 transition-colors duration-150 ${
-                errors.device_confirmed ? "bg-red-50 border-red-300" : "bg-[#F8F8F8] border-[#1B2F4E]/6"
+              className={`rounded-2xl border p-6 transition-colors duration-150 ${
+                errors.device_confirmed ? "bg-[#FEE2E2] border-[#FECACA]" : "bg-[var(--color-warm-white)] border-[var(--color-border)]"
               }`}
             >
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   {...register("device_confirmed")}
-                  className="accent-[#C9973A] w-4 h-4 mt-0.5 shrink-0"
+                  className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
                 />
-                <span className="text-sm text-[#555] leading-snug">
+                <span className="text-sm text-[var(--color-ink)] leading-snug">
                   Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
-                  <a href="#compatibilidad" className="text-[#C9973A] font-semibold hover:underline">
+                  <a href="#compatibilidad" className="text-[var(--color-gold)] font-semibold hover:underline">
                     Ver celulares compatibles
                   </a>
                 </span>
@@ -491,14 +507,16 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             {/* FAQ inline */}
             <PurchaseFAQ />
 
-            <div className="flex gap-3 pt-4">
-              <button
+            <div className="flex gap-3 pt-6">
+              <motion.button
                 type="button"
                 onClick={() => setSubstep(2)}
-                className="flex items-center gap-2 text-sm font-semibold text-[#555] hover:text-[#1B2F4E] px-4 py-3 rounded-xl hover:bg-[#1B2F4E]/5"
+                whileHover={{ x: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-navy)] px-4 py-3 rounded-xl hover:bg-[var(--color-warm-white)] transition-colors"
               >
-                <ArrowLeft size={15} weight="bold" />
-              </button>
+                <ArrowLeft size={16} weight="bold" />
+              </motion.button>
               <Button type="submit" variant="primary" size="lg" className="flex-1">
                 {t("form.next")}
                 <ArrowRight size={16} weight="bold" />
@@ -510,25 +528,30 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
       {/* Resumen del plan */}
       <div className="lg:col-span-1">
-        <div className="sticky top-6 rounded-2xl bg-white border border-black/[0.07] p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#999] mb-4">
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+          className="sticky top-6 rounded-2xl bg-white border border-[var(--color-border)] p-6 shadow-sm"
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-2)] mb-6">
             {t("summary")}
           </p>
-          <div className="border-b border-[#1B2F4E]/8 pb-4 mb-4">
-            <p className="font-black text-lg text-[#1B2F4E]">{plan.name}</p>
-            <p className="text-sm text-[#555]">{plan.data_gb} GB · {plan.duration_days} días</p>
+          <div className="border-b border-[var(--color-border)] pb-6 mb-6">
+            <p className="font-black text-xl text-[var(--color-navy)]">{plan.name}</p>
+            <p className="text-sm text-[var(--color-ink-2)] mt-1">{plan.data_gb} GB · {plan.duration_days} días</p>
           </div>
           {quantity > 1 && (
-            <div className="flex justify-between text-sm text-[#999] mb-1">
+            <div className="flex justify-between text-sm text-[var(--color-ink-2)] mb-2">
               <span>{quantity} × {formatUSD(plan.price_usd)}</span>
             </div>
           )}
-          <div className="flex justify-between items-baseline pt-1">
-            <span className="font-semibold text-[#555]">Total</span>
-            <span className="text-2xl font-black text-[#1B2F4E]">{formatUSD(plan.price_usd * quantity)}</span>
+          <div className="flex justify-between items-baseline mb-1">
+            <span className="font-semibold text-[var(--color-ink)]">Total</span>
+            <span className="text-4xl font-black text-[var(--color-navy)]">{formatUSD(plan.price_usd * quantity)}</span>
           </div>
-          <p className="text-xs text-[#999] text-right">USD · pago único</p>
-        </div>
+          <p className="text-xs text-[var(--color-ink-2)] text-right">USD · pago único</p>
+        </motion.div>
       </div>
     </div>
   );

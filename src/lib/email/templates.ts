@@ -68,39 +68,94 @@ export function emailAvisoClienteProgramado(data: {
   type: string
 }) {
   return {
-    subject: `Tu eSIM RUTA34 está confirmada — la recibís el ${data.activationDate}`,
+    subject: `Tu eSIM está confirmada — la recibirás el ${data.activationDate}`,
     html: `
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#1B2F4E;font-family:Helvetica Neue,Arial,sans-serif;color:#ffffff;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#FFF8F5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1B2F4E;">
+  <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
 
-    <div style="margin-bottom:32px;">
-      <span style="font-size:28px;font-weight:900;">RUTA</span><span style="font-size:28px;font-weight:900;color:#C9973A;">34</span>
-      <div style="font-size:9px;letter-spacing:6px;color:#7A7A7A;margin-top:2px;">TELECOM</div>
+    <!-- HEADER -->
+    <div style="margin-bottom:40px;text-align:center;">
+      <div style="font-size:32px;font-weight:900;letter-spacing:-1px;">
+        <span style="color:#1B2F4E;">RUTA</span><span style="color:#C9973A;">34</span>
+      </div>
+      <div style="font-size:11px;letter-spacing:2px;color:#999;margin-top:4px;text-transform:uppercase;font-weight:600;">Telecom</div>
     </div>
 
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;">
-      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">📱 Tu eSIM está confirmada</div>
-      <div style="color:#7A7A7A;font-size:14px;line-height:1.6;">
-        Hola <strong style="color:#fff;">${data.customerName}</strong>, tu eSIM para viajar a Europa está lista.
+    <!-- HERO -->
+    <div style="background:#1B2F4E;border-radius:20px;padding:40px 32px;margin-bottom:24px;text-align:center;color:#fff;">
+      <div style="font-size:48px;margin-bottom:12px;">📅</div>
+      <div style="font-size:28px;font-weight:900;margin-bottom:8px;letter-spacing:-0.5px;">Activación programada</div>
+      <div style="font-size:16px;color:#AAAAAA;line-height:1.6;">
+        Hola <strong style="color:#fff;">${data.customerName}</strong>, tu eSIM está confirmada y lista.
       </div>
     </div>
 
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;">
-      ${row('Plan', data.tariffName)}
-      ${row('Tipo', data.type === 'prepago' ? 'eSIM Prepago (28 días desde activación)' : 'DataOnly')}
-      ${row('Recibís el QR el', `<strong style="color:#C9973A;">${data.activationDate}</strong>`)}
+    <!-- PLAN DETAILS -->
+    <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:32px;margin-bottom:24px;">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:12px;letter-spacing:1px;color:#999;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Tu plan</div>
+        <div style="font-size:24px;font-weight:900;color:#1B2F4E;">${data.tariffName}</div>
+      </div>
+      <div style="border-top:1px solid #E5E5E5;padding-top:24px;space:20px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;">
+          <span style="color:#666;">Tipo</span>
+          <strong style="color:#1B2F4E;">${data.type === 'prepago' ? '28 días desde activación' : 'DataOnly • 60 días'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;">
+          <span style="color:#666;">Recibirás tu QR</span>
+          <strong style="color:#C9973A;font-size:16px;">${data.activationDate}</strong>
+        </div>
+      </div>
     </div>
 
-    <div style="background:rgba(230,0,0,0.08);border:1px solid rgba(230,0,0,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#AAAAAA;line-height:1.6;">
-      ⚠️ <strong style="color:#fff;">Importante:</strong> El plan empieza a correr desde el momento de activación. Te recomendamos activar la eSIM cuando llegués a Europa.
+    <!-- TIMELINE -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px;letter-spacing:1px;color:#999;text-transform:uppercase;font-weight:700;margin-bottom:20px;">Cronograma</div>
+      <div style="display:flex;gap:16px;margin-bottom:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">✓</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Compra confirmada</div>
+          <div style="font-size:14px;color:#666;">Tu pedido está registrado y listo.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">→</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">El ${data.activationDate}</div>
+          <div style="font-size:14px;color:#666;">Recibirás el código QR por email para instalar tu eSIM.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">3</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Activá cuando llegues</div>
+          <div style="font-size:14px;color:#666;">El plan comienza a correr desde que activás la eSIM. Instalá cuando llegues a Europa.</div>
+        </div>
+      </div>
     </div>
 
-    <div style="color:#7A7A7A;font-size:12px;text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid #3D5A82;">
-      RUTA34 Telecom · <span style="color:#C9973A;">ruta34telecom.com</span>
+    <!-- IMPORTANT -->
+    <div style="background:rgba(201,151,58,0.06);border:1px solid rgba(201,151,58,0.2);border-radius:12px;padding:20px;margin-bottom:24px;font-size:14px;color:#666;line-height:1.7;">
+      <strong style="color:#1B2F4E;display:block;margin-bottom:12px;">Recordatorio importante</strong>
+      El plan comienza a correr desde el momento de la activación. Te recomendamos instalar la eSIM cuando llegues a Europa para aprovechar todos los días.
     </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
+        Pregunta sobre tu plan
+      </a>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align:center;padding-top:24px;border-top:1px solid #E5E5E5;font-size:12px;color:#999;">
+      <div style="margin-bottom:8px;">RUTA34 Telecom</div>
+      <a href="https://esimruta34.com" style="color:#C9973A;text-decoration:none;font-weight:600;">esimruta34.com</a>
+    </div>
+
   </div>
 </body>
 </html>`
@@ -192,54 +247,97 @@ export function emailConfirmacionB2C(data: {
     : 'Tenés 60 días desde la compra para activar la eSIM. El plan corre desde que la activás.'
 
   return {
-    subject: `Recibimos tu pedido ${data.orderRef} — te enviamos tu eSIM antes de 24 hs`,
+    subject: `Tu compra está confirmada — recibirás tu eSIM en 24 horas`,
     html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#1B2F4E;font-family:Helvetica Neue,Arial,sans-serif;color:#ffffff;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
+<body style="margin:0;padding:0;background:#FFF8F5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:#1B2F4E;">
+  <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
 
-    <div style="margin-bottom:32px;">
-      <span style="font-size:28px;font-weight:900;">RUTA</span><span style="font-size:28px;font-weight:900;color:#C9973A;">34</span>
-      <div style="font-size:9px;letter-spacing:6px;color:#7A7A7A;margin-top:2px;">TELECOM</div>
+    <!-- HEADER -->
+    <div style="margin-bottom:40px;text-align:center;">
+      <div style="font-size:32px;font-weight:900;letter-spacing:-1px;">
+        <span style="color:#1B2F4E;">RUTA</span><span style="color:#C9973A;">34</span>
+      </div>
+      <div style="font-size:11px;letter-spacing:2px;color:#999;margin-top:4px;text-transform:uppercase;font-weight:600;">Telecom</div>
     </div>
 
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;">
-      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">✅ Recibimos tu pedido</div>
-      <div style="color:#AAAAAA;font-size:15px;line-height:1.7;">
-        Hola <strong style="color:#fff;">${data.customerName}</strong>, confirmamos que recibimos tu compra.<br><br>
-        Estamos preparando tu eSIM y la recibirás en este email <strong style="color:#C9973A;">antes de las próximas 24 horas</strong>.<br>
-        Operamos todos los días de <strong style="color:#fff;">8:00 a 21:00</strong> (hora de España).
+    <!-- HERO -->
+    <div style="background:#1B2F4E;border-radius:20px;padding:40px 32px;margin-bottom:24px;text-align:center;color:#fff;">
+      <div style="font-size:48px;margin-bottom:12px;">✅</div>
+      <div style="font-size:28px;font-weight:900;margin-bottom:8px;letter-spacing:-0.5px;">Compra confirmada</div>
+      <div style="font-size:16px;color:#AAAAAA;line-height:1.6;">
+        Hola <strong style="color:#fff;">${data.customerName}</strong>, tu viaje a Europa está casi listo.
       </div>
     </div>
 
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;">
-      <div style="font-size:11px;color:#7A7A7A;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Detalle de tu pedido</div>
-      ${row('Referencia', `<span style="font-family:monospace;color:#C9973A;">${data.orderRef}</span>`)}
-      ${row('Plan', data.planName)}
-      ${row('Datos', `${data.planGB} GB · ${data.planDays} días`)}
-      ${row('Tipo', isLocal ? '🇪🇸 eSIM España (llamadas + SMS incluidos)' : '✈️ eSIM Europa (datos en 30+ países)')}
-      ${row('Total pagado', `<strong style="color:#fff;">USD ${data.amountUSD.toFixed(2)}</strong>`)}
+    <!-- ORDER SUMMARY -->
+    <div style="background:#fff;border:1px solid #E5E5E5;border-radius:16px;padding:32px;margin-bottom:24px;">
+      <div style="font-size:12px;letter-spacing:1px;color:#999;text-transform:uppercase;font-weight:700;margin-bottom:20px;">Tu plan</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px;">
+        <div>
+          <div style="font-size:24px;font-weight:900;color:#1B2F4E;margin-bottom:4px;">${data.planName}</div>
+          <div style="font-size:14px;color:#999;">${data.planGB} GB • ${data.planDays} días</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:28px;font-weight:900;color:#C9973A;">USD ${data.amountUSD.toFixed(2)}</div>
+          <div style="font-size:12px;color:#999;margin-top:4px;">pago único</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E5E5E5;padding-top:20px;display:flex;justify-content:space-between;font-size:13px;color:#666;">
+        <span>Referencia de pedido</span>
+        <span style="font-family:monospace;font-weight:700;color:#1B2F4E;">${data.orderRef}</span>
+      </div>
     </div>
 
-    <div style="background:rgba(201,151,58,0.08);border:1px solid rgba(201,151,58,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#AAAAAA;line-height:1.7;">
-      📌 <strong style="color:#fff;">Mientras tanto:</strong><br>
-      · Verificá que tu celular es compatible con eSIM (Settings → General → About → eSIM)<br>
-      · Cuando llegue el QR, necesitarás WiFi para instalarlo (no internet de datos)<br>
-      · ${activationNote}
+    <!-- TIMELINE -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px;letter-spacing:1px;color:#999;text-transform:uppercase;font-weight:700;margin-bottom:20px;">Lo que viene ahora</div>
+      <div style="display:flex;gap:16px;margin-bottom:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">1</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Preparamos tu eSIM</div>
+          <div style="font-size:14px;color:#666;line-height:1.5;">En los próximos minutos verificamos tu compra. Operamos de 8:00 a 21:00 (España).</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">2</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Recibirás tu QR por email</div>
+          <div style="font-size:14px;color:#666;line-height:1.5;">En menos de 24 horas recibirás el código QR para instalar tu eSIM.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;">
+        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">3</div>
+        <div>
+          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Activá cuando llegues</div>
+          <div style="font-size:14px;color:#666;line-height:1.5;">${activationNote}</div>
+        </div>
+      </div>
     </div>
 
-    <div style="text-align:center;margin:24px 0;">
-      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}"
-        style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:12px 28px;border-radius:9px;font-weight:700;font-size:14px;">
-        💬 ¿Dudas? Escribinos por WhatsApp
+    <!-- PREP INFO -->
+    <div style="background:rgba(201,151,58,0.06);border:1px solid rgba(201,151,58,0.2);border-radius:12px;padding:20px;margin-bottom:24px;font-size:14px;color:#666;line-height:1.7;">
+      <strong style="color:#1B2F4E;display:block;margin-bottom:12px;">Antes de instalar tu eSIM</strong>
+      • Asegurate que tu celular sea compatible (Settings → General → About → eSIM)<br>
+      • Necesitarás WiFi para instalarlo (no internet de datos)<br>
+      • Guardá este email — contiene datos importantes
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-bottom:24px;">
+      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
+        Escribinos por WhatsApp
       </a>
     </div>
 
-    <div style="color:#555;font-size:12px;text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid #3D5A82;">
-      RUTA34 Telecom · <a href="https://esimruta34.com" style="color:#C9973A;text-decoration:none;">esimruta34.com</a>
+    <!-- FOOTER -->
+    <div style="text-align:center;padding-top:24px;border-top:1px solid #E5E5E5;font-size:12px;color:#999;">
+      <div style="margin-bottom:8px;">RUTA34 Telecom</div>
+      <a href="https://esimruta34.com" style="color:#C9973A;text-decoration:none;font-weight:600;">esimruta34.com</a>
     </div>
+
   </div>
 </body>
 </html>`,
@@ -311,126 +409,33 @@ export function emailEntregaB2C(data: {
   planGB: number
   planDays: number
   planType: 'local' | 'dataonly' | string
-  activationString: string   // 1$server$code
-  confirmationCode: string   // 6 dígitos
+  activationString: string
+  confirmationCode: string
   amountUSD: number
-  qrUrl?: string             // URL pública HTTPS — si existe se usa en el body; si no, cid:esim-qr
+  qrUrl?: string
 }) {
   const isLocal = data.planType === 'local' || data.planType === 'prepago'
-  const importantNote = isLocal
-    ? '⏱ Los <strong style="color:#fff;">28 días</strong> comienzan cuando activás la eSIM. Recomendamos activarla al aterrizar en Europa.'
-    : '⏱ Tenés <strong style="color:#fff;">60 días</strong> desde la compra para activar la eSIM. El plan corre desde que la escaneás.'
+  const deliveryMessage = isLocal
+    ? 'Tu eSIM para viajar por Europa está lista. Escaneá el QR cuando aterrices.'
+    : 'Tu eSIM está lista para activar en cualquier momento dentro de los próximos 60 días.'
 
   return {
-    subject: `📱 Tu eSIM RUTA34 está lista — guardá este email`,
-    html: `
-<!DOCTYPE html>
+    subject: `Tu eSIM RUTA34 está confirmada — ${data.orderRef}`,
+    html: `<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#1B2F4E;font-family:Helvetica Neue,Arial,sans-serif;color:#ffffff;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
-
-    <div style="margin-bottom:32px;">
-      <span style="font-size:28px;font-weight:900;">RUTA</span><span style="font-size:28px;font-weight:900;color:#C9973A;">34</span>
-      <div style="font-size:9px;letter-spacing:6px;color:#7A7A7A;margin-top:2px;">TELECOM</div>
-    </div>
-
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;text-align:center;">
-      <div style="font-size:24px;font-weight:800;margin-bottom:8px;">📱 Tu eSIM está lista</div>
-      <div style="color:#AAAAAA;font-size:15px;line-height:1.6;">
-        Hola <strong style="color:#fff;">${data.customerName}</strong>, tu eSIM para Europa ya está preparada.<br>
-        Escaneá el código QR con tu celular para instalarla.
-      </div>
-    </div>
-
-    <!-- QR CODE -->
-    <div style="background:#ffffff;border-radius:16px;padding:24px;margin-bottom:20px;text-align:center;">
-      <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Tu código QR</div>
-      <img src="${data.qrUrl ?? 'cid:esim-qr'}" alt="Código QR eSIM RUTA34" width="220" height="220"
-           style="display:block;margin:0 auto;border-radius:8px;" />
-      <div style="margin-top:16px;background:#F5F5F5;border-radius:8px;padding:12px;font-size:11px;color:#555;font-family:monospace;word-break:break-all;text-align:left;">
-        <div style="font-size:10px;color:#999;margin-bottom:4px;font-family:sans-serif;">Si no podés escanear el QR, usá esta cadena de activación:</div>
-        ${data.activationString}
-      </div>
-    </div>
-
-    <!-- CONFIRMATION CODE -->
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center;">
-      <div style="font-size:11px;color:#7A7A7A;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Código de confirmación</div>
-      <div style="font-size:48px;font-weight:900;letter-spacing:8px;color:#C9973A;">${data.confirmationCode}</div>
-      <div style="font-size:12px;color:#7A7A7A;margin-top:8px;">Necesitarás ingresar este código después de escanear el QR</div>
-    </div>
-
-    <!-- INSTRUCTIONS -->
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:20px;">
-      <div style="font-size:15px;font-weight:800;margin-bottom:20px;">Cómo activar tu eSIM</div>
-
-      <!-- iPhone -->
-      <div style="background:#1B2F4E;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="font-size:18px;">🍎</span>
-          <span style="font-size:13px;font-weight:700;color:#fff;">iPhone (iOS 14.4 o superior)</span>
-        </div>
-        ${step(1, 'Mantené presionado el código QR con tu cámara o desde este email')}
-        ${step(2, 'Seleccioná <strong>"Añadir eSIM"</strong> en el menú que aparece')}
-        ${step(3, 'Ingresá el código de confirmación <strong>' + data.confirmationCode + '</strong>')}
-        ${step(4, 'Activá la línea cuando te lo solicite')}
-        <div style="margin-top:10px;font-size:11px;color:#555;">
-          ¿No aparece la opción? Usá el método manual: <strong>Ajustes → Datos móviles → Añadir plan de datos</strong>
-        </div>
-      </div>
-
-      <!-- Android -->
-      <div style="background:#1B2F4E;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="font-size:18px;">🤖</span>
-          <span style="font-size:13px;font-weight:700;color:#fff;">Android (Samsung, Pixel, Motorola y otros)</span>
-        </div>
-        ${step(1, 'Conectate a una red WiFi')}
-        ${step(2, '<strong>Samsung:</strong> Ajustes → Conexiones → Administrador de SIM → Añadir plan<br><span style="color:#7A7A7A;font-size:11px;"><strong>Pixel / otros:</strong> Ajustes → Red e Internet → SIMs → Añadir eSIM</span>')}
-        ${step(3, 'Escaneá el código QR')}
-        ${step(4, 'Ingresá el código de confirmación <strong>' + data.confirmationCode + '</strong>')}
-        ${step(5, 'Seleccioná <strong>"Activar"</strong> o <strong>"Usar SIM"</strong>')}
-      </div>
-
-      <!-- Manual fallback -->
-      <div style="background:#1B2F4E;border-radius:10px;padding:14px;">
-        <div style="font-size:12px;font-weight:700;color:#7A7A7A;margin-bottom:8px;">📋 ¿No podés escanear el QR? Activación manual</div>
-        <div style="font-size:12px;color:#AAAAAA;line-height:1.7;">
-          Ingresá manualmente la cadena de activación en tu celular:<br>
-          <span style="font-family:monospace;color:#C9973A;font-size:11px;word-break:break-all;">${data.activationString}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- IMPORTANT NOTE -->
-    <div style="background:rgba(230,0,0,0.08);border:1px solid rgba(230,0,0,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#AAAAAA;line-height:1.7;">
-      ${importantNote}
-    </div>
-
-    <!-- ORDER SUMMARY -->
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:24px;margin-bottom:20px;">
-      <div style="font-size:11px;color:#7A7A7A;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Resumen de tu compra</div>
-      ${row('Plan', data.planName)}
-      ${row('Datos', `${data.planGB} GB · ${data.planDays} días`)}
-      ${row('Referencia', `<span style="font-family:monospace;color:#C9973A;">${data.orderRef}</span>`)}
-      ${row('Total', `<strong style="color:#fff;">USD ${data.amountUSD.toFixed(2)}</strong>`)}
-    </div>
-
-    <div style="text-align:center;margin:24px 0;">
-      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}"
-        style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:12px 28px;border-radius:9px;font-weight:700;font-size:14px;">
-        💬 ¿Necesitás ayuda? Escribinos por WhatsApp
-      </a>
-    </div>
-
-    <div style="color:#555;font-size:12px;text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid #3D5A82;">
-      RUTA34 Telecom · <a href="https://esimruta34.com" style="color:#C9973A;text-decoration:none;">esimruta34.com</a><br>
-      <span style="color:#333;font-size:11px;">Guardá este email — contiene los datos de tu eSIM</span>
-    </div>
-  </div>
-</body>
-</html>`,
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+${premiumEmailStyles()}
+</head>
+<body style="margin:0;padding:0;background:#FAF7F2;">
+<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
+${premiumHeader()}
+<tr><td style="padding:32px 20px;">
+<table role="presentation" class="container" width="100%">
+<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Tu eSIM está lista</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">Orden ${data.orderRef}</p><p class="p">${deliveryMessage}</p></div></td></tr>
+${qrBlock(data.qrUrl ?? 'cid:esim-qr', data.confirmationCode, data.activationString)}
+${orderSummaryBlock(data.planName, data.planGB, data.planDays, data.amountUSD)}
+${supportBlock()}
+${premiumFooter()}`
   }
 }
 
@@ -450,6 +455,32 @@ function row(label: string, value: string) {
   </div>`
 }
 
+// ── PREMIUM EMAIL HELPERS (for warm-white, Georgia serif, gold buttons) ────────
+
+function premiumEmailStyles() {
+  return `<style>body{margin:0;padding:0;background:#FAF7F2;color:#1B2F4E;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;}table{border-collapse:collapse;}img{border:0;outline:none;text-decoration:none;display:block;}.container{width:100%;max-width:680px;margin:0 auto;}.card{background:#FFFFFF;border:1px solid #E9E2D8;border-radius:28px;overflow:hidden;}.section{padding:32px;}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C9973A;font-weight:700;}.h1{font-family:Georgia,'Times New Roman',serif;font-size:40px;line-height:1.08;font-weight:400;color:#1B2F4E;margin:10px 0 14px;}.h2{font-size:22px;line-height:1.25;font-weight:800;color:#1B2F4E;margin:0 0 12px;}.p{font-size:16px;line-height:1.65;color:#555555;margin:0;}.muted{color:#8A8A8A;font-size:14px;line-height:1.5;}.button{display:inline-block;background:#C9973A;color:#1B2F4E;text-decoration:none;padding:15px 22px;border-radius:14px;font-weight:800;font-size:15px;}.button-secondary{display:inline-block;background:#FFFFFF;color:#1B2F4E;text-decoration:none;padding:14px 20px;border-radius:14px;border:1px solid #E9E2D8;font-weight:700;font-size:15px;}.divider{height:1px;background:#E9E2D8;line-height:1px;font-size:1px;}.summary-row td{padding:8px 0;font-size:15px;}.summary-label{color:#8A8A8A;}.summary-value{color:#1B2F4E;font-weight:800;text-align:right;}@media only screen and (max-width:600px){.section{padding:24px!important;}.h1{font-size:32px!important;}.h2{font-size:20px!important;}.button,.button-secondary{display:block!important;text-align:center!important;}}</style>`
+}
+
+function premiumHeader() {
+  return `<table role="presentation" width="100%" style="background:#FAF7F2;padding:28px 12px;"><tr><td align="center"><table role="presentation" class="container" width="100%"><tr><td style="padding:0 0 18px;text-align:center;"><div style="font-size:24px;font-weight:900;color:#1B2F4E;letter-spacing:-0.03em;">Ruta34</div></td></tr>`
+}
+
+function premiumFooter() {
+  return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
+}
+
+function qrBlock(qrUrl: string, confirmationCode: string, activationString: string) {
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="text-align:center;"><div style="display:inline-block;background:#FFFFFF;border:1px solid #E9E2D8;border-radius:24px;padding:18px;"><img src="${qrUrl}" alt="QR de instalación eSIM" width="220" height="220" style="width:220px;height:220px;margin:0 auto;border-radius:8px;" /></div><div style="height:18px;"></div><p class="muted">Código: <strong style="color:#1B2F4E;">${confirmationCode}</strong></p><div style="height:8px;"></div><p class="muted" style="font-family:monospace;word-break:break-all;">${activationString}</p></div></td></tr>`
+}
+
+function orderSummaryBlock(planName: string, planGB: number, planDays: number, amountUSD: number) {
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">Resumen de tu compra</h2><table role="presentation" width="100%"><tr class="summary-row"><td class="summary-label">Plan</td><td class="summary-value">${planName}</td></tr><tr class="summary-row"><td class="summary-label">Datos</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">Duración</td><td class="summary-value">${planDays} días</td></tr><tr><td colspan="2"><div class="divider" style="margin:10px 0;"></div></td></tr><tr class="summary-row"><td class="summary-label">Total</td><td class="summary-value" style="font-size:22px;color:#C9973A;">USD ${amountUSD.toFixed(2)}</td></tr></table></div></td></tr>`
+}
+
+function supportBlock() {
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}">Hablar por WhatsApp</a></div></td></tr>`
+}
+
 // ── B2C: Entrega de múltiples eSIMs en un solo email (compras grupales) ───────
 export function emailEntregaMultiple(data: {
   customerName: string
@@ -460,7 +491,7 @@ export function emailEntregaMultiple(data: {
   planType: 'local' | 'dataonly' | string
   amountUSD: number
   esims: Array<{
-    label: string        // "eSIM 1 de 5"
+    label: string
     orderRef: string
     activationString: string
     confirmationCode: string
@@ -468,113 +499,29 @@ export function emailEntregaMultiple(data: {
   }>
 }) {
   const subject = data.totalCount === 1
-    ? `📱 Tu eSIM RUTA34 está lista — guardá este email`
-    : `📱 Tus ${data.totalCount} eSIMs RUTA34 están listas — guardá este email`
+    ? `Tu eSIM RUTA34 está confirmada`
+    : `Tus ${data.totalCount} eSIMs RUTA34 están confirmadas`
 
-  const intro = data.totalCount === 1
-    ? `Hola <strong style="color:#fff;">${data.customerName}</strong>, tu eSIM para Europa ya está preparada.`
-    : `Hola <strong style="color:#fff;">${data.customerName}</strong>, tus ${data.totalCount} eSIMs para Europa están listas.<br>
-       Cada eSIM tiene su propio código QR. <strong style="color:#C9973A;">Compartí uno distinto con cada persona</strong> — no escanees el mismo QR en más de un celular.`
-
-  const esimBlocks = data.esims.map((esim, idx) => `
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:24px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:800;color:#C9973A;letter-spacing:1px;text-transform:uppercase;">${esim.label}</div>
-        <div style="font-size:11px;font-family:monospace;color:#C9973A;">${esim.orderRef}</div>
-      </div>
-
-      <!-- QR -->
-      <div style="background:#fff;border-radius:12px;padding:18px;text-align:center;margin-bottom:16px;">
-        <div style="font-size:10px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Código QR de instalación</div>
-        ${esim.qrUrl
-          ? `<img src="${esim.qrUrl}" alt="QR ${esim.label}" width="200" height="200" style="display:block;margin:0 auto;border-radius:8px;" />`
-          : `<div style="width:200px;height:200px;background:#f5f5f5;margin:0 auto;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;">QR adjunto</div>`
-        }
-        <div style="margin-top:14px;background:#F5F5F5;border-radius:8px;padding:10px;font-size:10px;color:#555;font-family:monospace;word-break:break-all;text-align:left;">
-          <div style="font-size:9px;color:#999;margin-bottom:3px;font-family:sans-serif;">Cadena manual (si no podés escanear):</div>
-          ${esim.activationString}
-        </div>
-      </div>
-
-      <!-- Código de confirmación -->
-      <div style="text-align:center;margin-bottom:12px;">
-        <div style="font-size:10px;color:#7A7A7A;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Código de confirmación</div>
-        <div style="font-size:36px;font-weight:900;letter-spacing:6px;color:#C9973A;">${esim.confirmationCode}</div>
-        <div style="font-size:11px;color:#7A7A7A;margin-top:6px;">Ingresalo después de escanear el QR</div>
-      </div>
-
-      <!-- Campo "Para" — para imprimir/reenviar -->
-      ${data.totalCount > 1 ? `
-      <div style="border-top:1px solid #3D5A82;padding-top:12px;margin-top:4px;">
-        <div style="font-size:11px;color:#7A7A7A;">
-          <strong style="color:#fff;">Para:</strong> ________________________________
-        </div>
-        <div style="font-size:10px;color:#555;margin-top:4px;">Anotá el nombre de la persona que va a usar esta eSIM.</div>
-      </div>` : ''}
-    </div>
-  `).join('')
+  const esimRows = data.esims.map(esim =>
+    `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">${esim.label} — ${esim.orderRef}</h2>${qrBlock(esim.qrUrl ?? 'cid:esim-qr', esim.confirmationCode, esim.activationString)}</div></td></tr>`
+  ).join('')
 
   return {
     subject,
-    html: `
-<!DOCTYPE html>
+    html: `<!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#1B2F4E;font-family:Helvetica Neue,Arial,sans-serif;color:#ffffff;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
-
-    <div style="margin-bottom:32px;">
-      <span style="font-size:28px;font-weight:900;">RUTA</span><span style="font-size:28px;font-weight:900;color:#C9973A;">34</span>
-      <div style="font-size:9px;letter-spacing:6px;color:#7A7A7A;margin-top:2px;">TELECOM</div>
-    </div>
-
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:28px;margin-bottom:24px;text-align:center;">
-      <div style="font-size:22px;font-weight:800;margin-bottom:10px;">
-        📱 ${data.totalCount === 1 ? 'Tu eSIM está lista' : `Tus ${data.totalCount} eSIMs están listas`}
-      </div>
-      <div style="color:#AAAAAA;font-size:14px;line-height:1.6;">${intro}</div>
-    </div>
-
-    ${data.totalCount > 1 ? `
-    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 18px;margin-bottom:24px;font-size:13px;color:#AAAAAA;line-height:1.6;">
-      ⚠️ <strong style="color:#fff;">Importante:</strong> No escanees el mismo QR en más de un celular. Cada código funciona para una sola eSIM.
-    </div>` : ''}
-
-    <!-- Resumen del pedido -->
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:20px;margin-bottom:24px;">
-      <div style="font-size:11px;color:#7A7A7A;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Resumen</div>
-      ${row('Plan', data.planName)}
-      ${row('Datos', `${data.planGB} GB · ${data.planDays} días`)}
-      ${data.totalCount > 1 ? row('Cantidad', `${data.totalCount} eSIMs`) : ''}
-      ${row('Total pagado', `<strong style="color:#fff;">US$${data.amountUSD.toFixed(2)}</strong>`)}
-    </div>
-
-    <!-- Bloque de cada eSIM -->
-    ${esimBlocks}
-
-    <!-- Instrucciones -->
-    <div style="background:#2D4A72;border:1px solid #3D5A82;border-radius:14px;padding:24px;margin-bottom:20px;">
-      <div style="font-size:14px;font-weight:800;margin-bottom:16px;">Cómo instalar la eSIM</div>
-      ${step(1, 'Conectate a WiFi antes de instalar')}
-      ${step(2, 'Abrí Ajustes → Datos móviles → Añadir eSIM')}
-      ${step(3, 'Escaneá el QR con la cámara del celular')}
-      ${step(4, 'Ingresá el código de confirmación cuando te lo pida')}
-      ${step(5, 'Dejá la eSIM instalada antes de salir · Activala al llegar a Europa')}
-    </div>
-
-    <div style="text-align:center;margin:24px 0;">
-      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}"
-        style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:12px 28px;border-radius:9px;font-weight:700;font-size:14px;">
-        💬 ¿Necesitás ayuda? Escribinos por WhatsApp
-      </a>
-    </div>
-
-    <div style="color:#555;font-size:12px;text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid #3D5A82;">
-      RUTA34 Telecom · <a href="https://esimruta34.com" style="color:#C9973A;text-decoration:none;">esimruta34.com</a><br>
-      <span style="color:#444;font-size:11px;">Pago único · sin renovación automática · Conservás tu WhatsApp</span>
-    </div>
-  </div>
-</body>
-</html>`,
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+${premiumEmailStyles()}
+</head>
+<body style="margin:0;padding:0;background:#FAF7F2;">
+<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
+${premiumHeader()}
+<tr><td style="padding:32px 20px;">
+<table role="presentation" class="container" width="100%">
+<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">${data.totalCount === 1 ? 'Tu eSIM está lista' : `Tus ${data.totalCount} eSIMs están listas`}</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">${data.totalCount} ${data.totalCount === 1 ? 'eSIM' : 'eSIMs'}</p><p class="p">Comparte un código diferente con cada persona. No escanees el mismo QR en más de un celular.</p></div></td></tr>
+${esimRows}
+${orderSummaryBlock(data.planName, data.planGB, data.planDays, data.amountUSD)}
+${supportBlock()}
+${premiumFooter()}`
   }
 }
