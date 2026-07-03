@@ -85,12 +85,11 @@ export default function Benefits() {
                     <div className="absolute inset-0 rounded-2xl overflow-hidden -z-10">
                       <Image
                         src="/images/imagen4.png"
-                        alt=""
-                        aria-hidden="true"
+                        alt="Mapa de cobertura Europa"
                         fill
-                        className="object-cover object-center opacity-15"
-                        sizes="100vw"
-                        loading="lazy"
+                        priority
+                        className="object-cover object-center opacity-40"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 100vw"
                       />
                     </div>
 

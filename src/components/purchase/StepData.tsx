@@ -366,6 +366,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 type="date"
                 {...register("customer_dob")}
                 max={maxDobStr()}
+                defaultValue={maxDobStr()}
                 className={inputClass}
               />
               <p className="text-xs text-[var(--color-ink-2)] mt-1.5">

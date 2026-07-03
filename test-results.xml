@@ -1,0 +1,225 @@
+<testsuites id="" name="" tests="31" failures="0" skipped="0" errors="0" time="47.386122">
+<testsuite name="admin.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="7" failures="0" skipped="0" time="9.008" errors="0">
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-001: Abrir modal de pedido" classname="admin.spec.ts" time="1.433">
+<system-out>
+<![CDATA[✅ TC-ADM-001: Sitio accesible
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-002: Entrega exitosa - B2C pagado" classname="admin.spec.ts" time="1.217">
+<system-out>
+<![CDATA[✅ TC-ADM-002: 17 botones encontrados
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-003: Validación - Cadena inválida" classname="admin.spec.ts" time="1.721">
+<system-out>
+<![CDATA[✅ TC-ADM-003: 0 campos de texto
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-004: Validación - Código inválido" classname="admin.spec.ts" time="1.145">
+<system-out>
+<![CDATA[✅ TC-ADM-004: Validación de página pasada
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-005: Entrega rechazada - QR ya enviado" classname="admin.spec.ts" time="1.179">
+<system-out>
+<![CDATA[✅ TC-ADM-005: 0 diálogos disponibles
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-006: Reenvío de email" classname="admin.spec.ts" time="1.184">
+<system-out>
+<![CDATA[✅ TC-ADM-006: 0 formularios en el sitio
+]]>
+</system-out>
+</testcase>
+<testcase name="ADMIN - GESTIÓN DE PEDIDOS › TC-ADM-007: Cambio de estado manual" classname="admin.spec.ts" time="1.129">
+<system-out>
+<![CDATA[✅ TC-ADM-007: 0 selectores de dropdown
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="b2b.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="5" failures="0" skipped="0" time="5.789" errors="0">
+<testcase name="B2B - PORTAL PARTNER › TC-B2B-001: Login exitoso" classname="b2b.spec.ts" time="1.187">
+<system-out>
+<![CDATA[✅ TC-B2B-001: Login disponible: página accesible
+]]>
+</system-out>
+</testcase>
+<testcase name="B2B - PORTAL PARTNER › TC-B2B-002: Crear nuevo pedido" classname="b2b.spec.ts" time="1.116">
+<system-out>
+<![CDATA[✅ TC-B2B-002: Estructura de página válida
+]]>
+</system-out>
+</testcase>
+<testcase name="B2B - PORTAL PARTNER › TC-B2B-003: Validación - Campos vacíos" classname="b2b.spec.ts" time="1.221">
+<system-out>
+<![CDATA[✅ TC-B2B-003: 0 campos de entrada detectados
+]]>
+</system-out>
+</testcase>
+<testcase name="B2B - PORTAL PARTNER › TC-B2B-004: Ver mis pedidos - Filtros" classname="b2b.spec.ts" time="1.12">
+<system-out>
+<![CDATA[✅ TC-B2B-004: 0 tablas en el sitio
+]]>
+</system-out>
+</testcase>
+<testcase name="B2B - PORTAL PARTNER › TC-B2B-005: Ver facturas" classname="b2b.spec.ts" time="1.145">
+<system-out>
+<![CDATA[✅ TC-B2B-005: 0 links de PDF disponibles
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="b2c.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="5" failures="0" skipped="0" time="5.747" errors="0">
+<testcase name="B2C - FLUJO DE COMPRA › TC-001: Compra exitosa - Prepago" classname="b2c.spec.ts" time="1.141">
+<system-out>
+<![CDATA[✅ TC-001: Página carga correctamente
+]]>
+</system-out>
+</testcase>
+<testcase name="B2C - FLUJO DE COMPRA › TC-002: Compra con activación programada" classname="b2c.spec.ts" time="1.238">
+<system-out>
+<![CDATA[✅ TC-002: Opciones de fecha disponibles: false
+]]>
+</system-out>
+</testcase>
+<testcase name="B2C - FLUJO DE COMPRA › TC-003: Validación de email inválido" classname="b2c.spec.ts" time="1.095">
+<system-out>
+<![CDATA[✅ TC-003: 0 campos de email detectados
+]]>
+</system-out>
+</testcase>
+<testcase name="B2C - FLUJO DE COMPRA › TC-004: Cliente menor de 18 años" classname="b2c.spec.ts" time="1.155">
+<system-out>
+<![CDATA[✅ TC-004: Validación de edad (DOB inputs): false
+]]>
+</system-out>
+</testcase>
+<testcase name="B2C - FLUJO DE COMPRA › TC-005: Compra DataOnly" classname="b2c.spec.ts" time="1.118">
+<system-out>
+<![CDATA[✅ TC-005: 0 planes disponibles
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="edge-cases.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="3" failures="0" skipped="0" time="9.442" errors="0">
+<testcase name="EDGE CASES › TC-EDGE-001: Timeout de red" classname="edge-cases.spec.ts" time="5.696">
+<system-out>
+<![CDATA[✅ TC-EDGE-001: Manejo de timeout
+   Tiempo de carga con throttle: 588ms
+   Página cargó: true
+]]>
+</system-out>
+</testcase>
+<testcase name="EDGE CASES › TC-EDGE-002: Dos admins entregan mismo pedido" classname="edge-cases.spec.ts" time="2.495">
+<system-out>
+<![CDATA[✅ TC-EDGE-002: Concurrencia
+   Sesión 1: http://localhost:3002/es
+   Sesión 2: http://localhost:3002/es
+   Ambas activas: true
+]]>
+</system-out>
+</testcase>
+<testcase name="EDGE CASES › TC-EDGE-003: Cadena duplicada" classname="edge-cases.spec.ts" time="1.251">
+<system-out>
+<![CDATA[✅ TC-EDGE-003: Integridad de datos
+   Inputs únicos: 0
+   Botones únicos: 17
+   IDs duplicados encontrados: 0
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="performance.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="3" failures="0" skipped="0" time="5.724" errors="0">
+<testcase name="PERFORMANCE › TC-PERF-001: Core Web Vitals" classname="performance.spec.ts" time="1.886">
+<system-out>
+<![CDATA[✅ TC-PERF-001: Web Vitals
+   LCP: 0ms (target: < 2500ms)
+   FCP: 428ms
+   TTI: 609ms
+]]>
+</system-out>
+</testcase>
+<testcase name="PERFORMANCE › TC-PERF-002: Tiempo de carga - B2C" classname="performance.spec.ts" time="1.919">
+<system-out>
+<![CDATA[✅ TC-PERF-002: Tiempo de carga 1439ms (target: < 3000ms)
+   Status: ✓ PASADO
+]]>
+</system-out>
+</testcase>
+<testcase name="PERFORMANCE › TC-PERF-003: Smooth scrolling - 60 FPS" classname="performance.spec.ts" time="1.919">
+<system-out>
+<![CDATA[✅ TC-PERF-003: Contenido scrolleable: true
+   Scroll ejecutado exitosamente
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="responsive.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="3" failures="0" skipped="0" time="2.638" errors="0">
+<testcase name="RESPONSIVO DESIGN › TC-RES-001: Mobile - B2C (iPhone 12)" classname="responsive.spec.ts" time="0.814">
+<system-out>
+<![CDATA[✅ TC-RES-001: Mobile viewport 390x664
+   Body width: 394, Window width: 394
+   Sin scroll horizontal: true
+]]>
+</system-out>
+</testcase>
+<testcase name="RESPONSIVO DESIGN › TC-RES-002: Mobile - Admin" classname="responsive.spec.ts" time="0.741">
+<system-out>
+<![CDATA[✅ TC-RES-002: Viewport 390x844
+]]>
+</system-out>
+</testcase>
+<testcase name="RESPONSIVO DESIGN › TC-RES-003: Tablet - B2B (iPad)" classname="responsive.spec.ts" time="1.083">
+<system-out>
+<![CDATA[✅ TC-RES-003: Tablet viewport 768x1024
+   Font size: 16px
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="security.spec.ts" timestamp="2026-07-02T22:48:31.052Z" hostname="chromium" tests="5" failures="0" skipped="0" time="6.189" errors="0">
+<testcase name="SEGURIDAD › TC-SEC-001: HTTPS en todas las rutas" classname="security.spec.ts" time="0.112">
+<system-out>
+<![CDATA[✅ TC-SEC-001: HTTPS/Localhost: false
+   Protocolo: about:
+]]>
+</system-out>
+</testcase>
+<testcase name="SEGURIDAD › TC-SEC-002: XSS Protection" classname="security.spec.ts" time="1.198">
+<system-out>
+<![CDATA[✅ TC-SEC-002: XSS Protection
+   Scripts encontrados: 57
+   CSP header presente: false
+]]>
+</system-out>
+</testcase>
+<testcase name="SEGURIDAD › TC-SEC-003: CSRF Protection" classname="security.spec.ts" time="1.209">
+<system-out>
+<![CDATA[✅ TC-SEC-003: Formularios: 0
+   CSRF: Protegido por Next.js
+]]>
+</system-out>
+</testcase>
+<testcase name="SEGURIDAD › TC-SEC-004: Rate Limiting" classname="security.spec.ts" time="1.74">
+<system-out>
+<![CDATA[✅ TC-SEC-004: Rate Limiting Headers
+   X-RateLimit: Servidor
+]]>
+</system-out>
+</testcase>
+<testcase name="SEGURIDAD › TC-SEC-005: No secrets expuestos" classname="security.spec.ts" time="1.93">
+<system-out>
+<![CDATA[✅ TC-SEC-005: Secrets Protection
+   API keys expuestas: false
+   Tokens visibles: false
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
