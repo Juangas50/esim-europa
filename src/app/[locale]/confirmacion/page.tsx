@@ -17,7 +17,7 @@ function ConfirmacionContent() {
   const planName = searchParams.get("planName") ?? "Europa Plus";
   const coverage = searchParams.get("coverage") ?? "39";
   const data = searchParams.get("data") ?? "10";
-  const validity = searchParams.get("validity") ?? "30";
+  const validity = searchParams.get("validity") ?? "28";
   const purchaseDate = new Date().toLocaleDateString("es-ES");
 
   useEffect(() => {

@@ -496,8 +496,8 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                 />
                 <span className="text-sm text-[var(--color-ink)] leading-snug">
                   Confirmo que mi celular acepta eSIM y está desbloqueado para usar otra línea.{" "}
-                  <a href="#compatibilidad" className="text-[var(--color-gold)] font-semibold hover:underline">
-                    Ver celulares compatibles
+                  <a href="/es/compatibility" target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] font-semibold hover:underline">
+                    Ver celulares compatibles →
                   </a>
                 </span>
               </label>
