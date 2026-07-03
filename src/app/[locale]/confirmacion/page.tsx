@@ -18,7 +18,10 @@ function ConfirmacionContent() {
   const coverage = searchParams.get("coverage") ?? "39";
   const data = searchParams.get("data") ?? "10";
   const validity = searchParams.get("validity") ?? "28";
+  const activationType = searchParams.get("activationType") ?? "now";
+  const activationDate = searchParams.get("activationDate") ?? "";
   const purchaseDate = new Date().toLocaleDateString("es-ES");
+  const isScheduled = activationType === "schedule" && activationDate;
 
   useEffect(() => {
     if (orderRef !== "—") {
@@ -159,6 +162,7 @@ function ConfirmacionContent() {
             {/* Connection Lines */}
             <div className="hidden sm:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-gold)] via-[var(--color-gold)] to-transparent" />
 
+            {/* Step 1 - Compra realizada */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -178,6 +182,7 @@ function ConfirmacionContent() {
               <p className="text-xs text-[var(--color-ink-2)] leading-snug">Hemos recibido tu pago correctamente.</p>
             </motion.div>
 
+            {/* Step 2 - Conditional */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -188,13 +193,19 @@ function ConfirmacionContent() {
                 <div className="w-16 h-16 rounded-full border-3 border-[var(--color-gold)] bg-white flex items-center justify-center font-bold text-[var(--color-gold)] text-xl">
                   2
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[var(--color-gold)] flex items-center justify-center">
-                  <span className="text-white text-xs">✓</span>
-                </div>
               </div>
               <div className="mb-2"><Envelope size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
-              <p className="font-bold text-[var(--color-navy)] mb-1">Email en camino</p>
-              <p className="text-xs text-[var(--color-ink-2)] leading-snug">En breve recibirás tu código QR y las instrucciones.</p>
+              {isScheduled ? (
+                <>
+                  <p className="font-bold text-[var(--color-navy)] mb-1">Preparamos tu eSIM</p>
+                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">Para el {new Date(activationDate).toLocaleDateString("es-ES")}</p>
+                </>
+              ) : (
+                <>
+                  <p className="font-bold text-[var(--color-navy)] mb-1">Email en 24h</p>
+                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">Recibirás tu código QR y las instrucciones.</p>
+                </>
+              )}
             </motion.div>
 
             <motion.div
@@ -209,8 +220,17 @@ function ConfirmacionContent() {
                 </div>
               </div>
               <div className="mb-2"><Phone size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
-              <p className="font-bold text-[var(--color-navy)] mb-1">Instala la eSIM</p>
-              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Te tomará menos de 5 minutos.</p>
+              {isScheduled ? (
+                <>
+                  <p className="font-bold text-[var(--color-navy)] mb-1">Recibirás tu QR</p>
+                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">El día programado en tu email.</p>
+                </>
+              ) : (
+                <>
+                  <p className="font-bold text-[var(--color-navy)] mb-1">Instala la eSIM</p>
+                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">Te tomará menos de 5 minutos.</p>
+                </>
+              )}
             </motion.div>
 
             <motion.div
@@ -226,7 +246,7 @@ function ConfirmacionContent() {
               </div>
               <div className="mb-2"><AirplaneInFlight size={32} weight="thin" className="text-[var(--color-gold)]" /></div>
               <p className="font-bold text-[var(--color-navy)] mb-1">Disfruta tu viaje</p>
-              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Activa al aterrizar y navega sin roaming.</p>
+              <p className="text-xs text-[var(--color-ink-2)] leading-snug">Activa y navega sin roaming.</p>
             </motion.div>
           </div>
         </motion.div>
