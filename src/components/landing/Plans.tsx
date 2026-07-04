@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Check, Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
+import PremiumTooltip from "@/components/ui/PremiumTooltip";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
@@ -115,12 +116,85 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
       {/* Features */}
       <div className="mb-3 flex-1">
         <ul className="space-y-0.5">
-          {features.map((feature, i) => (
-            <li key={i} className={`flex items-start gap-2 text-xs ${isPopular ? "text-white/80" : "text-[var(--color-ink)]"}`}>
-              <Check size={14} weight="bold" className={`mt-0.5 shrink-0 ${isPopular ? "text-[var(--color-gold)]" : "text-[var(--color-gold)]"}`} />
-              <span>{feature}</span>
-            </li>
-          ))}
+          {features.map((feature, i) => {
+            const hasCallsTooltip = feature.toLowerCase().includes("llamadas");
+            const featureText = feature.replace(/\*/g, "");
+
+            return (
+              <li
+                key={i}
+                className={`flex items-start gap-2 text-xs ${isPopular ? "text-white/80" : "text-[var(--color-ink)]"}`}
+              >
+                <Check
+                  size={14}
+                  weight="bold"
+                  className={`mt-0.5 shrink-0 ${isPopular ? "text-[var(--color-gold)]" : "text-[var(--color-gold)]"}`}
+                />
+                <span className="flex-1 flex items-center gap-1">
+                  {featureText}
+                  {hasCallsTooltip && (
+                    <div className="inline-block">
+                      <PremiumTooltip
+                        title="Llamadas incluidas"
+                        content={
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-xs text-[var(--color-ink)] leading-relaxed mb-3">
+                                Todas las tarifas incluyen:
+                              </p>
+                              <ul className="space-y-2">
+                                <li className="flex items-start gap-2 text-xs text-[var(--color-ink)]">
+                                  <span className="text-emerald-500 font-bold">✅</span>
+                                  <span>Llamadas ilimitadas dentro de España</span>
+                                </li>
+                                <li className="flex items-start gap-2 text-xs text-[var(--color-ink)]">
+                                  <span className="text-lg">🌎</span>
+                                  <span>Minutos internacionales incluidos</span>
+                                </li>
+                              </ul>
+                            </div>
+                            <div>
+                              <p className="text-xs font-semibold text-[var(--color-navy)] mb-2">
+                                Destinos destacados
+                              </p>
+                              <div className="grid grid-cols-3 gap-2">
+                                {[
+                                  { flag: "🇦🇷", country: "Argentina" },
+                                  { flag: "🇧🇷", country: "Brasil" },
+                                  { flag: "🇺🇾", country: "Uruguay" },
+                                  { flag: "🇨🇱", country: "Chile" },
+                                  { flag: "🇵🇾", country: "Paraguay" },
+                                ].map((item) => (
+                                  <div
+                                    key={item.country}
+                                    className="flex items-center gap-1.5 text-xs text-[var(--color-ink)]"
+                                  >
+                                    <span className="text-base">{item.flag}</span>
+                                    <span>{item.country}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <p className="text-xs text-[var(--color-ink-2)] mt-2">
+                                ➕ Más de 60 destinos internacionales.
+                              </p>
+                            </div>
+                          </div>
+                        }
+                        footer="Los minutos disponibles dependen de la tarifa contratada y del país de destino."
+                        cta={{
+                          label: "Ver detalle completo",
+                          href: "#faq",
+                        }}
+                        icon="ⓘ"
+                      >
+                        <span />
+                      </PremiumTooltip>
+                    </div>
+                  )}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
