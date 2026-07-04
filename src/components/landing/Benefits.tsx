@@ -1,9 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe, MagnifyingGlass, Check } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
+import { formatUSD } from "@/lib/utils";
+import { getTariffsFromSupabase, type TariffPlan } from "@/lib/supabase-plans";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -75,6 +77,11 @@ const COUNTRY_DATA = {
 export default function Benefits() {
   const t = useTranslations("benefits");
   const [searchQuery, setSearchQuery] = useState("");
+  const [plans, setPlans] = useState<TariffPlan[]>([]);
+
+  useEffect(() => {
+    getTariffsFromSupabase().then(setPlans);
+  }, []);
 
   const isSearchingUS = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -99,19 +106,21 @@ export default function Benefits() {
   }, [searchQuery]);
 
   const displayPlans = useMemo(() => {
-    const plans = [
-      { name: "Básico", gb: "15", href: "local-s", price: "$19.9", recommended: false, excludes: ["US"] },
-      { name: "Plus", gb: "23", href: "local-m", price: "$29.9", recommended: true, excludes: [] },
-      { name: "Total", gb: "31", href: "local-l", price: "$39.9", recommended: false, excludes: [] },
-      { name: "Max", gb: "37", href: "local-xl", price: "$49.9", recommended: false, excludes: [] },
-      { name: "Premium", gb: "52", href: "local-xxl", price: "$69.9", recommended: false, excludes: [] },
-    ];
+    // Mapear tarifas de Supabase
+    const mapped = plans.map((plan) => ({
+      name: plan.name,
+      gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
+      href: plan.slug,
+      price: formatUSD(plan.price_usd),
+      recommended: plan.is_popular || false,
+      excludes: plan.slug === "local-s" ? ["US"] : [], // Básico no incluye US
+    }));
 
     if (isSearchingUS) {
-      return plans.filter((plan) => !plan.excludes.includes("US"));
+      return mapped.filter((plan) => !plan.excludes.includes("US"));
     }
-    return plans;
-  }, [isSearchingUS]);
+    return mapped;
+  }, [plans, isSearchingUS]);
 
   return (
     <section className="py-24 px-4 bg-[var(--color-warm-white)]">
