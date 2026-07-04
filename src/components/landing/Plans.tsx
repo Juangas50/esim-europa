@@ -87,6 +87,13 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
         <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
           {t("coverage")}
         </p>
+        {/* Badge: Llamadas a Latinoamérica */}
+        <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-gold)]/15 border border-[var(--color-gold)]/30">
+          <span className="text-sm">🌎</span>
+          <span className={`text-[10px] font-semibold ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
+            Incluye llamadas a Latinoamérica
+          </span>
+        </div>
       </div>
 
       {/* EU Data (if applicable) */}

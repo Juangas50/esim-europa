@@ -9,7 +9,7 @@ const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const FAQ_KEYS = [
   "chip_vs_esim", "what", "compatible", "whatsapp", "qr_receive", "when_starts",
-  "number", "when", "costs", "no_email", "not_working", "needs",
+  "number", "when", "costs", "no_email", "not_working", "needs", "international_calls",
 ] as const;
 
 function FAQItem({
