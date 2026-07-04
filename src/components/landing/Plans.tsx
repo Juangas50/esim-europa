@@ -83,6 +83,12 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <p className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
             {plan.eu_data_gb} GB
           </p>
+          {/* Non-EU countries if available */}
+          {plan.countries_count > 30 && (
+            <p className={`text-xs mt-1 ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
+              + 🇺🇸 🇨🇳 🇯🇵 🇦🇺 🇧🇷
+            </p>
+          )}
         </div>
       ) : null}
 
