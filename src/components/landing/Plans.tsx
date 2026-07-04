@@ -72,7 +72,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
         {plan.name}
       </h3>
 
-      {/* Data Amount - Prominent with Flags */}
+      {/* Data Amount - Prominent */}
       <div className="mb-2.5">
         <div className="flex items-baseline gap-2 mb-0.5">
           <span className={`text-5xl font-black leading-none ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
@@ -81,7 +81,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
             GB
           </span>
-          <span className="text-2xl">🇪🇸 {getCountryFlags()}</span>
+          <span className="text-2xl">🇪🇸</span>
         </div>
         <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
           {t("coverage")}
@@ -95,10 +95,10 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
             <span className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
               {plan.eu_data_gb}
             </span>
-            <span className={`text-xs font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
+            <span className={`text-sm font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
               GB {t("euRoaming")}
             </span>
-            <span className="text-xl">🇪🇺</span>
+            <span className="text-2xl">🇪🇺 {getCountryFlags()}</span>
           </div>
         </div>
       ) : null}
