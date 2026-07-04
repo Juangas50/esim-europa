@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
+import InternationalCallsTable from "./InternationalCallsTable";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -18,12 +19,14 @@ function FAQItem({
   isOpen,
   onToggle,
   index,
+  itemKey,
 }: {
   question: string;
   answer: string;
   isOpen: boolean;
   onToggle: () => void;
   index: number;
+  itemKey?: string;
 }) {
   return (
     <motion.div
@@ -32,6 +35,7 @@ function FAQItem({
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.05, ease: EASE_OUT }}
       className="group rounded-2xl border border-[var(--color-border)] bg-white hover:shadow-md transition-shadow duration-300"
+      id={itemKey ? `faq-${itemKey}` : undefined}
     >
       <button
         onClick={onToggle}
@@ -62,10 +66,37 @@ function FAQItem({
             transition={{ duration: 0.3, ease: EASE_OUT }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-6 border-t border-[var(--color-border)]">
-              <p className="text-[var(--color-ink)] leading-relaxed max-w-[640px] whitespace-pre-line">
-                {answer}
-              </p>
+            <div className="px-6 pb-6 border-t border-[var(--color-border)] space-y-4">
+              {itemKey === "international_calls" ? (
+                <div className="space-y-4">
+                  <p className="text-[var(--color-ink)] leading-relaxed">
+                    Todas las tarifas de RUTA34 incluyen minutos internacionales para que puedas llamar a Latinoamérica sin sorpresas. La cantidad de minutos varía según el destino y el plan que elijas.
+                  </p>
+                  <div className="bg-[var(--color-warm-white)] p-4 rounded-lg">
+                    <p className="text-xs font-semibold text-[var(--color-navy)] mb-3">📞 MINUTOS INTERNACIONALES INCLUIDOS POR DESTINO:</p>
+                    <InternationalCallsTable />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-[var(--color-navy)]">📌 CÓMO FUNCIONAN LOS MINUTOS:</p>
+                    <ul className="space-y-1 text-xs text-[var(--color-ink)] leading-relaxed">
+                      <li>✅ Los minutos se usan solo para LLAMADAS (no WhatsApp, no videollamadas)</li>
+                      <li>✅ Se deducen del total cada vez que llamás</li>
+                      <li>✅ El costo es 0 — los minutos están 100% incluidos en tu plan</li>
+                      <li>✅ Cuando se terminan los minutos, no podés hacer más llamadas a esos destinos</li>
+                      <li>✅ También incluye minutos limitados a otros destinos internacionales</li>
+                    </ul>
+                  </div>
+                  <div className="bg-[var(--color-gold)]/5 p-3 rounded-lg border border-[var(--color-gold)]/20">
+                    <p className="text-xs text-[var(--color-ink)] leading-relaxed">
+                      💡 <strong>CONSEJO:</strong> Si llamás mucho, elige un plan superior para más minutos. Si casi no llamás, el Básico te alcanza de sobra.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[var(--color-ink)] leading-relaxed max-w-[640px] whitespace-pre-line">
+                  {answer}
+                </p>
+              )}
             </div>
           </motion.div>
         )}
@@ -128,13 +159,14 @@ export default function FAQ() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {FAQ_KEYS.map((key, i) => (
-            <div key={key} id={`faq-${key}`}>
+            <div key={key}>
               <FAQItem
                 question={t(`items.${key}.q`)}
                 answer={t(`items.${key}.a`)}
                 isOpen={openIndex === i}
                 onToggle={() => toggle(i)}
                 index={i}
+                itemKey={key}
               />
             </div>
           ))}
