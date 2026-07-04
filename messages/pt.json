@@ -139,7 +139,7 @@
       },
       "compatible": {
         "q": "Como sei se meu celular é compatível?",
-        "a": "São compatíveis: iPhone XS / XR (2018) ou mais novos · Samsung Galaxy S20, Note 20, Z Fold/Flip, A54 ou mais novos · Google Pixel 4a ou mais novos · Motorola Razr 2019 ou mais novos. Para verificar: no iPhone → Ajustes → Geral → Informações → eSIM (deve aparecer o EID). No Android → Ajustes → Sobre o telefone → Status → se aparecem dois IMEI, seu celular suporta eSIM."
+        "a": "CELULARES COMPATÍVEIS:\n\niPhone: XS, XS Max, XR, 11, 12, 13, 14, 15 e modelos mais novos.\n\nSamsung: Galaxy S20, S21, S22, S23, S24 · Note 20, Z Fold, Z Flip e modelos mais novos.\n\nGoogle Pixel: 4a, 5, 5a, 6, 6 Pro, 7, 8, 9 e modelos mais novos.\n\nMotorola: Razr 2019, Edge, Razr 5G e modelos mais novos.\n\nVERIFICAÇÃO RÁPIDA:\n\nNo iPhone → Ajustes → Geral → Informações → procure \"eSIM\".\nSe aparecer, seu celular é compatível!\n\nNo Android → Ajustes → Sobre o telefone → Status.\nSe você vê dois números IMEI, seu celular suporta eSIM.\n\nAVISO: Seu celular NÃO deve estar bloqueado pela sua operadora atual para usar outra linha."
       },
       "number": {
         "q": "Posso manter meu número de telefone brasileiro?",
@@ -223,7 +223,7 @@
       "activationTodayHint": "Instala o QR antes de embarcar e ativa quando chegar.",
       "activationSchedule": "Quero programar uma data",
       "activationScheduleHint": "Escolha o dia que quer que seu plano comece.",
-      "deviceConfirm": "Confirmo que meu celular é compatível com eSIM e não está bloqueado pela operadora",
+      "deviceConfirm": "Confirmo que meu celular é compatível com eSIM, está desbloqueado e conectado a WiFi para instalar.",
       "next": "Continuar",
       "back": "Voltar",
       "pay": "Pagar agora"

@@ -138,8 +138,8 @@
         "a": "Una eSIM es una SIM virtual que se instala directamente en tu teléfono escaneando un código QR. No necesitás una tarjeta física. Funciona igual que una SIM tradicional pero se activa al instante desde tu celular."
       },
       "compatible": {
-        "q": "¿Cómo sé si mi celular es compatible?",
-        "a": "Son compatibles: iPhone XS / XR (2018) o más nuevos · Samsung Galaxy S20, Note 20, Z Fold/Flip, A54 o más nuevos · Google Pixel 4a o más nuevos · Motorola Razr 2019 o más nuevos. Para verificarlo: en iPhone → Ajustes → General → Información → eSIM (debe aparecer el EID). En Android → Ajustes → Acerca del teléfono → Estado → si aparecen dos IMEI, tu celular soporta eSIM."
+        "q": "¿Mi teléfono es compatible con eSIM?",
+        "a": "La mayoría de los smartphones modernos son compatibles con eSIM. Aquí te mostramos cuáles sí lo son y cómo verificarlo.\n\n📱 MARCAS Y MODELOS COMPATIBLES:\n\n🍎 iPhone: XS, XS Max, XR (2018 en adelante) · 11, 12, 13, 14, 15, 16 y versiones más nuevas.\n\n🔵 Samsung: Galaxy S20, S21, S22, S23, S24 · Note 20 y posteriores · Z Fold Series · Z Flip Series\n\n🔴 Google Pixel: 4a, 5, 5a · 6, 6 Pro, 7, 7 Pro · 8, 8 Pro, 9, 9 Pro y posteriores.\n\n🔲 Motorola: Razr 2019, 5G · Edge Series (Edge 20, 30, 40, 50, etc.) · Otros modelos 2020 en adelante.\n\n⚠️ NOTA: Si tu teléfono es de antes de 2018, probablemente NO sea compatible. Marcas menos comunes (Huawei, OnePlus, Xiaomi) tienen modelos compatibles, pero no todos.\n\n✅ CÓMO VERIFICAR QUE TU CELULAR ES COMPATIBLE:\n\nOPCIÓN 1 - En iPhone:\n1. Abrí Ajustes → General → Información\n2. Buscá la palabra \"eSIM\" en esa pantalla\n3. Si aparece, tu iPhone es compatible ✓\n\nOPCIÓN 2 - En Android:\n1. Abrí Ajustes → Acerca del teléfono → Estado\n2. Buscá \"Número IMEI\" — si ves DOS números IMEI, tu teléfono soporta eSIM ✓\n3. Otra opción: Marcá *#06# en el teléfono. Si aparece un código \"EID\", es compatible ✓\n\nOPCIÓN 3 - Método rápido (cualquier teléfono):\nMarcá *#06# en tu celular. Si ves un código largo que comienza con \"EID:\", ¡tu equipo es 100% compatible con eSIM!\n\n🔒 IMPORTANTE - REQUISITOS ADICIONALES:\n\nTu teléfono DEBE estar desbloqueado por tu operador actual. Si está bloqueado, no podrás usar otra línea (aunque sea eSIM). Si no sabés si está bloqueado, contactá a tu operador.\n\nTu teléfono DEBE estar conectado a WiFi durante la instalación de la eSIM. No podés hacer esto con datos móviles.\n\nTener suficiente espacio en la memoria del teléfono (aunque eSIM ocupa muy poco)."
       },
       "number": {
         "q": "¿Puedo mantener mi número de teléfono argentino/uruguayo/chileno?",
@@ -219,7 +219,7 @@
       "activationTodayHint": "Instalás el QR antes de salir y activás cuando llegás.",
       "activationSchedule": "Quiero programar una fecha",
       "activationScheduleHint": "Elegí el día que querés que empiece tu plan.",
-      "deviceConfirm": "Confirmo que mi celular es compatible con eSIM y no está bloqueado por mi operador",
+      "deviceConfirm": "Confirmo que mi celular es compatible con eSIM, está desbloqueado y conectado a WiFi para instalar.",
       "next": "Continuar",
       "back": "Volver",
       "pay": "Pagar ahora"

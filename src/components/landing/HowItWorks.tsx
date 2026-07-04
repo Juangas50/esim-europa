@@ -100,18 +100,18 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: EASE_OUT }}
-          className="mt-6 mb-2 rounded-[1.5rem] overflow-hidden relative"
-          style={{ height: "260px" }}
+          className="mt-6 mb-2 rounded-[1.5rem] overflow-hidden relative bg-gradient-to-br from-slate-100 to-slate-50"
+          style={{ height: "360px" }}
         >
           <Image
             src="/images/imgen2.png"
             alt="Viajero con internet listo al llegar al aeropuerto"
             fill
-            className="object-cover object-center"
+            className="object-contain object-center"
             sizes="(max-width: 1200px) 100vw, 1200px"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1B2F4E]/80 via-[#1B2F4E]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1B2F4E]/85 via-[#1B2F4E]/40 to-transparent pointer-events-none" />
           <div className="absolute inset-0 flex items-end p-8">
             <div>
               <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-1">Paso 03</p>
