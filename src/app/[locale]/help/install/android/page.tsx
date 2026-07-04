@@ -34,8 +34,8 @@ export default function AndroidInstallPage() {
       <HelpHero
         title="Instalá tu eSIM en Android"
         subtitle="Funciona con Samsung, Google Pixel, Xiaomi y más."
-        imageSrc="/images/confirmacion-hero.png"
-        imageAlt="Android eSIM installation"
+        imageSrc="/images/help-android-hero.png"
+        imageAlt="Android device showing eSIM installation screen"
       />
 
       {/* Main Content */}
@@ -98,24 +98,24 @@ export default function AndroidInstallPage() {
             number={1}
             title="Abre Configuración"
             description="Accedé a Configuración > Red e Internet > SIM dual y eSIM (o similar, según tu teléfono)."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 1: Abrir Configuración"
+            imageSrc="/images/help-android-step-1.png"
+            imageAlt="Paso 1: Abrir Configuración - pantalla de Ajustes del Android"
           />
 
           <HelpStep
             number={2}
             title="Selecciona 'Agregar eSIM'"
             description="Toca en 'Agregar eSIM' o 'Crear plan celular' (el nombre varía según el modelo)."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 2: Agregar eSIM"
+            imageSrc="/images/help-android-step-2.png"
+            imageAlt="Paso 2: Agregar eSIM - menú de Datos celulares"
           />
 
           <HelpStep
             number={3}
             title="Escanea el código QR"
             description="Tu teléfono te pedirá que escanees el código QR. Usá la cámara para capturarlo correctamente."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 3: Escanear QR"
+            imageSrc="/images/help-android-step-3.png"
+            imageAlt="Paso 3: Escanear QR - pantalla de escaneo"
             tip="Asegúrate de que la iluminación sea suficiente para que se detecte el código."
             warning="No compartas el código QR. Es único y personal para tu eSIM."
           />
@@ -124,16 +124,16 @@ export default function AndroidInstallPage() {
             number={4}
             title="Configura tu plan"
             description="Sigue los pasos que aparecen en pantalla. Elige si deseas usar esta eSIM como plan principal o secundario."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 4: Configurar plan"
+            imageSrc="/images/help-android-step-4.png"
+            imageAlt="Paso 4: Configurar plan - seleccionar plan principal"
           />
 
           <HelpStep
             number={5}
             title="¡Activación completada!"
             description="Tu eSIM está lista. Actívala cuando llegues a tu destino desde Configuración > Red e Internet."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 5: Listo para usar"
+            imageSrc="/images/help-android-step-5.png"
+            imageAlt="Paso 5: Activación completada - eSIM activa"
             tip="Puedes cambiar entre tu SIM física y tu eSIM en cualquier momento."
           />
         </div>

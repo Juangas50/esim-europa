@@ -68,8 +68,8 @@ export default function IPhoneInstallPage() {
             number={1}
             title="Abre Configuración"
             description="Accedé a la aplicación de Configuración en tu iPhone. Buscá la opción de Datos celulares o Planes celulares."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 1: Abrir Configuración"
+            imageSrc="/images/help-iphone-step-1.png"
+            imageAlt="Paso 1: Abrir Configuración - pantalla de Ajustes del iPhone"
             tip="Si no ves la opción de eSIM, asegúrate de que tu iPhone sea compatible."
           />
 
@@ -77,16 +77,16 @@ export default function IPhoneInstallPage() {
             number={2}
             title="Selecciona 'Agregar plan celular'"
             description="En el menú de datos celulares, toca en 'Agregar plan celular' o 'Crear plan celular', según tu versión de iOS."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 2: Agregar plan"
+            imageSrc="/images/help-iphone-step-2.png"
+            imageAlt="Paso 2: Agregar plan - menú de Datos celulares"
           />
 
           <HelpStep
             number={3}
             title="Escanea el código QR"
             description="Tu iPhone te pedirá que escanees el código QR que recibiste por email. Coloca la cámara frente al código y espera a que se reconozca automáticamente."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 3: Escanear QR"
+            imageSrc="/images/help-iphone-step-3.png"
+            imageAlt="Paso 3: Escanear QR - pantalla de escaneo"
             tip="Mantén el código QR bien iluminado para que se escanee correctamente."
             warning="No compartas tu código QR con otras personas. Es personal y único."
           />
@@ -95,8 +95,8 @@ export default function IPhoneInstallPage() {
             number={4}
             title="Configura tu plan"
             description="Sigue las instrucciones que aparecen en pantalla. Selecciona si deseas usar esta eSIM como plan principal o alternativo."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 4: Configurar plan"
+            imageSrc="/images/help-iphone-step-4.png"
+            imageAlt="Paso 4: Configurar plan - seleccionar plan principal"
             tip="Puedes cambiar las configuraciones después en cualquier momento desde Configuración."
           />
 
@@ -104,8 +104,8 @@ export default function IPhoneInstallPage() {
             number={5}
             title="¡Listo! Activá en el destino"
             description="Tu eSIM está instalada. Ahora solo debe activarla una vez que llegues a tu destino. Activa los datos móviles en Configuración y comienza a navegar."
-            imageSrc="/images/confirmacion-hero.png"
-            imageAlt="Paso 5: Activación completada"
+            imageSrc="/images/help-iphone-step-5.png"
+            imageAlt="Paso 5: Activación completada - eSIM activa"
             tip="Desactiva el roaming si estás en una zona con costos adicionales."
           />
         </div>

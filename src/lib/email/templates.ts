@@ -294,27 +294,39 @@ export function emailConfirmacionB2C(data: {
     <!-- TIMELINE -->
     <div style="margin-bottom:24px;">
       <div style="font-size:12px;letter-spacing:1px;color:#999;text-transform:uppercase;font-weight:700;margin-bottom:20px;">Lo que viene ahora</div>
-      <div style="display:flex;gap:16px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">1</div>
-        <div>
-          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Preparamos tu eSIM</div>
-          <div style="font-size:14px;color:#666;line-height:1.5;">En los próximos minutos verificamos tu compra. Operamos de 8:00 a 21:00 (España).</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:16px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">2</div>
-        <div>
-          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Recibirás tu QR por email</div>
-          <div style="font-size:14px;color:#666;line-height:1.5;">En menos de 24 horas recibirás el código QR para instalar tu eSIM.</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:16px;">
-        <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-weight:900;font-size:14px;">3</div>
-        <div>
-          <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Activá cuando llegues</div>
-          <div style="font-size:14px;color:#666;line-height:1.5;">${activationNote}</div>
-        </div>
-      </div>
+      <table role="presentation" style="width:100%;margin-bottom:16px;border-collapse:collapse;">
+        <tr>
+          <td style="width:40px;padding-right:12px;text-align:center;vertical-align:top;">
+            <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;color:#fff;font-weight:900;font-size:14px;line-height:32px;text-align:center;display:inline-block;">1</div>
+          </td>
+          <td style="vertical-align:top;padding-bottom:16px;">
+            <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Preparamos tu eSIM</div>
+            <div style="font-size:14px;color:#666;line-height:1.5;">En los próximos minutos verificamos tu compra. Operamos de 8:00 a 21:00 (España).</div>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" style="width:100%;margin-bottom:16px;border-collapse:collapse;">
+        <tr>
+          <td style="width:40px;padding-right:12px;text-align:center;vertical-align:top;">
+            <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;color:#fff;font-weight:900;font-size:14px;line-height:32px;text-align:center;display:inline-block;">2</div>
+          </td>
+          <td style="vertical-align:top;padding-bottom:16px;">
+            <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Recibirás tu QR por email</div>
+            <div style="font-size:14px;color:#666;line-height:1.5;">En menos de 24 horas recibirás el código QR para instalar tu eSIM.</div>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="width:40px;padding-right:12px;text-align:center;vertical-align:top;">
+            <div style="width:32px;height:32px;background:#C9973A;border-radius:50%;color:#fff;font-weight:900;font-size:14px;line-height:32px;text-align:center;display:inline-block;">3</div>
+          </td>
+          <td style="vertical-align:top;">
+            <div style="font-weight:700;color:#1B2F4E;margin-bottom:4px;">Activá cuando llegues</div>
+            <div style="font-size:14px;color:#666;line-height:1.5;">${activationNote}</div>
+          </td>
+        </tr>
+      </table>
     </div>
 
     <!-- PREP INFO -->
