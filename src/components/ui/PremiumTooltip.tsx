@@ -24,21 +24,8 @@ export default function PremiumTooltip({
   children,
 }: PremiumTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [openBelow, setOpenBelow] = useState(true);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-
-  // Detect if tooltip should open above or below
-  useEffect(() => {
-    if (!isOpen || !triggerRef.current) return;
-
-    const triggerRect = triggerRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - triggerRect.bottom;
-    const tooltipHeight = 250; // Aproximado
-
-    // Si no hay espacio abajo (menos de 250px), abre hacia arriba
-    setOpenBelow(spaceBelow > tooltipHeight);
-  }, [isOpen]);
 
   // Close tooltip when clicking outside
   useEffect(() => {
@@ -91,21 +78,19 @@ export default function PremiumTooltip({
         {icon}
       </button>
 
-      {/* Tooltip */}
+      {/* Tooltip - Opens upward */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             ref={tooltipRef}
-            initial={{ opacity: 0, y: openBelow ? -8 : 8 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: openBelow ? -8 : 8 }}
+            exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            className={`absolute z-50 left-1/2 -translate-x-1/2 w-[90vw] sm:w-[340px] md:w-[380px] p-6 rounded-[20px] bg-[var(--color-warm-white)] border border-[var(--color-border)] shadow-lg ${
-              openBelow ? "mt-2" : "mb-2"
-            }`}
+            className="absolute z-50 left-1/2 -translate-x-1/2 w-[90vw] sm:w-[340px] md:w-[380px] p-6 rounded-[20px] bg-[var(--color-warm-white)] border border-[var(--color-border)] shadow-lg mb-2"
             style={{
               boxShadow: "0 8px 24px rgba(27, 47, 78, 0.08)",
-              ...(openBelow ? { top: "100%" } : { bottom: "100%" }),
+              bottom: "100%",
             }}
           >
             {/* Title */}
