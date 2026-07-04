@@ -15,10 +15,12 @@ export async function getTariffsFromSupabase(): Promise<TariffPlan[]> {
   const client = createClient();
 
   try {
-    // Intentar traer de Supabase
+    // Traer solo tarifas con web_visible = true, ordenadas por position
     const { data, error } = await client
       .from("tariffs")
-      .select("*");
+      .select("*")
+      .eq("web_visible", true)
+      .order("position", { ascending: true });
 
     if (error) {
       console.warn("Error fetching tariffs from Supabase, using local fallback:", error);
@@ -30,16 +32,16 @@ export async function getTariffsFromSupabase(): Promise<TariffPlan[]> {
       return getLocalPlans();
     }
 
-    console.log("Tariffs from Supabase:", data[0]); // Debug: ver estructura
+    console.log("Tariffs from Supabase:", data[0]);
 
     return data.map((t: any) => ({
       id: t.id,
-      name: t.name || t.tariff_name,
-      price_usd: t.price_usd || t.price || t.precio,
-      eu_data_gb: t.eu_data_gb || t.eu_gb || t.roaming_gb,
-      data_gb: t.data_gb || t.gb,
-      slug: t.slug || t.id,
-      is_popular: t.is_popular || t.recommended,
+      name: t.name,
+      price_usd: t.price_usd,
+      eu_data_gb: t.eu_data_gb,
+      data_gb: t.data_gb,
+      slug: t.id, // Usar ID como slug para URLs
+      is_popular: t.highlight || false,
     }));
   } catch (error) {
     console.warn("Error connecting to Supabase, using local fallback:", error);

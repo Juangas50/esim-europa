@@ -85,8 +85,12 @@ export default function Benefits() {
 
   const isSearchingUS = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    // Detecta búsqueda de USA/Estados Unidos
-    return query.includes("usa") || query.includes("estado") || query.includes("eeuu") || query.includes("estados unidos");
+    // Detecta búsqueda de USA/Estados Unidos - incluye escritura parcial
+    const result = query.includes("usa") || query.includes("esta") || query.includes("eeuu") || query.includes("estado");
+    if (query.length > 0) {
+      console.log("Search query:", query, "isSearchingUS:", result);
+    }
+    return result;
   }, [searchQuery]);
 
   const filteredCountries = useMemo(() => {
@@ -100,6 +104,9 @@ export default function Benefits() {
   }, [searchQuery]);
 
   const displayPlans = useMemo(() => {
+    // ID del plan Básico (Europa Básico) - no incluye USA
+    const BASIC_PLAN_ID = "2bf430af-8a08-4425-a188-7bf8df18cfd8";
+
     // Mapear tarifas de Supabase
     const mapped = plans.map((plan) => ({
       name: plan.name,
@@ -107,14 +114,17 @@ export default function Benefits() {
       href: plan.slug,
       price: formatUSD(plan.price_usd),
       recommended: plan.is_popular || false,
-      excludes: plan.slug === "local-s" ? ["US"] : [], // Básico no incluye US
+      excludes: plan.id === BASIC_PLAN_ID ? ["US"] : [],
     }));
 
     if (isSearchingUS) {
-      return mapped.filter((plan) => !plan.excludes.includes("US"));
+      console.log("Filtering US - isSearchingUS:", true, "searchQuery:", searchQuery);
+      const filtered = mapped.filter((plan) => !plan.excludes.includes("US"));
+      console.log("Filtered plans count:", filtered.length, "Original count:", mapped.length);
+      return filtered;
     }
     return mapped;
-  }, [plans, isSearchingUS]);
+  }, [plans, isSearchingUS, searchQuery]);
 
   return (
     <section className="py-16 px-4 bg-[var(--color-warm-white)]">
