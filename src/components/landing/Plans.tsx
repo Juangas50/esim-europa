@@ -72,11 +72,8 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
         {plan.name}
       </h3>
 
-      {/* Data Amount - Prominent */}
+      {/* Data Amount - Prominent with Flags */}
       <div className="mb-2.5">
-        <p className={`text-2xl font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
-          🇪🇸 España
-        </p>
         <div className="flex items-baseline gap-2 mb-0.5">
           <span className={`text-5xl font-black leading-none ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
             {plan.data_gb}
@@ -84,22 +81,25 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
             GB
           </span>
+          <span className="text-2xl">🇪🇸 {getCountryFlags()}</span>
         </div>
+        <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
+          {t("coverage")}
+        </p>
       </div>
 
       {/* EU Data (if applicable) */}
       {plan.eu_data_gb ? (
         <div className="mb-2.5 pb-2.5 border-b border-white/10">
-          <p className={`text-xs font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
-            🇪🇺 {t("euRoaming")}
-          </p>
-          <p className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
-            {plan.eu_data_gb} GB
-          </p>
-          {/* Additional countries beyond EU */}
-          <p className={`text-lg mt-1.5 ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
-            + {getCountryFlags()}
-          </p>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
+              {plan.eu_data_gb}
+            </span>
+            <span className={`text-xs font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
+              GB {t("euRoaming")}
+            </span>
+            <span className="text-xl">🇪🇺</span>
+          </div>
         </div>
       ) : null}
 
