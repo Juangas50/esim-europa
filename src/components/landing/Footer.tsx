@@ -11,7 +11,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[var(--color-navy)] text-white py-20 px-4">
+    <footer className="bg-[var(--color-navy)] text-white py-14 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Top Section */}

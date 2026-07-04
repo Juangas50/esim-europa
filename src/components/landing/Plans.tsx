@@ -185,7 +185,7 @@ export default function Plans({ plans }: PlansProps) {
         </motion.div>
 
         {/* Plans Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {sorted.map((plan, i) => (
             <PlanCard
               key={plan.id}

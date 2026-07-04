@@ -11,7 +11,7 @@ export default function Compatibility() {
   const t = useTranslations("compatibility");
 
   return (
-    <section id="compatibilidad" className="py-20 px-4 bg-white">
+    <section id="compatibilidad" className="py-14 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">

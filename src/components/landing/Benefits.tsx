@@ -85,14 +85,8 @@ export default function Benefits() {
 
   const isSearchingUS = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    // Solo oculta Básico con mínimo 3 caracteres que coincidan con "ESTADOS" o "USA"
-    if (query.length < 3) return false;
-    return (
-      "estados".startsWith(query) ||
-      "usa".startsWith(query) ||
-      query.includes("estados") ||
-      query.includes("usa")
-    );
+    // Detecta búsqueda de USA/Estados Unidos
+    return query.includes("usa") || query.includes("estado") || query.includes("eeuu") || query.includes("estados unidos");
   }, [searchQuery]);
 
   const filteredCountries = useMemo(() => {
@@ -123,7 +117,7 @@ export default function Benefits() {
   }, [plans, isSearchingUS]);
 
   return (
-    <section className="py-24 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-16 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
         {/* Header - Ultra compacto */}
         <motion.div
@@ -131,7 +125,7 @@ export default function Benefits() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-16"
+          className="mb-12"
         >
           <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-2 leading-tight">
             {t("title")}
@@ -144,7 +138,7 @@ export default function Benefits() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
         >
           {BENEFIT_ITEMS.slice(0, 3).map(({ key, Icon }) => (
             <motion.div

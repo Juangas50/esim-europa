@@ -100,7 +100,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-24 px-4 bg-[var(--color-warm-white)]">
+    <section id="faq" className="py-16 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         <motion.div

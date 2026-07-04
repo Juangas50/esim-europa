@@ -95,7 +95,7 @@ export default function Testimonials() {
   const TESTIMONIALS = locale === "pt" ? TESTIMONIALS_PT : TESTIMONIALS_ES;
 
   return (
-    <section className="py-24 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-16 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}

@@ -17,7 +17,7 @@ export default function HowItWorks() {
   ] as const;
 
   return (
-    <section id="como-funciona" className="py-24 px-4">
+    <section id="como-funciona" className="py-16 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}

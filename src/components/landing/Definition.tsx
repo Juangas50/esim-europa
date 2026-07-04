@@ -10,7 +10,7 @@ export default function Definition() {
   const t = useTranslations("definition");
 
   return (
-    <section className="py-24 px-4 bg-gradient-to-b from-[#f9f9f9] to-white">
+    <section className="py-16 px-4 bg-gradient-to-b from-[#f9f9f9] to-white">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
