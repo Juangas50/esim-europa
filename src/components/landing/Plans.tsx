@@ -33,6 +33,19 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
     ? plan.badge.split(/\r?\n/).map(f => f.trim()).filter(Boolean)
     : [];
 
+  // Banderas de países incluidos (no-EU)
+  const getCountryFlags = () => {
+    const isBasic = plan.id === "2bf430af-8a08-4425-a188-7bf8df18cfd8"; // ID del plan Básico
+
+    if (isBasic) {
+      // Básica: Islandia, Noruega, Liechtenstein, Suiza, Turquía
+      return "🇮🇸 🇳🇴 🇱🇮 🇨🇭 🇹🇷";
+    } else {
+      // Otros: USA + extras
+      return "🇺🇸 🇮🇸 🇳🇴 🇱🇮 🇨🇭";
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -61,6 +74,9 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
 
       {/* Data Amount - Prominent */}
       <div className="mb-2.5">
+        <p className={`text-lg font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
+          🇪🇸 España
+        </p>
         <div className="flex items-baseline gap-2 mb-0.5">
           <span className={`text-5xl font-black leading-none ${isPopular ? "text-white" : "text-[var(--color-gold)]"}`}>
             {plan.data_gb}
@@ -69,9 +85,6 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
             GB
           </span>
         </div>
-        <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
-          {t("coverage")}
-        </p>
       </div>
 
       {/* EU Data (if applicable) */}
@@ -82,6 +95,10 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           </p>
           <p className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
             {plan.eu_data_gb} GB
+          </p>
+          {/* Additional countries beyond EU */}
+          <p className={`text-base mt-1.5 ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
+            + {getCountryFlags()}
           </p>
         </div>
       ) : null}
