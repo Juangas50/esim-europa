@@ -61,13 +61,15 @@ export default function PremiumTooltip({
   }, [isOpen]);
 
   return (
-    <div className="relative inline-block">
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
       {/* Trigger Button */}
       <button
         ref={triggerRef}
         onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
         className="inline-flex items-center justify-center w-5 h-5 text-sm font-bold text-[var(--color-gold)] hover:text-[var(--color-navy)] transition-colors cursor-help"
         aria-label="More information"
         aria-expanded={isOpen}
