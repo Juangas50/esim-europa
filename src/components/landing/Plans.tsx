@@ -74,7 +74,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
 
       {/* Data Amount - Prominent */}
       <div className="mb-2.5">
-        <p className={`text-lg font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
+        <p className={`text-2xl font-semibold uppercase tracking-wider mb-0.5 ${isPopular ? "text-white/50" : "text-[var(--color-ink-3)]"}`}>
           🇪🇸 España
         </p>
         <div className="flex items-baseline gap-2 mb-0.5">
@@ -97,7 +97,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
             {plan.eu_data_gb} GB
           </p>
           {/* Additional countries beyond EU */}
-          <p className={`text-base mt-1.5 ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
+          <p className={`text-lg mt-1.5 ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
             + {getCountryFlags()}
           </p>
         </div>
