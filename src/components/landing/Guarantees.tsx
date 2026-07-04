@@ -30,7 +30,7 @@ export default function Guarantees() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: EASE_OUT }}
-      className="py-10 md:py-16 px-4 bg-white"
+      className="py-10 md:py-12 px-4 bg-white"
     >
       <div className="max-w-7xl mx-auto">
 
@@ -39,7 +39,7 @@ export default function Guarantees() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-12 text-center"
+          className="mb-8 text-center"
         >
           <h2 className="font-display text-3xl sm:text-4xl text-[var(--color-navy)] mb-4 leading-tight">
             Compra con confianza
@@ -49,7 +49,7 @@ export default function Guarantees() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {GUARANTEES.map(({ icon: Icon, title, desc }, i) => (
             <motion.div
               key={title}

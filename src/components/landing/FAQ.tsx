@@ -100,7 +100,7 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-16 px-4 bg-[var(--color-warm-white)]">
+    <section id="faq" className="py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         <motion.div
@@ -108,7 +108,7 @@ export default function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-16"
+          className="mb-8"
         >
           <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-6 leading-tight">
             {t("title")}
@@ -126,7 +126,7 @@ export default function FAQ() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {FAQ_KEYS.map((key, i) => (
             <div key={key} id={`faq-${key}`}>
               <FAQItem

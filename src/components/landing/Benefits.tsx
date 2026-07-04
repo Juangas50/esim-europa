@@ -127,7 +127,7 @@ export default function Benefits() {
   }, [plans, isSearchingUS, searchQuery]);
 
   return (
-    <section className="py-16 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
         {/* Header - Ultra compacto */}
         <motion.div
@@ -135,7 +135,7 @@ export default function Benefits() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-12"
+          className="mb-8"
         >
           <h2 className="font-display text-4xl sm:text-5xl text-[var(--color-navy)] mb-2 leading-tight">
             {t("title")}
@@ -175,7 +175,7 @@ export default function Benefits() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-60px" }}
-          className="rounded-2xl bg-white border-2 border-[var(--color-border)] p-8 space-y-6"
+          className="rounded-2xl bg-white border-2 border-[var(--color-border)] p-5 space-y-6"
         >
           {/* Header Compacto */}
           <div>

@@ -95,7 +95,7 @@ export default function Testimonials() {
   const TESTIMONIALS = locale === "pt" ? TESTIMONIALS_PT : TESTIMONIALS_ES;
 
   return (
-    <section className="py-16 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
@@ -115,7 +115,7 @@ export default function Testimonials() {
         </motion.div>
 
         {/* Historias Visuales — Grid Asimétrico */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {TESTIMONIALS.map((item, i) => (
             <motion.div
               key={i}
@@ -123,7 +123,7 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, delay: i * 0.1, ease: EASE_OUT }}
-              className="flex flex-col lg:flex-row gap-6 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+              className="flex flex-col lg:flex-row gap-4 bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
             >
               {/* Imagen — Protagonista Visual */}
               <div className="flex-shrink-0 w-full lg:w-1/3 aspect-[4/3] lg:aspect-auto lg:h-full relative overflow-hidden">
@@ -143,7 +143,7 @@ export default function Testimonials() {
               </div>
 
               {/* Contenido — Contexto e Historia */}
-              <div className="flex-1 p-8 flex flex-col justify-between">
+              <div className="flex-1 p-5 flex flex-col justify-between">
                 {/* Rating y Contexto */}
                 <div>
                   <div className="mb-4">
@@ -189,7 +189,7 @@ export default function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, delay: 0.3, ease: EASE_OUT }}
-          className="bg-[var(--color-navy)] rounded-3xl p-8 sm:p-12 text-center"
+          className="bg-[var(--color-navy)] rounded-3xl p-5 sm:p-12 text-center"
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <StarRating count={5} />

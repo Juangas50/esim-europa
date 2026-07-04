@@ -174,7 +174,7 @@ export default function Plans({ plans }: PlansProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="max-w-3xl mx-auto mb-8 text-center"
+          className="max-w-3xl mx-auto mb-6 text-center"
         >
           <h2 className="text-4xl sm:text-5xl font-black text-[var(--color-navy)] mb-3">
             {t("title")}

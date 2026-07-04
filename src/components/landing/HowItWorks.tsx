@@ -17,7 +17,7 @@ export default function HowItWorks() {
   ] as const;
 
   return (
-    <section id="como-funciona" className="py-16 px-4">
+    <section id="como-funciona" className="py-12 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
@@ -26,7 +26,7 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-16"
+          className="mb-8"
         >
           <Badge variant="outline" className="mb-4">{t("eyebrow")}</Badge>
           <h2 className="text-3xl sm:text-4xl font-black text-[#1B2F4E] tracking-tight">
@@ -47,7 +47,7 @@ export default function HowItWorks() {
               {/* Separador superior */}
               <div className="h-px bg-[#1B2F4E]/8" />
 
-              <div className="grid grid-cols-12 gap-6 py-10 sm:py-12 group">
+              <div className="grid grid-cols-12 gap-4 py-10 sm:py-12 group">
 
                 {/* Número grande */}
                 <div className="col-span-3 sm:col-span-2">

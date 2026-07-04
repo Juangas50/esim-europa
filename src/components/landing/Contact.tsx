@@ -31,7 +31,7 @@ const CONTACTS = [
 
 export default function Contact() {
   return (
-    <section className="py-10 md:py-16 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-10 md:py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         <motion.div
@@ -39,7 +39,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: EASE_OUT }}
-          className="mb-12 text-center"
+          className="mb-8 text-center"
         >
           <h2 className="font-display text-3xl sm:text-4xl text-[var(--color-navy)] mb-4 leading-tight">
             ¿Dudas?
@@ -49,7 +49,7 @@ export default function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {CONTACTS.map(({ icon: Icon, label, value, href, color }, i) => (
             <motion.a
               key={label}

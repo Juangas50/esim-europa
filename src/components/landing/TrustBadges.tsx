@@ -25,10 +25,10 @@ const BADGES = [
 
 export default function TrustBadges() {
   return (
-    <section className="py-10 md:py-16 px-4 bg-[var(--color-warm-white)]">
+    <section className="py-10 md:py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {BADGES.map(({ icon: Icon, title, desc }, i) => (
             <motion.div
               key={title}
