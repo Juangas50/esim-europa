@@ -299,40 +299,53 @@ export default function SobreRuta34() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="space-y-12"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
           >
-            <motion.div variants={fadeInUp} className="space-y-4">
-              <h2 className="font-serif text-4xl lg:text-5xl text-[var(--color-navy)]">
-                Sin vueltas. Sin roaming. Sin permanencia.
-              </h2>
+            <motion.div variants={fadeInUp} className="space-y-8">
+              <div className="space-y-4">
+                <h2 className="font-serif text-4xl lg:text-5xl text-[var(--color-navy)]">
+                  Sin vueltas. Sin roaming. Sin permanencia.
+                </h2>
 
-              <p className="text-lg text-[var(--color-ink)] leading-relaxed max-w-3xl">
-                Queremos que comprar conectividad para viajar sea claro, simple y sin letra chica escondida.
-              </p>
+                <p className="text-lg text-[var(--color-ink)] leading-relaxed max-w-3xl">
+                  Queremos que comprar conectividad para viajar sea claro, simple y sin letra chica escondida.
+                </p>
+              </div>
+
+              {/* Checklist */}
+              <motion.div
+                variants={staggerContainer}
+                className="space-y-3"
+              >
+                {[
+                  "Planes prepago",
+                  "Precio claro",
+                  "Sin permanencia",
+                  "Sin roaming de tu operadora de origen",
+                  "Soporte humano",
+                  "Información simple antes de comprar",
+                ].map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    variants={fadeInUp}
+                    className="flex items-start gap-3"
+                  >
+                    <Check size={20} weight="bold" className="text-[var(--color-gold)] mt-0.5 flex-shrink-0" />
+                    <span className="text-[var(--color-ink)] font-sans">{item}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
 
-            {/* Checklist */}
-            <motion.div
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl"
-            >
-              {[
-                "Planes prepago",
-                "Precio claro",
-                "Sin permanencia",
-                "Sin roaming de tu operadora de origen",
-                "Soporte humano",
-                "Información simple antes de comprar",
-              ].map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  variants={fadeInUp}
-                  className="flex items-start gap-3"
-                >
-                  <Check size={20} weight="bold" className="text-[var(--color-gold)] mt-1 flex-shrink-0" />
-                  <span className="text-[var(--color-ink)] font-sans">{item}</span>
-                </motion.div>
-              ))}
+            {/* Imagen lado derecho */}
+            <motion.div variants={fadeInUp} className="relative h-[300px] lg:h-[400px] rounded-2xl overflow-hidden hidden lg:block">
+              <Image
+                src="/images/imagen6.png"
+                alt="Pareja viajando en el Mediterráneo"
+                fill
+                className="object-cover"
+                sizes="50vw"
+              />
             </motion.div>
           </motion.div>
         </div>
@@ -364,15 +377,33 @@ export default function SobreRuta34() {
               </div>
             </motion.div>
 
-            {/* Card Recarga */}
-            <motion.div
-              variants={fadeInUp}
-              className="p-8 lg:p-10 rounded-xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/30 flex items-center gap-8 max-w-md"
-            >
-              <div className="text-5xl">📅</div>
-              <div className="space-y-1">
-                <p className="font-sans font-semibold text-[var(--color-navy)]">28 días + Recarga</p>
-                <p className="text-sm text-[var(--color-ink-2)]">Continúa tu plan cuando lo necesites</p>
+            {/* Grid: Card + Imagen */}
+            <motion.div variants={fadeInUp} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div className="p-8 lg:p-10 rounded-xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/30 space-y-6">
+                <div className="space-y-1">
+                  <h4 className="font-sans font-semibold text-lg text-[var(--color-navy)]">28 días + Recarga</h4>
+                  <p className="text-[var(--color-ink-2)]">Continúa tu plan cuando lo necesites</p>
+                </div>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-[var(--color-ink)]">
+                    <span className="text-[var(--color-gold)] font-bold">+</span>
+                    <span>Recarga saldo en cualquier momento</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-[var(--color-ink)]">
+                    <span className="text-[var(--color-gold)] font-bold">+</span>
+                    <span>Extiende tu viaje sin límites</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="relative h-[300px] lg:h-[400px] rounded-xl overflow-hidden">
+                <Image
+                  src="/images/imagen5.png"
+                  alt="Pareja viajando en Europa"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
             </motion.div>
           </motion.div>
@@ -442,42 +473,55 @@ export default function SobreRuta34() {
 
       {/* BLOQUE: CTA FINAL */}
       <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[var(--color-navy)]">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="space-y-8 text-center"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
           >
-            <motion.h2 variants={fadeInUp} className="font-serif text-5xl lg:text-6xl text-white leading-tight">
-              Tu viaje empieza antes del aeropuerto.
-            </motion.h2>
+            <motion.div variants={fadeInUp} className="space-y-8">
+              <h2 className="font-serif text-5xl lg:text-6xl text-white leading-tight">
+                Tu viaje empieza antes del aeropuerto.
+              </h2>
 
-            <motion.div variants={fadeInUp} className="space-y-4">
-              <p className="text-xl text-white/85 leading-relaxed">
-                Ruta34 no quiere venderte más complicaciones.
-              </p>
+              <div className="space-y-4">
+                <p className="text-xl text-white/85 leading-relaxed">
+                  Ruta34 no quiere venderte más complicaciones.
+                </p>
 
-              <p className="text-lg text-white/75 leading-relaxed">
-                Queremos que llegues a Europa, abras tu celular y puedas seguir tu viaje.
-              </p>
+                <p className="text-lg text-white/75 leading-relaxed">
+                  Queremos que llegues a Europa, abras tu celular y puedas seguir tu viaje.
+                </p>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <Link
+                  href="/es/planes"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-[var(--color-gold)] text-[var(--color-navy)] font-semibold rounded-lg hover:bg-[var(--color-gold-light)] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+                >
+                  Ver planes
+                </Link>
+                <Link
+                  href="/es/help/faq"
+                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-lg hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-all duration-300"
+                >
+                  Leer preguntas frecuentes
+                </Link>
+              </div>
             </motion.div>
 
-            {/* CTAs */}
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-              <Link
-                href="/es/planes"
-                className="inline-flex items-center justify-center px-8 py-4 bg-[var(--color-gold)] text-[var(--color-navy)] font-semibold rounded-lg hover:bg-[var(--color-gold-light)] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
-              >
-                Ver planes
-              </Link>
-              <Link
-                href="/es/help/faq"
-                className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-lg hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-all duration-300"
-              >
-                Leer preguntas frecuentes
-              </Link>
+            {/* Imagen lado derecho (solo en desktop) */}
+            <motion.div variants={fadeInUp} className="relative h-[300px] lg:h-[500px] hidden lg:block rounded-2xl overflow-hidden">
+              <Image
+                src="/images/imagen4.png"
+                alt="Viajero en París conectado con RUTA34"
+                fill
+                className="object-cover"
+                sizes="50vw"
+              />
             </motion.div>
           </motion.div>
         </div>
