@@ -51,6 +51,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
+                { key: "about", href: `/${locale}/sobre` },
                 { key: "howItWorks", href: "#como-funciona" },
                 { key: "plans", href: "#planes" },
                 { key: "compatibility", href: "#compatibilidad" },
