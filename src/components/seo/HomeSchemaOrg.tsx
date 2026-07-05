@@ -159,6 +159,7 @@ export default async function HomeSchemaOrg({ locale }: Props) {
     "@type": "Product",
     name: buildProductName(plan, locale),
     description: buildProductDescription(plan, locale),
+    image: `${base}/logo.png`,
     brand: { "@type": "Brand", name: "RUTA34 Telecom" },
     category: "eSIM",
     aggregateRating: {
