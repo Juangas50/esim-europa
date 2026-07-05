@@ -2,6 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
+import { InstagramLogo } from "@phosphor-icons/react";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -127,11 +128,25 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1, ease: EASE_OUT }}
-          className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+          className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-8"
         >
           <p className="text-xs text-white/40">
             © {year} RUTA34 Telecom. {t("rights")}
           </p>
+
+          {/* Social Links */}
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.instagram.com/esimruta34/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-[var(--color-gold)] transition-colors"
+              aria-label="Instagram"
+            >
+              <InstagramLogo size={20} weight="bold" />
+            </a>
+          </div>
+
           <p className="text-xs text-white/40">
             Hecho con {" "}
             <span className="text-[var(--color-gold)]">♥</span>
