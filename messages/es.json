@@ -281,5 +281,9 @@
     "sla": "Atendemos de lunes a sábado de 8 a 21 hs (hora Argentina). Pedidos recibidos fuera de ese horario se tramitan al día siguiente.",
     "support": "¿Tenés dudas? Escribinos por WhatsApp",
     "backHome": "Volver al inicio"
+  },
+  "about": {
+    "title": "Sobre Ruta34",
+    "description": "Conectividad para viajeros LATAM"
   }
 }
