@@ -1,0 +1,66 @@
+"use client";
+
+import type { Metadata } from "next";
+import { motion } from "framer-motion";
+import { Check, MapPin, Phone, Clock, Shield, Info } from "@phosphor-icons/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+// SEO Metadata with hreflang
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isES = locale === "es";
+  const url = `${base}/${locale}/sobre`;
+
+  return {
+    title: isES
+      ? "Sobre RUTA34 — Conectividad para viajeros de LATAM"
+      : "Sobre RUTA34 — Conectividade para viajantes da LATAM",
+    description: isES
+      ? "Conocé la historia, misión y valores de RUTA34. Conectamos viajeros de Latinoamérica con Europa sin complicaciones."
+      : "Conheça a história, missão e valores de RUTA34. Conectamos viajantes da América Latina com a Europa sem complicações.",
+    keywords: isES
+      ? "sobre RUTA34, empresa eSIM, conectividad viajeros, misión valores"
+      : "sobre RUTA34, empresa eSIM, conectividade viajantes, missão valores",
+    alternates: {
+      canonical: url,
+      languages: {
+        es: `${base}/es/sobre`,
+        pt: `${base}/pt/sobre`,
+        "x-default": `${base}/es/sobre`,
+      },
+    },
+    openGraph: {
+      title: isES ? "Sobre RUTA34" : "Sobre RUTA34",
+      description: isES
+        ? "Descubre la historia y misión de RUTA34"
+        : "Descubra a história e missão de RUTA34",
+      url: url,
+      type: "website",
+      locale: isES ? "es_AR" : "pt_BR",
+    },
+  };
+}
+
+const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+export default function SobreRuta34() {
+  const t = useTranslations("about");
