@@ -179,6 +179,33 @@ export default async function HomeSchemaOrg({ locale }: Props) {
         .toISOString()
         .split("T")[0],
       seller: { "@type": "Organization", name: "RUTA34 Telecom" },
+      shippingDetails: {
+        "@type": "ShippingDeliveryTime",
+        "shippingRate": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "price": "0"
+        },
+        "shippingDestination": {
+          "@type": "DeliveryAddress",
+          "addressCountry": ["ES", "PT", "IT", "FR", "DE", "GB", "NL", "BE", "AT", "CH", "SE", "NO", "DK", "PL", "CZ", "HU", "RO", "HR", "SI", "GR"]
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1,
+            "unitCode": "MIN"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 0,
+            "unitCode": "MIN"
+          }
+        }
+      }
     },
   }));
 
