@@ -95,7 +95,7 @@ export default function SobreRuta34() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <Link
-                  href="/es/planes"
+                  href="/#planes"
                   className="inline-flex items-center justify-center px-8 py-4 bg-[var(--color-gold)] text-[var(--color-navy)] font-semibold rounded-lg hover:bg-[var(--color-gold-light)] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
                 >
                   Ver planes
@@ -214,7 +214,7 @@ export default function SobreRuta34() {
                 </p>
 
                 <Link
-                  href="/es/planes"
+                  href="/#planes"
                   className="inline-flex items-center gap-2 text-[var(--color-gold)] font-semibold hover:text-[var(--color-navy)] transition-colors group/link"
                 >
                   Ver planes eSIM
@@ -499,7 +499,7 @@ export default function SobreRuta34() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <Link
-                  href="/es/planes"
+                  href="/#planes"
                   className="inline-flex items-center justify-center px-8 py-4 bg-[var(--color-gold)] text-[var(--color-navy)] font-semibold rounded-lg hover:bg-[var(--color-gold-light)] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
                 >
                   Ver planes
