@@ -115,8 +115,8 @@ export default function SobreRuta34() {
             >
               <div className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10">
                 <Image
-                  src="/images/imagen8.png"
-                  alt="Viajera conectada en Madrid"
+                  src="/images/imagen3.png"
+                  alt="Familia viajando en Madrid"
                   fill
                   className="object-cover"
                   priority
