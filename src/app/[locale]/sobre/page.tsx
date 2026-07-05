@@ -158,8 +158,8 @@ export default function SobreRuta34() {
               className="relative w-full h-[300px] lg:h-[400px] rounded-2xl border border-[var(--color-border)] overflow-hidden"
             >
               <Image
-                src="/images/imagen3.png"
-                alt="Familia viajando en Madrid"
+                src="/images/imagen8.png"
+                alt="Viajera conectada en Madrid"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 100%"
