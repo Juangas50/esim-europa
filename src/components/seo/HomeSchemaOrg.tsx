@@ -1,5 +1,5 @@
 import JsonLd from "./JsonLd";
-import { PLANS } from "@/lib/plans";
+import { getPlans } from "@/lib/plans-server";
 
 const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
 const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
@@ -70,7 +70,17 @@ const FAQ_PT = [
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function buildProductName(plan: (typeof PLANS)[0], locale: "es" | "pt"): string {
+interface Plan {
+  id: string;
+  name: string;
+  data_gb: number;
+  price_usd: number;
+  zone: "espana" | "europa";
+  duration_days: number;
+  type: "local" | "dataonly";
+}
+
+function buildProductName(plan: Plan, locale: "es" | "pt"): string {
   const gb = `${plan.data_gb} GB`;
   const zone =
     plan.zone === "espana"
@@ -83,7 +93,7 @@ function buildProductName(plan: (typeof PLANS)[0], locale: "es" | "pt"): string 
   return `eSIM ${zone} ${gb} ${type} — RUTA34 Telecom`;
 }
 
-function buildProductDescription(plan: (typeof PLANS)[0], locale: "es" | "pt"): string {
+function buildProductDescription(plan: Plan, locale: "es" | "pt"): string {
   const zone =
     plan.zone === "espana"
       ? locale === "es" ? "España" : "Espanha"
@@ -95,9 +105,10 @@ function buildProductDescription(plan: (typeof PLANS)[0], locale: "es" | "pt"): 
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function HomeSchemaOrg({ locale }: Props) {
+export default async function HomeSchemaOrg({ locale }: Props) {
   const url = `${base}/${locale}`;
   const faqItems = locale === "pt" ? FAQ_PT : FAQ_ES;
+  const plans = await getPlans();
 
   // Organization
   const organization = {
@@ -142,8 +153,8 @@ export default function HomeSchemaOrg({ locale }: Props) {
     })),
   };
 
-  // Products — uno por cada plan activo
-  const products = PLANS.map((plan) => ({
+  // Products — uno por cada plan activo desde Supabase
+  const products = plans.map((plan) => ({
     "@context": "https://schema.org",
     "@type": "Product",
     name: buildProductName(plan, locale),
