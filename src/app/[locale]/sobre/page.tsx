@@ -113,14 +113,15 @@ export default function SobreRuta34() {
               transition={{ duration: 0.8, delay: 0.2, ease: EASE_OUT }}
               className="relative h-[500px] lg:h-[600px] hidden lg:block"
             >
-              <div className="relative w-full h-full rounded-3xl overflow-hidden bg-gradient-to-br from-[var(--color-gold)]/10 to-transparent border border-white/10 backdrop-blur-sm">
-                {/* Placeholder para imagen - en producción usar Next Image */}
-                <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">✈️</div>
-                    <p className="text-white/60 font-sans">Viajero conectado en Europa</p>
-                  </div>
-                </div>
+              <div className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10">
+                <Image
+                  src="/images/imagen8.png"
+                  alt="Viajera conectada en Madrid"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
             </motion.div>
           </motion.div>
@@ -151,21 +152,18 @@ export default function SobreRuta34() {
               </p>
             </motion.div>
 
-            {/* Mapa minimalista */}
+            {/* Imagen real para "Para quién" */}
             <motion.div
               variants={fadeInUp}
-              className="relative w-full h-[300px] lg:h-[400px] rounded-2xl bg-gradient-to-br from-[var(--color-warm-white)] to-[var(--color-cream-dark)] border border-[var(--color-border)] overflow-hidden"
+              className="relative w-full h-[300px] lg:h-[400px] rounded-2xl border border-[var(--color-border)] overflow-hidden"
             >
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="text-4xl">🌎</span>
-                    <span className="text-2xl text-[var(--color-ink-2)]">→</span>
-                    <span className="text-4xl">🇪🇺</span>
-                  </div>
-                  <p className="text-[var(--color-ink)] font-sans font-medium">LATAM a España y Europa</p>
-                </div>
-              </div>
+              <Image
+                src="/images/imagen3.png"
+                alt="Familia viajando en Madrid"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 100%"
+              />
             </motion.div>
           </motion.div>
         </div>
