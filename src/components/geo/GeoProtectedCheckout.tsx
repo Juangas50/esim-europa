@@ -5,6 +5,8 @@ import GeoBlockedPage from "./GeoBlockedPage";
 
 interface GeoCheckResult {
   blocked: boolean;
+  country: string;
+  ip: string;
 }
 
 interface GeoProtectedCheckoutProps {
@@ -21,6 +23,7 @@ export default function GeoProtectedCheckout({ children }: GeoProtectedCheckoutP
         const res = await fetch("/api/geo-check");
         const data = await res.json();
         setGeoData(data);
+        console.log("Geo check:", data);
       } catch (error) {
         console.error("Geo check failed:", error);
         setLoading(false);
@@ -47,5 +50,16 @@ export default function GeoProtectedCheckout({ children }: GeoProtectedCheckoutP
     return <GeoBlockedPage />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {/* Debug panel (development only) */}
+      {process.env.NODE_ENV === "development" && geoData && (
+        <div className="fixed top-4 right-4 bg-[var(--color-navy)] text-white px-3 py-2 rounded text-xs z-50 opacity-75">
+          <div>🌍 {geoData.country} | {geoData.ip}</div>
+          <div>{geoData.blocked ? "❌ BLOQUEADO" : "✅ PERMITIDO"}</div>
+        </div>
+      )}
+      {children}
+    </>
+  );
 }
