@@ -6,6 +6,7 @@ import { Check, Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import PremiumTooltip from "@/components/ui/PremiumTooltip";
+import FlagSVG from "@/components/ui/FlagSVG";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
@@ -40,10 +41,10 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
 
     if (isBasic) {
       // Básica: Islandia, Noruega, Liechtenstein, Suiza, Turquía
-      return "🇮🇸 🇳🇴 🇱🇮 🇨🇭 🇹🇷";
+      return ["IS", "NO", "LI", "CH", "TR"];
     } else {
       // Otros: USA + extras
-      return "🇺🇸 🇮🇸 🇳🇴 🇱🇮 🇨🇭";
+      return ["US", "IS", "NO", "LI", "CH"];
     }
   };
 
@@ -82,7 +83,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
             GB
           </span>
-          <span className="text-2xl">🇪🇸</span>
+          <FlagSVG code="ES" size="lg" />
         </div>
         <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
           {t("coverage")}
@@ -99,14 +100,19 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
       {/* EU Data (if applicable) */}
       {plan.eu_data_gb ? (
         <div className="mb-2.5 pb-2.5 border-b border-white/10">
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
               {plan.eu_data_gb}
             </span>
             <span className={`text-sm font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
               GB {t("euRoaming")}
             </span>
-            <span className="text-2xl">🇪🇺 {getCountryFlags()}</span>
+            <div className="flex items-center gap-1 ml-auto">
+              <FlagSVG code="EU" size="md" />
+              {getCountryFlags().map((code) => (
+                <FlagSVG key={code} code={code} size="md" />
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
@@ -166,17 +172,17 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
                               </p>
                               <div className="grid grid-cols-3 gap-2">
                                 {[
-                                  { flag: "🇦🇷", country: "Argentina" },
-                                  { flag: "🇧🇷", country: "Brasil" },
-                                  { flag: "🇺🇾", country: "Uruguay" },
-                                  { flag: "🇨🇱", country: "Chile" },
-                                  { flag: "🇵🇾", country: "Paraguay" },
+                                  { code: "AR", country: "Argentina" },
+                                  { code: "BR", country: "Brasil" },
+                                  { code: "UY", country: "Uruguay" },
+                                  { code: "CL", country: "Chile" },
+                                  { code: "PY", country: "Paraguay" },
                                 ].map((item) => (
                                   <div
                                     key={item.country}
                                     className="flex items-center gap-1.5 text-xs text-[var(--color-ink)]"
                                   >
-                                    <span className="text-base">{item.flag}</span>
+                                    <FlagSVG code={item.code} size="sm" />
                                     <span>{item.country}</span>
                                   </div>
                                 ))}
