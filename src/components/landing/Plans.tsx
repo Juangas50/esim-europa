@@ -6,7 +6,6 @@ import { Check, Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import PremiumTooltip from "@/components/ui/PremiumTooltip";
-import FlagIcon from "@/components/ui/FlagIcon";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
@@ -41,10 +40,10 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
 
     if (isBasic) {
       // Básica: Islandia, Noruega, Liechtenstein, Suiza, Turquía
-      return ["IS", "NO", "LI", "CH", "TR"];
+      return "🇮🇸 🇳🇴 🇱🇮 🇨🇭 🇹🇷";
     } else {
       // Otros: USA + extras
-      return ["US", "IS", "NO", "LI", "CH"];
+      return "🇺🇸 🇮🇸 🇳🇴 🇱🇮 🇨🇭";
     }
   };
 
@@ -83,7 +82,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
             GB
           </span>
-          <FlagIcon code="ES" size="lg" />
+          <span className="text-2xl">🇪🇸</span>
         </div>
         <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
           {t("coverage")}
@@ -100,19 +99,14 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
       {/* EU Data (if applicable) */}
       {plan.eu_data_gb ? (
         <div className="mb-2.5 pb-2.5 border-b border-white/10">
-          <div className="flex items-baseline gap-1.5 flex-wrap">
+          <div className="flex items-baseline gap-2">
             <span className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
               {plan.eu_data_gb}
             </span>
             <span className={`text-sm font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
               GB {t("euRoaming")}
             </span>
-            <div className="flex items-center gap-1.5 ml-auto">
-              <span className="text-sm">🇪🇺</span>
-              {getCountryFlags().map((code) => (
-                <FlagIcon key={code} code={code} size="md" />
-              ))}
-            </div>
+            <span className="text-2xl">🇪🇺 {getCountryFlags()}</span>
           </div>
         </div>
       ) : null}
