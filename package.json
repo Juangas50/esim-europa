@@ -28,6 +28,7 @@
     "@uiw/react-md-editor": "^4.1.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
+    "flag-icons": "^7.5.0",
     "framer-motion": "^12.40.0",
     "next": "16.2.6",
     "next-intl": "^4.12.0",

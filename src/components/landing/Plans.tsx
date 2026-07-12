@@ -6,7 +6,7 @@ import { Check, Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Badge from "@/components/ui/Badge";
 import PremiumTooltip from "@/components/ui/PremiumTooltip";
-import FlagEmoji from "@/components/ui/FlagEmoji";
+import FlagIcon from "@/components/ui/FlagIcon";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
@@ -41,10 +41,10 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
 
     if (isBasic) {
       // Básica: Islandia, Noruega, Liechtenstein, Suiza, Turquía
-      return "🇮🇸 🇳🇴 🇱🇮 🇨🇭 🇹🇷";
+      return ["IS", "NO", "LI", "CH", "TR"];
     } else {
       // Otros: USA + extras
-      return "🇺🇸 🇮🇸 🇳🇴 🇱🇮 🇨🇭";
+      return ["US", "IS", "NO", "LI", "CH"];
     }
   };
 
@@ -83,7 +83,7 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
           <span className={`text-lg font-bold ${isPopular ? "text-white/60" : "text-[var(--color-ink-2)]"}`}>
             GB
           </span>
-          <FlagEmoji emoji="🇪🇸" size="lg" />
+          <FlagIcon code="ES" size="lg" />
         </div>
         <p className={`text-xs ${isPopular ? "text-white/70" : "text-[var(--color-ink-2)]"}`}>
           {t("coverage")}
@@ -108,9 +108,9 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
               GB {t("euRoaming")}
             </span>
             <div className="flex items-center gap-1 ml-auto">
-              <FlagEmoji emoji="🇪🇺" size="md" />
-              {getCountryFlags().split(" ").map((emoji) => (
-                <FlagEmoji key={emoji} emoji={emoji} size="md" />
+              <FlagIcon code="EU" size="md" />
+              {getCountryFlags().map((code) => (
+                <FlagIcon key={code} code={code} size="md" />
               ))}
             </div>
           </div>
@@ -172,17 +172,17 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
                               </p>
                               <div className="grid grid-cols-3 gap-2">
                                 {[
-                                  { emoji: "🇦🇷", country: "Argentina" },
-                                  { emoji: "🇧🇷", country: "Brasil" },
-                                  { emoji: "🇺🇾", country: "Uruguay" },
-                                  { emoji: "🇨🇱", country: "Chile" },
-                                  { emoji: "🇵🇾", country: "Paraguay" },
+                                  { code: "AR", country: "Argentina" },
+                                  { code: "BR", country: "Brasil" },
+                                  { code: "UY", country: "Uruguay" },
+                                  { code: "CL", country: "Chile" },
+                                  { code: "PY", country: "Paraguay" },
                                 ].map((item) => (
                                   <div
                                     key={item.country}
                                     className="flex items-center gap-1.5 text-xs text-[var(--color-ink)]"
                                   >
-                                    <FlagEmoji emoji={item.emoji} size="sm" />
+                                    <FlagIcon code={item.code} size="sm" />
                                     <span>{item.country}</span>
                                   </div>
                                 ))}
