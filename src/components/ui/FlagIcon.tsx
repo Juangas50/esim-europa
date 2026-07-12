@@ -7,16 +7,25 @@ interface FlagIconProps {
 }
 
 const sizeMap = {
-  sm: "w-4 h-3",
-  md: "w-6 h-4.5",
-  lg: "w-8 h-6",
+  sm: "w-3.5 h-2.5",
+  md: "w-5 h-3.5",
+  lg: "w-7 h-5",
 };
 
 export default function FlagIcon({ code, size = "md", className = "" }: FlagIconProps) {
   return (
     <span
       className={`fi fi-${code.toLowerCase()} inline-block ${sizeMap[size]} ${className}`}
-      style={{ lineHeight: 0 }}
+      style={{
+        lineHeight: "1",
+        verticalAlign: "middle",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "1px",
+        opacity: 0.95,
+        filter: "saturate(0.95) brightness(1.02)",
+      }}
     />
   );
 }
