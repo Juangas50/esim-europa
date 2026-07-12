@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import PurchaseFlow from "@/components/purchase/PurchaseFlow";
+import GeoProtectedCheckout from "@/components/geo/GeoProtectedCheckout";
 import { getPlans } from "@/lib/plans-server";
 
 export const metadata: Metadata = {
@@ -16,5 +17,9 @@ export default async function CompraPage({ searchParams }: CompraPageProps) {
   const { plan } = await searchParams;
   const plans = await getPlans();
 
-  return <PurchaseFlow plans={plans} initialPlanId={plan} />;
+  return (
+    <GeoProtectedCheckout>
+      <PurchaseFlow plans={plans} initialPlanId={plan} />
+    </GeoProtectedCheckout>
+  );
 }
