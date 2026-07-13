@@ -96,11 +96,11 @@ async function _deliverCore(
   }
 
   // Datos de tarifa
-  let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; duration_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; validity_days: number } | null = null
   if (order.tariff_id) {
     const { data: t, error: tariffError } = await supabase
       .from('tariffs')
-      .select('name, type, data_gb, eu_data_gb, duration_days')
+      .select('name, type, data_gb, eu_data_gb, validity_days')
       .eq('id', order.tariff_id)
       .single()
     if (tariffError || !t) {
@@ -169,7 +169,7 @@ async function _deliverCore(
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
     planEUGB: tariff?.eu_data_gb,
-    planDays: tariff?.duration_days ?? 28,
+    planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
@@ -241,11 +241,11 @@ export async function resendDeliveryEmail(
   const parsed = parseActivationString(order.activation_string)
   if (!parsed.ok) return { ok: false, error: 'La cadena de activación guardada es inválida.' }
 
-  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; validity_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
       .from('tariffs')
-      .select('name, type, data_gb, duration_days')
+      .select('name, type, data_gb, validity_days')
       .eq('id', order.tariff_id)
       .single()
     tariff = t
@@ -279,7 +279,7 @@ export async function resendDeliveryEmail(
     orderRef: order.order_ref,
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
-    planDays: tariff?.duration_days ?? 28,
+    planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
@@ -329,10 +329,10 @@ export async function resendGroupOrders(
   }
 
   // Obtener tarifa del primer pedido
-  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; validity_days: number } | null = null
   const firstTariffId = orders[0]?.tariff_id
   if (firstTariffId) {
-    const { data: t } = await supabase.from('tariffs').select('name, type, data_gb, duration_days').eq('id', firstTariffId).single()
+    const { data: t } = await supabase.from('tariffs').select('name, type, data_gb, validity_days').eq('id', firstTariffId).single()
     tariff = t
   }
 
@@ -366,7 +366,7 @@ export async function resendGroupOrders(
     totalCount: orders.length,
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
-    planDays: tariff?.duration_days ?? 28,
+    planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
     amountUSD,
     esims: esimItems,
@@ -382,7 +382,7 @@ export async function resendGroupOrders(
 export async function deliverGroupOrders(
   deliveries: Array<{ orderId: string; activationString: string; confirmationCode: string }>,
   recipientEmail: string,
-  planInfo: { name: string; data_gb: number; duration_days: number; type: string },
+  planInfo: { name: string; data_gb: number; validity_days: number; type: string },
   customerName: string,
   amountUSD: number,
   overrideEmail?: string,
@@ -456,7 +456,7 @@ export async function deliverGroupOrders(
     totalCount: deliveries.length,
     planName: planInfo.name,
     planGB: planInfo.data_gb,
-    planDays: planInfo.duration_days,
+    planDays: planInfo.validity_days,
     planType: planInfo.type,
     amountUSD,
     esims: esimItems,
