@@ -98,11 +98,15 @@ async function _deliverCore(
   // Datos de tarifa
   let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; duration_days: number } | null = null
   if (order.tariff_id) {
-    const { data: t } = await supabase
+    const { data: t, error: tariffError } = await supabase
       .from('tariffs')
       .select('name, type, data_gb, eu_data_gb, duration_days')
       .eq('id', order.tariff_id)
       .single()
+    if (tariffError || !t) {
+      console.error('[deliver] Error cargando tarifa:', tariffError)
+      return { ok: false, error: 'No se pudo cargar la información de la tarifa. Intentá nuevamente.' }
+    }
     tariff = t
   }
 
