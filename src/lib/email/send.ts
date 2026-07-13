@@ -21,8 +21,14 @@ export async function sendEmail(
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: Array.isArray(to) ? to : [to],
+      replyTo: 'hola@esimruta34.com',
       subject,
       html,
+      headers: {
+        'X-Priority': '3',
+        'X-Mailer': 'RUTA34 Telecom',
+        'List-Unsubscribe': '<mailto:hola@esimruta34.com?subject=unsubscribe>',
+      },
       ...(attachments?.length ? { attachments } : {}),
     })
     if (error) console.error('Email error:', error)
