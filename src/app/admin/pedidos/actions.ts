@@ -96,11 +96,11 @@ async function _deliverCore(
   }
 
   // Datos de tarifa
-  let tariff: { name: string; type: string; data_gb: number; duration_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; duration_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
       .from('tariffs')
-      .select('name, type, data_gb, duration_days')
+      .select('name, type, data_gb, eu_data_gb, duration_days')
       .eq('id', order.tariff_id)
       .single()
     tariff = t
@@ -143,6 +143,7 @@ async function _deliverCore(
     orderRef: order.order_ref,
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
+    planEUGB: tariff?.eu_data_gb,
     planDays: tariff?.duration_days ?? 28,
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,

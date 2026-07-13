@@ -419,6 +419,7 @@ export function emailEntregaB2C(data: {
   orderRef: string
   planName: string
   planGB: number
+  planEUGB?: number
   planDays: number
   planType: 'local' | 'dataonly' | string
   activationString: string
@@ -445,7 +446,7 @@ ${premiumHeader()}
 <table role="presentation" class="container" width="100%">
 <tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Tu eSIM está lista</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">Orden ${data.orderRef}</p><p class="p">${deliveryMessage}</p></div></td></tr>
 ${qrBlock(data.qrUrl ?? 'cid:esim-qr', data.confirmationCode, data.activationString)}
-${orderSummaryBlock(data.planName, data.planGB, data.planDays, data.amountUSD)}
+${orderSummaryBlock(data.planName, data.planGB, data.planEUGB, data.planDays, data.amountUSD)}
 ${supportBlock()}
 ${premiumFooter()}`
   }
@@ -485,8 +486,11 @@ function qrBlock(qrUrl: string, confirmationCode: string, activationString: stri
   return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="text-align:center;"><div style="display:inline-block;background:#FFFFFF;border:1px solid #E9E2D8;border-radius:24px;padding:18px;"><img src="${qrUrl}" alt="QR de instalación eSIM" width="220" height="220" style="width:220px;height:220px;margin:0 auto;border-radius:8px;" /></div><div style="height:18px;"></div><p class="muted">Código: <strong style="color:#1B2F4E;">${confirmationCode}</strong></p><div style="height:8px;"></div><p class="muted" style="font-family:monospace;word-break:break-all;">${activationString}</p></div></td></tr>`
 }
 
-function orderSummaryBlock(planName: string, planGB: number, planDays: number, amountUSD: number) {
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">Resumen de tu compra</h2><table role="presentation" width="100%"><tr class="summary-row"><td class="summary-label">Plan</td><td class="summary-value">${planName}</td></tr><tr class="summary-row"><td class="summary-label">Datos</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">Duración</td><td class="summary-value">${planDays} días</td></tr><tr><td colspan="2"><div class="divider" style="margin:10px 0;"></div></td></tr><tr class="summary-row"><td class="summary-label">Total</td><td class="summary-value" style="font-size:22px;color:#C9973A;">USD ${amountUSD.toFixed(2)}</td></tr></table></div></td></tr>`
+function orderSummaryBlock(planName: string, planGB: number, planEUGB: number | undefined, planDays: number, amountUSD: number) {
+  const dataRow = planEUGB && planEUGB > 0
+    ? `<tr class="summary-row"><td class="summary-label">Datos España</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">Datos UE Roaming</td><td class="summary-value">${planEUGB} GB</td></tr>`
+    : `<tr class="summary-row"><td class="summary-label">Datos</td><td class="summary-value">${planGB} GB</td></tr>`
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">Resumen de tu compra</h2><table role="presentation" width="100%"><tr class="summary-row"><td class="summary-label">Plan</td><td class="summary-value">${planName}</td></tr>${dataRow}<tr class="summary-row"><td class="summary-label">Duración</td><td class="summary-value">${planDays} días</td></tr><tr><td colspan="2"><div class="divider" style="margin:10px 0;"></div></td></tr><tr class="summary-row"><td class="summary-label">Total</td><td class="summary-value" style="font-size:22px;color:#C9973A;">USD ${amountUSD.toFixed(2)}</td></tr></table></div></td></tr>`
 }
 
 function supportBlock() {
@@ -499,6 +503,7 @@ export function emailEntregaMultiple(data: {
   totalCount: number
   planName: string
   planGB: number
+  planEUGB?: number
   planDays: number
   planType: 'local' | 'dataonly' | string
   amountUSD: number
@@ -532,7 +537,7 @@ ${premiumHeader()}
 <table role="presentation" class="container" width="100%">
 <tr><td><div class="section" style="text-align:center;"><p class="eyebrow">${data.totalCount === 1 ? 'Tu eSIM está lista' : `Tus ${data.totalCount} eSIMs están listas`}</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">${data.totalCount} ${data.totalCount === 1 ? 'eSIM' : 'eSIMs'}</p><p class="p">Comparte un código diferente con cada persona. No escanees el mismo QR en más de un celular.</p></div></td></tr>
 ${esimRows}
-${orderSummaryBlock(data.planName, data.planGB, data.planDays, data.amountUSD)}
+${orderSummaryBlock(data.planName, data.planGB, data.planEUGB, data.planDays, data.amountUSD)}
 ${supportBlock()}
 ${premiumFooter()}`
   }
