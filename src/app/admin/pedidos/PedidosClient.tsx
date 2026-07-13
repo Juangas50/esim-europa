@@ -154,7 +154,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       {
         name: selected.tariffs?.name ?? 'eSIM RUTA34',
         data_gb: 0,
-        duration_days: 28,
+        validity_days: 28,
         type: selected.type ?? 'local',
       },
       `${selected.customer_name} ${selected.customer_lastname}`,
