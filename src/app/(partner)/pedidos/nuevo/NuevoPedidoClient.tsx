@@ -162,7 +162,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                             <span style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</span>
                             {t.highlight && <span style={{ background: '#C9973A', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
                           </div>
-                          <span style={{ color: '#7A7A7A', fontSize: 11 }}>{t.badge}{t.validity_days ? ` · ${t.validity_days} días` : ''}</span>
+                          <span style={{ color: '#7A7A7A', fontSize: 11 }}>{t.data_gb} GB{t.badge ? ` · ${t.badge}` : ''}{t.validity_days ? ` · ${t.validity_days} días` : ''}</span>
                         </div>
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
