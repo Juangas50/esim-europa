@@ -32,7 +32,7 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   scheduled:      { bg: 'rgba(110,193,228,0.15)', color: '#C9973A' },
   qr_sent:        { bg: 'rgba(167,139,250,0.15)', color: '#A78BFA' },
   activated:      { bg: 'rgba(34,197,94,0.15)',   color: '#22C55E' },
-  expired:        { bg: 'rgba(122,122,122,0.15)', color: '#7A7A7A' },
+  expired:        { bg: 'rgba(122,122,122,0.15)', color: '#64748B' },
   cancelled:      { bg: 'rgba(239,68,68,0.15)',   color: '#EF4444' },
 }
 
@@ -89,12 +89,12 @@ export default async function AdminDashboard() {
                 Pedidos pendientes para hoy
               </div>
               {toTramitar.length > 0 && (
-                <div style={{ fontSize: 13, color: '#AAAAAA' }}>
+                <div style={{ fontSize: 13, color: '#64748B' }}>
                   ⚡ <strong style={{ color: '#C9973A' }}>{toTramitar.length} pedido(s)</strong> para tramitar
                 </div>
               )}
               {scheduledToday.length > 0 && (
-                <div style={{ fontSize: 13, color: '#AAAAAA', marginTop: 3 }}>
+                <div style={{ fontSize: 13, color: '#64748B', marginTop: 3 }}>
                   🔔 <strong style={{ color: '#fff' }}>{scheduledToday.length} eSIM(s)</strong> programadas para hoy
                 </div>
               )}
@@ -115,8 +115,8 @@ export default async function AdminDashboard() {
           { label: 'Activaciones hoy', value: scheduledToday.length,  color: '#C9973A' },
         ].map(s => (
           <Link key={s.label} href="/admin/pedidos" style={{ textDecoration: 'none' }}>
-            <div style={{ background: '#181818', borderRadius: 12, border: '1px solid #2A2A2A', padding: '14px 16px' }}>
-              <div style={{ fontSize: 10, color: '#7A7A7A', marginBottom: 8, fontWeight: 600, lineHeight: 1.3 }}>{s.label}</div>
+            <div style={{ background: '#F8FAFC', borderRadius: 12, border: '1px solid #E2E8F0', padding: '14px 16px' }}>
+              <div style={{ fontSize: 10, color: '#64748B', marginBottom: 8, fontWeight: 600, lineHeight: 1.3 }}>{s.label}</div>
               <div style={{ fontSize: 28, fontWeight: 900, color: s.color }}>{s.value}</div>
             </div>
           </Link>
@@ -130,11 +130,11 @@ export default async function AdminDashboard() {
           { label: '💻 Web',       value: b2cCount, sub: 'esimruta34.com',  color: '#A78BFA' },
         ].map(s => (
           <Link key={s.label} href="/admin/pedidos" style={{ textDecoration: 'none' }}>
-            <div style={{ background: '#181818', borderRadius: 12, border: '1px solid #2A2A2A', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: '#F8FAFC', borderRadius: 12, border: '1px solid #E2E8F0', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: 26, fontWeight: 900, color: s.color, minWidth: 36 }}>{s.value}</div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.label}</div>
-                <div style={{ fontSize: 11, color: '#7A7A7A', marginTop: 1 }}>{s.sub}</div>
+                <div style={{ fontSize: 11, color: '#64748B', marginTop: 1 }}>{s.sub}</div>
               </div>
             </div>
           </Link>
@@ -142,23 +142,23 @@ export default async function AdminDashboard() {
       </div>
 
       {/* ── Últimos pedidos ─────────────────────────────────────────────── */}
-      <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
-        <div style={{ padding: '14px 18px', borderBottom: '1px solid #2A2A2A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ background: '#F8FAFC', borderRadius: 14, border: '1px solid #E2E8F0', overflow: 'hidden' }}>
+        <div style={{ padding: '14px 18px', borderBottom: '1px solid #2D4A72', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontWeight: 800, fontSize: 14 }}>Últimos pedidos</span>
           <Link href="/admin/pedidos" style={{ color: '#C9973A', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>Ver todos →</Link>
         </div>
 
         {allOrders.length === 0 ? (
-          <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13 }}>No hay pedidos todavía</div>
+          <div style={{ padding: 40, textAlign: 'center', color: '#64748B', fontSize: 13 }}>No hay pedidos todavía</div>
         ) : (
           <>
             {/* Desktop: tabla */}
             <div className="hidden md:block">
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
+                  <tr style={{ borderBottom: '1px solid #2D4A72' }}>
                     {['Referencia', 'Cliente', 'Canal', 'Estado', 'Importe', 'Fecha'].map(h => (
-                      <th key={h} style={{ padding: '11px 16px', textAlign: 'left', fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase' }}>{h}</th>
+                      <th key={h} style={{ padding: '11px 16px', textAlign: 'left', fontSize: 10, color: '#64748B', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -166,8 +166,8 @@ export default async function AdminDashboard() {
                   {allOrders.slice(0, 10).map((o, i) => {
                     const sc = STATUS_COLORS[o.status] ?? STATUS_COLORS.pending_review
                     return (
-                      <tr key={o.id} style={{ borderBottom: i < 9 ? '1px solid #2A2A2A' : 'none' }}>
-                        <td style={{ padding: '12px 16px', fontSize: 12, color: '#7A7A7A', fontFamily: 'monospace' }}>{o.order_ref}</td>
+                      <tr key={o.id} style={{ borderBottom: i < 9 ? '1px solid #2D4A72' : 'none' }}>
+                        <td style={{ padding: '12px 16px', fontSize: 12, color: '#64748B', fontFamily: 'monospace' }}>{o.order_ref}</td>
                         <td style={{ padding: '12px 16px', fontSize: 13 }}>{o.customer_name} {o.customer_lastname}</td>
                         <td style={{ padding: '12px 16px' }}>
                           <span style={{ background: o.source === 'b2c' ? 'rgba(167,139,250,0.15)' : 'rgba(230,0,0,0.15)', color: o.source === 'b2c' ? '#A78BFA' : '#C9973A', borderRadius: 6, padding: '3px 10px', fontSize: 10, fontWeight: 700 }}>
@@ -180,7 +180,7 @@ export default async function AdminDashboard() {
                           </span>
                         </td>
                         <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 700 }}>US${o.pvp_at_time.toFixed(2)}</td>
-                        <td style={{ padding: '12px 16px', fontSize: 12, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</td>
+                        <td style={{ padding: '12px 16px', fontSize: 12, color: '#64748B' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</td>
                       </tr>
                     )
                   })}
@@ -189,7 +189,7 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Mobile: cards */}
-            <div className="md:hidden divide-y divide-[#2A2A2A]">
+            <div className="md:hidden divide-y divide-[#2D4A72]">
               {allOrders.slice(0, 8).map(o => {
                 const sc = STATUS_COLORS[o.status] ?? STATUS_COLORS.pending_review
                 const isPending = o.status === 'paid' || o.status === 'pending_review'
@@ -208,7 +208,7 @@ export default async function AdminDashboard() {
                           <span style={{ fontSize: 10, color: o.source === 'b2c' ? '#A78BFA' : '#C9973A', fontWeight: 700 }}>
                             {o.source === 'b2c' ? '💻 Web' : '🏢 Agencia'}
                           </span>
-                          <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
+                          <span style={{ fontSize: 11, color: '#64748B' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
                         </div>
                         <span style={{ fontSize: 13, fontWeight: 800, color: isPending ? '#C9973A' : '#fff' }}>
                           US${o.pvp_at_time.toFixed(2)}

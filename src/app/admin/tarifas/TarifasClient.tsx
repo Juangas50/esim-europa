@@ -20,7 +20,7 @@ type Tariff = {
   active: boolean
 }
 
-const inp = { background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '9px 12px', color: '#fff', fontSize: 13, outline: 'none', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' as const }
+const inp = { background: '#ffffff', border: '1px solid #E2E8F0', borderRadius: 8, padding: '9px 12px', color: '#1E293B', fontSize: 13, outline: 'none', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' as const }
 
 function TariffForm({ initial, onSave, onCancel }: {
   initial?: Partial<Tariff>
@@ -55,22 +55,22 @@ function TariffForm({ initial, onSave, onCancel }: {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ background: '#181818', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 14, padding: 20, marginBottom: 18 }}>
-      <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 16 }}>
+    <form onSubmit={handleSubmit} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 14, padding: 20, marginBottom: 18 }}>
+      <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 16, color: '#1B2F4E' }}>
         {initial?.id ? 'Editar tarifa' : 'Nueva tarifa'}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Cliente *</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Cliente *</label>
           <input required style={inp} value={form.client_name} onChange={e => setForm({ ...form, client_name: e.target.value })} placeholder="Europa Básico" />
         </div>
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Vodafone *</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Nombre Vodafone *</label>
           <input required style={inp} value={form.vodafone_code} onChange={e => setForm({ ...form, vodafone_code: e.target.value })} placeholder="Vodafone S" />
         </div>
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Tipo *</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Tipo *</label>
           <select required style={{ ...inp }} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
             <option value="prepago">Prepago</option>
             <option value="dataonly">DataOnly</option>
@@ -80,25 +80,25 @@ function TariffForm({ initial, onSave, onCancel }: {
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Datos (GB) *</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Datos (GB) *</label>
           <input required type="number" style={inp} value={form.data_gb} onChange={e => setForm({ ...form, data_gb: e.target.value })} placeholder="15" />
         </div>
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>GB Roaming UE</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>GB Roaming UE</label>
           <input type="number" style={inp} value={form.eu_data_gb} onChange={e => setForm({ ...form, eu_data_gb: e.target.value })} placeholder="10" />
         </div>
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Precio USD *</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Precio USD *</label>
           <input required type="number" step="0.01" style={inp} value={form.price_usd} onChange={e => setForm({ ...form, price_usd: e.target.value })} placeholder="9.99" />
         </div>
         <div>
-          <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Días vigencia</label>
+          <label style={{ fontSize: 11, color: '#1B2F4E', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>Días vigencia</label>
           <input type="number" style={inp} value={form.validity_days} onChange={e => setForm({ ...form, validity_days: e.target.value })} placeholder="28" />
         </div>
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
+        <label style={{ fontSize: 11, color: '#64748B', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
           Características (una por línea)
         </label>
         <textarea
@@ -108,18 +108,18 @@ function TariffForm({ initial, onSave, onCancel }: {
           placeholder="Ejemplo:&#10;Número español incluido&#10;Llamadas y SMS ilimitados&#10;28 días de validez"
           style={{ ...inp, resize: 'vertical', minHeight: 120, fontFamily: 'monospace', fontSize: 12 }}
         />
-        <div style={{ fontSize: 11, color: '#7A7A7A', marginTop: 6 }}>
+        <div style={{ fontSize: 11, color: '#64748B', marginTop: 6 }}>
           Una característica por línea. Aparecerán en orden en la web.
         </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
         <input type="checkbox" id="highlight" checked={form.highlight} onChange={e => setForm({ ...form, highlight: e.target.checked })} />
-        <label htmlFor="highlight" style={{ fontSize: 13, color: '#AAAAAA', cursor: 'pointer' }}>Marcar como "Más elegido"</label>
+        <label htmlFor="highlight" style={{ fontSize: 13, color: '#64748B', cursor: 'pointer' }}>Marcar como "Más elegido"</label>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-        <button type="button" onClick={onCancel} className="w-full sm:w-auto" style={{ background: 'transparent', color: '#AAAAAA', border: '1px solid #2A2A2A', borderRadius: 9, padding: '11px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button type="button" onClick={onCancel} className="w-full sm:w-auto" style={{ background: '#fff', color: '#1B2F4E', border: '1px solid #E2E8F0', borderRadius: 9, padding: '11px 18px', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
           Cancelar
         </button>
         <button type="submit" disabled={loading} className="w-full sm:w-auto" style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -161,8 +161,8 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
-        <div style={{ background: 'rgba(110,193,228,0.1)', border: '1px solid rgba(110,193,228,0.25)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#AAAAAA', flex: 1 }}>
-          💡 Los precios <strong style={{ color: '#fff' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#C9973A' }}>Agencias → Gestionar</strong>
+        <div style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#64748B', flex: 1 }}>
+          💡 Los precios <strong style={{ color: '#1B2F4E' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#C9973A' }}>Agencias → Gestionar</strong>
         </div>
         <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           + Nueva tarifa
@@ -175,7 +175,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
 
       {['prepago', 'dataonly'].map(type => (
         <div key={type}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: '#7A7A7A', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10, marginTop: 20 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: '#64748B', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10, marginTop: 20 }}>
             {type === 'prepago' ? 'eSIM Prepago' : 'eSIM DataOnly'}
           </div>
           {tariffs.filter(t => t.type === type).map(t => (
@@ -183,27 +183,27 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
               {editing?.id === t.id ? (
                 <TariffForm initial={t} onSave={handleUpdate} onCancel={() => setEditing(null)} />
               ) : (
-                <div style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 12, padding: '14px 16px', marginBottom: 8 }}>
+                <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 12, padding: '14px 16px', marginBottom: 8, boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: type === 'prepago' ? 'rgba(201,151,58,0.1)' : 'rgba(5,150,105,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
                       {type === 'prepago' ? '📱' : '📡'}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: 800, fontSize: 14 }}>{t.name}</span>
+                        <span style={{ fontWeight: 800, fontSize: 14, color: '#1B2F4E' }}>{t.name}</span>
                         {t.highlight && <span style={{ background: '#C9973A', color: '#fff', fontSize: 9, fontWeight: 800, borderRadius: 4, padding: '2px 6px' }}>⭐ MÁS ELEGIDO</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: '#7A7A7A', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 12, color: '#64748B', marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}
                       </div>
                     </div>
                   </div>
                   {/* Acciones dentro de la card, full width en mobile */}
                   <div className="flex gap-2">
-                    <button onClick={() => { setEditing(t); setAdding(false) }} className="flex-1" style={{ padding: '8px 0', background: '#232323', border: '1px solid #2A2A2A', borderRadius: 7, color: '#AAAAAA', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+                    <button onClick={() => { setEditing(t); setAdding(false) }} className="flex-1" style={{ padding: '8px 0', background: '#fff', border: '1px solid #E2E8F0', borderRadius: 7, color: '#1B2F4E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit', fontWeight: 500 }}>
                       Editar
                     </button>
-                    <button onClick={() => handleDelete(t.id)} className="flex-1" style={{ padding: '8px 0', background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 7, color: '#C9973A', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+                    <button onClick={() => handleDelete(t.id)} className="flex-1" style={{ padding: '8px 0', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 7, color: '#EF4444', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit', fontWeight: 500 }}>
                       Eliminar
                     </button>
                   </div>
@@ -212,7 +212,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
             </div>
           ))}
           {tariffs.filter(t => t.type === type).length === 0 && (
-            <div style={{ color: '#7A7A7A', fontSize: 13, padding: '10px 0' }}>No hay tarifas de este tipo</div>
+            <div style={{ color: '#64748B', fontSize: 13, padding: '10px 0' }}>No hay tarifas de este tipo</div>
           )}
         </div>
       ))}

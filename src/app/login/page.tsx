@@ -2,6 +2,21 @@
 
 import { useState } from 'react'
 import { login, resetPassword } from './actions'
+import Image from 'next/image'
+
+// HORIZONTE BRANDBOOK
+const C = {
+  navyProfundo: '#1B2F4E',
+  navyMedio: '#2D4A72',
+  dorado: '#C9973A',
+  doradoClaro: '#E8C56A',
+  crema: '#FAF7F2',
+  cremaOscuro: '#EDE8E0',
+  textoOscuro: '#1E293B',
+  textoMedio: '#64748B',
+  textoBajo: '#94A3B8',
+  error: '#DC2626',
+}
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
@@ -33,54 +48,74 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: 'radial-gradient(ellipse at 70% 20%, #1a0a0a 0%, #0C0C0C 60%)',
-      padding: 20, fontFamily: "'Helvetica Neue', Arial, sans-serif"
+      justifyContent: 'center', background: `linear-gradient(135deg, ${C.navyProfundo} 0%, ${C.navyMedio} 100%)`,
+      padding: 20, fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif"
     }}>
+      {/* Decorative elements */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: '10%', right: '10%', width: 400, height: 400, background: `radial-gradient(circle, rgba(201,151,58,0.1), transparent)`, borderRadius: '50%', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', bottom: '20%', left: '5%', width: 300, height: 300, background: `radial-gradient(circle, rgba(201,151,58,0.05), transparent)`, borderRadius: '50%', filter: 'blur(60px)' }} />
+      </div>
+
       <div style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1 }}>
 
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 44 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: 2, marginBottom: 6 }}>
-            <span style={{ fontSize: 48, fontWeight: 900, color: '#fff', letterSpacing: -2 }}>RUTA</span>
-            <span style={{ fontSize: 48, fontWeight: 900, color: '#C9973A', letterSpacing: -2 }}>34</span>
+        {/* Logo Section */}
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
+              <span style={{ fontSize: 42, fontWeight: 900, color: '#fff', fontFamily: "'DM Serif', serif", letterSpacing: -1 }}>RUTA</span>
+              <span style={{ fontSize: 42, fontWeight: 900, color: C.dorado, fontFamily: "'DM Serif', serif", letterSpacing: -1 }}>34</span>
+            </div>
+            <div style={{ fontSize: 9, letterSpacing: 6, color: C.doradoClaro, textTransform: 'uppercase', marginTop: 8, fontWeight: 800 }}>Partner Portal</div>
           </div>
-          <div style={{ fontSize: 10, letterSpacing: 8, color: '#7A7A7A', textTransform: 'uppercase', marginBottom: 20 }}>TELECOM</div>
-          <div style={{ height: 1, background: 'linear-gradient(to right, transparent, #2A2A2A, transparent)' }} />
-          <p style={{ marginTop: 18, color: '#7A7A7A', fontSize: 13 }}>Portal exclusivo de partners</p>
+
+          <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${C.dorado}, transparent)`, margin: '16px 0' }} />
+
+          <p style={{ color: C.textoMedio, fontSize: 13, marginTop: 16, fontWeight: 500 }}>Acceso exclusivo a partners RUTA34</p>
         </div>
 
         {/* Card */}
-        <div style={{ background: '#161616', border: '1px solid #2A2A2A', borderRadius: 14, padding: 32 }}>
+        <div style={{ background: C.crema, border: `2px solid ${C.cremaOscuro}`, borderRadius: 16, padding: 40, backdropFilter: 'blur(10px)' }}>
 
           {!resetMode ? (
             <>
-              <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>Email</label>
+              <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 12, color: C.textoMedio, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Email</label>
                   <input name="email" type="email" placeholder="tu@agencia.com" required
-                    style={{ background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '10px 13px', color: '#fff', fontSize: 13, outline: 'none' }} />
+                    style={{ background: '#fff', border: `1px solid ${C.cremaOscuro}`, borderRadius: 8, padding: '12px 14px', color: C.textoOscuro, fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'all 0.2s ease' }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = C.dorado}
+                    onBlur={(e) => e.currentTarget.style.borderColor = C.cremaOscuro}
+                  />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>Contraseña</label>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ fontSize: 12, color: C.textoMedio, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Contraseña</label>
                   <input name="password" type="password" placeholder="••••••••" required
-                    style={{ background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '10px 13px', color: '#fff', fontSize: 13, outline: 'none' }} />
+                    style={{ background: '#fff', border: `1px solid ${C.cremaOscuro}`, borderRadius: 8, padding: '12px 14px', color: C.textoOscuro, fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'all 0.2s ease' }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = C.dorado}
+                    onBlur={(e) => e.currentTarget.style.borderColor = C.cremaOscuro}
+                  />
                 </div>
 
                 {error && (
-                  <div style={{ background: 'rgba(230,0,0,0.1)', border: '1px solid rgba(230,0,0,0.3)', borderRadius: 8, padding: '10px 13px', color: '#C9973A', fontSize: 13 }}>
+                  <div style={{ background: `rgba(220,38,38,0.1)`, border: `1px solid ${C.error}`, borderRadius: 8, padding: '12px 14px', color: C.error, fontSize: 13, fontWeight: 500 }}>
                     {error}
                   </div>
                 )}
 
                 <button type="submit" disabled={loading}
-                  style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginTop: 4 }}>
+                  style={{ background: C.dorado, color: '#fff', border: 'none', borderRadius: 9, padding: '14px 28px', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, marginTop: 8, transition: 'all 0.2s ease', fontFamily: 'inherit' }}
+                  onMouseEnter={(e) => !loading && (e.currentTarget.style.background = '#B8882F')}
+                  onMouseLeave={(e) => e.currentTarget.style.background = C.dorado}
+                >
                   {loading ? 'Ingresando...' : 'Ingresar al portal'}
                 </button>
               </form>
 
-              <div style={{ textAlign: 'right', marginTop: 14 }}>
+              <div style={{ textAlign: 'center', marginTop: 18 }}>
                 <span onClick={() => setResetMode(true)}
-                  style={{ color: '#C9973A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                  style={{ color: C.dorado, fontSize: 13, cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}>
                   ¿Olvidaste tu contraseña?
                 </span>
               </div>
@@ -88,34 +123,40 @@ export default function LoginPage() {
           ) : (
             <>
               {!resetSent ? (
-                <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginBottom: 4 }}>Recuperar contraseña</div>
-                  <div style={{ fontSize: 13, color: '#7A7A7A', lineHeight: 1.6 }}>
+                <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: C.navyProfundo, marginBottom: 8, fontFamily: "'DM Serif', serif" }}>Recuperar contraseña</div>
+                  <div style={{ fontSize: 14, color: C.textoMedio, lineHeight: 1.6 }}>
                     Ingresá tu email y te enviamos un link para crear una nueva contraseña.
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                    <label style={{ fontSize: 11, color: '#7A7A7A', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>Email</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <label style={{ fontSize: 12, color: C.textoMedio, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>Email</label>
                     <input name="email" type="email" placeholder="tu@agencia.com" required
-                      style={{ background: '#232323', border: '1px solid #2A2A2A', borderRadius: 8, padding: '10px 13px', color: '#fff', fontSize: 13, outline: 'none' }} />
+                      style={{ background: '#fff', border: `1px solid ${C.cremaOscuro}`, borderRadius: 8, padding: '12px 14px', color: C.textoOscuro, fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'all 0.2s ease' }}
+                      onFocus={(e) => e.currentTarget.style.borderColor = C.dorado}
+                      onBlur={(e) => e.currentTarget.style.borderColor = C.cremaOscuro}
+                    />
                   </div>
                   <button type="submit" disabled={loading}
-                    style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '13px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                    style={{ background: C.dorado, color: '#fff', border: 'none', borderRadius: 9, padding: '14px 28px', fontSize: 15, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#B8882F'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = C.dorado}
+                  >
                     {loading ? 'Enviando...' : 'Enviar link de recuperación'}
                   </button>
                 </form>
               ) : (
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <div style={{ fontSize: 36, marginBottom: 16 }}>📧</div>
-                  <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 8 }}>Revisá tu email</div>
-                  <div style={{ color: '#7A7A7A', fontSize: 13, lineHeight: 1.6 }}>
-                    Te enviamos un link para restablecer tu contraseña.
+                  <div style={{ fontSize: 48, marginBottom: 16 }}>✉️</div>
+                  <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8, color: C.navyProfundo, fontFamily: "'DM Serif', serif" }}>Revisá tu email</div>
+                  <div style={{ color: C.textoMedio, fontSize: 14, lineHeight: 1.6 }}>
+                    Te enviamos un link para restablecer tu contraseña. Revisa tu bandeja de entrada.
                   </div>
                 </div>
               )}
 
-              <div style={{ textAlign: 'center', marginTop: 16 }}>
+              <div style={{ textAlign: 'center', marginTop: 20 }}>
                 <span onClick={() => { setResetMode(false); setResetSent(false) }}
-                  style={{ color: '#7A7A7A', fontSize: 12, cursor: 'pointer' }}>
+                  style={{ color: C.dorado, fontSize: 13, cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}>
                   ← Volver al login
                 </span>
               </div>
@@ -123,7 +164,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p style={{ textAlign: 'center', color: '#7A7A7A', fontSize: 11, marginTop: 24, letterSpacing: 0.3 }}>
+        <p style={{ textAlign: 'center', color: C.doradoClaro, fontSize: 12, marginTop: 28, letterSpacing: 0.5, fontWeight: 500 }}>
           ¿Sin acceso? Contactá a tu ejecutivo de cuenta RUTA34
         </p>
       </div>

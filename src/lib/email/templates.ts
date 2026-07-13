@@ -542,3 +542,104 @@ ${supportBlock()}
 ${premiumFooter()}`
   }
 }
+
+// ── ADMIN: Email de bienvenida para nuevo administrador ─────────────────────
+export function emailNuevoAdmin(data: {
+  adminName: string
+  email: string
+  tempPassword: string
+  loginUrl: string
+}) {
+  return {
+    subject: '🔐 Tu acceso de administrador RUTA34 está listo',
+    html: `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso Admin - RUTA34 Telecom</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F8F8F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
+
+    <!-- Header -->
+    <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
+      <div style="display:inline-flex;align-items:center;gap:8px;">
+        <div style="width:32px;height:32px;background:#E60000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:white;">34</div>
+        <span style="color:white;font-weight:700;font-size:15px;">RUTA34 Admin</span>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="background:white;border-radius:0 0 16px 16px;padding:32px;border:1px solid rgba(0,0,0,0.06);border-top:none;">
+
+      <h1 style="font-size:22px;font-weight:900;color:#1B2F4E;margin:0 0 8px;line-height:1.2;">
+        ¡Bienvenido, ${data.adminName}!
+      </h1>
+      <p style="color:#555555;font-size:15px;line-height:1.6;margin:0 0 24px;">
+        Tu cuenta de administrador en el portal RUTA34 Telecom está lista. Usa las credenciales abajo para acceder por primera vez.
+      </p>
+
+      <!-- Credenciales -->
+      <div style="background:#F8F8F8;border-radius:12px;padding:20px;margin-bottom:24px;border-left:4px solid #C9973A;">
+        <p style="margin:0 0 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#999;">
+          Credenciales de acceso
+        </p>
+        <div style="margin-bottom:12px;">
+          <p style="margin:0 0 4px;font-size:12px;color:#666;">Email:</p>
+          <p style="margin:0;font-size:15px;font-weight:600;color:#1B2F4E;font-family:monospace;word-break:break-all;">
+            ${data.email}
+          </p>
+        </div>
+        <div>
+          <p style="margin:0 0 4px;font-size:12px;color:#666;">Contraseña temporal:</p>
+          <p style="margin:0;font-size:15px;font-weight:600;color:#1B2F4E;font-family:monospace;letter-spacing:1px;">
+            ${data.tempPassword}
+          </p>
+        </div>
+      </div>
+
+      <!-- Botón de acceso -->
+      <div style="text-align:center;margin-bottom:24px;">
+        <a href="${data.loginUrl}" style="display:inline-block;background:#C9973A;color:white;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;transition:background 0.2s;">
+          Acceder al portal →
+        </a>
+      </div>
+
+      <!-- Aviso importante -->
+      <div style="background:rgba(230,0,0,0.08);border:1px solid rgba(230,0,0,0.25);border-radius:10px;padding:14px 16px;margin-bottom:24px;">
+        <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
+          <strong style="color:#C9973A;">⚠️ Importante:</strong> Al acceder por primera vez, se te pedirá que <strong>establezca una nueva contraseña personal</strong>. Esta contraseña temporal no se puede cambiar directamente en el portal.
+        </p>
+      </div>
+
+      <!-- Pasos -->
+      <h2 style="font-size:15px;font-weight:700;color:#1B2F4E;margin:0 0 12px;">Qué hacer ahora:</h2>
+      <ol style="margin:0 0 24px;padding-left:20px;color:#555555;font-size:14px;line-height:1.8;">
+        <li>Haz clic en "Acceder al portal" arriba</li>
+        <li>Inicia sesión con tu email y la contraseña temporal</li>
+        <li>En el siguiente paso, se te pedirá que <strong>establezca una nueva contraseña personal</strong></li>
+        <li>Usa una contraseña segura (mín. 8 caracteres, números, mayúsculas)</li>
+        <li>Esa nueva contraseña será la que uses de ahora en adelante</li>
+      </ol>
+
+      <!-- Seguridad -->
+      <div style="background:#F8F8F8;border-radius:10px;padding:14px 16px;">
+        <p style="margin:0;font-size:13px;color:#666;line-height:1.6;">
+          <strong style="color:#1B2F4E;">🔒 Seguridad:</strong> Esta credencial temporal es única y solo válida para tu primera sesión. Nadie más puede usar estas credenciales una vez que cambies tu contraseña.
+        </p>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;color:#bbb;font-size:12px;margin:16px 0 0;">
+      RUTA34 Telecom · Portal de Administración<br />
+      <a href="https://esimruta34.com" style="color:#bbb;">esimruta34.com</a>
+    </p>
+  </div>
+</body>
+</html>
+    `,
+  }
+}

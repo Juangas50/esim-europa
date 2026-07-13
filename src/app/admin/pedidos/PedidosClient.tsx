@@ -45,7 +45,7 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   scheduled:      { label: 'Programado',          color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
   qr_sent:        { label: 'QR Enviado',           color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
-  expired:        { label: 'Expirado',             color: '#7A7A7A', bg: 'rgba(122,122,122,0.15)' },
+  expired:        { label: 'Expirado',             color: '#64748B', bg: 'rgba(122,122,122,0.15)' },
   cancelled:      { label: 'Cancelado',            color: '#EF4444', bg: 'rgba(239,68,68,0.15)'  },
 }
 
@@ -273,17 +273,18 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const totalB2B = orders.filter(o => o.source === 'b2b').length
 
   return (
-    <div>
+    <>
       {/* Resumen canales */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 32 }}>
         {[
-          { label: 'Total pedidos',    value: orders.length,  color: '#fff'    },
-          { label: '💻 Desde la web', value: totalB2C,       color: '#C9973A' },
-          { label: '🏢 Agencias',     value: totalB2B,       color: '#A78BFA' },
+          { label: 'Total de pedidos',  value: orders.length,  icon: '📊', accent: '#1B2F4E' },
+          { label: 'Desde web',         value: totalB2C,       icon: '💻', accent: '#C9973A' },
+          { label: 'De agencias',       value: totalB2B,       icon: '🏢', accent: '#059669' },
         ].map(s => (
-          <div key={s.label} style={{ background: '#181818', border: '1px solid #2A2A2A', borderRadius: 10, padding: '12px 18px', minWidth: 130 }}>
-            <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 4 }}>{s.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.value}</div>
+          <div key={s.label} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 12, padding: '18px 20px', boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
+            <div style={{ fontSize: 13, color: '#64748B', marginBottom: 12, fontWeight: 500 }}>{s.label}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: s.accent, marginBottom: 8 }}>{s.value}</div>
+            <div style={{ fontSize: 20, opacity: 0.5 }}>{s.icon}</div>
           </div>
         ))}
       </div>
@@ -291,15 +292,16 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', minHeight: '100vh' }}>
         <div style={{ flex: 1, minWidth: 0 }}>
 
-          {/* Filtros canal + búsqueda */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          {/* Filtros canal */}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
             {SOURCE_FILTERS.map(f => (
               <button key={f.id} onClick={() => setSource(f.id)} style={{
-                padding: '6px 14px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
-                border: `1px solid ${sourceFilter === f.id ? '#C9973A' : '#2A2A2A'}`,
-                background: sourceFilter === f.id ? 'rgba(110,193,228,0.15)' : 'transparent',
-                color: sourceFilter === f.id ? '#C9973A' : '#7A7A7A',
-                fontWeight: sourceFilter === f.id ? 700 : 400, fontSize: 12,
+                padding: '8px 16px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
+                border: `1px solid ${sourceFilter === f.id ? '#C9973A' : '#EDE8E0'}`,
+                background: sourceFilter === f.id ? '#fff' : 'transparent',
+                color: sourceFilter === f.id ? '#C9973A' : '#64748B',
+                fontWeight: sourceFilter === f.id ? 700 : 500, fontSize: 13,
+                transition: 'all 0.2s ease',
               }}>
                 {f.label}
               </button>
@@ -309,15 +311,15 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar ref., nombre, email..."
               style={{
-                marginLeft: 'auto', background: '#181818', border: '1px solid #2A2A2A',
-                borderRadius: 8, padding: '6px 14px', color: '#fff', fontSize: 12,
-                fontFamily: 'inherit', outline: 'none', width: 220,
+                marginLeft: 'auto', background: '#fff', border: '1px solid #EDE8E0',
+                borderRadius: 8, padding: '8px 14px', color: '#1E293B', fontSize: 13,
+                fontFamily: 'inherit', outline: 'none', minWidth: 240,
               }}
             />
           </div>
 
           {/* Filtros estado */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap' }}>
             {STATUS_FILTERS.map(f => {
               const base = sourceFilter === 'all' ? orders : orders.filter(o => o.source === sourceFilter)
               const count = f.id === 'all' ? base.length
@@ -325,13 +327,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 : base.filter(o => o.status === f.id).length
               return (
                 <button key={f.id} onClick={() => setStatus(f.id)} style={{
-                  padding: '6px 14px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
-                  border: `1px solid ${statusFilter === f.id ? '#C9973A' : '#2A2A2A'}`,
-                  background: statusFilter === f.id ? 'rgba(230,0,0,0.15)' : 'transparent',
-                  color: statusFilter === f.id ? '#fff' : '#7A7A7A',
-                  fontWeight: statusFilter === f.id ? 700 : 400, fontSize: 12,
+                  padding: '8px 16px', borderRadius: 8, fontFamily: 'inherit', cursor: 'pointer',
+                  border: `1px solid ${statusFilter === f.id ? '#C9973A' : '#EDE8E0'}`,
+                  background: statusFilter === f.id ? '#fff' : 'transparent',
+                  color: statusFilter === f.id ? '#C9973A' : '#64748B',
+                  fontWeight: statusFilter === f.id ? 700 : 500, fontSize: 13,
+                  transition: 'all 0.2s ease',
                 }}>
-                  {f.label} <span style={{ opacity: 0.6 }}>({count})</span>
+                  {f.label} <span style={{ opacity: 0.5, marginLeft: 4 }}>({count})</span>
                 </button>
               )
             })}
@@ -339,9 +342,12 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
           {/* ── Mobile: cards ────────────────────────────────────────────── */}
           {isMobile && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {filtered.length === 0 ? (
-                <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13, background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A' }}>No hay pedidos</div>
+                <div style={{ padding: 48, textAlign: 'center', color: '#64748B', fontSize: 14, background: '#fff', borderRadius: 12, border: '1px solid #EDE8E0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                  <div style={{ marginBottom: 8 }}>Sin pedidos</div>
+                  <div style={{ fontSize: 12, color: '#94A3B8' }}>No hay registros que coincidan con los filtros</div>
+                </div>
               ) : filtered.map(o => {
                 const st = STATUSES[o.status] ?? STATUSES.pending_review
                 const isPending = o.status === 'paid'
@@ -349,21 +355,21 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                   <div
                     key={o.id}
                     onClick={() => { setSelected(o); resetDeliveryForm() }}
-                    style={{ background: '#181818', border: `1px solid ${selected?.id === o.id ? '#C9973A' : '#2A2A2A'}`, borderRadius: 12, padding: 14, cursor: 'pointer' }}
+                    style={{ background: '#fff', border: `2px solid ${selected?.id === o.id ? '#C9973A' : '#EDE8E0'}`, borderRadius: 12, padding: 16, cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', transition: 'all 0.2s ease' }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                      <span style={{ fontSize: 12, fontFamily: 'monospace', color: '#C9973A', fontWeight: 700 }}>{o.order_ref}</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 6, background: st.bg, color: st.color, marginLeft: 8, flexShrink: 0 }}>
                         {st.label}
                       </span>
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{o.customer_name} {o.customer_lastname}</div>
-                    <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 8 }}>{o.customer_email}</div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4, color: '#1B2F4E' }}>{o.customer_name} {o.customer_lastname}</div>
+                    <div style={{ fontSize: 12, color: '#64748B', marginBottom: 10 }}>{o.customer_email}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                         <SourceBadge source={o.source} />
-                        {o.tariffs?.name && <span style={{ fontSize: 11, color: '#7A7A7A' }}>{o.tariffs.name}</span>}
-                        <span style={{ fontSize: 11, color: '#7A7A7A' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
+                        {o.tariffs?.name && <span style={{ fontSize: 12, color: '#1B2F4E', fontWeight: 500 }}>{o.tariffs.name}</span>}
+                        <span style={{ fontSize: 11, color: '#94A3B8' }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</span>
                       </div>
                       {isPending && (
                         <span style={{ fontSize: 12, fontWeight: 700, color: '#C9973A' }}>Tramitar →</span>
@@ -377,15 +383,18 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
           {/* ── Desktop: tabla ───────────────────────────────────────────── */}
           {!isMobile && (
-          <div style={{ background: '#181818', borderRadius: 14, border: '1px solid #2A2A2A', overflow: 'hidden' }}>
+          <div style={{ background: '#F8FAFC', borderRadius: 12, border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
             {filtered.length === 0 ? (
-              <div style={{ padding: 40, textAlign: 'center', color: '#7A7A7A', fontSize: 13 }}>No hay pedidos</div>
+              <div style={{ padding: 48, textAlign: 'center', color: '#64748B', fontSize: 14 }}>
+                <div style={{ marginBottom: 8 }}>Sin pedidos</div>
+                <div style={{ fontSize: 13, color: '#94A3B8' }}>No hay registros que coincidan con los filtros</div>
+              </div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
+                  <tr style={{ borderBottom: '1px solid #E2E8F0', background: '#ffffff' }}>
                     {['Ref / Fecha', 'Canal', 'Cliente', 'Tarifa', 'Estado', 'Acción', ''].map(h => (
-                      <th key={h} style={{ padding: '11px 14px', textAlign: 'left', fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase' }}>{h}</th>
+                      <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontSize: 11, color: '#64748B', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -397,60 +406,60 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                       <tr
                         key={o.id}
                         onClick={() => { const next = isSelected ? null : o; setSelected(next); resetDeliveryForm(next) }}
-                        style={{ borderBottom: i < filtered.length - 1 ? '1px solid #2A2A2A' : 'none', cursor: 'pointer', background: isSelected ? 'rgba(230,0,0,0.06)' : 'transparent', transition: 'background 0.15s' }}
-                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
-                        onMouseLeave={e => { e.currentTarget.style.background = isSelected ? 'rgba(230,0,0,0.06)' : 'transparent' }}
+                        style={{ borderBottom: i < filtered.length - 1 ? '1px solid #EDE8E0' : 'none', cursor: 'pointer', background: isSelected ? '#F0FDF4' : 'transparent', transition: 'background 0.15s' }}
+                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = '#FAFBFC' }}
+                        onMouseLeave={e => { e.currentTarget.style.background = isSelected ? '#F0FDF4' : 'transparent' }}
                       >
-                        <td style={{ padding: '12px 14px' }}>
-                          <div style={{ fontSize: 11, color: '#ccc', fontFamily: 'monospace' }}>{o.order_ref}</div>
-                          <div style={{ fontSize: 10, color: '#555', marginTop: 2 }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</div>
+                        <td style={{ padding: '14px 16px' }}>
+                          <div style={{ fontSize: 12, color: '#C9973A', fontFamily: 'monospace', fontWeight: 700 }}>{o.order_ref}</div>
+                          <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>{new Date(o.created_at).toLocaleDateString('es-AR')}</div>
                         </td>
-                        <td style={{ padding: '12px 14px' }}>
+                        <td style={{ padding: '14px 16px' }}>
                           <SourceBadge source={o.source} />
                           {o.source === 'b2b' && (
-                            <div style={{ marginTop: 4 }}>
-                              <div style={{ fontSize: 12, fontWeight: 600 }}>{o.agencies?.name ?? '—'}</div>
-                              <div style={{ fontSize: 11, color: '#7A7A7A' }}>{o.users?.full_name}</div>
+                            <div style={{ marginTop: 6 }}>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2F4E' }}>{o.agencies?.name ?? '—'}</div>
+                              <div style={{ fontSize: 11, color: '#64748B' }}>{o.users?.full_name}</div>
                             </div>
                           )}
                           {o.source === 'b2c' && o.payment_method && (
-                            <div style={{ fontSize: 10, color: '#555', marginTop: 3, textTransform: 'capitalize' }}>{o.payment_method}</div>
+                            <div style={{ fontSize: 11, color: '#64748B', marginTop: 3, textTransform: 'capitalize' }}>{o.payment_method}</div>
                           )}
                         </td>
-                        <td style={{ padding: '12px 14px' }}>
-                          <div style={{ fontSize: 13 }}>{o.customer_name} {o.customer_lastname}</div>
-                          <div style={{ fontSize: 11, color: '#7A7A7A' }}>{o.customer_email}</div>
+                        <td style={{ padding: '14px 16px' }}>
+                          <div style={{ fontSize: 13, fontWeight: 500, color: '#1B2F4E' }}>{o.customer_name} {o.customer_lastname}</div>
+                          <div style={{ fontSize: 11, color: '#64748B' }}>{o.customer_email}</div>
                         </td>
-                        <td style={{ padding: '12px 14px' }}>
-                          <div style={{ fontSize: 13, marginBottom: 4 }}>{o.tariffs?.name ?? '—'}</div>
+                        <td style={{ padding: '14px 16px' }}>
+                          <div style={{ fontSize: 13, marginBottom: 6, fontWeight: 500, color: '#1B2F4E' }}>{o.tariffs?.name ?? '—'}</div>
                           <span style={{
-                            background: (o.type === 'prepago' || o.type === 'local') ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)',
-                            color: (o.type === 'prepago' || o.type === 'local') ? '#C9973A' : '#C9973A',
-                            borderRadius: 5, padding: '2px 7px', fontSize: 10, fontWeight: 700,
+                            background: (o.type === 'prepago' || o.type === 'local') ? 'rgba(201,151,58,0.1)' : 'rgba(5,150,105,0.1)',
+                            color: (o.type === 'prepago' || o.type === 'local') ? '#C9973A' : '#059669',
+                            borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700,
                           }}>
                             {(o.type === 'prepago' || o.type === 'local') ? 'SIM Local' : 'DataOnly'}
                           </span>
                         </td>
-                        <td style={{ padding: '12px 14px' }}>
-                          <span style={{ background: st.bg, color: st.color, borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{st.label}</span>
+                        <td style={{ padding: '14px 16px' }}>
+                          <span style={{ background: st.bg, color: st.color, borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>{st.label}</span>
                         </td>
-                        <td style={{ padding: '12px 14px' }} onClick={e => e.stopPropagation()}>
+                        <td style={{ padding: '14px 16px' }} onClick={e => e.stopPropagation()}>
                           <select
                             disabled={updating === o.id}
                             onChange={e => { if (e.target.value) handleStatus(o.id, e.target.value, o.source); e.target.value = '' }}
                             defaultValue=""
-                            style={{ background: '#232323', border: '1px solid #2A2A2A', borderRadius: 7, padding: '6px 10px', color: '#fff', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
+                            style={{ background: '#fff', border: '1px solid #EDE8E0', borderRadius: 7, padding: '7px 11px', color: '#1B2F4E', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
                             <option value="" disabled>{updating === o.id ? 'Guardando...' : 'Cambiar estado'}</option>
-                            <option value="pending_review">🔄 Pendiente revisión</option>
-                            <option value="scheduled">📅 Programado</option>
-                            <option value="qr_sent">📤 QR enviado</option>
-                            <option value="activated">✅ Activado</option>
-                            <option value="cancelled">❌ Cancelar</option>
+                            <option value="pending_review">Pendiente revisión</option>
+                            <option value="scheduled">Programado</option>
+                            <option value="qr_sent">QR enviado</option>
+                            <option value="activated">Activado</option>
+                            <option value="cancelled">Cancelar</option>
                           </select>
                         </td>
-                        <td style={{ padding: '12px 14px' }}>
-                          <span style={{ color: isSelected ? '#C9973A' : '#C9973A', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                            {isSelected ? '✕ Cerrar' : '👁 Ver'}
+                        <td style={{ padding: '14px 16px' }}>
+                          <span style={{ color: '#C9973A', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                            {isSelected ? '✕ Cerrar' : '→ Ver'}
                           </span>
                         </td>
                       </tr>
@@ -482,7 +491,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               padding: '20px',
             }}>
               <div style={{
-                background: '#181818', border: '1px solid #2A2A2A', borderRadius: 16,
+                background: '#2D4A72', border: '1px solid #2D4A72', borderRadius: 16,
                 width: '100%', maxWidth: '600px', maxHeight: '90vh',
                 display: 'flex', flexDirection: 'column',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
@@ -490,8 +499,8 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 {/* Header sticky */}
                 <div style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '20px 24px', borderBottom: '1px solid #2A2A2A',
-                  flexShrink: 0, position: 'sticky', top: 0, background: '#181818', zIndex: 10,
+                  padding: '20px 24px', borderBottom: '1px solid #2D4A72',
+                  flexShrink: 0, position: 'sticky', top: 0, background: '#2D4A72', zIndex: 10,
                 }}>
                   <div>
                     <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 4 }}>Detalle pedido</div>
@@ -500,13 +509,13 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                   <button
                     onClick={() => { setSelected(null); resetDeliveryForm(null) }}
                     style={{
-                      background: 'transparent', border: 'none', color: '#7A7A7A',
+                      background: 'transparent', border: 'none', color: '#64748B',
                       cursor: 'pointer', fontSize: 24, padding: 0, fontFamily: 'inherit',
                       transition: 'color 0.2s', width: 32, height: 32,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={e => e.currentTarget.style.color = '#7A7A7A'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#64748B'}
                   >
                     ×
                   </button>
@@ -537,12 +546,12 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               ...(selected.cost_at_time != null ? [{ label: 'Coste', value: `$${selected.cost_at_time.toFixed(2)}` }] : []),
             ] as { label: string; value: string | null | undefined }[]).map(r => (
               <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, gap: 8 }}>
-                <span style={{ fontSize: 11, color: '#7A7A7A', flexShrink: 0 }}>{r.label}</span>
+                <span style={{ fontSize: 11, color: '#64748B', flexShrink: 0 }}>{r.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 600, textAlign: 'right', wordBreak: 'break-all' }}>{r.value || '—'}</span>
               </div>
             ))}
-            <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 4 }}>
-              <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 8 }}>Estado actual</div>
+            <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 14, marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: '#64748B', marginBottom: 8 }}>Estado actual</div>
               <span style={{ background: STATUSES[selected.status]?.bg, color: STATUSES[selected.status]?.color, borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
                 {STATUSES[selected.status]?.label}
               </span>
@@ -550,13 +559,13 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
             {/* ── Cadena(s) guardada(s) + reenvío — qr_sent ── */}
             {selected.status === 'qr_sent' && (selected.activation_string || selected.group_count > 1) && (
-              <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 14, marginTop: 14 }}>
-                <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 6 }}>Cadena de activación enviada</div>
-                <div style={{ background: '#1B2F4E', border: '1px solid #2A2A2A', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
+              <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 14, marginTop: 14 }}>
+                <div style={{ fontSize: 11, color: '#64748B', marginBottom: 6 }}>Cadena de activación enviada</div>
+                <div style={{ background: '#1B2F4E', border: '1px solid #2D4A72', borderRadius: 8, padding: '8px 10px', fontSize: 10, fontFamily: 'monospace', color: '#A78BFA', wordBreak: 'break-all', lineHeight: 1.6 }}>
                   {selected.activation_string}
                 </div>
                 {selected.confirmation_code && (
-                  <div style={{ marginTop: 6, fontSize: 11, color: '#7A7A7A' }}>
+                  <div style={{ marginTop: 6, fontSize: 11, color: '#64748B' }}>
                     Código: <span style={{ fontFamily: 'monospace', color: '#fff', letterSpacing: 3 }}>{selected.confirmation_code}</span>
                   </div>
                 )}
@@ -571,7 +580,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     <>
                       {/* Email editable para reenvío */}
                       <div style={{ marginBottom: 10 }}>
-                        <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Reenviar a</div>
+                        <div style={{ fontSize: 11, color: '#64748B', marginBottom: 5 }}>Reenviar a</div>
                         <input
                           value={resendEmail}
                           onChange={e => { setResendEmail(e.target.value); setResendError(null) }}
@@ -581,7 +590,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                             width: '100%', boxSizing: 'border-box',
                             background: '#1B2F4E', borderRadius: 8, padding: '8px 10px', color: '#fff',
                             fontSize: 12, fontFamily: 'inherit', outline: 'none',
-                            border: `1px solid ${resendEmail && resendEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
+                            border: `1px solid ${resendEmail && resendEmail !== selected.customer_email ? '#F59E0B' : '#2D4A72'}`,
                           }}
                         />
                         {resendEmail && resendEmail !== selected.customer_email && (
@@ -616,7 +625,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
             {/* ── Formulario entrega eSIM — permite entrega en estados "tramitar" ──── */}
             {(selected.status === 'pending_review' || selected.status === 'paid' || selected.status === 'scheduled') && (
-              <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: 16, marginTop: 16 }}>
+              <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#C9973A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
                 </div>
@@ -631,9 +640,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                     <>
                       {/* Email destino */}
                       <div style={{ marginBottom: 14 }}>
-                        <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Email del cliente</div>
+                        <div style={{ fontSize: 11, color: '#64748B', marginBottom: 5 }}>Email del cliente</div>
                         <input value={deliverEmail} onChange={e => { setDeliverEmail(e.target.value); setGroupError(null) }} type="email"
-                          style={{ width: '100%', boxSizing: 'border-box', background: '#1B2F4E', border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`, borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none' }} />
+                          style={{ width: '100%', boxSizing: 'border-box', background: '#1B2F4E', border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2D4A72'}`, borderRadius: 8, padding: '8px 10px', color: '#fff', fontSize: 12, fontFamily: 'inherit', outline: 'none' }} />
                         {deliverEmail && deliverEmail !== selected.customer_email && (
                           <div style={{ fontSize: 10, color: '#F59E0B', marginTop: 4 }}>⚠ Email diferente al registrado</div>
                         )}
@@ -647,15 +656,15 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         const validCode = validateConfirmationCode(code)
                         const slotOk = parsedAct.ok && validCode
                         return (
-                          <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#1B2F4E', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2A2A2A'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
+                          <div key={o.id} style={{ background: slotOk ? 'rgba(34,197,94,0.06)' : '#1B2F4E', border: `1px solid ${slotOk ? 'rgba(34,197,94,0.3)' : '#2D4A72'}`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                               <span style={{ fontSize: 11, fontWeight: 700, color: slotOk ? '#22C55E' : '#C9973A' }}>eSIM {idx + 1} de {selected.group_count}</span>
                               <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#C9973A' }}>{o.order_ref}</span>
                             </div>
                             <input value={act} onChange={e => { setGroupActivations(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
-                              placeholder="1$servidor$CÓDIGO" style={{ width: '100%', boxSizing: 'border-box', background: '#0A0A0A', border: `1px solid ${act && !parsedAct.ok ? '#EF4444' : act && parsedAct.ok ? '#22C55E' : '#2A2A2A'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 11, fontFamily: 'monospace', outline: 'none', marginBottom: 6 }} />
+                              placeholder="1$servidor$CÓDIGO" style={{ width: '100%', boxSizing: 'border-box', background: '#1B2F4E', border: `1px solid ${act && !parsedAct.ok ? '#EF4444' : act && parsedAct.ok ? '#22C55E' : '#2D4A72'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 11, fontFamily: 'monospace', outline: 'none', marginBottom: 6 }} />
                             <input value={code} onChange={e => { setGroupCodes(p => ({ ...p, [o.id]: e.target.value })); setGroupError(null) }}
-                              placeholder="Código (4-8 dígitos)" maxLength={8} style={{ width: '100%', boxSizing: 'border-box', background: '#0A0A0A', border: `1px solid ${code && !validCode ? '#EF4444' : code && validCode ? '#22C55E' : '#2A2A2A'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 12, fontFamily: 'monospace', letterSpacing: 3, outline: 'none' }} />
+                              placeholder="Código (4-8 dígitos)" maxLength={8} style={{ width: '100%', boxSizing: 'border-box', background: '#1B2F4E', border: `1px solid ${code && !validCode ? '#EF4444' : code && validCode ? '#22C55E' : '#2D4A72'}`, borderRadius: 7, padding: '7px 9px', color: '#fff', fontSize: 12, fontFamily: 'monospace', letterSpacing: 3, outline: 'none' }} />
                           </div>
                         )
                       })}
@@ -666,12 +675,12 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         const allReady = filled === selected.group_count
                         return (
                           <>
-                            <div style={{ fontSize: 12, color: allReady ? '#22C55E' : '#7A7A7A', marginBottom: 10, fontWeight: 700 }}>
+                            <div style={{ fontSize: 12, color: allReady ? '#22C55E' : '#64748B', marginBottom: 10, fontWeight: 700 }}>
                               {allReady ? '✅' : `⏳`} {filled} de {selected.group_count} eSIMs cargadas
                             </div>
                             {groupError && <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '10px 12px', fontSize: 12, color: '#EF4444', marginBottom: 10 }}>⚠ {groupError}</div>}
                             <button onClick={handleGroupDeliver} disabled={!allReady || groupDelivering}
-                              style={{ width: '100%', padding: '10px 0', borderRadius: 8, border: 'none', background: allReady && !groupDelivering ? '#C9973A' : '#2A2A2A', color: allReady && !groupDelivering ? '#fff' : '#555', fontWeight: 700, fontSize: 13, cursor: allReady && !groupDelivering ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
+                              style={{ width: '100%', padding: '10px 0', borderRadius: 8, border: 'none', background: allReady && !groupDelivering ? '#C9973A' : '#2D4A72', color: allReady && !groupDelivering ? '#fff' : '#555', fontWeight: 700, fontSize: 13, cursor: allReady && !groupDelivering ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}>
                               {groupDelivering ? 'Generando QRs...' : `Generar y enviar ${selected.group_count} eSIMs →`}
                             </button>
                           </>
@@ -692,7 +701,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                   <>
                     {/* Email destino — editable */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Email del cliente</div>
+                      <div style={{ fontSize: 11, color: '#64748B', marginBottom: 5 }}>Email del cliente</div>
                       <input
                         value={deliverEmail}
                         onChange={e => { setDeliverEmail(e.target.value); setDeliverError(null) }}
@@ -702,7 +711,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                           width: '100%', boxSizing: 'border-box',
                           background: '#1B2F4E', borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 12, fontFamily: 'inherit', outline: 'none',
-                          border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2A2A2A'}`,
+                          border: `1px solid ${deliverEmail && deliverEmail !== selected.customer_email ? '#F59E0B' : '#2D4A72'}`,
                         }}
                       />
                       {deliverEmail && deliverEmail !== selected.customer_email && (
@@ -714,14 +723,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
                     {/* Cadena de activación */}
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Cadena de activación</div>
+                      <div style={{ fontSize: 11, color: '#64748B', marginBottom: 5 }}>Cadena de activación</div>
                       <input
                         value={activation}
                         onChange={e => { setActivation(e.target.value); setDeliverError(null) }}
                         placeholder="1$servidor$CÓDIGO"
                         style={{
                           width: '100%', boxSizing: 'border-box',
-                          background: '#1B2F4E', border: `1px solid ${activation && !activationParsed.ok ? '#EF4444' : activation && activationParsed.ok ? '#22C55E' : '#2A2A2A'}`,
+                          background: '#1B2F4E', border: `1px solid ${activation && !activationParsed.ok ? '#EF4444' : activation && activationParsed.ok ? '#22C55E' : '#2D4A72'}`,
                           borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 11, fontFamily: 'monospace', outline: 'none',
                         }}
@@ -740,7 +749,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
                     {/* Código de confirmación */}
                     <div style={{ marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, color: '#7A7A7A', marginBottom: 5 }}>Código de confirmación</div>
+                      <div style={{ fontSize: 11, color: '#64748B', marginBottom: 5 }}>Código de confirmación</div>
                       <input
                         value={confirmation}
                         onChange={e => { setConfirmation(e.target.value); setDeliverError(null) }}
@@ -748,7 +757,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                         maxLength={8}
                         style={{
                           width: '100%', boxSizing: 'border-box',
-                          background: '#1B2F4E', border: `1px solid ${confirmation && !confirmationValid ? '#EF4444' : confirmation && confirmationValid ? '#22C55E' : '#2A2A2A'}`,
+                          background: '#1B2F4E', border: `1px solid ${confirmation && !confirmationValid ? '#EF4444' : confirmation && confirmationValid ? '#22C55E' : '#2D4A72'}`,
                           borderRadius: 8, padding: '8px 10px', color: '#fff',
                           fontSize: 13, fontFamily: 'monospace', letterSpacing: 4, outline: 'none',
                         }}
@@ -770,7 +779,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                       disabled={!canDeliver}
                       style={{
                         width: '100%', padding: '10px 0', borderRadius: 8, border: 'none',
-                        background: canDeliver ? '#C9973A' : '#2A2A2A',
+                        background: canDeliver ? '#C9973A' : '#2D4A72',
                         color: canDeliver ? '#fff' : '#555',
                         fontWeight: 700, fontSize: 13, cursor: canDeliver ? 'pointer' : 'not-allowed',
                         fontFamily: 'inherit', transition: 'background 0.15s',
@@ -789,25 +798,24 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
           </>
         )}
       </div>
-    </div>
 
       {/* Modal de confirmación para pedidos programados */}
       {showScheduledWarning && selected && selected.activation_date && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 12, padding: 24, maxWidth: 400, textAlign: 'center' }}>
+          <div style={{ background: '#1B2F4E', border: '1px solid #2D4A72', borderRadius: 12, padding: 24, maxWidth: 400, textAlign: 'center' }}>
             <div style={{ fontSize: 24, marginBottom: 16 }}>⚠️</div>
             <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 12, color: '#fff' }}>Cuidado</h3>
-            <p style={{ color: '#7A7A7A', fontSize: 14, marginBottom: 16, lineHeight: 1.6 }}>
+            <p style={{ color: '#64748B', fontSize: 14, marginBottom: 16, lineHeight: 1.6 }}>
               Aún no es la fecha programada de esta eSIM
               <br />
               <strong style={{ color: '#C9973A' }}>{selected.activation_date}</strong>
             </p>
-            <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 24, lineHeight: 1.5 }}>
+            <p style={{ color: '#64748B', fontSize: 13, marginBottom: 24, lineHeight: 1.5 }}>
               ¿Desea activar de igual forma? Se activará la eSIM inmediatamente.
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
               <button onClick={() => setShowScheduledWarning(false)}
-                style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid #2A2A2A', background: 'transparent', color: '#AAAAAA', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
+                style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid #2D4A72', background: 'transparent', color: '#64748B', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
                 Cancelar
               </button>
               <button onClick={() => executeDeliver()}
@@ -818,5 +826,6 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
           </div>
         </div>
       )}
+    </>
   )
 }

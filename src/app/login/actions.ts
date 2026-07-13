@@ -65,7 +65,7 @@ export async function login(formData: FormData) {
   if (profile?.role === 'admin') {
     redirect('/admin/dashboard')
   } else {
-    redirect('/pedidos')
+    redirect('/pedidos/nuevo')
   }
 }
 
