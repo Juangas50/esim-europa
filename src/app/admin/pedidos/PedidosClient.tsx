@@ -118,6 +118,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const [resending, setResending]     = useState(false)
   const [resendError, setResendError] = useState<string | null>(null)
   const [resendOk, setResendOk]       = useState(false)
+  const [showScheduledWarning, setShowScheduledWarning] = useState(false)
 
   // Validación en tiempo real
   const activationParsed  = parseActivationString(activation)
@@ -242,6 +243,16 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
 
   async function handleDeliver() {
     if (!selected || !canDeliver) return
+    // Si es programado, mostrar modal de confirmación
+    if (selected.status === 'scheduled' && selected.activation_date) {
+      setShowScheduledWarning(true)
+      return
+    }
+    await executeDeliver()
+  }
+
+  async function executeDeliver() {
+    if (!selected || !canDeliver) return
     setDelivering(true)
     setDeliverError(null)
     const result = await deliverOrder(selected.id, selected.source, activation, confirmation, deliverEmail.trim() || selected.customer_email)
@@ -255,6 +266,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
       toast(result.error, 'error')
     }
     setDelivering(false)
+    setShowScheduledWarning(false)
   }
 
   const totalB2C = orders.filter(o => o.source === 'b2c').length
@@ -778,5 +790,33 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
         )}
       </div>
     </div>
+
+      {/* Modal de confirmación para pedidos programados */}
+      {showScheduledWarning && selected && selected.activation_date && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: 12, padding: 24, maxWidth: 400, textAlign: 'center' }}>
+            <div style={{ fontSize: 24, marginBottom: 16 }}>⚠️</div>
+            <h3 style={{ fontSize: 16, fontWeight: 800, marginBottom: 12, color: '#fff' }}>Cuidado</h3>
+            <p style={{ color: '#7A7A7A', fontSize: 14, marginBottom: 16, lineHeight: 1.6 }}>
+              Aún no es la fecha programada de esta eSIM
+              <br />
+              <strong style={{ color: '#C9973A' }}>{selected.activation_date}</strong>
+            </p>
+            <p style={{ color: '#7A7A7A', fontSize: 13, marginBottom: 24, lineHeight: 1.5 }}>
+              ¿Desea activar de igual forma? Se activará la eSIM inmediatamente.
+            </p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button onClick={() => setShowScheduledWarning(false)}
+                style={{ padding: '10px 20px', borderRadius: 8, border: '1px solid #2A2A2A', background: 'transparent', color: '#AAAAAA', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
+                Cancelar
+              </button>
+              <button onClick={() => executeDeliver()}
+                style={{ padding: '10px 20px', borderRadius: 8, border: 'none', background: '#C9973A', color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
   )
 }
