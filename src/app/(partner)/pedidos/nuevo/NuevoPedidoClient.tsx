@@ -37,6 +37,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
   const tariff = tariffs.find(t => t.id === tariffId)
   const pvp = pricing.find(p => p.tariff_id === tariffId)?.pvp || 0
   const cost = pricing.find(p => p.tariff_id === tariffId)?.cost_price || 0
+  const hasPricing = pvp > 0 && cost >= 0
 
   const touch = (f: string) => setTouched(p => ({ ...p, [f]: true }))
   const errors = {
@@ -44,7 +45,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
     dob: form.dob && !isAdult(form.dob) ? 'El cliente debe ser mayor de 18 años' : '',
     date: form.date && (new Date(form.date) < new Date(todayStr()) || new Date(form.date) > new Date(maxDateStr())) ? 'La fecha debe estar entre hoy y 12 meses' : '',
   }
-  const step2Valid = form.nombre && form.apellidos && form.pasaporte && isValidEmail(form.email) && isAdult(form.dob) && (type === 'dataonly' || !scheduled || (form.date && !errors.date))
+  const step2Valid = form.nombre && form.apellidos && form.pasaporte && isValidEmail(form.email) && isAdult(form.dob) && (type === 'dataonly' || !scheduled || (form.date && !errors.date)) && hasPricing
 
   const FieldError = ({ field }: { field: string }) => errors[field as keyof typeof errors] && touched[field] ? (
     <div style={{ color: '#C9973A', fontSize: 11, marginTop: 4, fontWeight: 600 }}>⚠ {errors[field as keyof typeof errors]}</div>
@@ -165,13 +166,13 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
                         </div>
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        {tpvp ? (
+                        {tpvp && tpvp > 0 ? (
                           <>
                             <div style={{ fontSize: 22, fontWeight: 900, color: '#C9973A', lineHeight: 1 }}>${tpvp}</div>
                             <div style={{ fontSize: 10, color: '#7A7A7A', marginTop: 2 }}>por el viaje</div>
                           </>
                         ) : (
-                          <div style={{ fontSize: 11, color: '#7A7A7A' }}>Sin precio asignado</div>
+                          <div style={{ fontSize: 11, color: '#DC2626', fontWeight: 700 }}>⚠️ Sin precio</div>
                         )}
                       </div>
                     </div>
@@ -270,6 +271,11 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
 
           {/* Resumen */}
           <div style={{ position: 'sticky', top: 24, background: '#181818', border: '1px solid #2A2A2A', borderRadius: 14, padding: 20 }}>
+            {!hasPricing && (
+              <div style={{ background: 'rgba(220,38,38,0.12)', border: '1px solid rgba(220,38,38,0.3)', borderRadius: 9, padding: '10px 13px', marginBottom: 14, fontSize: 12, color: '#FCA5A5' }}>
+                ⚠️ <strong style={{ color: '#FEE2E2' }}>Pricing no configurado</strong> para esta tarifa. Contactá a tu administrador.
+              </div>
+            )}
             <div style={{ fontSize: 10, fontWeight: 800, color: '#7A7A7A', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>Resumen del pedido</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid #2A2A2A' }}>
               <div style={{ width: 40, height: 40, borderRadius: 9, background: type === 'prepago' ? 'rgba(230,0,0,0.15)' : 'rgba(110,193,228,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
