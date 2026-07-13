@@ -400,9 +400,12 @@ function PriceInput({ label, defaultValue, onSave }: { label: string; defaultVal
       <div style={{ fontSize: 10, color: '#7A7A7A', fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 5 }}>{label}</div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <span style={{ background: '#232323', border: '1px solid #2A2A2A', borderRight: 'none', borderRadius: '8px 0 0 8px', padding: '8px 10px', fontSize: 13, color: '#7A7A7A' }}>$</span>
-        <input type="number" min="0" step="5" value={val} placeholder="0"
+        <input type="number" min="0" step="0.01" value={val} placeholder="0"
           onChange={e => setVal(e.target.value)}
-          onBlur={() => onSave(val === '' ? 0 : Number(val))}
+          onBlur={() => {
+            const num = val === '' ? 0 : Number(val)
+            if (!isNaN(num) && num >= 0) onSave(num)
+          }}
           style={{ width: 70, background: '#232323', border: '1px solid #2A2A2A', borderRadius: '0 8px 8px 0', padding: '8px 10px', color: '#fff', fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
       </div>
     </div>
