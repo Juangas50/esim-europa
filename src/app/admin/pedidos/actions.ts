@@ -137,7 +137,28 @@ async function _deliverCore(
     ? (order.amount_usd ?? 0)
     : (order.pvp_at_time ?? 0)
 
-  // Email de entrega
+  // Actualizar estado + guardar cadena PRIMERO (antes de enviar email)
+  const updatePayload: Record<string, string> = {
+    status: 'qr_sent',
+    activation_string: parsed.data.raw,
+    confirmation_code: confirmationCode.trim(),
+  }
+  if (overrideEmail && overrideEmail.trim() && overrideEmail.trim() !== order.customer_email) {
+    updatePayload.customer_email = overrideEmail.trim()
+    console.log(`[deliver] Email actualizado: ${order.customer_email} → ${overrideEmail.trim()}`)
+  }
+
+  const { error: updateError } = await supabase
+    .from(table)
+    .update(updatePayload)
+    .eq('id', orderId)
+
+  if (updateError) {
+    console.error('[deliver] Error guardando datos:', updateError)
+    return { ok: false, error: 'Error guardando los datos en la BD. Intentá nuevamente.' }
+  }
+
+  // Ahora enviar email (los datos ya están guardados)
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -160,26 +181,9 @@ async function _deliverCore(
   )
 
   if (emailError) {
-    console.error('[deliver] Error enviando email:', emailError)
-    return { ok: false, error: 'Error enviando el email al cliente. Intentá nuevamente.' }
+    console.warn('[deliver] Email no se envió, pero datos SÍ están guardados:', emailError)
+    return { ok: true } // ← Los datos YA están guardados, solo el email falló
   }
-
-  // Actualizar estado + guardar cadena + actualizar email si fue corregido
-  const updatePayload: Record<string, string> = {
-    status: 'qr_sent',
-    qr_sent_at: new Date().toISOString(),
-    activation_string: parsed.data.raw,
-    confirmation_code: confirmationCode.trim(),
-  }
-  if (overrideEmail && overrideEmail.trim() && overrideEmail.trim() !== order.customer_email) {
-    updatePayload.customer_email = overrideEmail.trim()
-    console.log(`[deliver] Email actualizado: ${order.customer_email} → ${overrideEmail.trim()}`)
-  }
-
-  await supabase
-    .from(table)
-    .update(updatePayload)
-    .eq('id', orderId)
 
   revalidatePath('/admin/pedidos')
   return { ok: true }
