@@ -566,7 +566,7 @@ export function emailNuevoAdmin(data: {
     <!-- Header -->
     <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
       <div style="display:inline-flex;align-items:center;gap:8px;">
-        <div style="width:32px;height:32px;background:#E60000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:white;">34</div>
+        <div style="font-size:24px;">🛡️</div>
         <span style="color:white;font-weight:700;font-size:15px;">RUTA34 Admin</span>
       </div>
     </div>
