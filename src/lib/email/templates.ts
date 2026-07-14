@@ -565,14 +565,11 @@ export function emailNuevoAdmin(data: {
 
     <!-- Header -->
     <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
-      <div style="display:inline-flex;align-items:center;gap:8px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;">
-          <g fill="none" stroke="#C9973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
-          </g>
-        </svg>
-        <span style="color:white;font-weight:700;font-size:15px;">RUTA34 Admin</span>
-      </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 1000 240" style="max-width:100%;height:auto;">
+        <rect x="30" y="45" width="150" height="150" rx="33.0" fill="#1B2F4E"/>
+        <text x="105.0" y="138.0" text-anchor="middle" fill="#C9973A" font-family="'DM Serif Display','Noto Serif Display','DejaVu Serif',serif" font-size="81.0" font-weight="400">34</text>
+        <text x="230" y="150" fill="white" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="82" font-weight="800" letter-spacing="2">RUTA34</text>
+      </svg>
     </div>
 
     <!-- Body -->
