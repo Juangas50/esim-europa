@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { WhatsappLogo, EnvelopeSimple, Phone } from "@phosphor-icons/react";
+import { WHATSAPP_NUMBER } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -10,7 +11,7 @@ const CONTACTS = [
     icon: WhatsappLogo,
     label: "WhatsApp",
     value: "+34 600 000 000",
-    href: "https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}",
+    href: `https://wa.me/${WHATSAPP_NUMBER}`,
     color: "text-emerald-600",
   },
   {
@@ -24,7 +25,7 @@ const CONTACTS = [
     icon: Phone,
     label: "Teléfono",
     value: "Lunes a Sábado 8-21h (ES)",
-    href: "tel:+${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}",
+    href: `tel:+${WHATSAPP_NUMBER}`,
     color: "text-[var(--color-navy)]",
   },
 ] as const;

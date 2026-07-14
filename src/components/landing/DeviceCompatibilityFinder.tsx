@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
 import { MagnifyingGlass, Check, WarningCircle } from "@phosphor-icons/react";
 import devices from "@/data/esim-devices.json";
+import { WHATSAPP_URL } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -187,7 +188,7 @@ export default function DeviceCompatibilityFinder() {
                     Este modelo puede no ser compatible con eSIM. Te recomendamos verificar la versión exacta del dispositivo o contactar con nuestro equipo.
                   </p>
                   <button
-                    onClick={() => window.location.href = "https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}"}
+                    onClick={() => window.location.href = WHATSAPP_URL}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-navy)] hover:bg-[var(--color-navy)]/80 text-white font-bold text-sm transition-all duration-200 hover:shadow-lg active:scale-95"
                   >
                     Consultar por WhatsApp →
