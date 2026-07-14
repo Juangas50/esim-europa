@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { WHATSAPP_URL } from "@/config/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";

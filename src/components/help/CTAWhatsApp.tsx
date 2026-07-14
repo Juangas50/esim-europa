@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { WHATSAPP_URL } from "@/config/constants";
 
 export function CTAWhatsApp() {
   return (

@@ -7,6 +7,7 @@ import { CheckCircle, ShoppingBag, Envelope, Phone, AirplaneInFlight } from "@ph
 import { useTranslations, useLocale } from "next-intl";
 import { Suspense } from "react";
 import { analytics } from "@/lib/analytics";
+import { WHATSAPP_URL } from "@/config/constants";
 
 function ConfirmacionContent() {
   const t = useTranslations("confirmation");
