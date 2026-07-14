@@ -566,7 +566,11 @@ export function emailNuevoAdmin(data: {
     <!-- Header -->
     <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
       <div style="display:inline-flex;align-items:center;gap:8px;">
-        <div style="font-size:24px;">🛡️</div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="flex-shrink:0;">
+          <g fill="none" stroke="#C9973A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+          </g>
+        </svg>
         <span style="color:white;font-weight:700;font-size:15px;">RUTA34 Admin</span>
       </div>
     </div>
