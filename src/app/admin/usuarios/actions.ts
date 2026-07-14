@@ -59,9 +59,18 @@ export async function createAdminUser({
 
     if (authError || !authData.user) {
       console.error('[createAdminUser] Auth error:', authError)
+
+      // Mensaje de error más específico
+      let errorMessage = 'Error al crear usuario en autenticación'
+      if (authError?.message?.includes('duplicate') || authError?.message?.includes('already')) {
+        errorMessage = `❌ El email ${email} ya está registrado en el sistema. Usa un email diferente.`
+      } else if (authError?.message?.includes('invalid')) {
+        errorMessage = `❌ Email inválido: ${email}`
+      }
+
       return {
         success: false,
-        message: 'Error al crear usuario en autenticación',
+        message: errorMessage,
         error: authError?.message,
       }
     }

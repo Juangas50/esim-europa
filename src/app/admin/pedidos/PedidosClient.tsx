@@ -491,63 +491,63 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               padding: '20px',
             }}>
               <div style={{
-                background: '#2D4A72', border: '1px solid #2D4A72', borderRadius: 16,
-                width: '100%', maxWidth: '600px', maxHeight: '90vh',
+                background: '#FAF7F2', border: '1px solid #E2E8F0', borderRadius: 16,
+                width: '100%', maxWidth: '700px', maxHeight: '90vh',
                 display: 'flex', flexDirection: 'column',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
               }}>
                 {/* Header sticky */}
                 <div style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '20px 24px', borderBottom: '1px solid #2D4A72',
-                  flexShrink: 0, position: 'sticky', top: 0, background: '#2D4A72', zIndex: 10,
+                  padding: '20px 28px', borderBottom: '1px solid #E2E8F0',
+                  flexShrink: 0, position: 'sticky', top: 0, background: '#FAF7F2', zIndex: 10,
                 }}>
                   <div>
-                    <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 4 }}>Detalle pedido</div>
-                    <div style={{ fontSize: 11, fontFamily: 'monospace', color: '#C9973A' }}>{selected.order_ref}</div>
+                    <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 4, color: '#1B2F4E' }}>Detalle del Pedido</div>
+                    <div style={{ fontSize: 12, fontFamily: 'monospace', color: '#C9973A', fontWeight: 600 }}>Ref: {selected.order_ref}</div>
                   </div>
                   <button
                     onClick={() => { setSelected(null); resetDeliveryForm(null) }}
                     style={{
-                      background: 'transparent', border: 'none', color: '#64748B',
-                      cursor: 'pointer', fontSize: 24, padding: 0, fontFamily: 'inherit',
+                      background: 'transparent', border: 'none', color: '#94A3B8',
+                      cursor: 'pointer', fontSize: 28, padding: 0, fontFamily: 'inherit',
                       transition: 'color 0.2s', width: 32, height: 32,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={e => e.currentTarget.style.color = '#64748B'}
+                    onMouseEnter={e => e.currentTarget.style.color = '#1B2F4E'}
+                    onMouseLeave={e => e.currentTarget.style.color = '#94A3B8'}
                   >
-                    ×
+                    ✕
                   </button>
                 </div>
 
                 {/* Contenido scrolleable */}
                 <div style={{
-                  overflowY: 'auto', flex: 1, padding: '24px',
+                  overflowY: 'auto', flex: 1, padding: '28px',
                 }}>
             {([
-              { label: 'Referencia',    value: selected.order_ref },
-              { label: 'Canal',         value: selected.source === 'b2c' ? '💻 esimruta34.com' : '🏢 Agencia' },
+              { label: 'Referencia',    value: selected.order_ref, icon: '🔖' },
+              { label: 'Canal',         value: selected.source === 'b2c' ? '💻 esimruta34.com' : '🏢 Agencia', icon: '📱' },
               ...(selected.source === 'b2b' ? [
-                { label: 'Agencia',     value: selected.agencies?.name },
-                { label: 'Vendedor',    value: selected.users?.full_name },
+                { label: 'Agencia',     value: selected.agencies?.name, icon: '🏢' },
+                { label: 'Vendedor',    value: selected.users?.full_name, icon: '👤' },
               ] : [
-                { label: 'Método pago', value: selected.payment_method ?? '—' },
+                { label: 'Método pago', value: selected.payment_method ?? '—', icon: '💳' },
               ]),
-              { label: 'Tarifa',        value: selected.tariffs?.name },
-              { label: 'Tipo',          value: (selected.type === 'prepago' || selected.type === 'local') ? 'SIM Local' : 'DataOnly' },
-              { label: 'Cliente',       value: `${selected.customer_name} ${selected.customer_lastname}` },
-              ...(selected.customer_passport ? [{ label: 'Pasaporte',    value: selected.customer_passport }] : []),
-              { label: 'Nacionalidad',  value: selected.customer_nationality },
-              { label: 'Email',         value: selected.customer_email },
-              { label: 'F. compra',     value: new Date(selected.created_at).toLocaleDateString('es-AR') },
-              { label: 'F. activación', value: selected.activation_date ?? 'Inmediata' },
-              { label: 'PVP',           value: `$${selected.pvp_at_time.toFixed(2)}` },
-              ...(selected.cost_at_time != null ? [{ label: 'Coste', value: `$${selected.cost_at_time.toFixed(2)}` }] : []),
-            ] as { label: string; value: string | null | undefined }[]).map(r => (
-              <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, gap: 8 }}>
-                <span style={{ fontSize: 11, color: '#64748B', flexShrink: 0 }}>{r.label}</span>
-                <span style={{ fontSize: 12, fontWeight: 600, textAlign: 'right', wordBreak: 'break-all' }}>{r.value || '—'}</span>
+              { label: 'Tarifa',        value: selected.tariffs?.name, icon: '🏷️' },
+              { label: 'Tipo',          value: (selected.type === 'prepago' || selected.type === 'local') ? 'SIM Local' : 'DataOnly', icon: '📦' },
+              { label: 'Cliente',       value: `${selected.customer_name} ${selected.customer_lastname}`, icon: '👥' },
+              ...(selected.customer_passport ? [{ label: 'Pasaporte',    value: selected.customer_passport, icon: '📄' }] : []),
+              { label: 'Nacionalidad',  value: selected.customer_nationality, icon: '🌍' },
+              { label: 'Email',         value: selected.customer_email, icon: '✉️' },
+              { label: 'F. compra',     value: new Date(selected.created_at).toLocaleDateString('es-AR'), icon: '📅' },
+              { label: 'F. activación', value: selected.activation_date ?? 'Inmediata', icon: '⏰' },
+              { label: 'PVP',           value: `US$${selected.pvp_at_time.toFixed(2)}`, icon: '💵' },
+              ...(selected.cost_at_time != null ? [{ label: 'Coste', value: `US$${selected.cost_at_time.toFixed(2)}`, icon: '💰' }] : []),
+            ] as { label: string; value: string | null | undefined; icon?: string }[]).map(r => (
+              <div key={r.label} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 16, paddingBottom: 14, borderBottom: '1px solid #EDE8E0', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2F4E' }}>{r.icon} {r.label}</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: '#1E293B', wordBreak: 'break-all' }}>{r.value || '—'}</span>
               </div>
             ))}
             <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 14, marginTop: 4 }}>
