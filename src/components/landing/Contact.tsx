@@ -10,7 +10,7 @@ const CONTACTS = [
   {
     icon: WhatsappLogo,
     label: "WhatsApp",
-    value: "+34 600 000 000",
+    value: "+54 9 11 3658-3054",
     href: `https://wa.me/${WHATSAPP_NUMBER}`,
     color: "text-emerald-600",
   },

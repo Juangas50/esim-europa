@@ -145,7 +145,7 @@ export function emailAvisoClienteProgramado(data: {
 
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:24px;">
-      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
+      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '5491136583054'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
         Pregunta sobre tu plan
       </a>
     </div>
@@ -339,7 +339,7 @@ export function emailConfirmacionB2C(data: {
 
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:24px;">
-      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
+      <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '5491136583054'}" style="display:inline-block;background:#C9973A;color:#fff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;line-height:1;">
         Escribinos por WhatsApp
       </a>
     </div>
@@ -479,7 +479,7 @@ function premiumHeader() {
 }
 
 function premiumFooter() {
-  return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
+  return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '5491136583054'}" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
 }
 
 function qrBlock(qrUrl: string, confirmationCode: string, activationString: string) {
@@ -494,7 +494,7 @@ function orderSummaryBlock(planName: string, planGB: number, planEUGB: number | 
 }
 
 function supportBlock() {
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34600000000'}">Hablar por WhatsApp</a></div></td></tr>`
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '5491136583054'}">Hablar por WhatsApp</a></div></td></tr>`
 }
 
 // ── B2C: Entrega de múltiples eSIMs en un solo email (compras grupales) ───────

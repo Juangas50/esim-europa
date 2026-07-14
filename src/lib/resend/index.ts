@@ -91,7 +91,7 @@ export async function sendPurchaseConfirmation({
       <!-- WhatsApp support -->
       <div style="background:#E60000;border-radius:12px;padding:16px;text-align:center;">
         <p style="color:white;font-size:13px;margin:0 0 8px;">¿Necesitás ayuda con la activación?</p>
-        <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "34600000000"}" style="color:white;font-weight:700;font-size:14px;text-decoration:none;">
+        <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "5491136583054"}" style="color:white;font-weight:700;font-size:14px;text-decoration:none;">
           Escribinos por WhatsApp →
         </a>
       </div>
@@ -136,7 +136,7 @@ export async function sendActivationReminder({
       <p>Hola ${firstName},</p>
       <p>Te recordamos que tu eSIM de RUTA34 Telecom está programada para activarse mañana <strong>${activationDate}</strong>.</p>
       <p>Referencia: <strong>${orderRef}</strong></p>
-      <p>¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "34600000000"}">Escribinos por WhatsApp</a></p>
+      <p>¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "5491136583054"}">Escribinos por WhatsApp</a></p>
       <p>RUTA34 Telecom</p>
     `,
   });
