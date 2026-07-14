@@ -564,11 +564,11 @@ export function emailNuevoAdmin(data: {
   <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
 
     <!-- Header -->
-    <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:24px 32px;text-align:left;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 1000 240" style="max-width:100%;height:auto;">
-        <rect x="30" y="45" width="150" height="150" rx="33.0" fill="#1B2F4E"/>
-        <text x="105.0" y="138.0" text-anchor="middle" fill="#C9973A" font-family="'DM Serif Display','Noto Serif Display','DejaVu Serif',serif" font-size="81.0" font-weight="400">34</text>
-        <text x="230" y="150" fill="white" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="82" font-weight="800" letter-spacing="2">RUTA34</text>
+    <div style="background:#1B2F4E;border-radius:16px 16px 0 0;padding:32px;text-align:center;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 1200 320" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+        <rect x="40" y="60" width="200" height="200" rx="44.0" fill="#FFFFFF"/>
+        <text x="140.0" y="184.0" text-anchor="middle" fill="#1B2F4E" font-family="'DM Serif Display','Noto Serif Display','DejaVu Serif',serif" font-size="108.0" font-weight="400">34</text>
+        <text x="300" y="155" fill="#FFFFFF" font-family="'Plus Jakarta Sans','Noto Sans','DejaVu Sans',sans-serif" font-size="96" font-weight="800" letter-spacing="2">RUTA34</text>
       </svg>
     </div>
 
