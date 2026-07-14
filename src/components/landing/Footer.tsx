@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { InstagramLogo } from "@phosphor-icons/react";
+import { WHATSAPP_URL } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -36,7 +37,7 @@ export default function Footer() {
               {t("tagline")}
             </p>
             <a
-              href="https://wa.me/34600000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-gold)] hover:text-white transition-colors"
@@ -101,7 +102,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="https://wa.me/34600000000"
+                  href="{WHATSAPP_URL}"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-white/60 hover:text-white transition-colors"

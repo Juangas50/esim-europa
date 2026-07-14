@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export function CTAWhatsApp() {
   return (
     <motion.a
-      href="https://wa.me/34600000000"
+      href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
       whileHover={{ y: -4 }}

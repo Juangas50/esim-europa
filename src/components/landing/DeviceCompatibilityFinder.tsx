@@ -187,7 +187,7 @@ export default function DeviceCompatibilityFinder() {
                     Este modelo puede no ser compatible con eSIM. Te recomendamos verificar la versión exacta del dispositivo o contactar con nuestro equipo.
                   </p>
                   <button
-                    onClick={() => window.location.href = "https://wa.me/34600000000"}
+                    onClick={() => window.location.href = "https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}"}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-navy)] hover:bg-[var(--color-navy)]/80 text-white font-bold text-sm transition-all duration-200 hover:shadow-lg active:scale-95"
                   >
                     Consultar por WhatsApp →

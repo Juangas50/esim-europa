@@ -262,7 +262,7 @@ function ConfirmacionContent() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* WhatsApp */}
             <motion.a
-              href="https://wa.me/34600000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4 }}

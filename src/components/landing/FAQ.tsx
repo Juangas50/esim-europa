@@ -147,7 +147,7 @@ export default function FAQ() {
           <p className="text-lg text-[var(--color-ink-2)] max-w-2xl">
             ¿Otra duda?{" "}
             <a
-              href="https://wa.me/34600000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--color-gold)] font-semibold hover:text-[var(--color-gold)] transition-colors"

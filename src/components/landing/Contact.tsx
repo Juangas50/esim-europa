@@ -10,7 +10,7 @@ const CONTACTS = [
     icon: WhatsappLogo,
     label: "WhatsApp",
     value: "+34 600 000 000",
-    href: "https://wa.me/34600000000",
+    href: "https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}",
     color: "text-emerald-600",
   },
   {
@@ -24,7 +24,7 @@ const CONTACTS = [
     icon: Phone,
     label: "Teléfono",
     value: "Lunes a Sábado 8-21h (ES)",
-    href: "tel:+34600000000",
+    href: "tel:+${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}",
     color: "text-[var(--color-navy)]",
   },
 ] as const;

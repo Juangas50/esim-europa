@@ -184,7 +184,7 @@ export default function FAQPage() {
               Nuestro equipo de soporte está aquí para ayudarte. Contactanos directamente por WhatsApp.
             </p>
             <a
-              href="https://wa.me/34600000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-8 py-3 rounded-2xl hover:shadow-lg transition-all"

@@ -118,7 +118,7 @@ export default async function HomeSchemaOrg({ locale }: Props) {
     url: base,
     logo: `${base}/logo.png`,
     sameAs: [
-      "https://wa.me/34600000000",
+      "https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491136583054"}",
       "https://esimruta34.com",
     ],
     contactPoint: {
