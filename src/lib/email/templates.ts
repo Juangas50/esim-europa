@@ -488,8 +488,8 @@ function qrBlock(qrUrl: string, confirmationCode: string, activationString: stri
 
 function orderSummaryBlock(planName: string, planGB: number, planEUGB: number | undefined, planDays: number, amountUSD: number) {
   const dataRow = planEUGB && planEUGB > 0
-    ? `<tr class="summary-row"><td class="summary-label">Datos España</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">Datos UE Roaming</td><td class="summary-value">${planEUGB} GB</td></tr>`
-    : `<tr class="summary-row"><td class="summary-label">Datos</td><td class="summary-value">${planGB} GB</td></tr>`
+    ? `<tr class="summary-row"><td class="summary-label">🇪🇸 Datos España</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">🇪🇺 Datos UE Roaming</td><td class="summary-value">${planEUGB} GB</td></tr>`
+    : `<tr class="summary-row"><td class="summary-label">📍 Datos</td><td class="summary-value">${planGB} GB</td></tr>`
   return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">Resumen de tu compra</h2><table role="presentation" width="100%"><tr class="summary-row"><td class="summary-label">Plan</td><td class="summary-value">${planName}</td></tr>${dataRow}<tr class="summary-row"><td class="summary-label">Duración</td><td class="summary-value">${planDays} días</td></tr><tr><td colspan="2"><div class="divider" style="margin:10px 0;"></div></td></tr><tr class="summary-row"><td class="summary-label">Total</td><td class="summary-value" style="font-size:22px;color:#C9973A;">USD ${amountUSD.toFixed(2)}</td></tr></table></div></td></tr>`
 }
 
