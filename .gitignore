@@ -45,3 +45,9 @@ next-env.d.ts
 
 # source images (work folder, not served assets)
 /imagenes/
+
+# test files and scripts (may contain API keys)
+test_*.mjs
+test_*.js
+*.test.local.*
+scripts/test-*
