@@ -67,7 +67,6 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId
       customerPassport: form.pasaporte, customerNationality: form.nac,
       customerDob: form.dob, customerEmail: form.email,
       activationDate: type === 'dataonly' ? null : (!scheduled ? null : form.date),
-      pvpAtTime: pvp, costAtTime: cost,
     })
     if (result.orderRef) { setOrderRef(result.orderRef); setDone(true) }
     setLoading(false)

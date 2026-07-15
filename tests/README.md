@@ -2,7 +2,7 @@
 
 ## 📋 Descripción
 
-Suite de testing automatizado para RUTA34 con **31 test cases** organizados en 7 módulos:
+Suite de testing automatizado para RUTA34 con **41 test cases** organizados en 8 módulos:
 
 | Módulo | Tests | Descripción |
 |--------|-------|-------------|
@@ -13,8 +13,9 @@ Suite de testing automatizado para RUTA34 con **31 test cases** organizados en 7
 | **Performance** | 3 | Web Vitals, velocidad, scroll |
 | **Seguridad** | 5 | HTTPS, XSS, CSRF, rate limiting |
 | **Edge Cases** | 3 | Timeouts, concurrencia, duplicados |
+| **Meta Pixel** | 10 | Consentimiento, PageView SPA, checkout, Purchase, dedup |
 
-**TOTAL: 31 test cases**
+**TOTAL: 41 test cases**
 
 ---
 
@@ -34,6 +35,7 @@ npm run test:qa:responsive
 npm run test:qa:performance
 npm run test:qa:security
 npm run test:qa:edge
+npm run test:qa:meta-pixel
 ```
 
 ### Ver reporte HTML:
@@ -54,7 +56,8 @@ tests/
 │   ├── responsive.spec.ts    # 3 tests
 │   ├── performance.spec.ts   # 3 tests
 │   ├── security.spec.ts      # 5 tests
-│   └── edge-cases.spec.ts    # 3 tests
+│   ├── edge-cases.spec.ts    # 3 tests
+│   └── meta-pixel.spec.ts    # 10 tests
 └── README.md                 # Este archivo
 ```
 
@@ -106,6 +109,18 @@ tests/
 - ✅ Timeout de red
 - ✅ Dos admins entregan mismo pedido
 - ✅ Cadena duplicada
+
+### 8️⃣ Meta Pixel (10 tests)
+- ✅ Sin consentimiento: no carga Pixel, sin window.fbq, sin requests a Meta
+- ✅ Tras aceptar: carga con el Pixel ID correcto
+- ✅ Tras aceptar: registra PageView
+- ✅ Tras aceptar: registra ViewContent
+- ✅ Navegación SPA: un único PageView por cambio de ruta
+- ✅ Checkout: AddToCart/InitiateCheckout con content_ids/content_type/value/currency/event_id
+- ✅ Purchase en carga fresca de /confirmacion (regresión del bug de carrera)
+- ✅ Dedup: mismo event_id entre Pixel y /api/meta/capi
+- ✅ Un único Purchase por carga de /confirmacion
+- ✅ Idempotencia: recargar /confirmacion reutiliza el mismo event_id
 
 ---
 

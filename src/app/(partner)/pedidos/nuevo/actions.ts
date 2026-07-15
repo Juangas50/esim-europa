@@ -14,7 +14,7 @@ export async function createOrder(data: {
   agencyId: string; sellerId: string; tariffId: string; type: string;
   customerName: string; customerLastname: string; customerPassport: string;
   customerNationality: string; customerDob: string; customerEmail: string;
-  activationDate: string | null; pvpAtTime: number; costAtTime: number;
+  activationDate: string | null;
 }) {
   // ── P1-05: Verificar que el usuario autenticado pertenece a la agencia ──────
   await requireAgency(data.agencyId)
@@ -35,6 +35,18 @@ export async function createOrder(data: {
 
   const supabase      = await createClient()
   const adminSupabase = createAdminClient()
+
+  // ── Precio/costo siempre server-side — nunca confiar en lo que manda el cliente ──
+  const { data: pricingRow } = await supabase
+    .from('agency_pricing')
+    .select('pvp, cost_price')
+    .eq('agency_id', data.agencyId)
+    .eq('tariff_id', data.tariffId)
+    .single()
+
+  if (!pricingRow || pricingRow.pvp <= 0) {
+    return { error: 'Tarifa no disponible para esta agencia' }
+  }
 
   // ── P2-09: orderRef con crypto — no más contador secuencial ──────────────
   const orderRef = `R34-${crypto.randomUUID().replace(/-/g, '').substring(0, 6).toUpperCase()}`
@@ -62,8 +74,8 @@ export async function createOrder(data: {
       customer_email:       data.customerEmail.trim().toLowerCase(),
       activation_date:      data.activationDate,
       status,
-      pvp_at_time:          Number(data.pvpAtTime),
-      cost_at_time:         Number(data.costAtTime),
+      pvp_at_time:          pricingRow.pvp,
+      cost_at_time:         pricingRow.cost_price,
     })
 
   if (error) return { error: error.message }

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import CookieBanner from "@/components/legal/CookieBanner";
 import { GTMScript } from "@/components/analytics/GTM";
+import { MetaPixelScript, MetaPixelRouteTracker } from "@/components/analytics/MetaPixel";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -30,6 +31,9 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       {/* GTM script — carga asíncrona después de hidratación */}
       <GTMScript />
+      {/* Meta Pixel — misma carga consent-gated que GTM */}
+      <MetaPixelScript />
+      <MetaPixelRouteTracker />
       {children}
       <CookieBanner />
     </NextIntlClientProvider>

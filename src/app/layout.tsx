@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
+import { MetaPixelNoScript } from "@/components/analytics/MetaPixel";
 import MaintenanceBanner from "@/components/landing/MaintenanceBanner";
 import "./globals.css";
 
@@ -57,6 +58,9 @@ export default function RootLayout({
 
         {/* GTM noscript — debe ir inmediatamente después de <body> */}
         <GTMNoScript />
+
+        {/* Meta Pixel noscript — debe ir inmediatamente después de <body> */}
+        <MetaPixelNoScript />
 
         {/* Script para actualizar dynamically lang attribute basado en locale */}
         <script

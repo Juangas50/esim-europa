@@ -40,16 +40,16 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      // Scripts: self + GTM/GA4 + Stripe — unsafe-eval only in dev (React/Turbopack needs it)
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://js.stripe.com https://checkout.stripe.com`,
+      // Scripts: self + GTM/GA4 + Meta Pixel + Stripe — unsafe-eval only in dev (React/Turbopack needs it)
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://js.stripe.com https://checkout.stripe.com`,
       // Styles: self + inline (Tailwind)
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       // Fonts
       "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + GA pixel + GTM
-      "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com",
-      // Connect: API calls — self + Supabase + GA4 (todas las regiones) + GTM + Stripe
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://api.stripe.com https://checkout.stripe.com",
+      // Images: self + GA pixel + GTM + Meta Pixel noscript
+      "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com",
+      // Connect: API calls — self + Supabase + GA4 (todas las regiones) + GTM + Meta Pixel + Stripe
+      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com",
       // Iframes: GTM noscript + Stripe checkout
       "frame-src https://www.googletagmanager.com https://js.stripe.com https://checkout.stripe.com",
       // Block all object/embed

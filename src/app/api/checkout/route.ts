@@ -56,6 +56,13 @@ function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody 
   if (typeof c.email !== "string" || !EMAIL_RE.test(c.email) || c.email.length > 254) return { valid: false, error: "Email inválido" };
   if (typeof c.country !== "string" || !ALLOWED_COUNTRIES.includes(c.country)) return { valid: false, error: "País inválido" };
 
+  // Meta Pixel/CAPI — opcionales, solo viajan si el usuario aceptó cookies
+  for (const field of ["meta_event_id", "fbp", "fbc"] as const) {
+    if (b[field] !== undefined && (typeof b[field] !== "string" || (b[field] as string).length > 300)) {
+      return { valid: false, error: `${field} inválido` };
+    }
+  }
+
   return { valid: true, data: b as unknown as CheckoutBody };
 }
 
@@ -66,6 +73,9 @@ interface CheckoutBody {
   activation_date?: string;
   locale: string;
   ga_client_id?: string;
+  meta_event_id?: string;
+  fbp?: string;
+  fbc?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -93,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     const validation = validateCheckoutBody(parsedBody);
     if (!validation.valid) return NextResponse.json({ error: validation.error }, { status: 400 });
-    const { plan_id, payment_method, customer, activation_date, locale, ga_client_id } = validation.data;
+    const { plan_id, payment_method, customer, activation_date, locale, ga_client_id, meta_event_id, fbp, fbc } = validation.data;
 
     // 1. Validar plan — webOnly:true bloquea planes con web_visible=false aunque alguien manipule la URL
     const plan = await getPlanById(plan_id, { webOnly: true });
@@ -133,6 +143,10 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error("Supabase error:", dbError);
+      return NextResponse.json(
+        { error: "Error interno. Intentá nuevamente." },
+        { status: 500 }
+      );
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
@@ -165,8 +179,15 @@ export async function POST(req: NextRequest) {
         quantity: String(quantity),
         customer_country: customer.country,
         ...(ga_client_id ? { ga_client_id } : {}),
+        // Meta CAPI — el webhook usa esto para mandar el Purchase server-side
+        // con el mismo event_id que ya usó el Pixel al disparar AddPaymentInfo.
+        ...(meta_event_id ? { meta_event_id } : {}),
+        ...(fbp ? { fbp } : {}),
+        ...(fbc ? { fbc } : {}),
+        client_user_agent: (req.headers.get("user-agent") ?? "").slice(0, 400),
+        client_ip_address: ip,
       },
-      success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&qty=${quantity}&plan=${plan_id}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/${locale}/confirmacion?ref=${orderRef}&qty=${quantity}&plan=${plan_id}${meta_event_id ? `&mid=${meta_event_id}` : ""}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/${locale}/compra?plan=${plan_id}`,
     });
 

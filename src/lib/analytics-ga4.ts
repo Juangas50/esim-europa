@@ -6,13 +6,11 @@
 export const trackGAEvent = (eventName: string, eventData?: Record<string, any>) => {
   if (typeof window === "undefined") return;
 
-  const gtag = (window as any).gtag;
-  if (!gtag) {
-    console.warn("GA4 gtag not available");
-    return;
-  }
-
-  gtag("event", eventName, eventData);
+  // GA4 vive dentro de GTM (no se carga gtag.js por separado), así que el
+  // evento se manda vía dataLayer.push — no existe window.gtag en este setup.
+  const w = window as any;
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ event: eventName, ...eventData });
 };
 
 // ── View Plans (Page Load) ───────────────────────────────────────

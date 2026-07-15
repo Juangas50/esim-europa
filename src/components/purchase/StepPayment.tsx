@@ -8,6 +8,9 @@ import Button from "@/components/ui/Button";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { analytics, getGA4ClientId } from "@/lib/analytics";
+import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { getFbCookies, hasMetaConsent } from "@/lib/meta/pixel";
+import { generateMetaEventId } from "@/utils/meta/eventId";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -71,6 +74,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const { trackAddPaymentInfo } = useMetaEvents();
 
   // Step viewed once on mount
   useEffect(() => {
@@ -96,6 +100,14 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
     analytics.checkoutPaymentInitiated(plan, method, formData.customer_country);
     const ga_client_id = getGA4ClientId();
 
+    // Meta Pixel + CAPI — AddPaymentInfo. El mismo event_id viaja hasta el
+    // webhook de Stripe (vía metadata) para que el Purchase server-side
+    // deduplique con el Purchase que va a disparar el Pixel en /confirmacion.
+    trackAddPaymentInfo({ id: plan.id, name: plan.name, price_usd: plan.price_usd }, formData.quantity ?? 1);
+    const metaConsent = hasMetaConsent();
+    const meta_event_id = metaConsent ? generateMetaEventId() : undefined;
+    const { fbp, fbc } = metaConsent ? getFbCookies() : { fbp: undefined, fbc: undefined };
+
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -113,6 +125,9 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
           activation_date: formData.activation_date,
           locale,
           ga_client_id,
+          meta_event_id,
+          fbp,
+          fbc,
         }),
       });
 

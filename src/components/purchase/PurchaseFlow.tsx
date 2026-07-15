@@ -10,6 +10,7 @@ import StepPayment from "./StepPayment";
 import { Plan, OrderFormData } from "@/types";
 import { analytics } from "@/lib/analytics";
 import { trackBeginCheckout, trackAddPaymentInfo } from "@/lib/analytics-ga4";
+import { useMetaEvents } from "@/hooks/useMetaEvents";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -33,10 +34,16 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
     plan_id: initialPlanId,
     quantity: 1,
   });
+  const { trackViewContent, trackInitiateCheckout } = useMetaEvents();
 
   // Fire checkoutStarted when a plan arrives pre-selected from the landing page
   useEffect(() => {
-    if (initialPlan) analytics.checkoutStarted(initialPlan);
+    if (initialPlan) {
+      analytics.checkoutStarted(initialPlan);
+      // Meta Pixel + CAPI — ViewContent (product) + InitiateCheckout
+      trackViewContent({ id: initialPlan.id, name: initialPlan.name, price_usd: initialPlan.price_usd });
+      trackInitiateCheckout({ id: initialPlan.id, name: initialPlan.name, price_usd: initialPlan.price_usd }, 1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -145,6 +152,9 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                     name: plan.name,
                     price: plan.price_usd,
                   });
+                  // Meta Pixel + CAPI — ViewContent (product) + InitiateCheckout
+                  trackViewContent({ id: plan.id, name: plan.name, price_usd: plan.price_usd });
+                  trackInitiateCheckout({ id: plan.id, name: plan.name, price_usd: plan.price_usd }, qty);
                   goToStep(2);
                 }}
               />

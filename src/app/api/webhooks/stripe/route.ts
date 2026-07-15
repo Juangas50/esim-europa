@@ -5,6 +5,8 @@ import { getPlanById } from "@/lib/plans-server";
 import { sendEmail } from "@/lib/email/send";
 import { emailConfirmacionB2C, emailNuevoPedidoAdmin } from "@/lib/email/templates";
 import { generateOrderRef } from "@/lib/utils";
+import { sendMetaCapiEvent } from "@/lib/meta/capi";
+import { buildPurchasePayload } from "@/lib/meta/events";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
@@ -176,6 +178,34 @@ export async function POST(req: NextRequest) {
       }
     } else if (!ga4ClientId) {
       console.warn("[ga4] Skipping MP — no ga_client_id in Stripe metadata for order:", orderRef);
+    }
+
+    // 4. Meta Conversions API — purchase event (server-side, fuente autoritativa).
+    // Usa el mismo event_id que el Pixel generó en AddPaymentInfo (checkout/route.ts
+    // lo pasó por metadata) para que Meta deduplique con el Purchase del Pixel
+    // que se dispara en /confirmacion.
+    const metaEventId = session.metadata?.meta_event_id;
+
+    if (metaEventId && plan) {
+      await sendMetaCapiEvent({
+        eventName: "Purchase",
+        eventId: metaEventId,
+        eventSourceUrl: `${baseUrl}/confirmacion`,
+        customData: buildPurchasePayload(
+          { id: planId, name: plan.name, price_usd: plan.price_usd },
+          quantity,
+          orderRef
+        ),
+        userData: {
+          fbp: session.metadata?.fbp,
+          fbc: session.metadata?.fbc,
+          client_ip_address: session.metadata?.client_ip_address,
+          client_user_agent: session.metadata?.client_user_agent,
+          em: order.customer_email,
+        },
+      });
+    } else {
+      console.warn("[meta-capi] Skipping Purchase — no meta_event_id in Stripe metadata for order:", orderRef);
     }
   }
 

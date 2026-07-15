@@ -15,6 +15,7 @@
     "test:qa:performance": "playwright test performance.spec.ts",
     "test:qa:security": "playwright test security.spec.ts",
     "test:qa:edge": "playwright test edge-cases.spec.ts",
+    "test:qa:meta-pixel": "playwright test meta-pixel.spec.ts",
     "test:qa:report": "playwright show-report"
   },
   "dependencies": {
