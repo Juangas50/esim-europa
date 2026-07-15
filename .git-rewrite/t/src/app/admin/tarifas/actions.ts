@@ -1,0 +1,77 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/require-role'
+
+const VALID_TYPES = new Set(['local', 'dataonly'])
+
+type TariffForm = {
+  name: string
+  type: string
+  data_gb: number | string
+  validity_days?: number | string | null
+  badge?: string | null
+  highlight?: boolean
+  position?: number | string | null
+  price_usd?: number | string | null
+  description?: string | null
+}
+
+function validateTariffForm(form: TariffForm) {
+  const name = String(form.name ?? '').trim().slice(0, 120)
+  if (!name) return null
+
+  const type = String(form.type ?? '').trim()
+  if (!VALID_TYPES.has(type)) return null
+
+  const data_gb = Number(form.data_gb)
+  if (isNaN(data_gb) || data_gb < 0 || data_gb > 9999) return null
+
+  return {
+    name,
+    type,
+    data_gb,
+    validity_days: form.validity_days ? Number(form.validity_days) : null,
+    badge: form.badge ? String(form.badge).trim().slice(0, 20) : null,
+    highlight: Boolean(form.highlight),
+    position: form.position != null ? Number(form.position) : null,
+    price_usd: form.price_usd != null ? Number(form.price_usd) : null,
+    description: form.description ? String(form.description).slice(0, 2000) : null,
+  }
+}
+
+export async function createTariff(form: TariffForm) {
+  await requireAdmin()
+  const validated = validateTariffForm(form)
+  if (!validated) return { error: { message: 'Invalid tariff data' } }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('tariffs')
+    .insert({ ...validated, active: true })
+    .select()
+    .single()
+  return { data, error }
+}
+
+export async function deleteTariff(id: string) {
+  await requireAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase.from('tariffs').delete().eq('id', id)
+  return { error }
+}
+
+export async function updateTariff(id: string, form: TariffForm) {
+  await requireAdmin()
+  const validated = validateTariffForm(form)
+  if (!validated) return { error: { message: 'Invalid tariff data' } }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('tariffs')
+    .update(validated)
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}

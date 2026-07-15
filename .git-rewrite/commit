@@ -1,0 +1,21 @@
+tree 7cc00f5369546db93a825bd3421295c050726c15
+parent ca97cd6e822c8c43e6f5ccd72fccb0e99d169a03
+author Juangas50 <111317628+Juangas50@users.noreply.github.com> 1780089742 +0200
+committer Juangas50 <111317628+Juangas50@users.noreply.github.com> 1780089742 +0200
+
+feat: apply copy + UX improvements across landing and purchase flow
+
+- Translations (es/pt): sharper hero sub, benefit titles, tab names
+  (eSIM España / eSIM Europa), FAQ title, footer tagline, CTA copy
+- FAQ accordion: replace rotating Plus with conditional Plus/Minus icon
+- page.tsx: move Testimonials before Plans for social proof earlier
+- HowItWorks: wire hardcoded CTA to t("cta") translation key
+- Plans: improve 4G/5G label contrast (text-[#ddd] → text-[#aaa])
+- Hero: price anchor now text-[#555555] font-semibold for visibility
+- StepData: remove redundant email confirm field + simplify Zod schema;
+  device_confirmed wrapper turns red on validation error; rename isPrepago → isLocal
+- PurchaseFlow stepper: step 1 shows as completed (✓) when plan is
+  pre-selected from landing (initialPlan already set)
+- types: remove customer_email_confirm from OrderFormData
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

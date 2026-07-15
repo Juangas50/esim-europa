@@ -1,0 +1,18 @@
+security: aplicar hallazgos P1+P2 de auditoria
+
+P1-02 /api/invoices/generate: auth admin + validacion UUID/DATE
+P1-03 /api/cron/daily: secret en Authorization header + service role key
+P1-04 Server Actions admin: requireAdmin() en pedidos, agencias, tarifas
+P1-05 createOrder: requireAgency() anti-IDOR + UUID orderRef
+
+P2-02 updateOrderStatus: whitelist de estados validos
+P2-03 tarifas: reemplaza form:any con validateTariffForm()
+P2-05 login: rate limit 5 intentos/15min por IP
+P2-06 resetPassword: validacion email + respuesta generica
+P2-07/08 invoiceRef y PDF: UUID no predecible ni enumerable
+P2-09 orderRef B2B: crypto.randomUUID() no secuencial
+
+Nuevo: src/lib/auth/require-role.ts — requireAuth/requireAdmin/requireAgency
+Nuevo: X-Robots-Tag noindex en rutas del portal
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

@@ -1,0 +1,234 @@
+{
+  "nav": {
+    "plans": "Ver planos",
+    "howItWorks": "Como funciona",
+    "faq": "FAQ",
+    "buyNow": "Comprar eSIM"
+  },
+  "hero": {
+    "eyebrow": "eSIM para viajantes latino-americanos",
+    "headline": "Chega na Europa e já está conectado",
+    "sub": "Sem filas no aeroporto, sem surpresas na conta. Dados rápidos em 30+ países desde o momento que você aterrissar.",
+    "cta": "Escolha seu plano",
+    "ctaSecondary": "Como funciona",
+    "trust1": "+5.000 viajantes",
+    "trust2": "30+ países",
+    "trust3": "Ativação em 1 min",
+    "priceAnchor": "A partir de USD 24.90 · Sem renovação automática"
+  },
+  "benefits": {
+    "title": "Internet como em casa, mas na Europa",
+    "items": {
+      "apps": {
+        "title": "Use seus apps normalmente",
+        "desc": "WhatsApp, Instagram, Google Maps, Spotify. Tudo funciona igual ao seu país."
+      },
+      "instant": {
+        "title": "Internet rápida assim que aterrissar",
+        "desc": "O eSIM já está instalado. Chega, ativa e pronto. Sem filas, sem burocracia no aeroporto."
+      },
+      "nopermanence": {
+        "title": "Paga exatamente o que você precisa",
+        "desc": "Paga só o que usa. Sem custos ocultos nem contratos. Preços claros em dólares."
+      },
+      "coverage": {
+        "title": "De Madrid a Berlim, você fica conectado",
+        "desc": "Cobertura na Espanha, França, Itália, Alemanha, Portugal e mais 25 países."
+      }
+    }
+  },
+  "plans": {
+    "title": "Escolha seu plano",
+    "subtitle": "Preços em dólares, pagamento único, sem renovação automática.",
+    "popular": "Mais escolhido",
+    "socialProof": "+5.000 viajantes ativos",
+    "perMonth": "por 28 dias",
+    "dataGb": "GB de dados",
+    "countries": "países",
+    "buyPlan": "Quero este plano",
+    "summary": "Resumo do pedido",
+    "tabLocal": "eSIM Espanha",
+    "tabLocalSub": "Número · Ligações · SMS · Dados",
+    "tabData": "eSIM Europa",
+    "tabDataSub": "Só dados · 30+ países",
+    "localIncludes": "Todos os tamanhos incluem:",
+    "localFeatureNumber": "Número espanhol 🇪🇸",
+    "localFeatureCalls": "Ligações ilimitadas",
+    "localFeatureSms": "SMS ilimitados",
+    "localFeatureNetwork": "Rede 4G/5G",
+    "localFeatureQr": "QR por email ao instante",
+    "local": {
+      "badge": "Linha espanhola",
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
+    },
+    "dataonly": {
+      "badge": "Só dados",
+      "desc": "Sem número nem ligações. Só dados em 30+ países europeus. Tem 60 dias para ativar."
+    },
+    "prepago": {
+      "badge": "Linha espanhola",
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "Simples como deve ser",
+    "title": "Três passos e viaja conectado",
+    "cta": "Ver planos e preços",
+    "steps": {
+      "1": {
+        "title": "Escolha seu plano",
+        "desc": "Selecione os GB e os países que precisa. Temos planos só para a Espanha ou para toda a Europa."
+      },
+      "2": {
+        "title": "Preencha seus dados",
+        "desc": "Nome, email e pronto. Não precisa criar conta. O eSIM chega no seu email em menos de um minuto."
+      },
+      "3": {
+        "title": "Escaneie e pronto",
+        "desc": "Escaneia o QR com seu celular antes de sair. Ao aterrissar na Europa, ativa e tem internet na hora."
+      }
+    }
+  },
+  "compatibility": {
+    "eyebrow": "Compatível com seu celular",
+    "title": "Funciona com meu telefone?",
+    "subtitle": "A maioria dos telefones lançados após 2020 são compatíveis com eSIM. Verifique o seu:",
+    "compatible": "Compatível",
+    "notCompatible": "Ver se é compatível →",
+    "devices": {
+      "iphone": "iPhone XS / XR ou mais novo",
+      "samsung": "Samsung Galaxy S20 ou mais novo",
+      "pixel": "Google Pixel 4a ou mais novo",
+      "motorola": "Motorola Razr 2019 ou mais novo"
+    },
+    "checkGuide": "Guia completo de compatibilidade",
+    "warning": "Antes de comprar, verifique que seu telefone não está bloqueado pela sua operadora."
+  },
+  "faq": {
+    "title": "Tudo o que você quer saber antes de comprar",
+    "items": {
+      "what": {
+        "q": "O que é um eSIM?",
+        "a": "Um eSIM é um SIM virtual que se instala diretamente no seu telefone escaneando um código QR. Não precisa de cartão físico. Funciona igual a um SIM tradicional mas ativa instantaneamente."
+      },
+      "compatible": {
+        "q": "Como sei se meu celular é compatível?",
+        "a": "iPhone XS / XR (2018) ou mais novo, Samsung Galaxy S20 ou mais novo, Google Pixel 4a ou mais novo são compatíveis. Pode ir em Ajustes → Geral → Informações → eSIM para verificar."
+      },
+      "number": {
+        "q": "Posso manter meu número de telefone brasileiro?",
+        "a": "Sim! Seu número continua funcionando no SIM físico do seu celular. O eSIM é usado só para dados na Europa. Pode receber ligações e WhatsApp normalmente."
+      },
+      "when": {
+        "q": "Quando ativo o eSIM?",
+        "a": "Recomendamos instalar o QR antes de sair do seu país (com WiFi) e ativar o eSIM quando aterrissar na Europa. Para o plano DataOnly tem 60 dias desde a compra para ativar."
+      },
+      "costs": {
+        "q": "Há custos adicionais ou surpresas?",
+        "a": "Não. O preço que vê é o preço final em dólares. Sem renovação automática, sem custos ocultos. Quando acabam os GB ou os dias, simplesmente para de ter dados."
+      },
+      "diff": {
+        "q": "Qual a diferença entre Pré-pago e DataOnly?",
+        "a": "Com o plano Pré-pago, os 28 dias começam a contar a partir do dia que ativar o eSIM (pode esperar até 12 meses). Com DataOnly, compra agora e tem 60 dias para ativar — ideal se a viagem não está 100% confirmada."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "O que dizem nossos viajantes",
+    "subtitle": "+5.000 latino-americanos já viajam conectados com RUTA34",
+    "aggregate": "4.9/5 · Mais de 500 avaliações verificadas"
+  },
+  "footer": {
+    "tagline": "Sua internet na Europa, sem dramas.",
+    "company": "Empresa",
+    "legal": "Legal",
+    "links": {
+      "howItWorks": "Como funciona",
+      "plans": "Planos e preços",
+      "compatibility": "Compatibilidade",
+      "faq": "Perguntas frequentes",
+      "terms": "Termos e condições",
+      "privacy": "Política de privacidade",
+      "cookies": "Política de cookies"
+    },
+    "support": "Suporte pelo WhatsApp",
+    "rights": "Todos os direitos reservados."
+  },
+  "purchase": {
+    "title": "Complete sua compra",
+    "steps": {
+      "plan": "Seu plano",
+      "data": "Seus dados",
+      "payment": "Pagamento"
+    },
+    "form": {
+      "name": "Nome",
+      "lastname": "Sobrenome",
+      "email": "Email",
+      "emailConfirm": "Confirme seu email",
+      "country": "País de origem",
+      "activationDate": "Quando você ativa o eSIM?",
+      "activationHint": "Pode ativar até 12 meses após a compra.",
+      "activationToday": "Ao aterrissar na Europa (recomendado)",
+      "activationTodayHint": "Instala o QR antes de embarcar e ativa quando chegar.",
+      "activationSchedule": "Quero programar uma data",
+      "activationScheduleHint": "Escolha o dia que quer que seu plano comece.",
+      "deviceConfirm": "Confirmo que meu celular é compatível com eSIM e não está bloqueado pela operadora",
+      "next": "Continuar",
+      "back": "Voltar",
+      "pay": "Pagar agora"
+    },
+    "summary": "Resumo do pedido",
+    "faq": {
+      "title": "Dúvidas frequentes",
+      "compatible": {
+        "q": "Meu celular é compatível com eSIM?",
+        "tip": "Você pode verificar agora mesmo: disque *#06# no seu celular. Se aparecer um código EID, seu aparelho é compatível com eSIM."
+      },
+      "whatsapp": {
+        "q": "O eSIM muda meu número do WhatsApp?",
+        "a": "Não, de jeito nenhum. O eSIM só adiciona dados móveis ao seu celular. Seu chip físico continua com seu número de sempre e o WhatsApp funciona exatamente igual — na verdade, você poderá usá-lo com dados 4G/5G em toda a Europa."
+      },
+      "qr": {
+        "q": "Quando chega o QR de ativação?",
+        "a": "Em menos de um minuto após confirmar o pagamento. Chega por email. Escaneie com seu celular antes de sair do seu país (você precisa de WiFi só para instalar) e ative o eSIM quando chegar na Europa."
+      }
+    },
+    "payment": {
+      "method": "Método de pagamento",
+      "card": "Cartão de crédito / débito",
+      "cardSub": "Visa, Mastercard, American Express",
+      "mp": "MercadoPago",
+      "mpSub": "Ideal para Argentina, Chile, México e mais",
+      "secure": "Pagamento 100% seguro",
+      "processing": "Processando...",
+      "once": "pagamento único · sem renovação",
+      "noStore": "Não armazenamos dados do seu cartão"
+    },
+    "countries": {
+      "AR": "Argentina",
+      "UY": "Uruguai",
+      "CL": "Chile",
+      "BR": "Brasil",
+      "MX": "México",
+      "CO": "Colômbia",
+      "PE": "Peru",
+      "VE": "Venezuela",
+      "EC": "Equador",
+      "PY": "Paraguai",
+      "BO": "Bolívia",
+      "OTHER": "Outro"
+    }
+  },
+  "confirmation": {
+    "title": "Pronto, seu eSIM está a caminho!",
+    "subtitle": "Verifique seu email. Em menos de um minuto chega o código QR com as instruções.",
+    "orderRef": "Referência do pedido",
+    "nextSteps": "Próximos passos",
+    "step1": "Abra o email da RUTA34 Telecom",
+    "step2": "Escaneie o QR em Ajustes → Dados móveis → Adicionar plano",
+    "step3": "Ao aterrissar na Europa, ative o eSIM e navegue",
+    "support": "Precisa de ajuda? Fale conosco pelo WhatsApp",
+    "backHome": "Voltar ao início"
+  }
+}
