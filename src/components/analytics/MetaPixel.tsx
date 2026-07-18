@@ -16,7 +16,7 @@ const CONSENT_KEY = "ruta34_cookie_consent";
  * disparar flushViewContentRetry() — un solo listener, centralizado en la
  * capa de analítica, no duplicado por componente/página.
  */
-export function MetaPixelScript() {
+export function MetaPixelScript({ nonce }: { nonce?: string }) {
   const [canLoad, setCanLoad] = useState(false);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ export function MetaPixelScript() {
       <Script
         id="meta-pixel-init"
         strategy="afterInteractive"
+        nonce={nonce}
         dangerouslySetInnerHTML={{
           __html: `if(!window.fbq){
 var n=window.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};

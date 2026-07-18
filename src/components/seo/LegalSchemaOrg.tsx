@@ -7,9 +7,10 @@ interface Props {
   locale: "es" | "pt";
   page: "terminos" | "privacidad";
   lastUpdated: string;
+  nonce?: string;
 }
 
-export default function LegalSchemaOrg({ locale, page, lastUpdated }: Props) {
+export default function LegalSchemaOrg({ locale, page, lastUpdated, nonce }: Props) {
   const url = `${base}/${locale}/${page}`;
 
   const titles = {
@@ -71,5 +72,5 @@ export default function LegalSchemaOrg({ locale, page, lastUpdated }: Props) {
     inLanguage: locale === "pt" ? "pt-BR" : "es-AR",
   };
 
-  return <JsonLd data={article} />;
+  return <JsonLd data={article} nonce={nonce} />;
 }

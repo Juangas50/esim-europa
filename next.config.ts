@@ -3,8 +3,6 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const isDev = process.env.NODE_ENV === "development";
-
 // ── Validate production environment ────────────────────────────────────────────
 // Prevent accidental deploys to production (main branch) with test/staging credentials
 // Allow TEST keys in staging/preview (develop branch)
@@ -35,30 +33,8 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Disable browser features not needed
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-  // CSP: allow GTM/GA4, Stripe, Resend; block everything else
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      // Scripts: self + GTM/GA4 + Meta Pixel + Stripe — unsafe-eval only in dev (React/Turbopack needs it)
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://js.stripe.com https://checkout.stripe.com`,
-      // Styles: self + inline (Tailwind)
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      // Fonts
-      "font-src 'self' https://fonts.gstatic.com",
-      // Images: self + GA pixel + GTM + Meta Pixel noscript
-      "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com",
-      // Connect: API calls — self + Supabase + GA4 (todas las regiones) + GTM + Meta Pixel + Stripe
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com",
-      // Iframes: GTM noscript + Stripe checkout
-      "frame-src https://www.googletagmanager.com https://js.stripe.com https://checkout.stripe.com",
-      // Block all object/embed
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self' https://checkout.stripe.com",
-      "upgrade-insecure-requests",
-    ].join("; "),
-  },
+  // Content-Security-Policy: se setea dinámicamente en src/proxy.ts (necesita
+  // un nonce distinto por request para script-src, no puede ser estático acá).
 ];
 
 const nextConfig: NextConfig = {

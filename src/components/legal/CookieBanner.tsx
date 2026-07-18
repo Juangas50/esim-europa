@@ -23,7 +23,10 @@ function readConsentCookie(): ConsentValue {
 }
 
 function writeConsentCookie(value: "accepted" | "rejected") {
-  document.cookie = `${CONSENT_KEY}=${value}; max-age=${CONSENT_MAX_AGE}; path=/; SameSite=Lax`;
+  // Secure solo si estamos en HTTPS — en HTTP (localhost) el navegador
+  // rechaza en silencio cualquier cookie con Secure, rompería el banner en dev.
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${CONSENT_KEY}=${value}; max-age=${CONSENT_MAX_AGE}; path=/; SameSite=Lax${secure}`;
 }
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 

@@ -7,6 +7,7 @@ const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : raw
 
 interface Props {
   locale: "es" | "pt";
+  nonce?: string;
 }
 
 // ── FAQ bilingüe ──────────────────────────────────────────────────────────────
@@ -106,7 +107,7 @@ function buildProductDescription(plan: Plan, locale: "es" | "pt"): string {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default async function HomeSchemaOrg({ locale }: Props) {
+export default async function HomeSchemaOrg({ locale, nonce }: Props) {
   const url = `${base}/${locale}`;
   const faqItems = locale === "pt" ? FAQ_PT : FAQ_ES;
   const plans = await getPlans();
@@ -212,11 +213,11 @@ export default async function HomeSchemaOrg({ locale }: Props) {
 
   return (
     <>
-      <JsonLd data={organization} />
-      <JsonLd data={website} />
-      <JsonLd data={faqPage} />
+      <JsonLd data={organization} nonce={nonce} />
+      <JsonLd data={website} nonce={nonce} />
+      <JsonLd data={faqPage} nonce={nonce} />
       {products.map((product, i) => (
-        <JsonLd key={i} data={product} />
+        <JsonLd key={i} data={product} nonce={nonce} />
       ))}
     </>
   );

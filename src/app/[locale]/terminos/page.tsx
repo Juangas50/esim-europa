@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import LegalLayout from "@/components/legal/LegalLayout";
 import LegalSchemaOrg from "@/components/seo/LegalSchemaOrg";
 
@@ -54,9 +55,10 @@ export default async function TerminosPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <>
-      <LegalSchemaOrg locale={locale as "es" | "pt"} page="terminos" lastUpdated="2 de junio de 2026" />
+      <LegalSchemaOrg locale={locale as "es" | "pt"} page="terminos" lastUpdated="2 de junio de 2026" nonce={nonce} />
       {locale === "pt" ? <TerminosPT /> : <TerminosES />}
     </>
   );

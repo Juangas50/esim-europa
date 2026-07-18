@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { routing } from "@/i18n/routing";
 import CookieBanner from "@/components/legal/CookieBanner";
 import { GTMScript } from "@/components/analytics/GTM";
@@ -26,13 +27,14 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <NextIntlClientProvider messages={messages}>
       {/* GTM script — carga asíncrona después de hidratación */}
-      <GTMScript />
+      <GTMScript nonce={nonce} />
       {/* Meta Pixel — misma carga consent-gated que GTM */}
-      <MetaPixelScript />
+      <MetaPixelScript nonce={nonce} />
       <MetaPixelRouteTracker />
       {children}
       <CookieBanner />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
 import { MetaPixelNoScript } from "@/components/analytics/MetaPixel";
@@ -41,11 +42,13 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     // lang="es" es el fallback para rutas sin locale (admin, login).
     // Para rutas /es/ y /pt/, el lang se actualiza dinámicamente via JavaScript
@@ -64,6 +67,7 @@ export default function RootLayout({
 
         {/* Script para actualizar dynamically lang attribute basado en locale */}
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

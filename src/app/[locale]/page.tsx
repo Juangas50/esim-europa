@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { headers } from "next/headers";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import Definition from "@/components/landing/Definition";
@@ -100,10 +101,11 @@ export default async function HomePage({
   const minPrice = plans.length > 0
     ? Math.min(...plans.map((p) => p.price_usd))
     : undefined;
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <>
-      <HomeSchemaOrg locale={locale as "es" | "pt"} />
+      <HomeSchemaOrg locale={locale as "es" | "pt"} nonce={nonce} />
       <Navbar />
       <main>
         <Hero minPrice={minPrice} />

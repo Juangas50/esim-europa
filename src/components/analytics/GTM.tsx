@@ -10,7 +10,7 @@ const CONSENT_KEY = "ruta34_cookie_consent";
  * GTM Script — only loads after the user has accepted cookies (GDPR).
  * Falls back gracefully if GTM_ID is not configured.
  */
-export function GTMScript() {
+export function GTMScript({ nonce }: { nonce?: string }) {
   const [canLoad, setCanLoad] = useState(false);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ export function GTMScript() {
     <Script
       id="gtm-head"
       strategy="afterInteractive"
+      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
