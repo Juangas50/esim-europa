@@ -8,6 +8,14 @@ import {
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
+  // Herramienta de desarrollo — no debe quedar accesible en producción.
+  // Revela el diseño exacto de los emails de entrega (incluido el formato
+  // real de las cadenas de activación), útil para phishing que imite un
+  // email legítimo de RUTA34.
+  if (process.env.NODE_ENV !== 'development') {
+    return new Response('Not found', { status: 404 })
+  }
+
   const { searchParams } = new URL(request.url)
   const type = searchParams.get('type') || 'confirmacion'
 
