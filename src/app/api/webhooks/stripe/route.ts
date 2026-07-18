@@ -75,8 +75,28 @@ export async function POST(req: NextRequest) {
         payment_id: session.payment_intent as string,
         amount_usd: order.amount_usd,
       }));
-      await supabase.from("b2c_orders").insert(extras);
-      console.log(`[webhook] Creadas ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef}`);
+      const { error: extrasError } = await supabase.from("b2c_orders").insert(extras);
+      if (extrasError) {
+        // El pago ya se cobró y Stripe ya recibirá 200 de este webhook (no reintentará),
+        // así que un fallo acá pierde silenciosamente pedidos ya pagados si no se alerta.
+        console.error(
+          `[webhook] FALLO creando ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef} | payment_intent: ${session.payment_intent}`,
+          extrasError,
+        );
+        const alertEmails = (process.env.ADMIN_EMAILS ?? "").split(",").filter(Boolean);
+        if (alertEmails.length > 0) {
+          await Promise.all(alertEmails.map(email => sendEmail(
+            email.trim(),
+            `⚠️ Fallo creando pedidos extra — ${orderRef}`,
+            `<p>El cliente pagó <strong>${quantity} eSIMs</strong> pero solo se creó el pedido original.</p>
+             <p>Faltan <strong>${quantity - 1}</strong> pedido(s) por crear manualmente en <code>b2c_orders</code>.</p>
+             <p>order_ref: ${orderRef}<br/>payment_intent: ${session.payment_intent}</p>
+             <p>Error: <code>${extrasError.message}</code></p>`,
+          ))).catch(e => console.error("[webhook] Falló también el email de alerta:", e));
+        }
+      } else {
+        console.log(`[webhook] Creadas ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef}`);
+      }
     }
 
     // 2. Enviar emails

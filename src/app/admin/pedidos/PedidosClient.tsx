@@ -27,6 +27,8 @@ export type UnifiedOrder = {
   payment_method: string | null
   activation_string: string | null
   confirmation_code: string | null
+  // Motivo del último fallo de generación/entrega de QR (status === 'error')
+  delivery_error: string | null
   // MultiSIM: datos de cada pedido individual dentro de la compra
   group_count: number
   group_orders: Array<{
@@ -47,6 +49,7 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   expired:        { label: 'Expirado',             color: '#64748B', bg: 'rgba(122,122,122,0.15)' },
   cancelled:      { label: 'Cancelado',            color: '#EF4444', bg: 'rgba(239,68,68,0.15)'  },
+  error:          { label: '⚠️ Error de entrega',   color: '#DC2626', bg: 'rgba(220,38,38,0.18)'  },
 }
 
 // "tramitar" agrupa paid (B2C) + pending_review (B2B): son lo mismo operativamente
@@ -62,6 +65,25 @@ const STATUS_FILTERS = [
 function isTramitar(status: string) {
   return status === 'paid' || status === 'pending_review'
 }
+
+// b2c_orders y orders tienen CHECK constraints de status distintos en la DB —
+// el dropdown debe ofrecer/enviar el valor crudo real de cada tabla, no el
+// status "unificado" que se usa solo para mostrar (ver mapB2CStatus en page.tsx).
+const STATUS_OPTIONS_B2B = [
+  { value: 'pending_review', label: 'Pendiente revisión' },
+  { value: 'scheduled',      label: 'Programado' },
+  { value: 'qr_sent',        label: 'QR enviado' },
+  { value: 'activated',      label: 'Activado' },
+  { value: 'cancelled',      label: 'Cancelar' },
+]
+const STATUS_OPTIONS_B2C = [
+  { value: 'paid',       label: 'Pagado' },
+  { value: 'processing', label: 'Procesando' },
+  { value: 'qr_sent',    label: 'QR enviado' },
+  { value: 'active',     label: 'Activado' },
+  { value: 'expired',    label: 'Expirado' },
+  { value: 'cancelled',  label: 'Cancelar' },
+]
 
 const SOURCE_FILTERS = [
   { id: 'all', label: '🌐 Todos los canales' },
@@ -450,11 +472,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                             defaultValue=""
                             style={{ background: '#fff', border: '1px solid #EDE8E0', borderRadius: 7, padding: '7px 11px', color: '#1B2F4E', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
                             <option value="" disabled>{updating === o.id ? 'Guardando...' : 'Cambiar estado'}</option>
-                            <option value="pending_review">Pendiente revisión</option>
-                            <option value="scheduled">Programado</option>
-                            <option value="qr_sent">QR enviado</option>
-                            <option value="activated">Activado</option>
-                            <option value="cancelled">Cancelar</option>
+                            {(o.source === 'b2c' ? STATUS_OPTIONS_B2C : STATUS_OPTIONS_B2B).map(opt => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
                           </select>
                         </td>
                         <td style={{ padding: '14px 16px' }}>
@@ -525,6 +545,14 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                 <div style={{
                   overflowY: 'auto', flex: 1, padding: '28px',
                 }}>
+            {selected.delivery_error && (
+              <div style={{
+                background: 'rgba(220,38,38,0.1)', border: '1px solid #DC2626', borderRadius: 10,
+                padding: '14px 16px', marginBottom: 20, color: '#DC2626', fontSize: 13, fontWeight: 500,
+              }}>
+                ⚠️ <strong>Falló la última entrega:</strong> {selected.delivery_error}
+              </div>
+            )}
             {([
               { label: 'Referencia',    value: selected.order_ref, icon: '🔖' },
               { label: 'Canal',         value: selected.source === 'b2c' ? '💻 esimruta34.com' : '🏢 Agencia', icon: '📱' },

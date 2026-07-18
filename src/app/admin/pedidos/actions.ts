@@ -1,6 +1,5 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth/require-role'
 import { revalidatePath } from 'next/cache'
@@ -9,8 +8,15 @@ import { sendEmail } from '@/lib/email/send'
 import { emailEntregaB2C, emailEntregaMultiple } from '@/lib/email/templates'
 import QRCode from 'qrcode'
 
-const VALID_STATUSES = new Set([
+// B2B (`orders`) y B2C (`b2c_orders`) tienen CHECK constraints de status
+// distintos en la base de datos — usar un único set compartido dejaba pasar
+// estados que la tabla B2C rechaza (y viceversa). Ver supabase/migrations/
+// 20260524_b2c_orders.sql para el constraint real de b2c_orders.
+const VALID_STATUSES_B2B = new Set([
   'pending_review', 'paid', 'scheduled', 'qr_sent', 'activated', 'expired', 'cancelled',
+])
+const VALID_STATUSES_B2C = new Set([
+  'pending_payment', 'paid', 'processing', 'qr_sent', 'active', 'expired', 'cancelled', 'error',
 ])
 
 export async function updateOrderStatus(
@@ -20,11 +26,14 @@ export async function updateOrderStatus(
 ) {
   await requireAdmin()
 
-  if (!VALID_STATUSES.has(status)) {
+  const validStatuses = source === 'b2c' ? VALID_STATUSES_B2C : VALID_STATUSES_B2B
+  if (!validStatuses.has(status)) {
     return { error: { message: `Invalid status: ${status}` } }
   }
 
-  const supabase = await createClient()
+  // b2c_orders solo permite escritura a service_role (ver migración de RLS) —
+  // el cliente con RLS no puede actualizarla y falla en silencio (0 filas, sin error).
+  const supabase = createAdminClient()
   const table = source === 'b2c' ? 'b2c_orders' : 'orders'
   const { error } = await supabase
     .from(table)
@@ -121,16 +130,25 @@ async function _deliverCore(
     return { ok: false, error: 'Error generando el código QR. Verificá los datos.' }
   }
 
-  // Subir a Storage
+  // Subir a Storage — si falla, el email NO debe salir: se aborta y el pedido
+  // queda visible en estado de error en vez de silenciarlo con el fallback cid:.
   let qrUrl: string | undefined
   try {
-    await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+    if (uploadError) throw uploadError
     const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
     qrUrl = urlData.publicUrl
   } catch (e) {
-    console.warn('[deliver] No se pudo subir QR a Storage, usando cid: como fallback', e)
+    const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
+    console.error('[deliver] Fallo subiendo QR a Storage, abortando entrega:', e)
+    if (table === 'b2c_orders') {
+      await supabase.from(table).update({ status: 'error', delivery_error: message }).eq('id', orderId)
+    }
+    // TODO: `orders` (B2B) no tiene columna delivery_error/status 'error' verificada en
+    // migraciones — si se quiere el mismo tracking para B2B, agregar la migración análoga.
+    return { ok: false, error: `No se pudo subir el QR a Storage, la entrega fue abortada: ${message}` }
   }
 
   // Email de destino — usar override si se proporcionó, si no el registrado
@@ -142,10 +160,13 @@ async function _deliverCore(
     : (order.pvp_at_time ?? 0)
 
   // Actualizar estado + guardar cadena PRIMERO (antes de enviar email)
-  const updatePayload: Record<string, string> = {
+  const updatePayload: Record<string, string | null> = {
     status: 'qr_sent',
     activation_string: parsed.data.raw,
     confirmation_code: confirmationCode.trim(),
+  }
+  if (table === 'b2c_orders') {
+    updatePayload.delivery_error = null // limpiar un posible error de un intento anterior
   }
   if (overrideEmail && overrideEmail.trim() && overrideEmail.trim() !== order.customer_email) {
     updatePayload.customer_email = overrideEmail.trim()
@@ -262,12 +283,22 @@ export async function resendDeliveryEmail(
 
   let qrUrl: string | undefined
   try {
-    await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+    if (uploadError) throw uploadError
     const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
     qrUrl = urlData.publicUrl
-  } catch {}
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
+    console.error('[resend] Fallo subiendo QR a Storage, abortando reenvío:', e)
+    // El pedido ya fue entregado antes (status sigue en qr_sent) — solo dejamos
+    // constancia del fallo de este reenvío puntual, sin marcar status 'error'.
+    if (table === 'b2c_orders') {
+      await supabase.from(table).update({ delivery_error: message }).eq('id', orderId)
+    }
+    return { ok: false, error: `No se pudo subir el QR a Storage, el reenvío fue abortado: ${message}` }
+  }
 
   const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
   const amountUSD = source === 'b2c'
@@ -297,6 +328,10 @@ export async function resendDeliveryEmail(
   if (emailError) {
     console.error('[resend] Error:', emailError)
     return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
+  }
+
+  if (table === 'b2c_orders' && order.delivery_error) {
+    await supabase.from(table).update({ delivery_error: null }).eq('id', orderId)
   }
 
   return { ok: true }
@@ -347,10 +382,18 @@ export async function resendGroupOrders(
     let qrUrl: string | undefined
     try {
       const qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
-      await supabase.storage.from('qr-codes').upload(`${o.id}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      const { error: uploadError } = await supabase.storage.from('qr-codes').upload(`${o.id}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      if (uploadError) throw uploadError
       const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${o.id}.png`)
       qrUrl = urlData.publicUrl
-    } catch {}
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
+      console.error(`[resend-group] Fallo subiendo QR de ${o.order_ref}, abortando reenvío del grupo:`, e)
+      // Grupo ya entregado antes — no se marca 'error' de status, solo se deja
+      // constancia del fallo de este reenvío y se aborta el envío completo.
+      await supabase.from('b2c_orders').update({ delivery_error: message }).eq('id', o.id)
+      return { ok: false, error: `No se pudo subir el QR de ${o.order_ref}, el reenvío del grupo fue abortado: ${message}` }
+    }
 
     esimItems.push({
       label: `eSIM ${i + 1} de ${orders.length}`,
@@ -374,6 +417,8 @@ export async function resendGroupOrders(
 
   const { error: emailError } = await sendEmail(toEmail, `[Reenvío] ${tmpl.subject}`, tmpl.html)
   if (emailError) return { ok: false, error: 'Error enviando el email. Intentá nuevamente.' }
+
+  await supabase.from('b2c_orders').update({ delivery_error: null }).in('id', groupOrderIds)
 
   return { ok: true }
 }
@@ -431,11 +476,19 @@ export async function deliverGroupOrders(
     let qrUrl: string | undefined
     try {
       const qrBuffer = await QRCode.toBuffer(p.parsed.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
-      await supabase.storage.from('qr-codes').upload(`${d.orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      const { error: uploadError } = await supabase.storage.from('qr-codes').upload(`${d.orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
+      if (uploadError) throw uploadError
       const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${d.orderId}.png`)
       qrUrl = urlData.publicUrl
     } catch (e) {
-      console.warn(`[group-deliver] QR ${i + 1} no subido a Storage:`, e)
+      const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
+      console.error(`[group-deliver] QR ${i + 1} no subido a Storage, abortando entrega del grupo:`, e)
+      // Nada del grupo se entregó todavía (el email/UPDATE final va después) —
+      // marcar todo el lote en error para que quede visible y no se reintente a medias.
+      await supabase.from('b2c_orders')
+        .update({ status: 'error', delivery_error: message })
+        .in('id', deliveries.map(dd => dd.orderId))
+      return { ok: false, error: `No se pudo subir el QR de eSIM ${i + 1}, la entrega del grupo fue abortada: ${message}` }
     }
 
     // También guardar el order_ref del pedido
@@ -477,6 +530,7 @@ export async function deliverGroupOrders(
       qr_sent_at: new Date().toISOString(),
       activation_string: p.parsed.raw,
       confirmation_code: p.confirmationCode,
+      delivery_error: null, // limpiar un posible error de un intento anterior
       ...(overrideEmail?.trim() ? { customer_email: overrideEmail.trim() } : {}),
     }).eq('id', d.orderId)
   }

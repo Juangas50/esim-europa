@@ -12,6 +12,7 @@ function mapB2CStatus(s: string): string {
     active:          'activated',
     expired:         'expired',
     cancelled:       'cancelled',
+    error:           'error',
   }
   return map[s] ?? 'pending_review'
 }
@@ -53,6 +54,7 @@ export default async function PedidosAdminPage() {
     payment_method:       null,
     activation_string:    o.activation_string ?? null,
     confirmation_code:    o.confirmation_code ?? null,
+    delivery_error:       null,
     group_count:          1,
     group_orders:         [{
       id:                 o.id,
@@ -86,8 +88,9 @@ export default async function PedidosAdminPage() {
     // - Si no, mapear el estado del primero
     const allCancelled = group.every(o => o.status === 'cancelled')
     const allQrSent = group.every(o => o.status === 'qr_sent')
+    const anyError  = group.some(o => o.status === 'error')
     const anyPaid   = group.some(o => o.status === 'paid')
-    const groupStatus = allCancelled ? 'cancelled' : allQrSent ? 'qr_sent' : anyPaid ? 'paid' : mapB2CStatus(first.status)
+    const groupStatus = allCancelled ? 'cancelled' : allQrSent ? 'qr_sent' : anyError ? 'error' : anyPaid ? 'paid' : mapB2CStatus(first.status)
 
     return {
       id:                   first.id,
@@ -111,6 +114,7 @@ export default async function PedidosAdminPage() {
       // Para grupos: activation_string/code del pedido representativo (single = igual)
       activation_string:    group.length === 1 ? (first.activation_string ?? null) : null,
       confirmation_code:    group.length === 1 ? (first.confirmation_code ?? null) : null,
+      delivery_error:       group.find(o => o.delivery_error)?.delivery_error ?? null,
       group_count:          group.length,
       group_orders:         group.map(o => ({
         id:                o.id,

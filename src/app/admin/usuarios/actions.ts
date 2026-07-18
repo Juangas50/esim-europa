@@ -140,7 +140,8 @@ export async function updateAdminPassword(
   newPassword: string,
 ): Promise<CreateAdminResult> {
   try {
-    // El usuario debe estar autenticado
+    await requireAdmin()
+
     const adminClient = createAdminClient()
 
     // Validar contraseña
