@@ -31,7 +31,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Cuándo activo la eSIM de RUTA34?",
-    a: "Instala el QR antes de viajar (con WiFi en tu país). Actívalo cuando aterrizás en Europa. Para DataOnly: tenés 60 días desde la compra para activar. Para Prepago: 12 meses para activar.",
+    a: "Para Prepago, tus 28 días empiezan a correr desde que te enviamos el código QR (no desde que lo instalás) — dentro de 24h si elegís activación inmediata, o en la fecha que elijas si la programás. Instalá el QR con WiFi antes de viajar para tener conexión apenas aterrices. Para DataOnly, tenés 60 días desde la compra para instalarlo cuando quieras.",
   },
   {
     q: "¿Hay costos adicionales o sorpresas en la factura?",
@@ -39,7 +39,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Qué diferencia hay entre el plan Prepago y DataOnly?",
-    a: "Prepago: 28 días desde la fecha de activación (podés esperar hasta 12 meses). DataOnly: comprás ahora, 60 días para activar — perfecto si tu viaje aún no está confirmado al 100%.",
+    a: "Prepago: 28 días desde que te enviamos el QR — inmediato o en la fecha programada que elijas (hasta 12 meses a futuro). DataOnly: comprás ahora, 60 días para instalar cuando quieras — perfecto si tu viaje aún no está confirmado al 100%.",
   },
 ];
 
@@ -58,7 +58,7 @@ const FAQ_PT = [
   },
   {
     q: "Quando ativo o eSIM da RUTA34?",
-    a: "Instale o QR antes de viajar (com WiFi no seu país). Ative quando chegar na Europa. Para DataOnly: 60 dias desde a compra. Para Pré-pago: 12 meses para ativar.",
+    a: "No Pré-pago, seus 28 dias começam a contar desde que enviamos o código QR (não desde que você instala) — em até 24h se escolher ativação imediata, ou na data que agendar. Instale o QR com WiFi antes de viajar para ter conexão assim que aterrissar. No DataOnly, você tem 60 dias desde a compra para instalar quando quiser.",
   },
   {
     q: "Há custos adicionais ou surpresas na fatura?",
@@ -66,7 +66,7 @@ const FAQ_PT = [
   },
   {
     q: "Qual a diferença entre o plano Pré-pago e DataOnly?",
-    a: "Pré-pago: 28 dias a partir da data de ativação (pode esperar até 12 meses). DataOnly: compra agora, 60 dias para ativar — perfeito se sua viagem ainda não está 100% confirmada.",
+    a: "Pré-pago: 28 dias desde que enviamos o QR — imediato ou na data agendada que você escolher (até 12 meses no futuro). DataOnly: compra agora, 60 dias para instalar quando quiser — perfeito se sua viagem ainda não está 100% confirmada.",
   },
 ];
 

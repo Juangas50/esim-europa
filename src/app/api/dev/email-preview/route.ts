@@ -2,7 +2,12 @@ import {
   emailConfirmacionB2C,
   emailAvisoClienteProgramado,
   emailEntregaB2C,
-  emailEntregaMultiple
+  emailEntregaMultiple,
+  emailConfirmacionPartner,
+  emailAlertaAdmin,
+  emailNuevoPedidoAdmin,
+  emailRecordatorioActivacion,
+  emailFechaReprogramada,
 } from '@/lib/email/templates'
 
 export const dynamic = 'force-dynamic'
@@ -79,7 +84,59 @@ export async function GET(request: Request) {
           qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=1%24eu-prod%24PQR345STU678'
         }
       ]
-    }
+    },
+    partner: {
+      orderRef: 'R34-ABC123-XY9Z',
+      sellerName: 'Agencia Viajes Sur',
+      customerName: 'Juan',
+      customerLastname: 'García',
+      tariffName: 'Europa 10 GB',
+      type: 'prepago',
+      activationDate: null,
+    },
+    partnerProgramado: {
+      orderRef: 'R34-ABC123-XY9Z',
+      sellerName: 'Agencia Viajes Sur',
+      customerName: 'Juan',
+      customerLastname: 'García',
+      tariffName: 'Europa 10 GB',
+      type: 'prepago',
+      activationDate: '15 de agosto de 2026',
+    },
+    alerta: {
+      pendingReview: [
+        { customer_name: 'Juan', customer_lastname: 'García', order_ref: 'R34-ABC123', agencies: { name: 'Agencia Viajes Sur' } },
+      ],
+      scheduledToday: [
+        { customer_name: 'Ana', customer_lastname: 'Pérez', order_ref: 'R34-DEF456', tariffs: { name: 'Europa 10 GB' }, customer_email: 'ana@example.com' },
+      ],
+      date: 'sábado, 18 de julio de 2026',
+    },
+    nuevoPedido: {
+      customerName: 'Juan',
+      customerLastname: 'García',
+      customerEmail: 'juan@example.com',
+      customerCountry: 'AR',
+      orderRef: 'R34-ABC123-XY9Z',
+      planName: 'Europa 10 GB',
+      planGB: 10,
+      amountUSD: 29.99,
+      portalUrl: 'https://www.esimruta34.com/admin/pedidos',
+      activationDate: '15 de agosto de 2026',
+    },
+    recordatorio: {
+      customerName: 'Juan García',
+      orderRef: 'ORD-2026-07-001',
+      planName: 'Europa 10 GB',
+      activationDate: '19 de julio de 2026',
+      rescheduleUrl: 'https://www.esimruta34.com/es/reprogramar?ref=ORD-2026-07-001&token=00000000-0000-0000-0000-000000000000',
+    },
+    reprogramada: {
+      customerName: 'Juan García',
+      orderRef: 'ORD-2026-07-001',
+      planName: 'Europa 10 GB',
+      newActivationDate: '25 de julio de 2026',
+    },
   }
 
   let emailHtml = ''
@@ -110,8 +167,44 @@ export async function GET(request: Request) {
       emailHtml = result.html
       break
     }
+    case 'partner': {
+      const result = emailConfirmacionPartner(exampleData.partner)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'partner-programado': {
+      const result = emailConfirmacionPartner(exampleData.partnerProgramado)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'alerta': {
+      const result = emailAlertaAdmin(exampleData.alerta)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'nuevo-pedido': {
+      const result = emailNuevoPedidoAdmin(exampleData.nuevoPedido)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'recordatorio': {
+      const result = emailRecordatorioActivacion(exampleData.recordatorio)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'reprogramada': {
+      const result = emailFechaReprogramada(exampleData.reprogramada)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
     default:
-      return new Response('Invalid type. Use: confirmacion, aviso, entrega, entrega-multiple', { status: 400 })
+      return new Response('Invalid type. Use: confirmacion, aviso, entrega, entrega-multiple, partner, partner-programado, alerta, nuevo-pedido, recordatorio, reprogramada', { status: 400 })
   }
 
   // Wrap in a simple preview container
@@ -144,6 +237,12 @@ export async function GET(request: Request) {
       <a href="?type=aviso">Aviso Programado</a>
       <a href="?type=entrega">Entrega B2C</a>
       <a href="?type=entrega-multiple">Entrega Múltiple</a>
+      <a href="?type=partner">Confirmación Partner</a>
+      <a href="?type=partner-programado">Confirmación Partner (programada)</a>
+      <a href="?type=alerta">Alerta Diaria Admin</a>
+      <a href="?type=nuevo-pedido">Nuevo Pedido Admin</a>
+      <a href="?type=recordatorio">Recordatorio 24h</a>
+      <a href="?type=reprogramada">Fecha Reprogramada</a>
     </div>
     <div class="email-container">
       ${emailHtml}

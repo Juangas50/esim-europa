@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
 import { sendEmail } from "@/lib/email/send";
-import { emailConfirmacionB2C, emailNuevoPedidoAdmin } from "@/lib/email/templates";
+import { emailConfirmacionB2C, emailAvisoClienteProgramado, emailNuevoPedidoAdmin } from "@/lib/email/templates";
 import { generateOrderRef } from "@/lib/utils";
 import { sendMetaCapiEvent } from "@/lib/meta/capi";
 import { buildPurchasePayload } from "@/lib/meta/events";
@@ -120,6 +120,7 @@ export async function POST(req: NextRequest) {
           planGB: plan?.data_gb ?? 0,
           amountUSD: order.amount_usd ?? 0,
           portalUrl: `${baseUrl}/admin/pedidos`,
+          activationDate: order.activation_date ?? null,
         });
         const results = await Promise.all(
           adminEmails.map(email => sendEmail(email.trim(), tmplAdmin.subject, tmplAdmin.html))
@@ -135,20 +136,33 @@ export async function POST(req: NextRequest) {
       console.error("[email:admin] Excepción:", e);
     }
 
-    // 2b. Email al cliente — confirmación de pedido recibido
+    // 2b. Email al cliente — confirmación de pedido recibido.
+    // Si eligió activación programada, el QR NO llega en 24h — le mandamos el
+    // aviso de "compra confirmada, tu eSIM llega el {fecha}" en vez de la
+    // promesa de 24h, que sería falsa para este caso.
     if (plan && order.customer_email) {
       try {
-        const tmplCliente = emailConfirmacionB2C({
-          customerName: order.customer_name,
-          orderRef,
-          planName: plan.name,
-          planGB: plan.data_gb,
-          planDays: plan.duration_days,
-          planType: plan.type,
-          amountUSD: plan.price_usd,
-        });
+        const isScheduled = !!order.activation_date;
+        const tmplCliente = isScheduled
+          ? emailAvisoClienteProgramado({
+              customerName: order.customer_name,
+              tariffName: plan.name,
+              activationDate: new Date(`${order.activation_date}T00:00:00`).toLocaleDateString("es-ES", {
+                day: "numeric", month: "long", year: "numeric",
+              }),
+              type: plan.type,
+            })
+          : emailConfirmacionB2C({
+              customerName: order.customer_name,
+              orderRef,
+              planName: plan.name,
+              planGB: plan.data_gb,
+              planDays: plan.duration_days,
+              planType: plan.type,
+              amountUSD: plan.price_usd,
+            });
         const res = await sendEmail(order.customer_email, tmplCliente.subject, tmplCliente.html);
-        console.log("[email:cliente] confirmacion enviada | orderRef:", orderRef, "| error:", res.error ?? "none");
+        console.log("[email:cliente]", isScheduled ? "aviso programado" : "confirmacion", "enviada | orderRef:", orderRef, "| error:", res.error ?? "none");
       } catch (e) {
         console.error("[email:cliente] Error:", e);
       }

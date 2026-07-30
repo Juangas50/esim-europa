@@ -47,7 +47,7 @@ export default function ActivationPage() {
           className="mb-16"
         >
           <p className="text-lg text-[var(--color-ink-2)] leading-relaxed max-w-2xl">
-            El momento en que actives tu eSIM es importante para garantizar que tengas conectividad desde el momento en que llegues a tu destino.
+            Tus días de plan ya corren desde que te enviamos el código QR, no desde que activás los datos en tu celular. Esta guía te ayuda a saber cuándo prender los datos móviles para tener conexión apenas aterrices, sin gastar roaming de más antes de viajar.
           </p>
         </motion.div>
 

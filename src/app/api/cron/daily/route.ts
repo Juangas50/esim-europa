@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email/send'
-import { emailAlertaAdmin } from '@/lib/email/templates'
+import { emailAlertaAdmin, emailRecordatorioActivacion } from '@/lib/email/templates'
 
 export async function GET(request: Request) {
   // ── P1-03: Secret en Authorization header, no en query string ────────────
@@ -26,6 +26,45 @@ export async function GET(request: Request) {
     .select('id')
 
   console.log(`[cron] Auto-cancelados ${cancelled ?? 0} b2c_orders abandonados`)
+
+  // Recordatorio 24h-antes para activaciones B2C programadas para mañana.
+  // status='paid' excluye pedidos cuyo QR ya se entregó a mano antes de tiempo
+  // (status pasaría a 'qr_sent') y reminder_sent_at evita reenviarlo si el
+  // cron corre más de una vez el mismo día.
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.esimruta34.com'
+
+  const { data: dueTomorrow } = await supabase
+    .from('b2c_orders')
+    .select('id, order_ref, customer_name, customer_email, activation_date, reschedule_token, tariffs(name)')
+    .eq('status', 'paid')
+    .eq('activation_date', tomorrow)
+    .is('reminder_sent_at', null)
+
+  if (dueTomorrow && dueTomorrow.length > 0) {
+    const formattedDate = new Date(`${tomorrow}T00:00:00`).toLocaleDateString('es-ES', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+
+    const results = await Promise.all(dueTomorrow.map(async (order: any) => {
+      const tmpl = emailRecordatorioActivacion({
+        customerName: order.customer_name,
+        orderRef: order.order_ref,
+        planName: order.tariffs?.name ?? 'tu eSIM',
+        activationDate: formattedDate,
+        rescheduleUrl: `${baseUrl}/es/reprogramar?ref=${encodeURIComponent(order.order_ref)}&token=${order.reschedule_token}`,
+      })
+      const { error } = await sendEmail(order.customer_email, tmpl.subject, tmpl.html)
+      if (!error) {
+        await supabase.from('b2c_orders').update({ reminder_sent_at: new Date().toISOString() }).eq('id', order.id)
+      }
+      return { orderRef: order.order_ref, error }
+    }))
+
+    const failed = results.filter(r => r.error)
+    console.log(`[cron] Recordatorios 24h enviados: ${results.length - failed.length}/${results.length}`)
+    if (failed.length > 0) console.error('[cron] Fallos enviando recordatorio:', failed)
+  }
 
   const [{ data: pendingReview }, { data: scheduledToday }] = await Promise.all([
     supabase.from('orders').select('*, agencies(name)').eq('status', 'pending_review'),

@@ -407,7 +407,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
           <div className="space-y-6">
             <div>
               <h3 className="text-2xl font-bold text-[var(--color-navy)] mb-1">Cuándo empieza tu plan</h3>
-              <p className="text-base text-[var(--color-ink)]">Los 28 días corren desde la activación</p>
+              <p className="text-base text-[var(--color-ink)]">Los 28 días corren desde que te enviamos el QR, no desde que lo instalás</p>
             </div>
 
             {isLocal && (
@@ -431,7 +431,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     <div>
                       <p className="text-sm font-semibold text-[var(--color-navy)]">Activación inmediata</p>
                       <p className="text-xs text-[var(--color-ink-2)] mt-1">
-                        Los 28 días corren desde ahora. Conectado al aterrizar.
+                        Te enviamos el QR en menos de 24h y ahí arrancan tus 28 días. Instalalo apenas lo recibas.
                       </p>
                     </div>
                   </label>

@@ -98,8 +98,12 @@ function TerminosES() {
         <p>
           Una eSIM es un perfil de datos móviles que se instala de forma virtual en dispositivos
           compatibles. RUTA34 Telecom comercializa planes de <strong>eSIM Prepago</strong>: el
-          período de 28 días comienza a contar desde el momento en que el cliente activa la eSIM.
-          El cliente dispone de hasta 12 meses desde la compra para activarla.
+          período de 28 días comienza a contar desde el momento en que RUTA34 Telecom activa la
+          eSIM y envía el código QR al cliente (de forma inmediata, dentro de las 24 horas
+          siguientes a la compra, o en la fecha de activación programada que el cliente haya
+          elegido), independientemente del momento en que el cliente instale o escanee dicho
+          código. El cliente puede elegir una fecha de activación programada de hasta 12 meses
+          desde la compra.
         </p>
         <p>
           El código QR de activación se envía por correo electrónico al completar el pago, dentro

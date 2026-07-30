@@ -25,6 +25,8 @@ export type UnifiedOrder = {
   tariffs: { name: string } | null
   source: 'b2b' | 'b2c'
   payment_method: string | null
+  // Stripe payment_intent id (b2c) — null hasta que el webhook confirma el pago
+  payment_id: string | null
   activation_string: string | null
   confirmation_code: string | null
   // Motivo del último fallo de generación/entrega de QR (status === 'error')
@@ -42,6 +44,7 @@ export type UnifiedOrder = {
 
 // ── Estados ───────────────────────────────────────────────────────────────────
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
+  pending_payment: { label: '💤 Sin pagar',        color: '#94A3B8', bg: 'rgba(148,163,184,0.15)' },
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
   paid:           { label: '⚡ Tramitar',         color: '#C9973A', bg: 'rgba(230,0,0,0.18)'   },
   scheduled:      { label: 'Programado',          color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
@@ -59,6 +62,7 @@ const STATUS_FILTERS = [
   { id: 'scheduled',label: 'Programados'  },
   { id: 'qr_sent',  label: 'QR Enviado'  },
   { id: 'activated',label: 'Activados'   },
+  { id: 'pending_payment', label: '💤 Sin pagar' },
   { id: 'cancelled',label: 'Cancelados'  },
 ]
 
@@ -562,6 +566,10 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               ] : [
                 { label: 'Método pago', value: selected.payment_method ?? '—', icon: '💳' },
               ]),
+              ...(selected.source === 'b2c' ? [
+                { label: 'Pago', value: selected.payment_id ? '✅ Confirmado en Stripe' : '⚠️ No completado — el cliente no terminó el pago', icon: '💰' },
+                ...(selected.payment_id ? [{ label: 'Payment ID', value: selected.payment_id, icon: '🔗', href: `https://dashboard.stripe.com/payments/${selected.payment_id}` }] : []),
+              ] : []),
               { label: 'Tarifa',        value: selected.tariffs?.name, icon: '🏷️' },
               { label: 'Tipo',          value: (selected.type === 'prepago' || selected.type === 'local') ? 'SIM Local' : 'DataOnly', icon: '📦' },
               { label: 'Cliente',       value: `${selected.customer_name} ${selected.customer_lastname}`, icon: '👥' },
@@ -572,10 +580,16 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               { label: 'F. activación', value: selected.activation_date ?? 'Inmediata', icon: '⏰' },
               { label: 'PVP',           value: `US$${selected.pvp_at_time.toFixed(2)}`, icon: '💵' },
               ...(selected.cost_at_time != null ? [{ label: 'Coste', value: `US$${selected.cost_at_time.toFixed(2)}`, icon: '💰' }] : []),
-            ] as { label: string; value: string | null | undefined; icon?: string }[]).map(r => (
+            ] as { label: string; value: string | null | undefined; icon?: string; href?: string }[]).map(r => (
               <div key={r.label} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 16, paddingBottom: 14, borderBottom: '1px solid #EDE8E0', alignItems: 'center' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2F4E' }}>{r.icon} {r.label}</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: '#1E293B', wordBreak: 'break-all' }}>{r.value || '—'}</span>
+                {r.href ? (
+                  <a href={r.href} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 500, color: '#C9973A', wordBreak: 'break-all', textDecoration: 'underline' }}>
+                    {r.value} ↗
+                  </a>
+                ) : (
+                  <span style={{ fontSize: 14, fontWeight: 500, color: '#1E293B', wordBreak: 'break-all' }}>{r.value || '—'}</span>
+                )}
               </div>
             ))}
             <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 14, marginTop: 4 }}>

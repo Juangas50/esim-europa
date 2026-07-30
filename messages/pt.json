@@ -35,7 +35,7 @@
       },
       "instant": {
         "title": "Internet rápida assim que aterrissar",
-        "desc": "O eSIM já está instalado. Chega, ativa e pronto. Sem filas, sem burocracia no aeroporto."
+        "desc": "O eSIM já está instalado. Chega, liga os dados e pronto. Sem filas, sem burocracia no aeroporto."
       },
       "nopermanence": {
         "title": "Paga exatamente o que você precisa",
@@ -56,7 +56,7 @@
     "dataGb": "GB de dados",
     "countries": "países",
     "buyPlan": "Escolher plano",
-    "activateAnytime": "Ativa quando você quiser",
+    "activateAnytime": "Você escolhe quando seu plano começa",
     "noAutoRenew": "Sem renovação automática",
     "coverage": "Cobertura em 30+ países",
     "daysDuration": "dias",
@@ -74,7 +74,7 @@
     "localFeatureQr": "QR por email ao instante",
     "local": {
       "badge": "Linha espanhola",
-      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir do envio do QR, não da instalação."
     },
     "dataonly": {
       "badge": "Só dados",
@@ -82,7 +82,7 @@
     },
     "prepago": {
       "badge": "Linha espanhola",
-      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir da ativação."
+      "desc": "Número espanhol incluído com ligações e SMS. Os 28 dias contam a partir do envio do QR, não da instalação."
     }
   },
   "howItWorks": {
@@ -100,7 +100,7 @@
       },
       "3": {
         "title": "Escaneie e pronto",
-        "desc": "Escaneia o QR com seu celular antes de sair. Ao aterrissar na Europa, ativa e tem internet na hora."
+        "desc": "Escaneia o QR com seu celular antes de sair — seus dias de plano já contam desde o envio. Ao aterrissar na Europa, liga os dados e tem internet na hora."
       }
     }
   },
@@ -147,7 +147,7 @@
       },
       "when": {
         "q": "Quando ativo o eSIM?",
-        "a": "Recomendamos instalar o QR antes de sair do seu país (com WiFi) e ativar o eSIM quando aterrissar na Europa. Para o plano DataOnly tem 60 dias desde a compra para ativar."
+        "a": "Seus dias do plano Pré-pago já contam desde que enviamos o QR, não desde que você o ativa no celular. Recomendamos instalar antes de sair do seu país (com WiFi) e ligar os dados assim que aterrissar na Europa. No plano DataOnly, você tem 60 dias desde a compra para instalar quando quiser."
       },
       "costs": {
         "q": "Há custos adicionais ou surpresas?",
@@ -155,7 +155,7 @@
       },
       "diff": {
         "q": "Qual a diferença entre Pré-pago e DataOnly?",
-        "a": "Com o plano Pré-pago, os 28 dias começam a contar a partir do dia que ativar o eSIM (pode esperar até 12 meses). Com DataOnly, compra agora e tem 60 dias para ativar — ideal se a viagem não está 100% confirmada."
+        "a": "Com o plano Pré-pago, os 28 dias começam a contar a partir do dia que enviamos o QR — imediato ou na data agendada que você escolher (até 12 meses no futuro). Com DataOnly, compra agora e tem 60 dias para instalar quando quiser — ideal se a viagem não está 100% confirmada."
       },
       "whatsapp": {
         "q": "O eSIM muda meu número de WhatsApp?",
@@ -167,7 +167,7 @@
       },
       "when_starts": {
         "q": "Quando começa a contar meu plano?",
-        "a": "Os 28 dias começam a contar desde que enviamos o QR (ativação imediata). Se você programou uma data, começam nesse dia. Recomendamos instalar o QR antes de sair do país — assim você chega à Europa com tudo pronto."
+        "a": "Os 28 dias começam a contar no dia em que enviamos o QR — com ativação imediata, dentro de 24 horas; se você programou uma data, começam nesse dia. Não dependem de quando você instala. Recomendamos instalar o QR antes de sair do país — assim você chega à Europa com tudo pronto."
       },
       "no_email": {
         "q": "E se não receber o email com o QR?",
@@ -219,8 +219,8 @@
       "country": "País de origem",
       "activationDate": "Quando você ativa o eSIM?",
       "activationHint": "Pode ativar até 12 meses após a compra.",
-      "activationToday": "Ao aterrissar na Europa (recomendado)",
-      "activationTodayHint": "Instala o QR antes de embarcar e ativa quando chegar.",
+      "activationToday": "Ativação imediata (recomendado)",
+      "activationTodayHint": "Enviamos o QR em menos de 24h e seus dias já começam a contar. Instale quando quiser.",
       "activationSchedule": "Quero programar uma data",
       "activationScheduleHint": "Escolha o dia que quer que seu plano comece.",
       "deviceConfirm": "Confirmo que meu celular é compatível com eSIM, está desbloqueado e conectado a WiFi para instalar.",
@@ -241,7 +241,7 @@
       },
       "qr": {
         "q": "Quando chega o QR de ativação?",
-        "a": "Enviamos o QR por email dentro do horário de atendimento (segunda a sábado das 8 às 21 h, horário da Espanha). Escaneie com WiFi antes de sair do seu país e ative o eSIM quando chegar na Europa."
+        "a": "Enviamos o QR por email dentro do horário de atendimento (segunda a sábado das 8 às 21 h, horário da Espanha) — aí seus dias de plano começam a contar. Escaneie com WiFi antes de sair do seu país e ligue os dados quando chegar na Europa."
       }
     },
     "payment": {
@@ -277,7 +277,7 @@
     "nextSteps": "O que acontece agora?",
     "step1": "Você recebe um email da RUTA34 Telecom com seu código QR e as instruções completas",
     "step2": "Instale o eSIM antes de viajar — leva menos de 5 minutos",
-    "step3": "Ao aterrissar na Europa, ative o eSIM e navegue sem roaming",
+    "step3": "Ligue os dados ao aterrissar na Europa e navegue sem roaming — seus dias já contam desde que recebeu o QR",
     "sla": "Atendemos de segunda a sábado das 8 às 21 hs (horário da Argentina). Pedidos fora desse horário são processados no dia seguinte.",
     "support": "Tem dúvidas? Fale conosco pelo WhatsApp",
     "backHome": "Voltar ao início"

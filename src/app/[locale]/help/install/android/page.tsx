@@ -130,8 +130,8 @@ export default function AndroidInstallPage() {
 
           <HelpStep
             number={5}
-            title="¡Activación completada!"
-            description="Tu eSIM está lista. Actívala cuando llegues a tu destino desde Configuración > Red e Internet."
+            title="¡Listo! Prendé los datos al llegar"
+            description="Tu eSIM está lista y tus días de plan ya corren desde que la recibiste. Cuando llegues a destino, activa los datos desde Configuración > Red e Internet."
             imageSrc="/images/help-android-step-5.png"
             imageAlt="Paso 5: Activación completada - eSIM activa"
             tip="Puedes cambiar entre tu SIM física y tu eSIM en cualquier momento."

@@ -20,7 +20,7 @@ export default function ItalyPage() {
         country="Italia"
         flag="🇮🇹"
         headline="Conectate en Italia sin roaming"
-        subheadline="Cobertura nacional con todas las principales redes italianas. Funciona desde el momento que aterrizas."
+        subheadline="Cobertura nacional con todas las principales redes italianas. Activá en minutos, usá al llegar."
         coverage="98% nacional"
         speed="4G/5G"
         priceUSD="5.99"

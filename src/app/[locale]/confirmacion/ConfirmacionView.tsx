@@ -36,6 +36,12 @@ export default function ConfirmacionView({
   const locale = useLocale();
   const purchaseDate = new Date().toLocaleDateString("es-ES");
   const isScheduled = Boolean(activationDate);
+  // activationDate es un "date" plano (YYYY-MM-DD) sin hora — parsear con
+  // T00:00:00 evita que new Date() lo interprete como UTC y el día se corra
+  // hacia atrás en timezones negativos (Argentina, Chile, etc.).
+  const formattedActivationDate = activationDate
+    ? new Date(`${activationDate}T00:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
+    : null;
   const { trackPurchase } = useMetaEvents();
 
   useEffect(() => {
@@ -106,7 +112,9 @@ export default function ConfirmacionView({
                 Tu próximo viaje<br />empieza ahora.
               </h1>
               <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-md">
-                Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa.
+                {isScheduled
+                  ? `Tu eSIM está confirmada. La recibirás por email el ${formattedActivationDate}.`
+                  : "Tu eSIM ya está confirmada. En breve recibirás todo lo que necesitas para tener conexión en Europa."}
               </p>
             </motion.div>
           </div>
@@ -225,7 +233,7 @@ export default function ConfirmacionView({
               {isScheduled ? (
                 <>
                   <p className="font-bold text-[var(--color-navy)] mb-1">Preparamos tu eSIM</p>
-                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">Para el {new Date(activationDate!).toLocaleDateString("es-ES")}</p>
+                  <p className="text-xs text-[var(--color-ink-2)] leading-snug">Para el {formattedActivationDate}</p>
                 </>
               ) : (
                 <>

@@ -102,8 +102,8 @@ export default function IPhoneInstallPage() {
 
           <HelpStep
             number={5}
-            title="¡Listo! Activá en el destino"
-            description="Tu eSIM está instalada. Ahora solo debe activarla una vez que llegues a tu destino. Activa los datos móviles en Configuración y comienza a navegar."
+            title="¡Listo! Prendé los datos al llegar"
+            description="Tu eSIM está instalada y tus días de plan ya corren desde que la recibiste. Cuando llegues a destino, activa los datos móviles en Configuración y comienza a navegar."
             imageSrc="/images/help-iphone-step-5.png"
             imageAlt="Paso 5: Activación completada - eSIM activa"
             tip="Desactiva el roaming si estás en una zona con costos adicionales."

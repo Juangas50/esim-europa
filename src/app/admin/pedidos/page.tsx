@@ -3,9 +3,14 @@ import PedidosClient from './PedidosClient'
 import type { UnifiedOrder } from './PedidosClient'
 
 // ── Status mapping B2C → portal ───────────────────────────────────────────────
+// pending_payment NUNCA debe mapear a pending_review: ese estado es "tramitar"
+// (pago ya confirmado, esperando que el equipo actúe) y pending_payment significa
+// exactamente lo opuesto — el cliente todavía no completó el pago en Stripe. Antes
+// de este fix, un checkout abandonado aparecía indistinguible de un pedido pago
+// listo para entregar, con botón de "Entregar eSIM" incluido.
 function mapB2CStatus(s: string): string {
   const map: Record<string, string> = {
-    pending_payment: 'pending_review',
+    pending_payment: 'pending_payment',
     paid:            'paid',
     processing:      'paid',
     qr_sent:         'qr_sent',
@@ -52,6 +57,7 @@ export default async function PedidosAdminPage() {
     tariffs:              o.tariffs ?? null,
     source:               'b2b',
     payment_method:       null,
+    payment_id:           null,
     activation_string:    o.activation_string ?? null,
     confirmation_code:    o.confirmation_code ?? null,
     delivery_error:       null,
@@ -111,6 +117,7 @@ export default async function PedidosAdminPage() {
       tariffs:              first.tariffs ? { name: first.tariffs.name } : null,
       source:               'b2c',
       payment_method:       first.payment_method ?? null,
+      payment_id:           first.payment_id ?? null,
       // Para grupos: activation_string/code del pedido representativo (single = igual)
       activation_string:    group.length === 1 ? (first.activation_string ?? null) : null,
       confirmation_code:    group.length === 1 ? (first.confirmation_code ?? null) : null,
