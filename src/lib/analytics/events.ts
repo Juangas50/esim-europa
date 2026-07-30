@@ -68,10 +68,22 @@ export interface PurchaseEventParams extends BaseEventParams {
 }
 
 export function createPurchaseEvent(params: PurchaseEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    currency: params.currency || "USD",
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    transaction_id: params.transaction_id,
+    value: params.value,
+    currency: params.currency || "USD",
+    items: params.items,
+    tax: params.tax,
+    shipping: params.shipping,
+    coupon: params.coupon,
+  } as EventParams;
 }
 
 // ── Search Event ─────────────────────────────────────────────────────────────
