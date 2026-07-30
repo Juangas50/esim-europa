@@ -7,8 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Button from "@/components/ui/Button";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
-import { analytics, getGA4ClientId } from "@/lib/analytics";
-import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { useAnalytics, getGA4ClientId } from "@/lib/analytics";
 import { getFbCookies, hasMetaConsent } from "@/lib/meta/pixel";
 import { generateMetaEventId } from "@/utils/meta/eventId";
 
@@ -70,15 +69,22 @@ type PaymentMethod = "stripe" | "mercadopago";
 export default function StepPayment({ plan, formData, onBack }: StepPaymentProps) {
   const t = useTranslations("purchase");
   const locale = useLocale();
+  const { track } = useAnalytics();
   const [method, setMethod] = useState<PaymentMethod>("stripe");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const { trackAddPaymentInfo } = useMetaEvents();
 
-  // Step viewed once on mount
+  // Step viewed once on mount (ref-guarded — see StepData.tsx)
+  const pageViewFired = useRef(false);
   useEffect(() => {
-    analytics.checkoutStepViewed(3, "payment", plan);
+    if (pageViewFired.current) return;
+    pageViewFired.current = true;
+    track("page_view", {
+      page_path: `/${locale}/compra`,
+      page_title: "RUTA34 Checkout - Step 3: Payment",
+      language: locale,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -89,21 +95,39 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
       isFirstMethodRender.current = false;
       return;
     }
-    analytics.paymentMethodSelected(method, plan);
-  }, [method, plan]);
+    track("set_checkout_option", {
+      page_path: `/${locale}`,
+      page_title: "RUTA34 Checkout - Step 3",
+      language: locale,
+      section: "checkout",
+      checkout_option: "payment_method",
+      checkout_option_value: method,
+    });
+  }, [method, locale, track]);
 
   const handlePay = async () => {
     setLoading(true);
     setError(null);
 
-    // Track payment initiation + pass GA4 client_id for server-side attribution
-    analytics.checkoutPaymentInitiated(plan, method, formData.customer_country);
+    // Track add_payment_info event
+    track("add_payment_info", {
+      page_path: `/${locale}`,
+      page_title: "RUTA34 Checkout - Step 3",
+      language: locale,
+      section: "checkout",
+      value: plan.price_usd * (formData.quantity ?? 1),
+      currency: "USD",
+      payment_type: method,
+    });
+
+    // Get GA4 client ID for server-side attribution
     const ga_client_id = getGA4ClientId();
 
-    // Meta Pixel + CAPI — AddPaymentInfo. El mismo event_id viaja hasta el
-    // webhook de Stripe (vía metadata) para que el Purchase server-side
-    // deduplique con el Purchase que va a disparar el Pixel en /confirmacion.
-    trackAddPaymentInfo({ id: plan.id, name: plan.name, price_usd: plan.price_usd }, formData.quantity ?? 1);
+    // Generate Meta event ID, threaded to the Stripe webhook via metadata.
+    // Purchase is CAPI-only today — /confirmacion no longer fires a browser
+    // Pixel Purchase, so there's no client-side event for this id to dedupe
+    // against yet. It's still generated and sent so the webhook's Purchase
+    // CAPI call has a stable, per-checkout-attempt event_id.
     const metaConsent = hasMetaConsent();
     const meta_event_id = metaConsent ? generateMetaEventId() : undefined;
     const { fbp, fbc } = metaConsent ? getFbCookies() : { fbp: undefined, fbc: undefined };

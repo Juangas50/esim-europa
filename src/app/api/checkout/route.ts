@@ -4,9 +4,15 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
 import { generateOrderRef } from "@/lib/utils";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-04-22.dahlia",
-});
+let stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2026-04-22.dahlia",
+    });
+  }
+  return stripe;
+}
 
 // ── Rate limiting (in-memory, per serverless instance) ───────────────────────
 // For multi-instance protection upgrade to Upstash Redis rate limiter.
@@ -152,7 +158,7 @@ export async function POST(req: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
     // 6. Stripe Checkout
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       locale: locale === "pt" ? "pt-BR" : "es",

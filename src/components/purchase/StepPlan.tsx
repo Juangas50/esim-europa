@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star, ArrowRight } from "@phosphor-icons/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Plan } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
-import { analytics } from "@/lib/analytics";
+import { useAnalytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -31,6 +31,8 @@ interface StepPlanProps {
 
 export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps) {
   const t = useTranslations("plans");
+  const locale = useLocale();
+  const { track } = useAnalytics();
 
   const localPlans = sortPlans(plans.filter((p) => p.type === "local"));
   const dataPlans  = sortPlans(plans.filter((p) => p.type === "dataonly"));
@@ -73,10 +75,16 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
     plans.find((p) => p.id === selected) ??
     tabPlans[0];
 
-  // Fire checkout_step_viewed once on mount with the pre-selected plan
+  // Fire page_view for checkout step 1 once on mount (ref-guarded — see StepData.tsx)
+  const pageViewFired = useRef(false);
   useEffect(() => {
-    const plan = plans.find((p) => p.id === selected) ?? plans[0];
-    if (plan) analytics.checkoutStepViewed(1, "plan", plan);
+    if (pageViewFired.current) return;
+    pageViewFired.current = true;
+    track("page_view", {
+      page_path: `/${locale}/compra`,
+      page_title: "RUTA34 Checkout - Step 1: Plan Selection",
+      language: locale,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -278,7 +286,6 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
             fullWidth
             onClick={() => {
               if (!selectedPlan) return;
-              analytics.checkoutStepCompleted(1, "plan", selectedPlan);
               onNext(selectedPlan, quantity);
             }}
             disabled={!selectedPlan}

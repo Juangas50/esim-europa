@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { META_PIXEL_ID, markMetaPixelReady, flushViewContentRetry } from "@/lib/meta/pixel";
+import { markMetaPixelReady as markAnalyticsMetaReady } from "@/lib/analytics/providers/meta";
 import { useMetaEvents } from "@/hooks/useMetaEvents";
 
 const CONSENT_KEY = "ruta34_cookie_consent";
@@ -77,6 +78,7 @@ fbq('init', '${META_PIXEL_ID}');`,
         onLoad={() => {
           window.fbq?.("track", "PageView");
           markMetaPixelReady();
+          markAnalyticsMetaReady();
         }}
       />
     </>

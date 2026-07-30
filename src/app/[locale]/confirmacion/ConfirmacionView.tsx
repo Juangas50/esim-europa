@@ -4,9 +4,8 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, ShoppingBag, Envelope, Phone, AirplaneInFlight } from "@phosphor-icons/react";
 import { useLocale } from "next-intl";
-import { analytics } from "@/lib/analytics";
+import { useAnalytics } from "@/lib/analytics";
 import { WHATSAPP_URL } from "@/config/constants";
-import { useMetaEvents } from "@/hooks/useMetaEvents";
 
 interface ConfirmacionViewProps {
   orderRef: string;
@@ -18,7 +17,6 @@ interface ConfirmacionViewProps {
   dataGb: number | null;
   validityDays: number | null;
   activationDate: string | null;
-  metaEventId: string | null;
 }
 
 export default function ConfirmacionView({
@@ -31,23 +29,30 @@ export default function ConfirmacionView({
   dataGb,
   validityDays,
   activationDate,
-  metaEventId,
 }: ConfirmacionViewProps) {
   const locale = useLocale();
+  const { track } = useAnalytics();
   const purchaseDate = new Date().toLocaleDateString("es-ES");
   const isScheduled = Boolean(activationDate);
-  const { trackPurchase } = useMetaEvents();
 
   useEffect(() => {
     if (orderRef !== "—") {
-      analytics.purchaseConfirmedPageViewed(orderRef, planId);
-      analytics.confirmationViewed(orderRef, quantity);
+      // Track view_item for confirmation page
+      track("view_item", {
+        page_path: `/${locale}/confirmacion`,
+        page_title: "RUTA34 - Compra Confirmada",
+        language: locale,
+        section: "confirmation",
+        transaction_id: orderRef,
+        value: priceUsd * quantity,
+        currency: "USD",
+        item_id: planId,
+        item_name: planName,
+      });
 
-      // Meta Pixel — Purchase. El event_id (mid) es el mismo que ya usó el
-      // webhook de Stripe para el Purchase por CAPI — Meta deduplica ambos.
-      if (metaEventId && planId) {
-        trackPurchase({ id: planId, name: planName, price_usd: priceUsd }, quantity, orderRef, metaEventId);
-      }
+      // NOTE: Purchase event (purchase) is handled server-side via Stripe webhook for both GA4 (Measurement Protocol)
+      // and Meta (CAPI). This client-side confirmation page only tracks view_item.
+      // The webhook sends purchase with the same event_id for Pixel/CAPI deduplication.
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -290,6 +295,17 @@ export default function ConfirmacionView({
             {/* WhatsApp */}
             <motion.a
               href={WHATSAPP_URL}
+              onClick={() => {
+                track("contact_us", {
+                  page_path: `/${locale}`,
+                  page_title: "RUTA34 - Compra Confirmada",
+                  language: locale,
+                  section: "confirmation",
+                  contact_method: "whatsapp",
+                  contact_location: "confirmation_page",
+                  destination_url: WHATSAPP_URL,
+                });
+              }}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -4 }}
@@ -305,6 +321,17 @@ export default function ConfirmacionView({
             {/* Guide */}
             <motion.a
               href={`/${locale}/help/install/iphone`}
+              onClick={() => {
+                track("select_item", {
+                  page_path: `/${locale}`,
+                  page_title: "RUTA34 - Compra Confirmada",
+                  language: locale,
+                  section: "confirmation",
+                  element_text: "Guía de instalación",
+                  element_type: "link",
+                  destination_url: `/${locale}/help/install/iphone`,
+                });
+              }}
               whileHover={{ y: -4 }}
               className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col items-center justify-center"
             >
@@ -318,6 +345,17 @@ export default function ConfirmacionView({
             {/* FAQ */}
             <motion.a
               href={`/${locale}/help/faq`}
+              onClick={() => {
+                track("select_item", {
+                  page_path: `/${locale}`,
+                  page_title: "RUTA34 - Compra Confirmada",
+                  language: locale,
+                  section: "confirmation",
+                  element_text: "Preguntas frecuentes",
+                  element_type: "link",
+                  destination_url: `/${locale}/help/faq`,
+                });
+              }}
               whileHover={{ y: -4 }}
               className="bg-white border border-[#E9E2D8] rounded-2xl p-8 text-center hover:shadow-md transition-all flex flex-col items-center justify-center"
             >
@@ -334,6 +372,17 @@ export default function ConfirmacionView({
         <div className="text-center mb-8">
           <motion.a
             href={`/${locale}`}
+            onClick={() => {
+              track("select_item", {
+                page_path: `/${locale}`,
+                page_title: "RUTA34 - Compra Confirmada",
+                language: locale,
+                section: "confirmation",
+                element_text: "Volver al inicio",
+                element_type: "link",
+                destination_url: `/${locale}`,
+              });
+            }}
             whileHover={{ x: -2 }}
             className="inline-flex items-center gap-2 text-[var(--color-navy)] font-semibold hover:text-[var(--color-gold)] transition-colors"
           >

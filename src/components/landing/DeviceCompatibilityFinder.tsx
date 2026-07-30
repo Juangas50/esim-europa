@@ -1,14 +1,18 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { MagnifyingGlass, Check, WarningCircle } from "@phosphor-icons/react";
+import { useLocale } from "next-intl";
 import devices from "@/data/esim-devices.json";
 import { WHATSAPP_URL } from "@/config/constants";
+import { useAnalytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export default function DeviceCompatibilityFinder() {
+  const locale = useLocale();
+  const { track } = useAnalytics();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
 
@@ -61,6 +65,28 @@ export default function DeviceCompatibilityFinder() {
     return { compatible: false };
   }, [selectedDevice]);
 
+  // Track view_search_results only on the false→true transition (dropdown newly
+  // visible) — NOT via motion.div's onAnimationComplete, which also fires when the
+  // dropdown's exit animation completes (e.g. right after picking a result or
+  // clearing the search), causing a spurious duplicate event.
+  const dropdownVisible = Boolean(searchQuery) && searchResults.length > 0 && !selectedDevice;
+  const dropdownWasVisible = useRef(false);
+  useEffect(() => {
+    if (dropdownVisible && !dropdownWasVisible.current) {
+      track("view_search_results", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Home - Compatibility",
+        language: locale,
+        section: "compatibility",
+        search_type: "device",
+        search_query: searchQuery,
+        search_results_count: searchResults.length,
+      });
+    }
+    dropdownWasVisible.current = dropdownVisible;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dropdownVisible]);
+
   return (
     <div className="space-y-6">
       {/* Búsqueda */}
@@ -75,8 +101,20 @@ export default function DeviceCompatibilityFinder() {
           placeholder="Buscar modelo… ej: iPhone 15 Pro, Galaxy S24, Pixel 9"
           value={searchQuery}
           onChange={(e) => {
-            setSearchQuery(e.target.value);
+            const newQuery = e.target.value;
+            setSearchQuery(newQuery);
             setSelectedDevice(null);
+            if (newQuery.trim()) {
+              track("search", {
+                page_path: `/${locale}`,
+                page_title: "RUTA34 Home - Compatibility",
+                language: locale,
+                section: "compatibility",
+                search_type: "device",
+                search_query: newQuery,
+                search_results_count: 0,
+              });
+            }
           }}
           className="w-full pl-12 pr-4 py-3.5 rounded-lg border-2 border-[var(--color-border)] bg-white text-sm text-[var(--color-navy)] placeholder:text-[var(--color-ink-2)] focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/50 focus:border-[var(--color-gold)] transition-all"
         />
@@ -96,7 +134,19 @@ export default function DeviceCompatibilityFinder() {
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.03 }}
-                  onClick={() => setSelectedDevice(result.model)}
+                  onClick={() => {
+                    setSelectedDevice(result.model);
+                    track("view_item", {
+                      page_path: `/${locale}`,
+                      page_title: "RUTA34 Home - Compatibility",
+                      language: locale,
+                      section: "compatibility",
+                      device_model: result.model,
+                      device_manufacturer: result.manufacturer,
+                      is_compatible: true,
+                      compatibility_source: "manual_search",
+                    });
+                  }}
                   className="w-full text-left px-4 py-2.5 hover:bg-[var(--color-warm-white)] border-b border-[var(--color-border)] last:border-b-0 transition-colors group"
                 >
                   <p className="text-sm font-medium text-[var(--color-navy)] group-hover:text-[var(--color-gold)]">
@@ -165,7 +215,21 @@ export default function DeviceCompatibilityFinder() {
                     </li>
                   </ul>
                   <button
-                    onClick={() => window.location.href = "/es/compra"}
+                    onClick={() => {
+                      track("add_to_cart", {
+                        page_path: `/${locale}`,
+                        page_title: "RUTA34 Home - Compatibility",
+                        language: locale,
+                        section: "compatibility",
+                        device_model: selectedDevice,
+                        is_compatible: true,
+                        // No plan/price is selected yet at this point in the flow
+                        // (this just routes to /compra) — omitting value/currency
+                        // rather than sending a fabricated value: 0, which would
+                        // read as a real $0 cart addition in GA4 ecommerce reports.
+                      });
+                      window.location.href = "/es/compra";
+                    }}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-gold)] hover:bg-amber-600 text-white font-bold text-sm transition-all duration-200 hover:shadow-lg active:scale-95"
                   >
                     Comprar eSIM →
@@ -188,7 +252,20 @@ export default function DeviceCompatibilityFinder() {
                     Este modelo puede no ser compatible con eSIM. Te recomendamos verificar la versión exacta del dispositivo o contactar con nuestro equipo.
                   </p>
                   <button
-                    onClick={() => window.location.href = WHATSAPP_URL}
+                    onClick={() => {
+                      track("contact_us", {
+                        page_path: `/${locale}`,
+                        page_title: "RUTA34 Home - Compatibility",
+                        language: locale,
+                        section: "compatibility",
+                        device_model: selectedDevice,
+                        is_compatible: false,
+                        contact_method: "whatsapp",
+                        contact_location: "device_finder",
+                        destination_url: WHATSAPP_URL,
+                      });
+                      window.location.href = WHATSAPP_URL;
+                    }}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-navy)] hover:bg-[var(--color-navy)]/80 text-white font-bold text-sm transition-all duration-200 hover:shadow-lg active:scale-95"
                   >
                     Consultar por WhatsApp →

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { WHATSAPP_URL } from "@/config/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "@phosphor-icons/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useAnalytics } from "@/lib/analytics";
 import InternationalCallsTable from "./InternationalCallsTable";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -112,6 +113,8 @@ const KEY_INDEX: Record<string, number> = Object.fromEntries(
 
 export default function FAQ() {
   const t = useTranslations("faq");
+  const locale = useLocale();
+  const { track } = useAnalytics();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
@@ -128,6 +131,21 @@ export default function FAQ() {
   }, []);
 
   const toggle = (i: number) => {
+    const willOpen = openIndex !== i;
+    if (willOpen) {
+      const faqKey = FAQ_KEYS[i];
+      track("select_item", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Home - FAQ",
+        language: locale,
+        section: "faq",
+        element_id: `faq-${faqKey}`,
+        element_text: t(`items.${faqKey}.q`),
+        element_type: "accordion",
+        faq_index: i,
+        faq_key: faqKey,
+      });
+    }
     setOpenIndex(openIndex === i ? null : i);
   };
 

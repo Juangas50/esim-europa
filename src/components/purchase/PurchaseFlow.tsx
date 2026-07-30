@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { CheckCircle, ArrowLeft } from "@phosphor-icons/react";
 import StepPlan from "./StepPlan";
 import StepData from "./StepData";
 import StepPayment from "./StepPayment";
 import { Plan, OrderFormData } from "@/types";
-import { analytics } from "@/lib/analytics";
-import { trackBeginCheckout, trackAddPaymentInfo } from "@/lib/analytics-ga4";
-import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { useAnalytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -21,6 +19,8 @@ interface PurchaseFlowProps {
 
 export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps) {
   const t = useTranslations("purchase");
+  const locale = useLocale();
+  const { track } = useAnalytics();
 
   // If the user clicked "Buy plan" on the landing, skip the plan-picker entirely
   const initialPlan = initialPlanId
@@ -34,18 +34,10 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
     plan_id: initialPlanId,
     quantity: 1,
   });
-  const { trackViewContent, trackInitiateCheckout } = useMetaEvents();
 
-  // Fire checkoutStarted when a plan arrives pre-selected from the landing page
-  useEffect(() => {
-    if (initialPlan) {
-      analytics.checkoutStarted(initialPlan);
-      // Meta Pixel + CAPI — ViewContent (product) + InitiateCheckout
-      trackViewContent({ id: initialPlan.id, name: initialPlan.name, price_usd: initialPlan.price_usd });
-      trackInitiateCheckout({ id: initialPlan.id, name: initialPlan.name, price_usd: initialPlan.price_usd }, 1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // NOTE: begin_checkout is already fired in Plans.tsx when user clicks "Comprar"
+  // DO NOT fire it again here to avoid duplication
+  // The only place it should fire from PurchaseFlow is when user manually selects a plan in StepPlan
 
   const steps = [
     { id: 1 as const, label: t("steps.plan") },
@@ -145,16 +137,20 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                   setSelectedPlan(plan);
                   setQuantity(qty);
                   setFormData((prev) => ({ ...prev, plan_id: plan.id, quantity: qty }));
-                  analytics.checkoutStarted(plan);
-                  // GA4: begin_checkout
-                  trackBeginCheckout({
-                    id: plan.id,
-                    name: plan.name,
-                    price: plan.price_usd,
+                  track("begin_checkout", {
+                    page_path: `/${locale}`,
+                    page_title: "RUTA34 Checkout - Plan Selection",
+                    language: locale,
+                    section: "checkout",
+                    plan_id: plan.id,
+                    plan_name: plan.name,
+                    price_usd: plan.price_usd,
+                    currency: "USD",
+                    value: plan.price_usd,
+                    data_gb: plan.data_gb,
+                    is_popular: plan.is_popular,
+                    plan_position: plans.indexOf(plan),
                   });
-                  // Meta Pixel + CAPI — ViewContent (product) + InitiateCheckout
-                  trackViewContent({ id: plan.id, name: plan.name, price_usd: plan.price_usd });
-                  trackInitiateCheckout({ id: plan.id, name: plan.name, price_usd: plan.price_usd }, qty);
                   goToStep(2);
                 }}
               />

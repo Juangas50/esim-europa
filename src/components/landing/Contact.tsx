@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { WhatsappLogo, EnvelopeSimple, Phone } from "@phosphor-icons/react";
+import { useLocale } from "next-intl";
+import { useAnalytics } from "@/lib/analytics";
 import { WHATSAPP_NUMBER } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -31,6 +33,21 @@ const CONTACTS = [
 ] as const;
 
 export default function Contact() {
+  const locale = useLocale();
+  const { track } = useAnalytics();
+
+  const handleContactClick = (method: "whatsapp" | "email" | "phone", href: string) => {
+    track("contact_us", {
+      page_path: `/${locale}`,
+      page_title: "RUTA34 Home - Contact",
+      language: locale,
+      section: "contact",
+      contact_method: method,
+      contact_location: "contact_section",
+      destination_url: href,
+    });
+  };
+
   return (
     <section className="py-10 md:py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
@@ -51,10 +68,13 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {CONTACTS.map(({ icon: Icon, label, value, href, color }, i) => (
+          {CONTACTS.map(({ icon: Icon, label, value, href, color }, i) => {
+            const contactMethod = label.toLowerCase() === "whatsapp" ? "whatsapp" : label.toLowerCase() === "email" ? "email" : "phone";
+            return (
             <motion.a
               key={label}
               href={href}
+              onClick={() => handleContactClick(contactMethod, href)}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
               initial={{ opacity: 0, y: 12 }}
@@ -72,7 +92,8 @@ export default function Contact() {
                 {value}
               </p>
             </motion.a>
-          ))}
+            );
+          })}
         </div>
 
       </div>

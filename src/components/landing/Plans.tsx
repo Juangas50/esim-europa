@@ -8,9 +8,7 @@ import Badge from "@/components/ui/Badge";
 import PremiumTooltip from "@/components/ui/PremiumTooltip";
 import FlagIcon from "@/components/ui/FlagIcon";
 import { formatUSD } from "@/lib/utils";
-import { analytics } from "@/lib/analytics";
-import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
-import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { useAnalytics } from "@/lib/analytics";
 import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -31,7 +29,7 @@ function sortByPosition(plans: Plan[]) {
 function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPopular: boolean }) {
   const t = useTranslations("plans");
   const locale = useLocale();
-  const { trackAddToCart } = useMetaEvents();
+  const { track } = useAnalytics();
 
   const features = plan.badge
     ? plan.badge.split(/\r?\n/).map(f => f.trim()).filter(Boolean)
@@ -230,15 +228,20 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
       <a
         href={`/${locale}/compra?plan=${plan.id}`}
         onClick={() => {
-          analytics.planSelected(plan);
-          trackSelectPlan({
-            id: plan.id,
-            name: plan.name,
-            price: plan.price_usd,
-            size: plan.size,
+          track("begin_checkout", {
+            page_path: `/${locale}`,
+            page_title: "RUTA34 Home - Plans",
+            language: locale,
+            section: "plans",
+            plan_id: plan.id,
+            plan_name: plan.name,
+            price_usd: plan.price_usd,
+            currency: "USD",
+            value: plan.price_usd,
+            data_gb: plan.data_gb,
+            is_popular: isPopular,
+            plan_position: index,
           });
-          // Meta Pixel + CAPI — AddToCart
-          trackAddToCart({ id: plan.id, name: plan.name, price_usd: plan.price_usd });
         }}
         className={`w-full py-3 rounded-xl font-bold text-center transition-all active:scale-[0.97] ${
           isPopular
@@ -256,22 +259,27 @@ export default function Plans({ plans }: PlansProps) {
   const t = useTranslations("plans");
   const locale = useLocale();
   const sorted = sortByPosition(plans);
-  const { trackViewContentList } = useMetaEvents();
+  const { track } = useAnalytics();
 
   useEffect(() => {
     if (plans.length > 0) {
-      trackViewPlans(
-        plans.map((p) => ({
-          id: p.id,
-          name: p.name,
+      track("view_item_list", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Home - Plans",
+        language: locale,
+        section: "plans",
+        item_list_id: "all-plans",
+        item_list_name: "eu_plans",
+        items: plans.map((p, idx) => ({
+          item_id: p.id,
+          item_name: p.name,
           price: p.price_usd,
-        }))
-      );
-      // Meta Pixel + CAPI — ViewContent (product_group)
-      trackViewContentList(plans.map((p) => ({ id: p.id, name: p.name, price_usd: p.price_usd })));
+          position_index: idx,
+        })),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plans]);
+  }, [plans, locale, track]);
 
   if (sorted.length === 0) return null;
 

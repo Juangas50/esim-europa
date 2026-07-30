@@ -6,6 +6,7 @@ import { List, X } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAnalytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -18,6 +19,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
+  const { track } = useAnalytics();
 
   useEffect(() => {
     const handler = () => {
@@ -37,6 +39,31 @@ export default function Navbar() {
 
   // Cierra el menú al cambiar de ruta
   useEffect(() => setOpen(false), [pathname]);
+
+  const handleLinkClick = (label: string, href: string) => {
+    track("select_item", {
+      page_path: `/${locale}`,
+      page_title: "RUTA34 Home",
+      language: locale,
+      section: "navbar",
+      element_text: label,
+      element_type: "link",
+      destination_url: href,
+    });
+  };
+
+  const handleMobileMenuToggle = (isOpening: boolean) => {
+    if (isOpening) {
+      track("select_item", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Home",
+        language: locale,
+        section: "navbar",
+        element_text: "menu_open",
+        element_type: "button",
+      });
+    }
+  };
 
   const navLinks = [
     { label: t("howItWorks"), href: "#como-funciona" },
@@ -81,6 +108,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
+                onClick={() => handleLinkClick(link.label, link.href)}
                 className="text-sm text-[#FAF7F2] hover:text-[var(--color-navy)] transition-colors duration-200"
               >
                 {link.label}
@@ -107,6 +135,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="#planes"
+              onClick={() => handleLinkClick(t("buyNow"), "#planes")}
               className="flex items-center gap-2 bg-[var(--color-gold)] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[var(--color-gold-light)] active:scale-[0.97] transition-all"
               style={{ transition: "transform 150ms cubic-bezier(0.23,1,0.32,1), background-color 200ms ease" }}
             >
@@ -117,7 +146,13 @@ export default function Navbar() {
           {/* Mobile toggle */}
           <button
             className="md:hidden p-1 text-[#1B2F4E] ml-2"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              const isOpening = !open;
+              setOpen(isOpening);
+              if (isOpening) {
+                handleMobileMenuToggle(true);
+              }
+            }}
             aria-label="Abrir menú"
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -161,7 +196,10 @@ export default function Navbar() {
               <motion.a
                 key={link.href}
                 href={link.href}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  handleLinkClick(link.label, link.href);
+                  setOpen(false);
+                }}
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{
@@ -177,7 +215,10 @@ export default function Navbar() {
 
             <motion.a
               href="#planes"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                handleLinkClick(t("buyNow"), "#planes");
+                setOpen(false);
+              }}
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.4, ease: EASE_OUT }}

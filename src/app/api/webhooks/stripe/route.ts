@@ -8,9 +8,15 @@ import { generateOrderRef } from "@/lib/utils";
 import { sendMetaCapiEvent } from "@/lib/meta/capi";
 import { buildPurchasePayload } from "@/lib/meta/events";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-04-22.dahlia",
-});
+let stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2026-04-22.dahlia",
+    });
+  }
+  return stripe;
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -19,7 +25,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = getStripe().webhooks.constructEvent(
       body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -175,7 +181,7 @@ export async function POST(req: NextRequest) {
                   name: "purchase",
                   params: {
                     transaction_id: orderRef,
-                    value: plan.price_usd,
+                    value: plan.price_usd * quantity,
                     currency: "USD",
                     items: [
                       {
@@ -183,7 +189,7 @@ export async function POST(req: NextRequest) {
                         item_name: `eSIM ${plan.name}`,
                         item_category: plan.type,
                         price: plan.price_usd,
-                        quantity: 1,
+                        quantity,
                       },
                     ],
                   },
