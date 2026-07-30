@@ -97,6 +97,3 @@ export type {
   ListViewEventParams,
   PaymentInfoEventParams,
 } from "./events";
-
-// Re-export helpers for common GA4 operations
-export { getGA4ClientId } from "./helpers";
