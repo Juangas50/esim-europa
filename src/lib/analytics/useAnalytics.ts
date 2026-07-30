@@ -110,7 +110,7 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
         price_usd: price,
         currency: "USD",
         value: price,
-      });
+      } as EventParams);
     },
     [track, getAutoParams]
   );
