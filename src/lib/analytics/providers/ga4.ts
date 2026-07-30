@@ -218,6 +218,9 @@ export class GA4Provider {
     if (params.checkout_option_value) {
       payload.checkout_option_value = params.checkout_option_value;
     }
+    if (params.checkout_step) {
+      payload.checkout_step = params.checkout_step;
+    }
     if (params.exception_type) {
       payload.exception_type = params.exception_type;
     }

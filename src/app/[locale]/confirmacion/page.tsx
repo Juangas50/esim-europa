@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic";
 export default async function ConfirmacionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ref?: string; plan?: string; qty?: string; mid?: string }>;
+  searchParams: Promise<{ ref?: string; plan?: string; qty?: string }>;
 }) {
-  const { ref, plan: planId, qty, mid } = await searchParams;
+  const { ref, plan: planId, qty } = await searchParams;
   const orderRef = ref ?? "—";
   const quantity = parseInt(qty ?? "1", 10) || 1;
 
@@ -36,7 +36,6 @@ export default async function ConfirmacionPage({
       dataGb={plan?.data_gb ?? null}
       validityDays={plan?.duration_days ?? null}
       activationDate={order?.activation_date ?? null}
-      metaEventId={mid ?? null}
     />
   );
 }

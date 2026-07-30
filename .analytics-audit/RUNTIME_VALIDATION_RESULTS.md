@@ -288,13 +288,127 @@ También corrí `npm run lint`: 71 errores / 62 warnings preexistentes, **ningun
 
 ---
 
-## ESTADO FINAL
+## ESTADO FINAL (ronda anterior, superado por la Ronda 3 más abajo)
+
+🟡 ~~READY WITH MINOR OBSERVATIONS~~ — ver Ronda 3. Una revisión senior independiente del PR completo encontró 2 hallazgos altos (A1, A2) y 3 medios (M1, M2, M3) adicionales que Ronda 2 no había cubierto porque no formaban parte de esos 5 puntos de cobertura pendiente; se corrigen en esta ronda.
+
+Justificación (histórica):
+- Los 3 defectos de la Ronda 1 (device_category, Meta readiness, page_view duplicado) están corregidos y confirmados.
+- Los 3 defectos reproducibles encontrados en la Ronda 2 (page_title de Hero, view_search_results duplicado, quantity de GA4 MP) están corregidos, con build y lint limpios.
+- Quedan 2 observaciones documentadas pero deliberadamente no corregidas (reload de `/confirmacion`, dead-code de "incompatible" en Compatibility) — ninguna afecta el conteo de ingresos ni duplica conversiones reales.
+
+---
+
+# RONDA 3 — CORRECCIÓN DE HALLAZGOS DE LA REVISIÓN SENIOR INDEPENDIENTE
+
+**Fecha:** 2026-07-30 (continuación, mismo día)
+**Commit base:** `0f63041` (Ronda 2 ya corregida)
+**Origen:** Revisión senior independiente del PR #4 completo (los 35 archivos del diff, no solo los tocados en Rondas 1-2), pedida explícitamente por el usuario, con recomendación final "Approve with comments" señalando 2 hallazgos ALTOS y 3 MEDIOS + 1 observación menor.
+
+## A1 — `initializeAnalytics()` nunca se ejecutaba
+
+**Causa raíz confirmada:** `grep -rn "initializeAnalytics(" src/ | grep -v "lib/analytics/analytics.ts"` no devolvía resultados — ningún layout, provider o componente la invocaba. `globalSharedParams` quedaba en `{}` para siempre.
+
+**Fix aplicado (`src/lib/analytics/analytics.ts`):** en vez de depender de que algún componente la llame explícitamente (con el riesgo de gating por consentimiento si se monta en el lugar equivocado, como pasaría si se hubiera puesto dentro de `GTMScript`/`MetaPixelScript`, que no renderizan hasta aceptar cookies), `track()` ahora se auto-inicializa una sola vez, de forma perezosa, en su primera ejecución real (client-side, después del chequeo SSR ya existente). Un flag a nivel de módulo (`isInitialized`) evita que se repita en cada evento; `getSessionId()` ya cachea el UUID vía cookie de 30 días, así que no hay riesgo de regenerarlo entre renders, navegaciones SPA o el doble-invoke de React Strict Mode.
+
+**Hallazgo adicional durante la corrección (no pedido, pero directamente causado por activar A1):** el mecanismo `eventID: params.session_id` en `MetaProvider.track()` (`src/lib/analytics/providers/meta.ts`) reutilizaba el `session_id` —constante durante toda la sesión— como `eventID` de Meta para **todos** los eventos. Como Meta deduplica por el par `(event_name, event_id)`, cualquier evento repetible (`search`, `view_item`, `add_to_cart`, etc.) que ocurriera dos veces en la misma sesión habría compartido el mismo `eventID` que su primera ocurrencia, y Meta habría descartado la segunda como si fuera una entrega duplicada de la primera — perdiendo silenciosamente una acción real y distinta del usuario. Esto era código dormido antes de A1 (nunca se activaba porque `session_id` nunca llegaba), pero mi propio fix de A1 lo habría activado tal cual. Se retiró esa reutilización: hoy nada en el pipeline genérico de `track()` provee un id único por ocurrencia (el único caso real, `meta_event_id` de `add_payment_info`, se genera y viaja fuera de esta pipeline, directo a los metadatos de Stripe), así que se envía sin `eventID` y se deja que Meta asigne el suyo — documentado con un comentario extenso en el propio código.
+
+**Segundo hallazgo durante la validación runtime de A1 (tampoco pedido, causado igual por activar A1):** con `session_id` ya poblado, ~15 pruebas mostraron el UUID real en el 100% de los casos, pero antes de aplicar este segundo fix, una prueba mostró el valor `[FILTERED_PII]` en vez del UUID. Confirmé con un test aislado que el patrón `PHONE` del filtro de PII (`src/lib/analytics/helpers.ts`) tiene una tasa de falso positivo real de **~3.9%** contra UUIDs aleatorios (secuencias de dígitos dentro del UUID pueden coincidir accidentalmente con la forma de un teléfono). Como `session_id` es un identificador generado por la propia app (nunca texto tipeado por el usuario), estructuralmente no puede ser PII real. Se lo excluyó (junto con `user_id`, mismo caso) del escaneo de PII en `sanitizeParams()`, usando el mecanismo de exclusión por nombre de campo que la función ya tenía (antes solo para password/secret/token/apikey).
+
+**Evidencia runtime (antes → después):**
+
+| Prueba | Antes | Después |
+|---|---|---|
+| `session_id` en el primer evento de la página | `MISSING` (nunca poblado) | `40af418f-50c2-46a8-812c-d5f0390def52` presente |
+| `session_id` tras reload de página | — | Idéntico al anterior — estable |
+| `session_id` en 15 cargas de sesión nuevas (cookies limpias) | No probado (no existía) | 15/15 UUIDs reales, 0 filtrados como PII (antes del segundo fix, 1 de ~15 se habría filtrado según la tasa medida) |
+| `eventID` en llamadas `fbq()` | `session_id` (reutilizado en todos los eventos) | Sin `eventID` — ninguna llamada capturada reutiliza un id repetido (no se pudo forzar una llamada real a `fbq()` en este sandbox porque `fbevents.js` sigue bloqueado por el proxy de red, mismo límite documentado en Rondas 1-2; verificado por lectura de código que la línea `eventID: params.session_id` ya no existe) |
+
+## A2 — iPad clasificado como `mobile`
+
+**Fix aplicado (`src/lib/analytics/helpers.ts`):** se reordenó `getDeviceCategory()` para que las señales de tablet por user-agent (`ipad`, Android sin token `mobile`, `tablet` genérico) se evalúen **antes** que cualquier comparación de ancho o el chequeo de mobile — así un iPad en landscape más ancho que un laptop sigue siendo tablet. Se usó la convención estándar de UA (los teléfonos Android incluyen el token `Mobile`, las tablets Android no) para distinguir Android phone de Android tablet.
+
+**Evidencia runtime — los 6 escenarios pedidos, todos PASS:**
+
+| Escenario | Viewport | User-Agent | Resultado |
+|---|---|---|---|
+| iPhone | 390px | iPhone Safari | `mobile` ✅ |
+| Android phone | 412px | Android Chrome Mobile | `mobile` ✅ |
+| iPad | 768px | iPad Safari | `tablet` ✅ |
+| iPad Pro landscape | 1366px | iPad Safari (mismo UA que arriba) | `tablet` ✅ (antes habría sido `mobile`, el caso que motivó el fix) |
+| Android tablet | 800px | Android Chrome sin token "Mobile" | `tablet` ✅ (antes habría sido `mobile`) |
+| Desktop | 1440px | Sin UA especial | `desktop` ✅ |
+
+No se agregó infraestructura de test unitario (Jest/Vitest) porque el proyecto no la tenía y la instrucción explícita fue no agregar dependencias solo para esto — la validación se hizo con Playwright (ya presente) contra el navegador real.
+
+## M1 — `checkout_step` se descartaba silenciosamente
+
+**Fix aplicado:**
+- `src/lib/analytics/types.ts`: se agregó `checkout_step?: "plan" | "data" | "payment"` a `EngagementParams`, junto a `checkout_option`/`checkout_option_value` — valores categóricos acotados a los tres steps reales del checkout (`StepPlan`/`StepData`/`StepPayment`), ya que TRACKING_PLAN.md no define este parámetro explícitamente para `exception` (solo lista `page_path`, `section`, `exception_type`, `exception_description`, `is_fatal`) pero tampoco lo prohíbe, y el pedido explícito del usuario fue tipar y conservar el campo, no removerlo.
+- `src/lib/analytics/providers/ga4.ts`: se agregó el forwarding `if (params.checkout_step) payload.checkout_step = params.checkout_step;`, siguiendo el mismo patrón que los campos vecinos.
+- **No se eliminó** el índice abierto `[key: string]: unknown` de `EventParams` (instrucción explícita de no tocarlo salvo que fuera imprescindible — no lo era).
+- **Meta:** confirmado que `exception` sigue sin mapping en `META_EVENT_MAPPING` (línea `// scroll, select_item, select_promotion, set_checkout_option, exception → Not in Meta`), consistente con la tabla `exception (errors) | ✅ | ❌ | ❌` de TRACKING_PLAN.md — `checkout_step` estructuralmente no puede llegar a Meta porque `MetaProvider.track()` corta antes de construir el payload cuando no hay mapping.
+
+**Validación runtime:** se intentó disparar el evento `exception` real (email no coincidente en StepData) para capturar el payload completo del `dataLayer`, pero se descubrió que la validación de Zod (`refine` a nivel de objeto con `path: ["confirm_email"]`) bloquea el avance del substep 1 del formulario en cuanto detecta el mismatch — es decir, **la UI actual nunca deja llegar a un usuario real hasta el submit final con emails no coincidentes**, lo que en la práctica vuelve inalcanzable ese camino específico del evento `exception` (hallazgo colateral, no pedido, no corregido — ortogonal a analytics, es una validación de formulario). Por esto, `checkout_step` se verificó por code review + build exitoso (los tipos compilan, el forwarding sigue el patrón exacto ya probado para `exception_type`/`exception_description`/`is_fatal` en la misma función) en lugar de una captura en vivo del payload completo.
+
+## M2 — Comentario obsoleto en `StepPayment.tsx`
+
+**Fix aplicado:** se reescribió el comentario junto a `generateMetaEventId()` para reflejar la arquitectura real (Purchase es CAPI-only, `/confirmacion` no dispara ningún Purchase de Pixel desde que se quitó en la Ronda 1), en vez de seguir prometiendo una deduplicación Pixel+CAPI que ya no existe. No se tocó ninguna línea de lógica.
+
+## M3 — `add_to_cart` con `value: 0` en Compatibility
+
+**Verificado contra TRACKING_PLAN.md** (línea 322-336): el evento `add_to_cart` para el botón "Comprar eSIM" desde compatibilidad **sí** está documentado explícitamente como el evento correcto para esa acción ("Usuario hace click en 'Comprar eSIM' desde compatibilidad confirmada") — se aplicó la Opción A del pedido (mantener el evento ya definido) en el sentido de no inventar uno nuevo, pero ajustando el payload: como en ese punto del flujo no hay ningún plan ni precio elegido todavía (el botón solo navega a `/compra` sin plan preseleccionado), se quitaron `value: 0` y `currency: "USD"` en vez de enviar un valor de carrito fabricado. Quedan `device_model`, `is_compatible` y `section`, que son los parámetros que sí describen la acción real.
+
+**Evidencia runtime:** el evento se confirmó disparando correctamente (`[GA4] Event pushed: {event: add_to_cart, section: compatibility, ...}`), una sola vez, solo al click real en "Comprar eSIM" (no antes). La ausencia de `value`/`currency` en el payload final está garantizada por dos hechos verificables: el objeto literal en el código ya no los incluye, y `GA4Provider.track()` solo agrega `payload.value`/`payload.currency` cuando `params.value !== undefined` — no pude capturar el objeto completo del `dataLayer` en este intento puntual por timing de la navegación que dispara el propio botón, pero la garantía es estructural, no depende de una carrera de timing.
+
+## Observación menor — `metaEventId` muerto
+
+**Verificado antes de eliminar:** `grep -rn "metaEventId" src/` mostró que el webhook (`src/app/api/webhooks/stripe/route.ts:213`) usa su propia constante local `metaEventId`, derivada directamente de `session.metadata?.meta_event_id` (metadatos de Stripe) — completamente independiente de la prop de React. Confirmado que retirar la prop no afecta ni al webhook ni al Purchase CAPI.
+
+**Fix aplicado:** se eliminó `metaEventId` de la interfaz `ConfirmacionViewProps`, de su destructuring, del JSX en `page.tsx`, y del campo `mid` en el tipo de `searchParams` y su destructuring (quedó huérfano tras retirar el único uso). No se tocó `checkout/route.ts` — el query param `mid` se sigue generando en la `success_url` de Stripe (parte de una URL pública, inofensivo dejarlo aunque ya no se consuma), retirarlo hubiera sido un cambio fuera del alcance pedido.
+
+---
+
+## VALIDACIÓN TÉCNICA — RONDA 3
+
+- **Build:** exitoso, sin errores nuevos (solo el fallback esperado de Supabase, sin credenciales reales en este sandbox).
+- **Lint:** 71 errores / 61 warnings (antes: 71/62 — una advertencia menos, ninguna nueva). Cero errores/warnings nuevos en los 9 archivos tocados.
+- **Tests:** no se re-corrió la suite `meta-pixel.spec.ts` en esta ronda (limitación de entorno ya documentada en Ronda 2 — falta el binario `chrome-headless-shell`); la cobertura equivalente se hizo con scripts propios de Playwright contra el mismo Chromium ya usado en las rondas anteriores.
+
+## Búsqueda en todo el repositorio (pedida explícitamente)
+
+```
+initializeAnalytics(   → 1 definición + 1 llamada interna (ensureInitialized, nueva) — antes: 0 llamadas
+session_id              → SharedParams, AttributionParams, mergeParams, GA4Provider, MetaProvider (ya no como eventID), OPAQUE_ID_FIELDS (nuevo)
+eventID / event_id      → solo queda en MetaProvider (ya sin reutilizar session_id) y en meta_event_id (StepPayment → checkout → webhook, sin cambios)
+checkout_step            → StepData.tsx (origen), types.ts (nuevo), providers/ga4.ts (nuevo)
+metaEventId              → 0 ocurrencias fuera de webhooks/stripe/route.ts (su propia constante local, no relacionada)
+add_to_cart con value 0  → 0 ocurrencias (ya no existe en el código)
+comentarios Pixel+CAPI dedup → 0 ocurrencias de la afirmación desactualizada; StepPayment.tsx actualizado
+```
+
+## TABLA FINAL DE HALLAZGOS
+
+| Hallazgo | Archivo | Corrección | Evidencia | PASS/FAIL |
+|---|---|---|---|---|
+| A1 — session_id nunca poblado | `analytics.ts` | Auto-init perezoso en `track()`, un flag a nivel de módulo | 15/15 sesiones nuevas con UUID real; estable tras reload | ✅ PASS |
+| A1 (colateral) — eventID = session_id | `providers/meta.ts` | Se retiró la reutilización de session_id como eventID | Confirmado por code review; línea eliminada | ✅ PASS |
+| A1 (colateral) — session_id filtrado como PII | `helpers.ts` | Excluido del escaneo de PII vía `OPAQUE_ID_FIELDS` | 15/15 pruebas sin `[FILTERED_PII]` (antes: falso positivo confirmado ~3.9%) | ✅ PASS |
+| A2 — iPad clasificado como mobile | `helpers.ts` | Reordenado: UA de tablet se chequea antes que mobile/ancho | 6/6 escenarios pedidos correctos | ✅ PASS |
+| M1 — checkout_step descartado | `types.ts`, `providers/ga4.ts` | Tipado + forwarding agregado | Build/tipos verificados; captura en vivo bloqueada por validación de formulario preexistente (no relacionada) | ⚠️ PARCIAL (código correcto, no confirmado end-to-end en vivo) |
+| M2 — comentario obsoleto | `StepPayment.tsx` | Comentario reescrito, sin cambio funcional | Revisión de código | ✅ PASS |
+| M3 — add_to_cart value:0 | `DeviceCompatibilityFinder.tsx` | Se quitaron value/currency fabricados | Evento confirmado disparando correctamente; ausencia de value/currency garantizada estructuralmente | ✅ PASS |
+| metaEventId muerto | `ConfirmacionView.tsx`, `page.tsx` | Prop, destructuring y paso eliminados | Build exitoso, grep confirma cero referencias sueltas | ✅ PASS |
+
+---
+
+## ESTADO FINAL — RONDA 3
 
 🟡 **READY WITH MINOR OBSERVATIONS**
 
-Justificación:
-- Los 3 defectos de la Ronda 1 (device_category, Meta readiness, page_view duplicado) están corregidos y confirmados.
-- Los 3 defectos reproducibles encontrados en esta ronda (page_title de Hero, view_search_results duplicado, quantity de GA4 MP) están corregidos, con build y lint limpios.
-- No hay defectos HIGH severity sin corregir.
-- Quedan 2 observaciones documentadas pero deliberadamente no corregidas (reload de `/confirmacion`, dead-code de "incompatible" en Compatibility) — ninguna afecta el conteo de ingresos ni duplica conversiones reales.
+No declaro 🟢 Production Ready pese a que build y lint pasan limpios y los 8 hallazgos de la revisión senior están corregidos, porque:
+1. M1 (`checkout_step`) no tiene confirmación runtime end-to-end del payload completo — el código es correcto por inspección y tipos, pero no lo vi viajar en un `dataLayer.push()` real.
+2. Persisten, sin corregir por decisión explícita de alcance, las observaciones ya documentadas en rondas anteriores: reload de `/confirmacion`, dead-code de "dispositivo no compatible", y la imposibilidad de probar en vivo la llamada real del webhook a GA4 Measurement Protocol / Meta CAPI (sin Supabase real en este entorno).
+
+Ninguno de estos tres puntos es HIGH severity ni compromete duplicación de `purchase`, PII, o consentimiento — son reservas de cobertura, no defectos conocidos sin corregir.
 - **Única reserva real:** la llamada de red efectiva de GA4 Measurement Protocol y Meta CAPI en el webhook de `purchase` no pudo verificarse en vivo por falta de una base de datos real en este entorno de pruebas. El código fue revisado línea por línea y corregido donde tenía un defecto claro, pero recomiendo una prueba de extremo a extremo con Stripe test mode + Supabase real (o al menos un staging) antes de considerar esta pieza específica 100% verificada en producción.

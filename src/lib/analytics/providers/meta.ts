@@ -107,12 +107,19 @@ export class MetaProvider {
         console.log("[Meta] Event tracked:", metaEventName, metaData);
       }
 
-      // Use eventID for deduplication if available
-      if (params.session_id) {
-        window.fbq("track", metaEventName, metaData, { eventID: params.session_id });
-      } else {
-        window.fbq("track", metaEventName, metaData);
-      }
+      // NOTE: eventID was previously set to params.session_id here. That's wrong —
+      // session_id is stable for the whole session, but repeatable event types
+      // (search, view_item, add_to_cart, etc.) can legitimately fire more than
+      // once per session. Meta dedupes by the (event_name, event_id) pair, so
+      // reusing session_id as eventID would make every 2nd+ occurrence of the
+      // same event type in a session look like a duplicate delivery of the 1st,
+      // and Meta would silently drop a real, distinct user action.
+      // Pixel/CAPI dedup only exists today for events that carry their own
+      // per-occurrence id (e.g. add_payment_info's meta_event_id, threaded
+      // outside this generic pipeline — see StepPayment.tsx / webhooks/stripe).
+      // Nothing here currently has a CAPI twin to dedupe against, so we send
+      // without eventID and let Meta assign its own.
+      window.fbq("track", metaEventName, metaData);
     });
   }
 

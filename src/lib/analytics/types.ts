@@ -95,6 +95,7 @@ export interface EngagementParams {
   promotion_name?: string;
   checkout_option?: string;
   checkout_option_value?: string;
+  checkout_step?: "plan" | "data" | "payment"; // which checkout step an exception happened on
   exception_type?: string;
   exception_description?: string;
   is_fatal?: boolean;

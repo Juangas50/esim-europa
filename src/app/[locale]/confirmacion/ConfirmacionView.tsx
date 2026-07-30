@@ -17,7 +17,6 @@ interface ConfirmacionViewProps {
   dataGb: number | null;
   validityDays: number | null;
   activationDate: string | null;
-  metaEventId: string | null;
 }
 
 export default function ConfirmacionView({
@@ -30,7 +29,6 @@ export default function ConfirmacionView({
   dataGb,
   validityDays,
   activationDate,
-  metaEventId,
 }: ConfirmacionViewProps) {
   const locale = useLocale();
   const { track } = useAnalytics();

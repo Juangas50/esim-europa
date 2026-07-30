@@ -123,9 +123,11 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
     // Get GA4 client ID for server-side attribution
     const ga_client_id = getGA4ClientId();
 
-    // Generate Meta event ID for Pixel/CAPI deduplication
-    // The same event_id travels to the Stripe webhook (via metadata) so the Purchase server-side
-    // deduplicates with the Purchase that will be triggered by Pixel in /confirmacion.
+    // Generate Meta event ID, threaded to the Stripe webhook via metadata.
+    // Purchase is CAPI-only today — /confirmacion no longer fires a browser
+    // Pixel Purchase, so there's no client-side event for this id to dedupe
+    // against yet. It's still generated and sent so the webhook's Purchase
+    // CAPI call has a stable, per-checkout-attempt event_id.
     const metaConsent = hasMetaConsent();
     const meta_event_id = metaConsent ? generateMetaEventId() : undefined;
     const { fbp, fbc } = metaConsent ? getFbCookies() : { fbp: undefined, fbc: undefined };

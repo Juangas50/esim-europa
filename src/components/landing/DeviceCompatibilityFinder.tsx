@@ -223,8 +223,10 @@ export default function DeviceCompatibilityFinder() {
                         section: "compatibility",
                         device_model: selectedDevice,
                         is_compatible: true,
-                        value: 0,
-                        currency: "USD",
+                        // No plan/price is selected yet at this point in the flow
+                        // (this just routes to /compra) — omitting value/currency
+                        // rather than sending a fabricated value: 0, which would
+                        // read as a real $0 cart addition in GA4 ecommerce reports.
                       });
                       window.location.href = "/es/compra";
                     }}

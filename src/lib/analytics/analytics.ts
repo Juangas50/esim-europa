@@ -21,6 +21,7 @@ import { PROVIDER_CONFIG } from "./constants";
 // ── Configuration ────────────────────────────────────────────────────────────
 let globalSharedParams: Partial<SharedParams> = {};
 let debugMode: boolean = process.env.NODE_ENV === "development";
+let isInitialized = false;
 
 /**
  * Initialize analytics with shared parameters
@@ -32,10 +33,25 @@ export function initializeAnalytics(params: Partial<SharedParams>): void {
     ...params,
     session_id: getSessionId(), // Always ensure session ID
   };
+  isInitialized = true;
 
   if (debugMode) {
     console.log("[Analytics] Initialized with shared params:", globalSharedParams);
   }
+}
+
+/**
+ * No component/layout ever called initializeAnalytics() explicitly, so
+ * globalSharedParams (and therefore session_id) never got populated — every
+ * event silently shipped without one. track() now self-initializes exactly
+ * once, lazily, on its first real (client-side) call. getSessionId() is
+ * itself cached/cookie-backed (see helpers.ts), so this can't regenerate the
+ * session id on re-renders, SPA navigations, or React Strict Mode's double
+ * invocation — the flag just avoids recomputing getSharedParams() every call.
+ */
+function ensureInitialized(): void {
+  if (isInitialized) return;
+  initializeAnalytics({});
 }
 
 /**
@@ -80,6 +96,8 @@ export function track(eventName: EventName, params: EventParams): void {
   if (typeof window === "undefined") {
     return;
   }
+
+  ensureInitialized();
 
   // Merge with global shared parameters
   const mergedParams = mergeParams(params, globalSharedParams as Partial<EventParams>);

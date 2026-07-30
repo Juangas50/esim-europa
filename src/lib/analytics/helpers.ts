@@ -61,13 +61,29 @@ export function getDeviceCategory(): "desktop" | "tablet" | "mobile" {
   const width = window.innerWidth;
   const userAgent = navigator.userAgent.toLowerCase();
 
-  // Mobile first (smallest widths)
-  if (width < 768 || /mobile|android|iphone|ipad|ipod/.test(userAgent)) {
+  // Tablet user-agent signals are checked BEFORE the mobile check (and before
+  // any width comparison): an iPad in landscape is often wider than a laptop,
+  // but it's still a tablet. The previous version put "ipad"/"android" in the
+  // mobile regex first, so every iPad and Android tablet matched "mobile"
+  // before the tablet branch (whose own ipad/android check was unreachable
+  // dead code) ever ran.
+  const isIPad = /ipad/.test(userAgent);
+  const isAndroid = /android/.test(userAgent);
+  // Standard UA convention: Android *phones* include a "Mobile" token,
+  // Android *tablets* omit it.
+  const isAndroidTablet = isAndroid && !/mobile/.test(userAgent);
+  const isAndroidPhone = isAndroid && /mobile/.test(userAgent);
+  const isGenericTabletUA = /tablet/.test(userAgent) && !isAndroid;
+
+  if (isIPad || isAndroidTablet || isGenericTabletUA) {
+    return "tablet";
+  }
+
+  if (isAndroidPhone || /iphone|ipod|mobile/.test(userAgent) || width < 768) {
     return "mobile";
   }
 
-  // Tablet (medium)
-  if (width < 1024 || /tablet|ipad|android/.test(userAgent)) {
+  if (width < 1024) {
     return "tablet";
   }
 
@@ -105,6 +121,14 @@ export function sanitizeValue(value: unknown): unknown {
   return value;
 }
 
+// Opaque, app-generated identifiers (UUIDs) — never user-typed text, so they
+// can't actually be PII, but the PHONE pattern above has a real false-positive
+// rate against random UUIDs (~4%, confirmed empirically): a run of digits
+// inside the UUID can incidentally look like a phone number. Scanning these
+// fields for PII does nothing but occasionally corrupt a perfectly opaque id
+// into "[FILTERED_PII]", so they bypass sanitizeValue() and pass through as-is.
+const OPAQUE_ID_FIELDS = new Set(["session_id", "user_id"]);
+
 export function sanitizeParams(params: Record<string, unknown>): Record<string, unknown> {
   const sanitized: Record<string, unknown> = {};
 
@@ -119,7 +143,7 @@ export function sanitizeParams(params: Record<string, unknown>): Record<string, 
       continue;
     }
 
-    sanitized[key] = sanitizeValue(value);
+    sanitized[key] = OPAQUE_ID_FIELDS.has(key) ? value : sanitizeValue(value);
   }
 
   return sanitized;
