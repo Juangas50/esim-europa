@@ -41,7 +41,6 @@ export default function Contact() {
       page_path: `/${locale}`,
       page_title: "RUTA34 Home - Contact",
       language: locale,
-      device_category: "mobile",
       section: "contact",
       contact_method: method,
       contact_location: "contact_section",

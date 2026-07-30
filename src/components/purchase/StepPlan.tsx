@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star, ArrowRight } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -75,13 +75,15 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
     plans.find((p) => p.id === selected) ??
     tabPlans[0];
 
-  // Fire page_view for checkout step 1 once on mount
+  // Fire page_view for checkout step 1 once on mount (ref-guarded — see StepData.tsx)
+  const pageViewFired = useRef(false);
   useEffect(() => {
+    if (pageViewFired.current) return;
+    pageViewFired.current = true;
     track("page_view", {
       page_path: `/${locale}/compra`,
       page_title: "RUTA34 Checkout - Step 1: Plan Selection",
       language: locale,
-      device_category: "mobile",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

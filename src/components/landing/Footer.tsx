@@ -19,7 +19,6 @@ export default function Footer() {
       page_path: `/${locale}`,
       page_title: "RUTA34 Home - Footer",
       language: locale,
-      device_category: "mobile",
       section: "footer",
       element_text: text,
       destination_url: href,

@@ -138,7 +138,6 @@ export default function FAQ() {
         page_path: `/${locale}`,
         page_title: "RUTA34 Home - FAQ",
         language: locale,
-        device_category: "mobile",
         section: "faq",
         element_id: `faq-${faqKey}`,
         element_text: t(`items.${faqKey}.q`),

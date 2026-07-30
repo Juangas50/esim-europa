@@ -141,7 +141,6 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
                     page_path: `/${locale}`,
                     page_title: "RUTA34 Checkout - Plan Selection",
                     language: locale,
-                    device_category: "mobile",
                     section: "checkout",
                     plan_id: plan.id,
                     plan_name: plan.name,

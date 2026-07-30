@@ -75,13 +75,15 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
   const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  // Step viewed once on mount
+  // Step viewed once on mount (ref-guarded — see StepData.tsx)
+  const pageViewFired = useRef(false);
   useEffect(() => {
+    if (pageViewFired.current) return;
+    pageViewFired.current = true;
     track("page_view", {
       page_path: `/${locale}/compra`,
       page_title: "RUTA34 Checkout - Step 3: Payment",
       language: locale,
-      device_category: "mobile",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -97,7 +99,6 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
       page_path: `/${locale}`,
       page_title: "RUTA34 Checkout - Step 3",
       language: locale,
-      device_category: "mobile",
       section: "checkout",
       checkout_option: "payment_method",
       checkout_option_value: method,
@@ -113,7 +114,6 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
       page_path: `/${locale}`,
       page_title: "RUTA34 Checkout - Step 3",
       language: locale,
-      device_category: "mobile",
       section: "checkout",
       value: plan.price_usd * (formData.quantity ?? 1),
       currency: "USD",

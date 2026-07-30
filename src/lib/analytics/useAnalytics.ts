@@ -59,15 +59,21 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
   }, [autoPagePath, autoLanguage, autoDeviceCategory]);
 
   /**
-   * Track an event
+   * Track an event.
+   * page_path, language and device_category are auto-filled by getAutoParams()
+   * above — omit them here and pass explicit values only to override.
    */
   const track = useCallback(
-    (eventName: EventName, params: EventParams) => {
+    (
+      eventName: EventName,
+      params: Omit<EventParams, "page_path" | "language" | "device_category"> &
+        Partial<Pick<EventParams, "page_path" | "language" | "device_category">>
+    ) => {
       const autoParams = getAutoParams();
       analytics.track(eventName, {
         ...autoParams,
         ...params,
-      });
+      } as EventParams);
     },
     [getAutoParams]
   );

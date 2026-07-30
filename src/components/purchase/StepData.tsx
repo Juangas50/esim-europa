@@ -99,6 +99,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const nameRef = useRef<HTMLInputElement | null>(null);
   const passportRef = useRef<HTMLInputElement | null>(null);
   const dobRef = useRef<HTMLInputElement | null>(null);
+  const pageViewFired = useRef(false);
 
   const {
     register,
@@ -136,13 +137,17 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     }
   }, [errors]);
 
-  // Fire page_view for checkout step 2 once on mount
+  // Fire page_view for checkout step 2 once on mount.
+  // Guarded with a ref: this effect has been observed firing twice in the same
+  // tick (identical timestamps) even in production builds, so an empty deps
+  // array alone isn't a reliable "runs once" guarantee here.
   useEffect(() => {
+    if (pageViewFired.current) return;
+    pageViewFired.current = true;
     track("page_view", {
       page_path: `/${locale}/compra`,
       page_title: "RUTA34 Checkout - Step 2: Customer Information",
       language: locale,
-      device_category: "mobile",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -182,7 +187,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
         page_path: `/${locale}`,
         page_title: "RUTA34 Checkout - Step 2",
         language: locale,
-        device_category: "mobile",
         section: "checkout",
         exception_type: "validation_error",
         exception_description: "Email mismatch",
@@ -250,7 +254,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                           page_path: `/${locale}`,
                           page_title: "RUTA34 Checkout - Step 2",
                           language: locale,
-                          device_category: "mobile",
                           section: "checkout",
                           checkout_option: "quantity",
                           checkout_option_value: String(n),
@@ -456,7 +459,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                           page_path: `/${locale}`,
                           page_title: "RUTA34 Checkout - Step 2",
                           language: locale,
-                          device_category: "mobile",
                           section: "checkout",
                           checkout_option: "activation_type",
                           checkout_option_value: "immediate",
@@ -489,7 +491,6 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                           page_path: `/${locale}`,
                           page_title: "RUTA34 Checkout - Step 2",
                           language: locale,
-                          device_category: "mobile",
                           section: "checkout",
                           checkout_option: "activation_type",
                           checkout_option_value: "scheduled",
