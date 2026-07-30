@@ -3,6 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { InstagramLogo } from "@phosphor-icons/react";
+import { useAnalytics } from "@/lib/analytics";
 import { WHATSAPP_URL } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -11,6 +12,21 @@ export default function Footer() {
   const t = useTranslations("footer");
   const locale = useLocale();
   const year = new Date().getFullYear();
+  const { track } = useAnalytics();
+
+  const handleLinkClick = (linkType: "company" | "legal" | "social" | "support", text: string, href: string) => {
+    track("select_item", {
+      page_path: `/${locale}`,
+      page_title: "RUTA34 Home - Footer",
+      language: locale,
+      device_category: "mobile",
+      section: "footer",
+      element_text: text,
+      destination_url: href,
+      element_type: "link",
+      link_category: linkType,
+    });
+  };
 
   return (
     <footer className="bg-[var(--color-navy)] text-white py-14 px-4">
@@ -38,6 +54,7 @@ export default function Footer() {
             </p>
             <a
               href={WHATSAPP_URL}
+              onClick={() => handleLinkClick("support", t("support"), WHATSAPP_URL)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-gold)] hover:text-white transition-colors"
@@ -62,6 +79,7 @@ export default function Footer() {
                 <li key={key}>
                   <a
                     href={href}
+                    onClick={() => handleLinkClick("company", t(`links.${key}`), href)}
                     className="text-sm text-white/75 hover:text-[var(--color-gold)] transition-colors"
                   >
                     {t(`links.${key}`)}
@@ -85,6 +103,7 @@ export default function Footer() {
                 <li key={key}>
                   <a
                     href={href}
+                    onClick={() => handleLinkClick("legal", t(`links.${key}`), href)}
                     className="text-sm text-white/75 hover:text-[var(--color-gold)] transition-colors"
                   >
                     {t(`links.${key}`)}
@@ -102,7 +121,8 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="{WHATSAPP_URL}"
+                  href={WHATSAPP_URL}
+                  onClick={() => handleLinkClick("support", "WhatsApp 24/7", WHATSAPP_URL)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-white/60 hover:text-white transition-colors"
@@ -113,6 +133,7 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:support@ruta34.com"
+                  onClick={() => handleLinkClick("support", "Email Support", "mailto:support@ruta34.com")}
                   className="text-sm text-white/60 hover:text-white transition-colors"
                 >
                   Email Support
@@ -139,6 +160,7 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <a
               href="https://www.instagram.com/esimruta34/"
+              onClick={() => handleLinkClick("social", "Instagram", "https://www.instagram.com/esimruta34/")}
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/60 hover:text-[var(--color-gold)] transition-colors"

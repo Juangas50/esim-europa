@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ArrowLeft, ArrowRight, WarningCircle } from "@phosphor-icons/react";
 import Button from "@/components/ui/Button";
 import PurchaseFAQ from "@/components/purchase/PurchaseFAQ";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
-import { analytics } from "@/lib/analytics";
+import { useAnalytics } from "@/lib/analytics";
 import { useRef } from "react";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -91,7 +91,9 @@ const inputClass =
 
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
+  const locale = useLocale();
   const tCountries = useTranslations("purchase.countries");
+  const { track } = useAnalytics();
   const [quantity, setQuantity] = useState(initialData.quantity ?? 1);
   const [substep, setSubstep] = useState(1); // 1: básico, 2: validación, 3: activación
   const nameRef = useRef<HTMLInputElement | null>(null);
@@ -134,9 +136,14 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     }
   }, [errors]);
 
-  // Fire checkout_step_viewed once when this step mounts
+  // Fire page_view for checkout step 2 once on mount
   useEffect(() => {
-    analytics.checkoutStepViewed(2, "data", plan);
+    track("page_view", {
+      page_path: `/${locale}/compra`,
+      page_title: "RUTA34 Checkout - Step 2: Customer Information",
+      language: locale,
+      device_category: "mobile",
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -171,12 +178,21 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
   const onSubmit = (data: FormValues) => {
     // Si hay error de email mismatch, disparar evento (solo una vez por sesión)
     if (!emailMismatchFired.current && data.customer_email !== data.confirm_email) {
-      analytics.emailMismatchError();
+      track("exception", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Checkout - Step 2",
+        language: locale,
+        device_category: "mobile",
+        section: "checkout",
+        exception_type: "validation_error",
+        exception_description: "Email mismatch",
+        is_fatal: false,
+        checkout_step: "data",
+      });
       emailMismatchFired.current = true;
     }
     const finalActivationDate =
       data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
-    analytics.checkoutStepCompleted(2, "data", plan);
     onNext({ ...data, activation_date: finalActivationDate, quantity });
   };
 
@@ -229,8 +245,18 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     key={n}
                     type="button"
                     onClick={() => {
+                      if (n !== quantity) {
+                        track("set_checkout_option", {
+                          page_path: `/${locale}`,
+                          page_title: "RUTA34 Checkout - Step 2",
+                          language: locale,
+                          device_category: "mobile",
+                          section: "checkout",
+                          checkout_option: "quantity",
+                          checkout_option_value: String(n),
+                        });
+                      }
                       setQuantity(n);
-                      if (n !== quantity) analytics.quantitySelected(n, plan);
                     }}
                     className={`w-11 h-11 rounded-lg font-black text-sm transition-all duration-150 ${
                       quantity === n
@@ -425,7 +451,17 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       type="radio"
                       {...register("activation_type")}
                       value="now"
-                      onChange={() => analytics.activationOptionSelected("now", plan)}
+                      onChange={() => {
+                        track("set_checkout_option", {
+                          page_path: `/${locale}`,
+                          page_title: "RUTA34 Checkout - Step 2",
+                          language: locale,
+                          device_category: "mobile",
+                          section: "checkout",
+                          checkout_option: "activation_type",
+                          checkout_option_value: "immediate",
+                        });
+                      }}
                       className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div>
@@ -448,7 +484,17 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                       type="radio"
                       {...register("activation_type")}
                       value="schedule"
-                      onChange={() => analytics.activationOptionSelected("schedule", plan)}
+                      onChange={() => {
+                        track("set_checkout_option", {
+                          page_path: `/${locale}`,
+                          page_title: "RUTA34 Checkout - Step 2",
+                          language: locale,
+                          device_category: "mobile",
+                          section: "checkout",
+                          checkout_option: "activation_type",
+                          checkout_option_value: "scheduled",
+                        });
+                      }}
                       className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
