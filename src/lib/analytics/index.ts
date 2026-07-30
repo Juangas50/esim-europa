@@ -66,7 +66,6 @@ export { metaProvider, markMetaPixelReady } from "./providers/meta";
 
 // Event builders (optional convenience functions)
 export {
-  createBaseEvent,
   createPlanEvent,
   createBeginCheckoutEvent,
   createPurchaseEvent,
