@@ -96,9 +96,12 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
    * Track a CTA click
    */
   const trackCTAClick = useCallback(
-    (section: string, elementText: string) => {
+    (section: string, elementText: string, pageTitle?: string) => {
       const autoParams = getAutoParams();
-      analytics.trackCTAClick(section, elementText, autoParams);
+      analytics.trackCTAClick(section, elementText, {
+        ...autoParams,
+        ...(pageTitle ? { page_title: pageTitle } : {}),
+      });
     },
     [getAutoParams]
   );

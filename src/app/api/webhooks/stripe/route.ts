@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
                   name: "purchase",
                   params: {
                     transaction_id: orderRef,
-                    value: plan.price_usd,
+                    value: plan.price_usd * quantity,
                     currency: "USD",
                     items: [
                       {
@@ -189,7 +189,7 @@ export async function POST(req: NextRequest) {
                         item_name: `eSIM ${plan.name}`,
                         item_category: plan.type,
                         price: plan.price_usd,
-                        quantity: 1,
+                        quantity,
                       },
                     ],
                   },

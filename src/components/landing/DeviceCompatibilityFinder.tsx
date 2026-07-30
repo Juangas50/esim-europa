@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { MagnifyingGlass, Check, WarningCircle } from "@phosphor-icons/react";
 import { useLocale } from "next-intl";
 import devices from "@/data/esim-devices.json";
@@ -65,6 +65,28 @@ export default function DeviceCompatibilityFinder() {
     return { compatible: false };
   }, [selectedDevice]);
 
+  // Track view_search_results only on the false→true transition (dropdown newly
+  // visible) — NOT via motion.div's onAnimationComplete, which also fires when the
+  // dropdown's exit animation completes (e.g. right after picking a result or
+  // clearing the search), causing a spurious duplicate event.
+  const dropdownVisible = Boolean(searchQuery) && searchResults.length > 0 && !selectedDevice;
+  const dropdownWasVisible = useRef(false);
+  useEffect(() => {
+    if (dropdownVisible && !dropdownWasVisible.current) {
+      track("view_search_results", {
+        page_path: `/${locale}`,
+        page_title: "RUTA34 Home - Compatibility",
+        language: locale,
+        section: "compatibility",
+        search_type: "device",
+        search_query: searchQuery,
+        search_results_count: searchResults.length,
+      });
+    }
+    dropdownWasVisible.current = dropdownVisible;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dropdownVisible]);
+
   return (
     <div className="space-y-6">
       {/* Búsqueda */}
@@ -105,19 +127,6 @@ export default function DeviceCompatibilityFinder() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[var(--color-border)] rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto"
-              onAnimationComplete={() => {
-                if (searchResults.length > 0) {
-                  track("view_search_results", {
-                    page_path: `/${locale}`,
-                    page_title: "RUTA34 Home - Compatibility",
-                    language: locale,
-                    section: "compatibility",
-                    search_type: "device",
-                    search_query: searchQuery,
-                    search_results_count: searchResults.length,
-                  });
-                }
-              }}
             >
               {searchResults.map((result, idx) => (
                 <motion.button
