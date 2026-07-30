@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useState } from "react";
 import CountriesModal from "@/components/shared/CountriesModal";
 import { formatUSD } from "@/lib/utils";
-import { analytics } from "@/lib/analytics";
+import { useAnalytics } from "@/lib/analytics";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -23,6 +23,7 @@ const fadeUp = {
 export default function Hero({ minPrice }: { minPrice?: number }) {
   const t = useTranslations("hero");
   const [showCountries, setShowCountries] = useState(false);
+  const { trackCTAClick } = useAnalytics();
 
   return (
     <section className="relative w-full overflow-hidden">
@@ -91,7 +92,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           initial="hidden"
           animate="show"
           href="#planes"
-          onClick={() => analytics.viewPlansClicked()}
+          onClick={() => trackCTAClick("hero", t("cta"))}
           className="absolute top-[580px] left-20 lg:left-32 z-20 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[14px] bg-[var(--color-gold)] text-[var(--color-navy)] font-bold text-lg hover:bg-[var(--color-gold-light)] active:scale-[0.97] transition-all shadow-[0_4px_16px_rgba(201,151,58,0.3)]"
         >
           {t("cta")} <ArrowRight size={20} weight="bold" />
@@ -179,7 +180,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           initial="hidden"
           animate="show"
           href="#planes"
-          onClick={() => analytics.viewPlansClicked()}
+          onClick={() => trackCTAClick("hero", t("cta"))}
           className="absolute top-[510px] left-10 z-20 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[12px] bg-[var(--color-gold)] text-[var(--color-navy)] font-bold text-base hover:bg-[var(--color-gold-light)] active:scale-[0.97] transition-all shadow-[0_4px_16px_rgba(201,151,58,0.3)]"
         >
           {t("cta")} <ArrowRight size={18} weight="bold" />
@@ -262,7 +263,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
             custom={0.5}
             variants={fadeUp}
             href="#planes"
-            onClick={() => analytics.viewPlansClicked()}
+            onClick={() => trackCTAClick("hero", t("cta"))}
             className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-[12px] bg-[var(--color-gold)] text-[var(--color-navy)] font-bold text-base hover:bg-[var(--color-gold-light)] active:scale-[0.97] transition-all shadow-[0_3px_10px_rgba(201,151,58,0.2)] mb-8"
           >
             {t("cta")} <ArrowRight size={16} weight="bold" />
