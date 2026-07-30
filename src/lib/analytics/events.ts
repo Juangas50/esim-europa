@@ -134,10 +134,21 @@ export interface FAQEventParams extends BaseEventParams {
 }
 
 export function createFAQEvent(params: FAQEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    section: params.section || SECTIONS.FAQ,
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    section: params.section || SECTIONS.FAQ,
+    element_text: params.element_text,
+    element_id: params.element_id,
+    faq_index: params.faq_index,
+    faq_key: params.faq_key,
+    faq_deep_link: params.faq_deep_link,
+  } as EventParams;
 }
 
 // ── Navigation Event ─────────────────────────────────────────────────────────
@@ -150,10 +161,20 @@ export interface NavigationEventParams extends BaseEventParams {
 }
 
 export function createNavigationEvent(params: NavigationEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    element_type: params.element_type || ELEMENT_TYPES.LINK,
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    section: params.section,
+    element_text: params.element_text,
+    element_id: params.element_id,
+    destination_url: params.destination_url,
+    element_type: params.element_type || ELEMENT_TYPES.LINK,
+  } as EventParams;
 }
 
 // ── CTA Button Click Event ───────────────────────────────────────────────────
@@ -165,10 +186,20 @@ export interface CTAClickEventParams extends BaseEventParams {
 }
 
 export function createCTAClickEvent(params: CTAClickEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    element_type: ELEMENT_TYPES.BUTTON,
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    section: params.section,
+    element_text: params.element_text,
+    element_id: params.element_id,
+    promotion_name: params.promotion_name,
+    element_type: ELEMENT_TYPES.BUTTON,
+  } as EventParams;
 }
 
 // ── Error Event ──────────────────────────────────────────────────────────────
@@ -180,10 +211,19 @@ export interface ErrorEventParams extends BaseEventParams {
 }
 
 export function createErrorEvent(params: ErrorEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    is_fatal: params.is_fatal ?? false,
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    section: params.section,
+    exception_type: params.exception_type,
+    exception_description: params.exception_description,
+    is_fatal: params.is_fatal ?? false,
+  } as EventParams;
 }
 
 // ── Scroll Event (Engagement) ────────────────────────────────────────────────
@@ -233,9 +273,18 @@ export interface PaymentInfoEventParams extends BaseEventParams {
 }
 
 export function createPaymentInfoEvent(params: PaymentInfoEventParams): EventParams {
-  return createBaseEvent({
-    ...params,
-    currency: params.currency || "USD",
-    section: SECTIONS.CHECKOUT,
+  const base = createBaseEvent({
+    page_path: params.page_path,
+    page_title: params.page_title,
+    language: params.language,
+    device_category: params.device_category,
   });
+  return {
+    ...base,
+    value: params.value,
+    currency: params.currency || "USD",
+    payment_type: params.payment_type,
+    items: params.items,
+    section: SECTIONS.CHECKOUT,
+  } as EventParams;
 }
