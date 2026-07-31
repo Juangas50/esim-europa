@@ -461,3 +461,58 @@ Encontrado en `summaryLogInfos` del contenedor GTAG (no reportado en la auditor�
 
 ### ESTADO — RONDA 4
 Ambos hallazgos nuevos, encontrados con evidencia de producción real post-deploy, quedan corregidos y validados. No cambia el veredicto 🟡 READY WITH MINOR OBSERVATIONS de la Ronda 3 — las reservas de esa ronda (M1 sin confirmación end-to-end en vivo, webhook GA4 MP/Meta CAPI sin Supabase real en este entorno) siguen siendo las mismas y no fueron re-evaluadas en esta ronda.
+
+---
+
+## RONDA 5 — Segunda captura de Tag Assistant, post-deploy de Ronda 4 (2026-07-31T21:25:59Z)
+
+Nueva captura real, ~12 min después del merge de la Ronda 4. Confirma ambos fixes de esa ronda en producción y revela dos hallazgos adicionales.
+
+### Confirmado en producción real
+- **Timestamp por evento** — dentro del mismo `groupId` (misma carga de página), 3 eventos consecutivos con timestamps distintos y acordes al tiempo real: `view_item_list` 21:24:23.097Z → `select_promotion` 21:24:25.856Z → `begin_checkout` 21:24:29.052Z. ✅ Confirma el fix de Ronda 4.
+- **`google.es/ads/ga-audiences`** ya no aparece en `summaryLogInfos`. ✅ Confirma el fix de Ronda 4.
+- `session_id` y `device_category` siguen estables.
+
+### Hallazgo #9 (NUEVO) — `value` y `payment_type` nunca llegaban al payload de GA4 en `add_payment_info`; `value` tampoco en `begin_checkout`
+
+**Severidad:** Media-Alta (afecta valor de conversión reportado a GA4). **Estado:** ✅ CORREGIDO en esta ronda.
+
+**Evidencia real:** payload de `add_payment_info` capturado en producción solo trae `currency` e `is_conversion`, sin `value` ni `payment_type`, pese a que `StepPayment.tsx` los envía explícitamente a `track()`. Lo mismo con `begin_checkout`: trae `price_usd` pero no `value`, pese a que tanto `Plans.tsx` como `useAnalytics.ts` (`trackPlanSelected`) lo envían.
+
+**Causa raíz** (`src/lib/analytics/providers/ga4.ts`): `GA4Provider.track()` construye el payload copiando explícitamente cada parámetro conocido. `params.value` solo se copiaba dentro de `payload.ecommerce.value` (si hay `items`) o en el bloque específico de `eventName === "purchase"` — ningún otro evento lo recibía. `params.payment_type` no tenía ninguna línea de forwarding en todo el archivo, para ningún evento.
+
+**Corrección:** se agregó forwarding incondicional a nivel de payload para `value` (`if (params.value !== undefined) payload.value = params.value`) y `payment_type` (`if (params.payment_type) payload.payment_type = params.payment_type`), en la misma sección donde se copian `currency`/`price_usd`. Se quitó la asignación duplicada de `payload.value` dentro del bloque de `purchase` (ya cubierta por el forwarding general).
+
+**Validación runtime** (Playwright, build de producción, click real en el CTA de un plan en `Plans.tsx`):
+```json
+{
+  "event": "begin_checkout",
+  ...
+  "price_usd": 19.9,
+  "currency": "USD",
+  "value": 19.9,
+  ...
+}
+```
+`value` presente y correcto. ✅ PASS.
+
+`payment_type` usa el mismo patrón de forwarding incondicional (línea contigua a `value` en el mismo diff) — confirmado por revisión de código y presencia en el bundle compilado (`grep` sobre `.next/server/chunks`); no se automatizó el flujo completo de 3 pasos del checkout para disparar `add_payment_info` en vivo por costo/tiempo, dado que es idéntico mecanismo ya probado end-to-end con `value`.
+
+### Hallazgo #10 (NUEVO) — CSP `connect-src` bloqueaba `https://stats.g.doubleclick.net/g/collect`
+
+**Severidad:** Baja. **Estado:** ✅ CORREGIDO en esta ronda.
+
+Mismo origen que el Hallazgo #8 (Google Ads Linking / Google Signals, configurado en el panel GA4), pero por el transporte `connect-src` (fetch/beacon) en vez de `img-src` (pixel). Se agregó `https://stats.g.doubleclick.net` a `connect-src` en `src/proxy.ts`.
+
+### Nota — `language: "es-AR"` / `"pt-BR"` en vez de `"es"`/`"pt"` (NO es un defecto, no corregido)
+
+`app/layout.tsx` fija intencionalmente `document.documentElement.lang = "es-AR"` / `"pt-BR"` según el locale (target de audiencia argentina/brasileña — coincide con el copy del sitio). `useAnalytics.ts` toma `language` de `document.documentElement.lang`, así que ese es el valor real que viaja en los eventos. `TRACKING_PLAN.md` documenta `language` como `"es"`/`"pt"` simple (ISO 639-1). Es un desfase entre documentación e implementación, no un bug de código — no se tocó, queda como observación para quien mantenga la doc o los reportes de GA4 segmentados por idioma.
+
+### Build/lint/CSP post-Ronda 5
+- **`tsc --noEmit`:** sin errores.
+- **Build de producción:** exitoso.
+- **Lint:** idéntico al baseline (confirmado con `git stash`), sin regresiones.
+- **CSP runtime (Playwright, build de producción):** 0 violaciones.
+
+### ESTADO — RONDA 5
+Ambos hallazgos corregidos y validados (uno con prueba runtime completa, el otro por mecanismo idéntico ya probado + revisión de código). Veredicto sigue en 🟡 READY WITH MINOR OBSERVATIONS — la nota de `language` queda documentada pero sin acción, y las reservas de rondas anteriores (M1, webhook GA4 MP/Meta CAPI sin entorno real) no fueron re-evaluadas.
