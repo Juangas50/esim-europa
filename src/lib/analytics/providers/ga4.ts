@@ -123,6 +123,17 @@ export class GA4Provider {
     if (params.currency) {
       payload.currency = params.currency;
     }
+    // Top-level value: GA4's standard conversion-value param. Events that also
+    // carry items/purchase transaction data below get it there too (their own
+    // structure), but add_payment_info/begin_checkout have neither and were
+    // silently losing value with no forwarding at all — confirmed missing in
+    // real production dataLayer payloads.
+    if (params.value !== undefined) {
+      payload.value = params.value;
+    }
+    if (params.payment_type) {
+      payload.payment_type = params.payment_type;
+    }
     if (params.is_popular !== undefined) {
       payload.is_popular = params.is_popular;
     }
@@ -145,10 +156,9 @@ export class GA4Provider {
       };
     }
 
-    // For purchase, add transaction data
+    // For purchase, add transaction data (value already forwarded above)
     if (eventName === "purchase" && params.transaction_id) {
       payload.transaction_id = params.transaction_id;
-      payload.value = params.value;
       if (params.tax !== undefined) {
         payload.tax = params.tax;
       }

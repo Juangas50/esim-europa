@@ -30,7 +30,12 @@ function buildCsp(nonce: string, isDev: boolean) {
     // event goes through dataLayer.push(), see providers/ga4.ts). Confirmed via
     // real production Tag Assistant capture, img-src only (1x1 pixel GET).
     "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com https://www.google.es",
-    "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com",
+    // https://stats.g.doubleclick.net/g/collect is the same Google Ads Linking /
+    // Google Signals feature as the img-src entry above, just over its
+    // connect-src (fetch/beacon) transport instead of an img pixel. Same
+    // origin/verdict: Google's own product behavior from the GA4 property
+    // config, not this repo's code.
+    "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com https://stats.g.doubleclick.net",
     // https://www.facebook.com here (not connect.facebook.net) is fbevents.js's
     // own fallback transport for environments where its default img/fetch beacon
     // to facebook.com/tr is unavailable (e.g. third-party cookies blocked) — an
