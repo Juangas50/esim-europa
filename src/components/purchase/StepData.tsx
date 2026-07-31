@@ -152,13 +152,18 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto-detect country by IP geolocation
+  // Auto-detect country by IP geolocation.
+  // Goes through our own /api/geo-check (server-side call to ipapi.co) instead
+  // of calling ipapi.co directly from the browser — same-origin, no CSP
+  // connect-src entry needed, and the geolocation IP lookup never leaves our
+  // backend. /api/geo-check already exists for the country-blocking check and
+  // returns the same ISO country_code field.
   useEffect(() => {
     const detectCountry = async () => {
       try {
-        const response = await fetch("https://ipapi.co/json/");
+        const response = await fetch("/api/geo-check");
         const data = await response.json();
-        const isoCode = data.country_code;
+        const isoCode = data.country;
         const countryCode = ISO_TO_COUNTRY_CODE[isoCode];
 
         // Only auto-fill if user hasn't already set a country
