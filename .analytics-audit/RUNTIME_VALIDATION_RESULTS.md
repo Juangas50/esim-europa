@@ -412,3 +412,52 @@ No declaro 🟢 Production Ready pese a que build y lint pasan limpios y los 8 h
 
 Ninguno de estos tres puntos es HIGH severity ni compromete duplicación de `purchase`, PII, o consentimiento — son reservas de cobertura, no defectos conocidos sin corregir.
 - **Única reserva real:** la llamada de red efectiva de GA4 Measurement Protocol y Meta CAPI en el webhook de `purchase` no pudo verificarse en vivo por falta de una base de datos real en este entorno de pruebas. El código fue revisado línea por línea y corregido donde tenía un defecto claro, pero recomiendo una prueba de extremo a extremo con Stripe test mode + Supabase real (o al menos un staging) antes de considerar esta pieza específica 100% verificada en producción.
+
+---
+
+## RONDA 4 — Evidencia de producción real (Google Tag Assistant, 2026-07-31T20:14:16Z)
+
+Fuente: export de debug de Google Tag Assistant capturado en esimruta34.com **después** de desplegar las Rondas 1–3 (PR #4 y PR #5 ya mergeados a producción). Sesión real de un tester: `/es` → `/es/compra` → `/es` → `/es/compra?plan=...` (retorno desde `checkout.stripe.com`) → `/es`, 24 eventos custom capturados en ~2.5 min, contenedores GTM-N65GX67X y G-KECN9PTX95.
+
+### Confirmado funcionando en producción real
+
+| Fix (ronda anterior) | Evidencia real |
+|---|---|
+| A1 — `session_id` | `b313e055-fbf6-449e-8fb0-5d1b63810c87` idéntico en los 24 eventos, a lo largo de múltiples cargas de página y ~2.5 min | ✅ CONFIRMADO |
+| A2 — `device_category` | `"desktop"` correcto de forma consistente | ✅ CONFIRMADO |
+| `page_title` (Hero) | `"RUTA34 Home - Hero"` en vez del genérico `"Page"` | ✅ CONFIRMADO |
+| Dos `begin_checkout` en la sesión | Verificado que son dos flujos distintos y legítimos (Plans.tsx directo vs. StepPlan.tsx manual), no duplicación | ✅ NO ES DEFECTO |
+
+### Hallazgo #7 (NUEVO) — `timestamp` congelado por evento (regresión introducida por el fix de A1)
+
+**Severidad:** Media. **Estado:** ✅ CORREGIDO en esta ronda.
+
+**Síntoma real:** todos los eventos de una misma carga de página comparten idéntico `timestamp`, sin importar el tiempo real transcurrido. Ejemplo observado: 6 pulsaciones de búsqueda distintas, las 6 con `"2026-07-31T20:10:54.065Z"`; 3 pasos de checkout distintos, los 3 con `"2026-07-31T20:11:11.790Z"`.
+
+**Causa raíz:** `getSharedParams()` (`helpers.ts`) calculaba `timestamp: new Date().toISOString()` una sola vez. Antes del fix de A1 esto no tenía efecto porque `initializeAnalytics()` nunca se invocaba. Al agregar el guard `ensureInitialized()`/`isInitialized` en A1, `globalSharedParams` (que incluye ese `timestamp`) pasó a calcularse una única vez por carga de página — y como `mergeParams(params, globalSharedParams)` hace `{...params, ...globalSharedParams}` (el segundo argumento gana), ese timestamp congelado pisaba permanentemente el fallback `if (!mergedParams.timestamp) { mergedParams.timestamp = getCurrentTimestamp(); }` de `track()`.
+
+**Corrección:** se quitó `timestamp` de `getSharedParams()` (`helpers.ts`). Ya no es un "shared param" cacheado — el fallback existente en `track()` lo calcula por evento, como estaba pensado originalmente. `session_id` y `device_category` no se tocaron (siguen siendo shared params legítimos — son estables por diseño).
+
+**Validación runtime post-fix** (Playwright, build de producción, `dataLayer.push` interceptado antes de cualquier código de la app):
+```
+view_item_list  → timestamp 2026-07-31T21:01:25.364Z
+select_item     → timestamp 2026-07-31T21:01:26.222Z   (858ms después, tiempo real)
+```
+2 eventos distintos, 2 timestamps distintos, diferencia acorde al tiempo real transcurrido. ✅ PASS
+
+### Hallazgo #8 (NUEVO) — CSP `img-src` bloqueaba `https://www.google.es/ads/ga-audiences`
+
+**Severidad:** Baja. **Estado:** ✅ CORREGIDO en esta ronda.
+
+Encontrado en `summaryLogInfos` del contenedor GTAG (no reportado en la auditoría de CSP original). Origen identificado: beacon propio de Google Ads/Google Signals (audience sync para remarketing), disparado por la configuración de la propiedad GA4 en el panel de administración de Google — no hay ninguna llamada `gtag()` en este repo (grep confirma 0 ocurrencias; todo pasa por `dataLayer.push()`, ver `providers/ga4.ts`). No es un dominio no identificado: es un comportamiento documentado de Google Ads Linking.
+
+**Corrección:** se agregó `https://www.google.es` a `img-src` en `src/proxy.ts` (solo el dominio evidenciado — no se agregó `https://www.google.com` ni otros ccTLD sin evidencia real, siguiendo el mismo criterio de mínimo-necesario de la auditoría CSP original).
+
+### Build/lint post-Ronda 4
+- **`tsc --noEmit`:** sin errores.
+- **Build de producción:** exitoso.
+- **Lint:** 71 errores / 61 warnings — idéntico al baseline antes de esta ronda (confirmado con `git stash`); ningún error/warning nuevo introducido.
+- **CSP runtime (Playwright, build de producción):** 0 violaciones.
+
+### ESTADO — RONDA 4
+Ambos hallazgos nuevos, encontrados con evidencia de producción real post-deploy, quedan corregidos y validados. No cambia el veredicto 🟡 READY WITH MINOR OBSERVATIONS de la Ronda 3 — las reservas de esa ronda (M1 sin confirmación end-to-end en vivo, webhook GA4 MP/Meta CAPI sin Supabase real en este entorno) siguen siendo las mismas y no fueron re-evaluadas en esta ronda.

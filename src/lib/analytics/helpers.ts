@@ -176,10 +176,13 @@ export function validateEventParams(params: EventParams): boolean {
 }
 
 // ── Shared Parameters Injection ──────────────────────────────────────────────
+// timestamp is intentionally NOT included here: this object is cached once
+// into globalSharedParams (see analytics.ts's ensureInitialized), so a
+// timestamp baked in here would freeze at page-load time and get reused by
+// every event for the rest of that page load. track() stamps it per-event.
 export function getSharedParams(): Partial<SharedParams> {
   const shared: Partial<SharedParams> = {
     session_id: getSessionId(),
-    timestamp: new Date().toISOString(),
     device_category: getDeviceCategory(),
   };
 

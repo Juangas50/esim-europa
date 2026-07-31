@@ -24,7 +24,12 @@ function buildCsp(nonce: string, isDev: boolean) {
     `script-src 'self' 'nonce-${nonce}'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://js.stripe.com https://checkout.stripe.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com",
+    // https://www.google.es/ads/ga-audiences is Google's own remarketing/audience
+    // beacon (Google Ads Linking / Google Signals, configured in the GA4 property
+    // admin panel — not in this repo's code, no gtag() call exists here; every
+    // event goes through dataLayer.push(), see providers/ga4.ts). Confirmed via
+    // real production Tag Assistant capture, img-src only (1x1 pixel GET).
+    "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com https://www.google.es",
     "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com",
     // https://www.facebook.com here (not connect.facebook.net) is fbevents.js's
     // own fallback transport for environments where its default img/fetch beacon
