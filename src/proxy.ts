@@ -26,10 +26,17 @@ function buildCsp(nonce: string, isDev: boolean) {
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://www.facebook.com",
     "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://checkout.stripe.com",
-    "frame-src https://www.googletagmanager.com https://js.stripe.com https://checkout.stripe.com",
+    // https://www.facebook.com here (not connect.facebook.net) is fbevents.js's
+    // own fallback transport for environments where its default img/fetch beacon
+    // to facebook.com/tr is unavailable (e.g. third-party cookies blocked) — an
+    // invisible iframe for cross-domain matching, and occasionally a hidden-form
+    // POST. Our own code never creates a facebook.com iframe or <form> (the
+    // noscript pixel is an <img>, covered by img-src); this is Meta's official
+    // Pixel script itself needing it, not a bug in our implementation.
+    "frame-src https://www.googletagmanager.com https://js.stripe.com https://checkout.stripe.com https://www.facebook.com",
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self' https://checkout.stripe.com",
+    "form-action 'self' https://checkout.stripe.com https://www.facebook.com",
     "upgrade-insecure-requests",
   ].join("; ");
 }
