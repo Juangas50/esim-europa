@@ -70,9 +70,49 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
       )}
 
       {/* Plan Name */}
-      <h3 className={`text-xl font-black mb-2.5 ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
-        {plan.name}
-      </h3>
+      <div className="mb-2.5">
+        <h3 className={`text-xl font-black ${isPopular ? "text-white" : "text-[var(--color-navy)]"}`}>
+          {plan.name}
+        </h3>
+        {/* view_item: intención real de ver el detalle de ESTE plan — solo
+            en click, nunca por hover ni por renderizar la grilla (eso ya lo
+            cubre view_item_list arriba). Distinto de begin_checkout: acá el
+            usuario está mirando, no comprando. */}
+        <button
+          type="button"
+          onClick={() => {
+            track("view_item", {
+              page_path: `/${locale}`,
+              page_title: "RUTA34 Home - Plans",
+              language: locale,
+              section: "plans",
+              plan_id: plan.id,
+              plan_name: plan.name,
+              plan_slug: plan.slug,
+              data_gb: plan.data_gb,
+              eu_data_gb: plan.eu_data_gb,
+              price_usd: plan.price_usd,
+              currency: "USD",
+              is_popular: isPopular,
+              plan_position: index,
+              items: [
+                {
+                  item_id: plan.id,
+                  item_name: plan.name,
+                  item_category: plan.type,
+                  price: plan.price_usd,
+                  quantity: 1,
+                },
+              ],
+            });
+          }}
+          className={`mt-0.5 text-[10px] font-semibold underline decoration-dotted underline-offset-2 transition-colors ${
+            isPopular ? "text-white/60 hover:text-white" : "text-[var(--color-ink-2)] hover:text-[var(--color-navy)]"
+          }`}
+        >
+          {t("viewDetails")}
+        </button>
+      </div>
 
       {/* Data Amount - Prominent */}
       <div className="mb-2.5">

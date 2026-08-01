@@ -516,3 +516,72 @@ Mismo origen que el Hallazgo #8 (Google Ads Linking / Google Signals, configurad
 
 ### ESTADO — RONDA 5
 Ambos hallazgos corregidos y validados (uno con prueba runtime completa, el otro por mecanismo idéntico ya probado + revisión de código). Veredicto sigue en 🟡 READY WITH MINOR OBSERVATIONS — la nota de `language` queda documentada pero sin acción, y las reservas de rondas anteriores (M1, webhook GA4 MP/Meta CAPI sin entorno real) no fueron re-evaluadas.
+
+---
+
+## RONDA 6 — Implementación de `view_item` (plan individual), pedido explícito del usuario
+
+`TRACKING_PLAN.md` (líneas 230-243) documentaba un evento `view_item` para la visualización de un plan individual (🔴 Alta prioridad, requiere `plan_name` entre otros parámetros) que **nunca se había implementado** — descubierto al auditar consistencia de `plan_name` en toda la configuración. Los únicos `view_item` existentes en el código son otros dos, ya documentados y correctos (compatibilidad de dispositivo, confirmación de compra), ninguno relacionado con planes.
+
+### Implementación
+
+**`src/components/landing/Plans.tsx`**: se separó el nombre del plan (`<h3>`, puramente semántico) de un nuevo botón "Ver detalles" debajo, que dispara `view_item` solo en click — nunca por render de la grilla (eso ya lo cubre `view_item_list`, sin tocar) ni por hover (explícitamente prohibido por el pedido; no se usó el patrón de hover de 2s que sí menciona `TRACKING_PLAN.md` como alternativa).
+
+Parámetros enviados, todos exactamente como pidió el usuario:
+```js
+track("view_item", {
+  page_path, page_title, language,       // universales, vía useAnalytics
+  section: "plans",
+  plan_id, plan_name, plan_slug,
+  data_gb, eu_data_gb, price_usd, currency: "USD",
+  is_popular, plan_position,
+  items: [{ item_id, item_name, item_category: plan.type, price: plan.price_usd, quantity: 1 }],
+});
+```
+`price_original_usd` no se incluyó: el tipo `Plan` (`src/types/index.ts`) no tiene ese campo — no aplica en el modelo de datos actual, y agregarlo con un valor inventado habría repetido el error de M3 (fabricar campos). `item_category` usa `plan.type` (`"local"` / `"dataonly"`) siguiendo el mismo criterio ya usado en `src/app/api/webhooks/stripe/route.ts:190` para el mismo campo en `purchase` — consistencia con el resto del código, no un valor nuevo inventado.
+
+**`messages/es.json` / `messages/pt.json`**: se agregó la clave `plans.viewDetails` ("Ver detalles" / "Ver detalhes") — es el único texto nuevo, necesario para el botón.
+
+### Validación runtime (Playwright, build de producción, `dataLayer.push` interceptado)
+
+| Escenario | Resultado |
+|---|---|
+| Al montar la grilla de planes (solo `view_item_list` debe disparar) | ✅ `view_item` ausente |
+| Hover sobre la card 2.5s (sin click) | ✅ `view_item` sigue ausente — confirma que NO se implementó por hover |
+| Click en "Ver detalles" | ✅ exactamente 1 `view_item`, con los 12 campos pedidos + `items` con 1 elemento |
+| ¿Se disparó `begin_checkout` de paso? | ✅ No, 0 veces — evento independiente, sin duplicación |
+| CSP | ✅ 0 violaciones |
+
+Payload real capturado:
+```json
+{
+  "event": "view_item",
+  "section": "plans",
+  "plan_id": "local-s",
+  "plan_name": "Europa Básico",
+  "plan_slug": "local-s",
+  "data_gb": 5,
+  "eu_data_gb": 15,
+  "price_usd": 19.9,
+  "currency": "USD",
+  "is_popular": false,
+  "plan_position": 0,
+  "ecommerce": {
+    "currency": "USD",
+    "items": [{ "item_id": "local-s", "item_name": "Europa Básico", "item_category": "local", "price": 19.9, "quantity": 1 }]
+  }
+}
+```
+
+### Build/lint
+- **`tsc --noEmit`:** sin errores.
+- **Build de producción:** exitoso.
+- **Lint:** idéntico al baseline (confirmado con `git stash`), sin regresiones.
+
+### Archivos modificados
+- `src/components/landing/Plans.tsx` — nuevo botón "Ver detalles" + handler `view_item` (líneas ~72-107 tras el cambio)
+- `messages/es.json` — clave `plans.viewDetails`
+- `messages/pt.json` — clave `plans.viewDetails`
+
+### ESTADO — RONDA 6
+`view_item` de plan individual implementado y validado en runtime exactamente según `TRACKING_PLAN.md`. Cierra el hallazgo de "evento documentado pero nunca implementado" detectado en la auditoría de consistencia de `plan_name`.
