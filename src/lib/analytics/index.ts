@@ -182,6 +182,48 @@ export const analytics = {
     push({ event: "select_activation_option", option, plan: planSnapshot(plan) });
   },
 
+  /** Checkout Step 3 — fecha de viaje ingresada para recomendación */
+  tripDateEntered(tripDate: string, plan: Plan) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const trip = new Date(tripDate + "T00:00:00");
+    const daysGap = Math.ceil((trip.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    push({
+      event: "activation_trip_date_entered",
+      trip_date: tripDate,
+      days_until_trip: daysGap,
+      plan: planSnapshot(plan),
+    });
+  },
+
+  /** Checkout Step 3 — recomendación mostrada al usuario */
+  activationRecommendationShown(
+    recommendedType: "now" | "schedule",
+    daysGap: number,
+    plan: Plan
+  ) {
+    push({
+      event: "activation_recommendation_shown",
+      recommended_type: recommendedType,
+      days_until_trip: daysGap,
+      plan: planSnapshot(plan),
+    });
+  },
+
+  /** Checkout Step 3 — usuario elige contra recomendación pero confirma */
+  activationCrossRecommendationConfirmed(
+    recommendedType: "now" | "schedule",
+    chosenType: "now" | "schedule",
+    plan: Plan
+  ) {
+    push({
+      event: "activation_cross_recommendation_confirmed",
+      recommended_type: recommendedType,
+      chosen_type: chosenType,
+      plan: planSnapshot(plan),
+    });
+  },
+
   /** Postpago — página de confirmación vista */
   confirmationViewed(orderRef: string, quantity: number) {
     push({ event: "view_confirmation", order_ref: orderRef, quantity });

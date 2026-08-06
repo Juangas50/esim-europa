@@ -6,9 +6,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, WarningCircle } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, WarningCircle, CheckCircle, Star } from "@phosphor-icons/react";
 import Button from "@/components/ui/Button";
 import PurchaseFAQ from "@/components/purchase/PurchaseFAQ";
+import ActivationTimeline from "@/components/purchase/ActivationTimeline";
+import ActivationConfirmationModal from "@/components/purchase/ActivationConfirmationModal";
 import { Plan, OrderFormData } from "@/types";
 import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
@@ -38,6 +40,17 @@ const maxDobStr = () => {
   return d.toISOString().split("T")[0];
 };
 
+const isValidActivationDate = (date: string) => {
+  if (!date) return false;
+  const d = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  d.setHours(0, 0, 0, 0);
+  const maxDate = new Date(today);
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
+  return d >= today && d <= maxDate;
+};
+
 const schema = z.object({
   customer_name: z.string().min(2, "Ingresá tu nombre"),
   customer_lastname: z.string().min(2, "Ingresá tu apellido"),
@@ -56,6 +69,14 @@ const schema = z.object({
 }).refine((d) => d.customer_email === d.confirm_email, {
   message: "Los emails no coinciden. Revisalos para que podamos enviarte los QR",
   path: ["confirm_email"],
+}).refine((d) => {
+  if (d.activation_type === "schedule" && !isValidActivationDate(d.activation_date ?? "")) {
+    return false;
+  }
+  return true;
+}, {
+  message: "La fecha de activación debe ser hoy o en el futuro (máximo 365 días)",
+  path: ["activation_date"],
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -89,11 +110,40 @@ function Label({ children, required }: { children: React.ReactNode; required?: b
 const inputClass =
   "w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3 text-base text-[var(--color-navy)] placeholder:text-[var(--color-ink-2)] focus:outline-none focus:border-[var(--color-gold)] focus:ring-2 focus:ring-[var(--color-gold)]/20 transition-all duration-150";
 
+const DAYS_BEFORE_TRIP_THRESHOLD = 5;
+const PLAN_DURATION_DAYS = 28;
+
+const calculateDaysGap = (tripDate: string): number => {
+  if (!tripDate) return 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const trip = new Date(tripDate);
+  trip.setHours(0, 0, 0, 0);
+  const diffTime = trip.getTime() - today.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+const getRecommendedActivationType = (tripDate: string): "now" | "schedule" => {
+  if (!tripDate) return "now";
+  const daysGap = calculateDaysGap(tripDate);
+  return daysGap >= DAYS_BEFORE_TRIP_THRESHOLD ? "schedule" : "now";
+};
+
+const calculateExpiryDate = (activationDate: string): string => {
+  const activation = new Date(activationDate);
+  const expiry = new Date(activation);
+  expiry.setDate(expiry.getDate() + PLAN_DURATION_DAYS);
+  return expiry.toISOString().split("T")[0];
+};
+
 export default function StepData({ plan, initialData, onNext, onBack }: StepDataProps) {
   const t = useTranslations("purchase");
   const tCountries = useTranslations("purchase.countries");
   const [quantity, setQuantity] = useState(initialData.quantity ?? 1);
   const [substep, setSubstep] = useState(1); // 1: básico, 2: validación, 3: activación
+  const [tripDate, setTripDate] = useState<string>(""); // Fecha del viaje (para recomendación)
+  const [showCrossRecommendationModal, setShowCrossRecommendationModal] = useState(false); // Modal de confirmación
+  const [todayDate, setTodayDate] = useState<string>(""); // Fecha de hoy (inicializada en client side)
   const nameRef = useRef<HTMLInputElement | null>(null);
   const passportRef = useRef<HTMLInputElement | null>(null);
   const dobRef = useRef<HTMLInputElement | null>(null);
@@ -134,11 +184,26 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     }
   }, [errors]);
 
+  // Initialize todayDate on mount (client-side only)
+  useEffect(() => {
+    setTodayDate(new Date().toISOString().split("T")[0]);
+  }, []);
+
   // Fire checkout_step_viewed once when this step mounts
   useEffect(() => {
     analytics.checkoutStepViewed(2, "data", plan);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Fire activation recommendation event when trip date and recommendation change
+  useEffect(() => {
+    if (isLocal && tripDate && substep === 3) {
+      const daysGap = calculateDaysGap(tripDate);
+      const recommendedType = getRecommendedActivationType(tripDate);
+      analytics.activationRecommendationShown(recommendedType, daysGap, plan);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tripDate, substep]);
 
   // Auto-detect country by IP geolocation
   useEffect(() => {
@@ -174,6 +239,15 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       analytics.emailMismatchError();
       emailMismatchFired.current = true;
     }
+
+    // Fire cross-recommendation event if user chose against recommendation
+    if (isLocal && tripDate && data.activation_type) {
+      const recommended = getRecommendedActivationType(tripDate);
+      if (recommended !== data.activation_type) {
+        analytics.activationCrossRecommendationConfirmed(recommended, data.activation_type, plan);
+      }
+    }
+
     const finalActivationDate =
       data.activation_type === "schedule" ? (data.activation_date ?? "") : "";
     analytics.checkoutStepCompleted(2, "data", plan);
@@ -411,66 +485,180 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
             </div>
 
             {isLocal && (
-              <div className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 p-6">
-                <div className="space-y-3">
-                  {/* Activación inmediata */}
-                  <label
-                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
-                      watch("activation_type") === "now"
-                        ? "border-[var(--color-gold)] bg-white"
-                        : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      {...register("activation_type")}
-                      value="now"
-                      onChange={() => analytics.activationOptionSelected("now", plan)}
-                      className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
-                    />
-                    <div>
-                      <p className="text-sm font-semibold text-[var(--color-navy)]">Activación inmediata</p>
-                      <p className="text-xs text-[var(--color-ink-2)] mt-1">
-                        Te enviamos el QR en menos de 24h y ahí arrancan tus 28 días. Instalalo apenas lo recibas.
-                      </p>
-                    </div>
-                  </label>
+              <>
+                {/* Step 1: Fecha del viaje */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, ease: EASE_OUT }}
+                  className="rounded-2xl bg-white border border-[var(--color-border)] p-6"
+                >
+                  <Label required>¿Cuándo es tu viaje o cuándo necesitás la eSIM?</Label>
+                  <input
+                    type="date"
+                    value={tripDate}
+                    onChange={(e) => {
+                      setTripDate(e.target.value);
+                      analytics.tripDateEntered(e.target.value, plan);
+                    }}
+                    className={inputClass}
+                    min={todayDate}
+                    max={todayDate ? new Date(new Date(todayDate).getTime() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] : ""}
+                  />
+                  <p className="text-xs text-[var(--color-ink-2)] mt-2">
+                    Esto nos ayuda a recomendarte la mejor opción de activación
+                  </p>
+                </motion.div>
 
-                  {/* Programar fecha */}
-                  <label
-                    className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
-                      watch("activation_type") === "schedule"
-                        ? "border-[var(--color-gold)] bg-white"
-                        : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
+                {/* Step 2: Recomendación inteligente */}
+                {tripDate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: EASE_OUT }}
+                    className={`rounded-2xl border p-6 ${
+                      getRecommendedActivationType(tripDate) === "schedule"
+                        ? "bg-[#f0fdf4] border-[#10b981]"
+                        : "bg-[#fef3c7] border-[#f59e0b]"
                     }`}
                   >
-                    <input
-                      type="radio"
-                      {...register("activation_type")}
-                      value="schedule"
-                      onChange={() => analytics.activationOptionSelected("schedule", plan)}
-                      className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
-                    />
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-[var(--color-navy)]">Programar fecha</p>
-                      <p className="text-xs text-[var(--color-ink-2)] mt-1">
-                        Elegí cuándo empieza tu plan (hasta 12 meses).
-                      </p>
-                      {watch("activation_type") === "schedule" && (
-                        <input
-                          type="date"
-                          {...register("activation_date")}
-                          className={`${inputClass} mt-3`}
-                          min={new Date().toISOString().split("T")[0]}
-                          max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-                            .toISOString()
-                            .split("T")[0]}
-                        />
+                    <div className="flex items-start gap-3">
+                      {getRecommendedActivationType(tripDate) === "schedule" ? (
+                        <CheckCircle size={20} weight="fill" className="text-[#10b981] flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <Star size={20} weight="fill" className="text-[#f59e0b] flex-shrink-0 mt-0.5" />
                       )}
+                      <div>
+                        <p className={`text-sm font-semibold ${
+                          getRecommendedActivationType(tripDate) === "schedule"
+                            ? "text-[#10b981]"
+                            : "text-[#f59e0b]"
+                        }`}>
+                          {getRecommendedActivationType(tripDate) === "schedule"
+                            ? `✓ Recomendada: Activación programada`
+                            : `⚠ Activación inmediata`}
+                        </p>
+                        <p className="text-sm text-[var(--color-ink)] mt-2">
+                          {getRecommendedActivationType(tripDate) === "schedule"
+                            ? `Tu plan empieza exactamente el ${new Date(tripDate + "T00:00:00").toLocaleDateString("es-ES", { month: "long", day: "numeric" })}. No pierdes días de cobertura.`
+                            : `Quedan menos de 5 días. Es más seguro activar ahora para garantizar tu cobertura.`}
+                        </p>
+                      </div>
                     </div>
-                  </label>
-                </div>
-              </div>
+                  </motion.div>
+                )}
+
+                {/* Step 3: Opciones de activación */}
+                {tripDate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: EASE_OUT }}
+                    className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 p-6"
+                  >
+                    <p className="text-sm font-bold text-[var(--color-navy)] mb-4">Elegí tu opción</p>
+                    <div className="space-y-3">
+                      {/* Opción 1 */}
+                      <label
+                        className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
+                          watch("activation_type") === "now"
+                            ? "border-[var(--color-gold)] bg-white"
+                            : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
+                        } ${getRecommendedActivationType(tripDate) === "now" ? "ring-2 ring-[#f59e0b]/30" : ""}`}
+                      >
+                        <input
+                          type="radio"
+                          {...register("activation_type")}
+                          value="now"
+                          onChange={() => {
+                            analytics.activationOptionSelected("now", plan);
+                          }}
+                          className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
+                        />
+                        <div>
+                          <p className="text-sm font-semibold text-[var(--color-navy)]">
+                            Activación inmediata
+                            {getRecommendedActivationType(tripDate) === "now" && (
+                              <span className="ml-2 text-xs bg-[#fef3c7] text-[#b45309] px-2 py-1 rounded">Recomendada</span>
+                            )}
+                          </p>
+                          <p className="text-xs text-[var(--color-ink-2)] mt-1">
+                            Te enviamos el QR en menos de 24h y ahí arrancan tus 28 días.
+                          </p>
+                        </div>
+                      </label>
+
+                      {/* Opción 2 */}
+                      <label
+                        className={`flex items-start gap-3 cursor-pointer rounded-xl border-2 p-4 transition-all ${
+                          watch("activation_type") === "schedule"
+                            ? "border-[var(--color-gold)] bg-white"
+                            : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
+                        } ${getRecommendedActivationType(tripDate) === "schedule" ? "ring-2 ring-[#10b981]/30" : ""}`}
+                      >
+                        <input
+                          type="radio"
+                          {...register("activation_type")}
+                          value="schedule"
+                          onChange={() => {
+                            analytics.activationOptionSelected("schedule", plan);
+                          }}
+                          className="accent-[var(--color-gold)] w-4 h-4 mt-0.5 shrink-0"
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-[var(--color-navy)]">
+                            Programar fecha
+                            {getRecommendedActivationType(tripDate) === "schedule" && (
+                              <span className="ml-2 text-xs bg-[#f0fdf4] text-[#15803d] px-2 py-1 rounded">Recomendada</span>
+                            )}
+                          </p>
+                          <p className="text-xs text-[var(--color-ink-2)] mt-1">
+                            Elige cuándo empieza tu plan. Máximo 365 días.
+                          </p>
+                          {watch("activation_type") === "schedule" && (
+                            <input
+                              type="date"
+                              {...register("activation_date")}
+                              className={`${inputClass} mt-3`}
+                              min={new Date().toISOString().split("T")[0]}
+                              max={new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
+                            />
+                          )}
+                        </div>
+                      </label>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Timeline visual */}
+                {tripDate && watch("activation_type") && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: EASE_OUT }}
+                  >
+                    <ActivationTimeline
+                      purchaseDate={todayDate}
+                      activationDate={
+                        watch("activation_type") === "now"
+                          ? todayDate
+                          : watch("activation_date") || tripDate
+                      }
+                      expiryDate={calculateExpiryDate(
+                        watch("activation_type") === "now"
+                          ? todayDate
+                          : watch("activation_date") || tripDate
+                      )}
+                      isRecommended={watch("activation_type") === getRecommendedActivationType(tripDate)}
+                    />
+                  </motion.div>
+                )}
+
+                {/* Error message si activation_date no es válida */}
+                {watch("activation_type") === "schedule" && errors.activation_date && (
+                  <FieldError message={errors.activation_date.message} />
+                )}
+              </>
             )}
 
             {!isLocal && (
@@ -518,11 +706,42 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
               >
                 <ArrowLeft size={16} weight="bold" />
               </motion.button>
-              <Button type="submit" variant="primary" size="lg" className="flex-1">
+              <Button
+                type="button"
+                onClick={() => {
+                  if (isLocal && tripDate && watch("activation_type")) {
+                    const recommended = getRecommendedActivationType(tripDate);
+                    const chosen = watch("activation_type");
+                    if (recommended !== chosen) {
+                      setShowCrossRecommendationModal(true);
+                    } else {
+                      handleSubmit(onSubmit)();
+                    }
+                  } else {
+                    handleSubmit(onSubmit)();
+                  }
+                }}
+                variant="primary"
+                size="lg"
+                className="flex-1 flex items-center justify-center gap-2"
+              >
                 {t("form.next")}
                 <ArrowRight size={16} weight="bold" />
               </Button>
             </div>
+
+            {/* Modal de confirmación */}
+            <ActivationConfirmationModal
+              isOpen={showCrossRecommendationModal}
+              activationDate={watch("activation_date") || tripDate}
+              recommendedType={getRecommendedActivationType(tripDate)}
+              chosenType={watch("activation_type")}
+              onConfirm={() => {
+                setShowCrossRecommendationModal(false);
+                handleSubmit(onSubmit)();
+              }}
+              onCancel={() => setShowCrossRecommendationModal(false)}
+            />
           </div>
         )}
       </form>

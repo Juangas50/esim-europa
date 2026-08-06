@@ -226,7 +226,9 @@
       "deviceConfirm": "Confirmo que meu celular é compatível com eSIM, está desbloqueado e conectado a WiFi para instalar.",
       "next": "Continuar",
       "back": "Voltar",
-      "pay": "Pagar agora"
+      "pay": "Pagar agora",
+      "tripDate": "Quando é sua viagem ou quando precisa do eSIM?",
+      "tripDateHint": "Isto nos ajuda a recomendar a melhor opção de ativação"
     },
     "summary": "Resumo do pedido",
     "faq": {
