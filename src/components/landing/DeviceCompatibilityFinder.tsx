@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { MagnifyingGlass, Check, WarningCircle } from "@phosphor-icons/react";
 import devices from "@/data/esim-devices.json";
 import { WHATSAPP_URL } from "@/config/constants";
+import { getCompatiblePlanIds } from "@/lib/plan-compatibility";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 

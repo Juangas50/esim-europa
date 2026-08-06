@@ -9,7 +9,8 @@ interface PremiumTooltipProps {
   footer?: string;
   cta?: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
   icon?: React.ReactNode;
   children: React.ReactNode;
@@ -119,7 +120,7 @@ export default function PremiumTooltip({
             )}
 
             {/* CTA */}
-            {cta && (
+            {cta && cta.href && (
               <a
                 href={cta.href}
                 className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-gold)] hover:text-[var(--color-navy)] transition-colors group"
@@ -129,6 +130,18 @@ export default function PremiumTooltip({
                   →
                 </span>
               </a>
+            )}
+            {cta && cta.onClick && (
+              <button
+                onClick={cta.onClick}
+                type="button"
+                className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-gold)] hover:text-[var(--color-navy)] transition-colors group cursor-pointer"
+              >
+                {cta.label}
+                <span className="group-hover:translate-x-1 transition-transform">
+                  →
+                </span>
+              </button>
             )}
           </motion.div>
         )}

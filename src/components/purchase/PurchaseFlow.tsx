@@ -17,9 +17,10 @@ const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 interface PurchaseFlowProps {
   plans: Plan[];
   initialPlanId?: string;
+  compatibleWith?: string;
 }
 
-export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps) {
+export default function PurchaseFlow({ plans, initialPlanId, compatibleWith }: PurchaseFlowProps) {
   const t = useTranslations("purchase");
 
   // If the user clicked "Buy plan" on the landing, skip the plan-picker entirely
@@ -81,6 +82,16 @@ export default function PurchaseFlow({ plans, initialPlanId }: PurchaseFlowProps
             <h1 className="text-4xl sm:text-5xl font-black text-[var(--color-navy)] tracking-tight mb-8">
               {t("title")}
             </h1>
+
+            {compatibleWith && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm text-blue-900"
+              >
+                ✓ Planes disponibles para tu país: {compatibleWith.toUpperCase()}
+              </motion.div>
+            )}
 
             {/* Stepper */}
             <div className="flex items-center gap-0">

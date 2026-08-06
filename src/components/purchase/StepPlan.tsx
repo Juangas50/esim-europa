@@ -144,13 +144,6 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3 flex-wrap">
-                        {plan.size && (
-                          <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg font-black text-xs ${
-                            isSelected ? "bg-[var(--color-gold)]/10 text-[var(--color-gold)]" : "bg-[var(--color-warm-white)] text-[var(--color-ink)]"
-                          }`}>
-                            {plan.size}
-                          </span>
-                        )}
                         <span className="font-black text-lg text-[var(--color-navy)]">{plan.name}</span>
                         {plan.is_popular && (
                           <Badge variant="red">

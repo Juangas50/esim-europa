@@ -37,17 +37,16 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
     ? plan.badge.split(/\r?\n/).map(f => f.trim()).filter(Boolean)
     : [];
 
-  // Banderas de países incluidos (no-EU)
-  const getCountryFlags = () => {
-    const isBasic = plan.id === "2bf430af-8a08-4425-a188-7bf8df18cfd8"; // ID del plan Básico
+  // Compatibilidad de países por plan (explicit mapping)
+  const PLAN_COUNTRY_FLAGS: Record<string, string[]> = {
+    "2bf430af-8a08-4425-a188-7bf8df18cfd8": ["IS", "NO", "LI", "CH", "TR"],  // Básico: Sin USA
+    "30c52a68-639a-442b-8eb4-aa19c55b2d92": ["US", "IS", "NO", "LI", "CH"], // Plus: Con USA
+    "45412b84-a570-4112-ad28-fb2225f01dc5": ["US", "IS", "NO", "LI", "CH"], // Total: Con USA
+    "61439ac8-772c-4342-8acc-b231e62684fc": ["US", "IS", "NO", "LI", "CH"], // Max: Con USA
+  };
 
-    if (isBasic) {
-      // Básica: Islandia, Noruega, Liechtenstein, Suiza, Turquía
-      return ["IS", "NO", "LI", "CH", "TR"];
-    } else {
-      // Otros: USA + extras
-      return ["US", "IS", "NO", "LI", "CH"];
-    }
+  const getCountryFlags = () => {
+    return PLAN_COUNTRY_FLAGS[plan.id] || ["IS", "NO", "LI", "CH", "TR"];
   };
 
   return (
@@ -198,7 +197,12 @@ function PlanCard({ plan, index, isPopular }: { plan: Plan; index: number; isPop
                         footer="Los minutos disponibles dependen de la tarifa contratada y del país de destino."
                         cta={{
                           label: "Ver detalle completo",
-                          href: "#faq",
+                          onClick: () => {
+                            const faqElement = document.getElementById("faq");
+                            if (faqElement) {
+                              faqElement.scrollIntoView({ behavior: "smooth" });
+                            }
+                          },
                         }}
                         icon="ⓘ"
                       >
