@@ -42,6 +42,11 @@ export type UnifiedOrder = {
 
 // ── Estados ───────────────────────────────────────────────────────────────────
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
+  // pending_payment: el cliente todavía no terminó de pagar en Stripe (o
+  // abandonó el checkout). No hay nada para que el equipo haga acá — el cron
+  // diario lo cancela solo a las 24hs (ver src/app/api/cron/daily/route.ts).
+  // Distinto de pending_review: no entra en isTramitar().
+  pending_payment: { label: 'Pendiente de pago', color: '#94A3B8', bg: 'rgba(148,163,184,0.15)' },
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
   paid:           { label: '⚡ Tramitar',         color: '#C9973A', bg: 'rgba(230,0,0,0.18)'   },
   scheduled:      { label: 'Programado',          color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
@@ -54,12 +59,13 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
 
 // "tramitar" agrupa paid (B2C) + pending_review (B2B): son lo mismo operativamente
 const STATUS_FILTERS = [
-  { id: 'all',      label: 'Todos'        },
-  { id: 'tramitar', label: '⚡ Tramitar'  },
-  { id: 'scheduled',label: 'Programados'  },
-  { id: 'qr_sent',  label: 'QR Enviado'  },
-  { id: 'activated',label: 'Activados'   },
-  { id: 'cancelled',label: 'Cancelados'  },
+  { id: 'all',             label: 'Todos'             },
+  { id: 'tramitar',        label: '⚡ Tramitar'       },
+  { id: 'pending_payment', label: 'Pend. de pago'     },
+  { id: 'scheduled',       label: 'Programados'       },
+  { id: 'qr_sent',         label: 'QR Enviado'        },
+  { id: 'activated',       label: 'Activados'         },
+  { id: 'cancelled',       label: 'Cancelados'        },
 ]
 
 function isTramitar(status: string) {

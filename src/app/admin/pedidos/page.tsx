@@ -5,7 +5,11 @@ import type { UnifiedOrder } from './PedidosClient'
 // ── Status mapping B2C → portal ───────────────────────────────────────────────
 function mapB2CStatus(s: string): string {
   const map: Record<string, string> = {
-    pending_payment: 'pending_review',
+    // pending_payment NO se unifica con pending_review: significa "el cliente
+    // todavía no terminó de pagar en Stripe", no "hay algo para que el
+    // equipo revise" — son estados distintos, ver STATUSES/isTramitar en
+    // PedidosClient.tsx.
+    pending_payment: 'pending_payment',
     paid:            'paid',
     processing:      'paid',
     qr_sent:         'qr_sent',
