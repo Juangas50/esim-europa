@@ -197,12 +197,12 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
   // Pre-select the recommended activation type when trip date changes
   useEffect(() => {
-    if (isLocal && tripDate && substep === 3) {
+    if (plan.type === "local" && tripDate && substep === 3) {
       const recommendedType = getRecommendedActivationType(tripDate);
       setValue("activation_type", recommendedType);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tripDate, substep, isLocal]);
+  }, [tripDate, substep]);
 
   // Fire activation recommendation event when trip date and recommendation change
   useEffect(() => {
