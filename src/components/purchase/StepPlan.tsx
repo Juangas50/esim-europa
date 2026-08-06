@@ -151,7 +151,6 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                             {t("popular")}
                           </Badge>
                         )}
-                        <Badge variant="outline">{t(`${plan.type}.badge`)}</Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm flex-wrap">
                         <span className="font-bold text-[var(--color-navy)]">{plan.data_gb} GB</span>
