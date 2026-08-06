@@ -167,7 +167,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
       customer_country: initialData.customer_country ?? "",
       customer_passport: "",
       customer_dob: "",
-      activation_type: "now",
+      activation_type: "now", // Will be updated by useEffect when tripDate changes
       activation_date: initialData.activation_date ?? "",
       device_confirmed: initialData.device_confirmed ?? false,
     },
@@ -194,6 +194,15 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
     analytics.checkoutStepViewed(2, "data", plan);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Pre-select the recommended activation type when trip date changes
+  useEffect(() => {
+    if (isLocal && tripDate && substep === 3) {
+      const recommendedType = getRecommendedActivationType(tripDate);
+      setValue("activation_type", recommendedType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tripDate, substep, isLocal]);
 
   // Fire activation recommendation event when trip date and recommendation change
   useEffect(() => {
@@ -564,7 +573,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                           watch("activation_type") === "now"
                             ? "border-[var(--color-gold)] bg-white"
                             : "border-[var(--color-border)] bg-[var(--color-warm-white)]"
-                        } ${getRecommendedActivationType(tripDate) === "now" ? "ring-2 ring-[#f59e0b]/30" : ""}`}
+                        } ${getRecommendedActivationType(tripDate) === "now" ? "ring-2 ring-[#3b82f6]/30" : ""}`}
                       >
                         <input
                           type="radio"
@@ -579,7 +588,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                           <p className="text-sm font-semibold text-[var(--color-navy)]">
                             Activación inmediata
                             {getRecommendedActivationType(tripDate) === "now" && (
-                              <span className="ml-2 text-xs bg-[#fef3c7] text-[#b45309] px-2 py-1 rounded">Recomendada</span>
+                              <span className="ml-2 text-xs bg-[#dbeafe] text-[#1e40af] px-2 py-1 rounded">Recomendada</span>
                             )}
                           </p>
                           <p className="text-xs text-[var(--color-ink-2)] mt-1">
