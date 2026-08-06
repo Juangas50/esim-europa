@@ -49,7 +49,7 @@ export default function SobreRuta34() {
     },
     {
       numero: "03",
-      titulo: "Llegás conectado",
+      titulo: "Llegás con tu conexión preparada",
       desc: "Instalás o activás el servicio según condiciones y empezás a usar internet.",
       icono: Clock,
     },
@@ -185,11 +185,11 @@ export default function SobreRuta34() {
               </h2>
 
               <p className="text-lg text-[var(--color-ink)] leading-relaxed max-w-3xl">
-                Ofrecemos soluciones móviles prepago para viajar por España y Europa.
+                Ofrecemos soluciones de conectividad móvil prepago para viajeros que visitan España y Europa.
               </p>
 
               <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-3xl">
-                Hoy trabajamos principalmente con eSIM: una SIM digital que se instala en celulares compatibles mediante un QR y permite tener conexión móvil sin cambiar tu chip físico.
+                Actualmente comercializamos principalmente planes eSIM. Una eSIM es una SIM digital que permite acceder a servicios de conectividad móvil sin necesidad de insertar una tarjeta SIM física, siempre que el dispositivo sea compatible.
               </p>
 
               <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-3xl">
@@ -426,11 +426,11 @@ export default function SobreRuta34() {
 
             <motion.div variants={fadeInUp} className="space-y-4">
               <p className="text-white/85 leading-relaxed">
-                Los planes Ruta34 se apoyan en infraestructura móvil española y están pensados para su uso en España y Europa.
+                Los planes Ruta34 están diseñados para utilizarse en España y Europa mediante redes móviles disponibles en los destinos incluidos en cada plan.
               </p>
 
               <p className="text-white/75 text-sm leading-relaxed">
-                La prestación técnica del servicio asociado a cada SIM o eSIM se realiza conforme a las condiciones del operador de red correspondiente en España.
+                La prestación de los servicios de conectividad asociados a cada SIM o eSIM se realiza a través de operadores de telecomunicaciones autorizados, conforme a las condiciones aplicables a cada plan contratado.
               </p>
             </motion.div>
           </motion.div>
@@ -524,6 +524,15 @@ export default function SobreRuta34() {
               />
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Nota de confianza — discreta, sin ánimo de repetir lo ya dicho en Términos */}
+      <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-t border-[var(--color-border)]">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-xs text-[var(--color-ink-2)] text-center">
+            RUTA34 TELECOM, S.L. es una empresa española especializada en soluciones de conectividad internacional para viajeros mediante tecnología eSIM y otros servicios de conectividad móvil.
+          </p>
         </div>
       </section>
     </div>
