@@ -528,24 +528,24 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
                     className={`rounded-2xl border p-6 ${
                       getRecommendedActivationType(tripDate) === "schedule"
                         ? "bg-[#f0fdf4] border-[#10b981]"
-                        : "bg-[#fef3c7] border-[#f59e0b]"
+                        : "bg-[#eff6ff] border-[#3b82f6]"
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       {getRecommendedActivationType(tripDate) === "schedule" ? (
                         <CheckCircle size={20} weight="fill" className="text-[#10b981] flex-shrink-0 mt-0.5" />
                       ) : (
-                        <Star size={20} weight="fill" className="text-[#f59e0b] flex-shrink-0 mt-0.5" />
+                        <CheckCircle size={20} weight="fill" className="text-[#3b82f6] flex-shrink-0 mt-0.5" />
                       )}
                       <div>
                         <p className={`text-sm font-semibold ${
                           getRecommendedActivationType(tripDate) === "schedule"
                             ? "text-[#10b981]"
-                            : "text-[#f59e0b]"
+                            : "text-[#3b82f6]"
                         }`}>
                           {getRecommendedActivationType(tripDate) === "schedule"
                             ? `✓ Recomendada: Activación programada`
-                            : `⚠ Activación inmediata`}
+                            : `✓ Recomendada: Activación inmediata`}
                         </p>
                         <p className="text-sm text-[var(--color-ink)] mt-2">
                           {getRecommendedActivationType(tripDate) === "schedule"

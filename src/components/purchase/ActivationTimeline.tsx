@@ -44,7 +44,7 @@ export default function ActivationTimeline({
             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
               isRecommended
                 ? "bg-[#10b981] border-2 border-[#10b981]"
-                : "bg-[#f59e0b] border-2 border-[#f59e0b]"
+                : "bg-[#3b82f6] border-2 border-[#3b82f6]"
             }`}>
               <Check size={14} weight="bold" className="text-white" />
             </div>

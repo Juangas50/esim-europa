@@ -105,6 +105,8 @@
     }
   },
   "compatibility": {
+    "meta_title": "Compatibilidad de eSIM — Verifica tu teléfono",
+    "meta_description": "Verifica si tu teléfono es compatible con eSIM. Soportamos iPhone, Samsung, Google Pixel y más.",
     "eyebrow": "Compatible con tu celular",
     "title": "¿Funciona con mi teléfono?",
     "subtitle": "La mayoría de los teléfonos lanzados después de 2020 son compatibles con eSIM. Verificá el tuyo:",
