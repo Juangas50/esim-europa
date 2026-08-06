@@ -107,7 +107,7 @@ export default function Benefits() {
     // ID del plan Básico (Europa Básico) - no incluye USA
     const BASIC_PLAN_ID = "2bf430af-8a08-4425-a188-7bf8df18cfd8";
 
-    // Mapear tarifas de Supabase
+    // Mapear y ordenar tarifas de Supabase
     const mapped = plans.map((plan) => ({
       name: plan.name,
       gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
@@ -115,7 +115,17 @@ export default function Benefits() {
       price: formatUSD(plan.price_usd),
       recommended: plan.is_popular || false,
       excludes: plan.id === BASIC_PLAN_ID ? ["US"] : [],
-    }));
+      id: plan.id,
+    })).sort((a, b) => {
+      // Orden: Básico → Plus (recomendado) → Total → Max → Premium
+      const order: {[key: string]: number} = {
+        "2bf430af-8a08-4425-a188-7bf8df18cfd8": 1, // Básico
+        "30c52a68-639a-442b-8eb4-aa19c55b2d92": 2, // Plus
+        "45412b84-a570-4112-ad28-fb2225f01dc5": 3, // Total
+        "61439ac8-772c-4342-8acc-b231e62684fc": 4, // Max
+      };
+      return (order[a.id] || 5) - (order[b.id] || 5);
+    });
 
     if (isSearchingUS) {
       console.log("Filtering US - isSearchingUS:", true, "searchQuery:", searchQuery);
