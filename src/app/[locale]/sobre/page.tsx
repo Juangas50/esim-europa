@@ -189,7 +189,7 @@ export default function SobreRuta34() {
               </p>
 
               <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-3xl">
-                Actualmente comercializamos principalmente planes eSIM. Una eSIM es una SIM digital que permite acceder a servicios de conectividad móvil sin necesidad de insertar una tarjeta SIM física, siempre que el dispositivo sea compatible.
+                Actualmente comercializamos principalmente planes de conectividad mediante tecnología eSIM. Una eSIM es una SIM digital que permite acceder a servicios de conectividad móvil sin necesidad de insertar una tarjeta SIM física, siempre que el dispositivo sea compatible.
               </p>
 
               <p className="text-base text-[var(--color-ink-2)] leading-relaxed max-w-3xl">
@@ -391,7 +391,7 @@ export default function SobreRuta34() {
                   </li>
                   <li className="flex items-start gap-2 text-[var(--color-ink)]">
                     <span className="text-[var(--color-gold)] font-bold">+</span>
-                    <span>Extiende tu viaje sin límites</span>
+                    <span>Ampliá tu conectividad cuando la necesites</span>
                   </li>
                 </ul>
               </div>
@@ -430,7 +430,7 @@ export default function SobreRuta34() {
               </p>
 
               <p className="text-white/75 text-sm leading-relaxed">
-                La prestación de los servicios de conectividad asociados a cada SIM o eSIM se realiza a través de operadores de telecomunicaciones autorizados, conforme a las condiciones aplicables a cada plan contratado.
+                La prestación de los servicios de conectividad asociados a cada SIM o eSIM se realiza a través de operadores de telecomunicaciones debidamente autorizados, conforme a las condiciones aplicables a cada plan contratado.
               </p>
             </motion.div>
           </motion.div>
@@ -531,7 +531,7 @@ export default function SobreRuta34() {
       <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white border-t border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto">
           <p className="text-xs text-[var(--color-ink-2)] text-center">
-            RUTA34 TELECOM, S.L. es una empresa española especializada en soluciones de conectividad internacional para viajeros mediante tecnología eSIM y otros servicios de conectividad móvil.
+            RUTA34 TELECOM, S.L. es una empresa española especializada en soluciones de conectividad internacional para viajeros. Comercializamos planes de conectividad mediante tecnología eSIM y otras soluciones diseñadas para ayudarte a viajar conectado de forma sencilla, transparente y segura.
           </p>
         </div>
       </section>
