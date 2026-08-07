@@ -27,24 +27,24 @@ const META = {
   es: {
     title: "Chip para Europa sin roaming | eSIM prepago para Argentinos y Latinoamericanos — RUTA34",
     description:
-      "Chip digital para viajar a Europa. eSIM prepago para argentinos, chilenos, uruguayos y brasileños. Instalás con QR, llegás conectado desde el primer minuto. Desde US$19.90.",
+      "eSIM prepago para viajar a Europa. Conectate desde US$15.90 sin roaming. Instalás con QR en 2 minutos. Llega a 30+ países. Ideal para argentinos, chilenos, uruguayos y brasileños.",
     keywords:
       "chip para españa, chip prepago europa, chip digital europa, esim europa argentina, chip para viajar a europa, esim sin roaming, chip internet europa, esim chile europa, esim uruguay europa, chip para argentina españa, plan prepago europa latinoamerica, chip virtual europa, internet europa sin contrato",
     ogTitle: "El chip digital para viajar a Europa — RUTA34 Telecom",
     ogDescription:
-      "Chip de datos para argentinos, chilenos y uruguayos que viajan a Europa. eSIM prepago: instalás con QR y llegás conectado. Desde US$19.90.",
+      "Chip de datos para argentinos, chilenos y uruguayos que viajan a Europa. eSIM prepago: instalás con QR y llegás conectado. Desde US$15.90.",
     ogLocale: "es_AR",
     altLocale: "pt_BR",
   },
   pt: {
     title: "Chip para Europa sem roaming | eSIM pré-pago para Brasileiros e Latino-americanos — RUTA34",
     description:
-      "Chip digital para viajar à Europa. eSIM pré-pago para brasileiros e latino-americanos. Instale com QR, chegue conectado desde o primeiro minuto. A partir de US$19,90.",
+      "eSIM pré-pago para viajar à Europa. Conecte-se a partir de US$15,90 sem roaming. Instale com QR em 2 minutos. Alcance 30+ países. Ideal para brasileiros e latino-americanos.",
     keywords:
       "chip para europa brasil, chip digital europa, esim europa brasil, chip prepago europa, internet europa sem roaming, esim brasil europa, chip viagem europa, esim sem contrato europa, chip virtual europa, internet europa latinoamerica",
     ogTitle: "O chip digital para viajar à Europa — RUTA34 Telecom",
     ogDescription:
-      "Chip de dados para brasileiros e latino-americanos que viajam à Europa. eSIM pré-pago: instale com QR e chegue conectado. A partir de US$19,90.",
+      "Chip de dados para brasileiros e latino-americanos que viajam à Europa. eSIM pré-pago: instale com QR e chegue conectado. A partir de US$15,90.",
     ogLocale: "pt_BR",
     altLocale: "es_AR",
   },
