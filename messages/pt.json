@@ -105,11 +105,11 @@
     }
   },
   "compatibility": {
-    "meta_title": "Compatibilidade de eSIM — Verifique seu telefone",
-    "meta_description": "Verifique se seu telefone é compatível com eSIM. Suportamos iPhone, Samsung, Google Pixel e muito mais.",
+    "meta_title": "Seu celular é compatível com eSIM? Verifique agora",
+    "meta_description": "Confira se seu iPhone, Samsung ou Google Pixel é compatível com eSIM. Guia de verificação: digite *#06#. Modelos desde 2018 funcionam.",
     "eyebrow": "Compatível com seu celular",
     "title": "Funciona com meu telefone?",
-    "subtitle": "A maioria dos telefones lançados após 2020 são compatíveis com eSIM. Verifique o seu:",
+    "subtitle": "A maioria dos telefones lançados após 2020 são compatíveis com eSIM. Verifique o seu digitando *#06# no seu celular:",
     "compatible": "Compatível",
     "notCompatible": "Ver se é compatível →",
     "devices": {
