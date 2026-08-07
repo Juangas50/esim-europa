@@ -41,7 +41,44 @@ const FAQ_ES = [
     q: "¿Qué diferencia hay entre el plan Prepago y DataOnly?",
     a: "Prepago: 28 días desde que te enviamos el QR — inmediato o en la fecha programada que elijas (hasta 12 meses a futuro). DataOnly: comprás ahora, 60 días para instalar cuando quieras — perfecto si tu viaje aún no está confirmado al 100%.",
   },
+  {
+    q: "¿En cuántos países funciona el eSIM de RUTA34?",
+    a: "En más de 30 países europeos, incluyendo España, Francia, Italia, Alemania, Portugal, Bélgica, Holanda, Austria, Suiza, Suecia, Noruega, Dinamarca, Polonia, República Checa, Hungría, Rumania, Croacia, Eslovenia, Grecia, Irlanda, Reino Unido, Finlandia, Estonia, Letonia, Lituania y otros.",
+  },
+  {
+    q: "¿Qué velocidad de internet tengo en Europa?",
+    a: "La velocidad depende de la cobertura local del operador móvil, pero generalmente es 4G/LTE o 5G en ciudades principales. En zonas rurales puede ser 3G. No hay límites de velocidad — una vez agotados los GB, el servicio se pausa sin cargos adicionales.",
+  },
+  {
+    q: "¿Cuánto tiempo tarda la instalación de la eSIM?",
+    a: "La instalación es rápida: escaneás el QR con tu celular y tarda menos de 5 minutos. No necesitás reiniciar el teléfono. Si instalás antes de viajar, cuando llegas a Europa solo prendés datos móviles y listo.",
+  },
+  {
+    q: "¿Puedo usar eSIM y SIM física al mismo tiempo?",
+    a: "Sí, la mayoría de teléfonos modernos soportan Dual SIM (una eSIM + una SIM física). Esto te permite mantener tu número de casa en la SIM física y usar datos de RUTA34 en la eSIM simultáneamente.",
+  },
+  {
+    q: "¿Qué pasa si me queda sin datos antes de terminar mis 28 días?",
+    a: "Podés comprar recarga de datos en cualquier momento durante tu viaje. Se suma a tu plan actual sin cargos adicionales ni cambios en la fecha de caducidad de tu plan principal.",
+  },
+  {
+    q: "¿La eSIM funciona en todas las ciudades de Europa?",
+    a: "Funciona en ciudades principales, zonas turísticas y áreas urbanas. En zonas muy rurales o montañosas puede haber cobertura limitada, pero cubrimos 99% de destinos donde viajan los turistas.",
+  },
+  {
+    q: "¿Cómo verifico que mi iPhone sea compatible con eSIM?",
+    a: "Modelos compatibles: iPhone XS, XS Max, XR (2018) y posteriores. Verificación: Ajustes → General → Información → busca 'eSIM' en la sección de configuración de red.",
+  },
+  {
+    q: "¿Cómo verifico que mi Samsung sea compatible con eSIM?",
+    a: "Compatibles: Galaxy S20 y posteriores, Galaxy Z Fold/Flip series. Verificación: Ajustes → Acerca del teléfono → Información de la SIM → Si ves dos IMEI, tienes eSIM.",
+  },
+  {
+    q: "¿Puedo cancelar mi plan y obtener un reembolso?",
+    a: "Ofrecemos garantía de satisfacción de 30 días. Si no funcionas correctamente, reembolsamos sin preguntas. Después de 30 días, los datos consumidos no son reembolsables, pero podés dejar de usar el plan cuando quieras.",
+  },
 ];
+
 
 const FAQ_PT = [
   {
@@ -67,6 +104,42 @@ const FAQ_PT = [
   {
     q: "Qual a diferença entre o plano Pré-pago e DataOnly?",
     a: "Pré-pago: 28 dias desde que enviamos o QR — imediato ou na data agendada que você escolher (até 12 meses no futuro). DataOnly: compra agora, 60 dias para instalar quando quiser — perfeito se sua viagem ainda não está 100% confirmada.",
+  },
+  {
+    q: "Em quantos países o eSIM da RUTA34 funciona?",
+    a: "Em mais de 30 países europeus, incluindo Espanha, França, Itália, Alemanha, Portugal, Bélgica, Holanda, Áustria, Suíça, Suécia, Noruega, Dinamarca, Polônia, República Checa, Hungria, Romênia, Croácia, Eslovênia, Grécia, Irlanda, Reino Unido, Finlândia, Estônia, Letônia, Lituânia e outros.",
+  },
+  {
+    q: "Qual é a velocidade da internet na Europa?",
+    a: "A velocidade depende da cobertura local da operadora móvel, mas geralmente é 4G/LTE ou 5G nas cidades principais. Em zonas rurais pode ser 3G. Sem limites de velocidade — quando os GB acabarem, o serviço pausa sem cobranças extras.",
+  },
+  {
+    q: "Quanto tempo leva para instalar o eSIM?",
+    a: "A instalação é rápida: você escaneia o QR com seu telefone e leva menos de 5 minutos. Não precisa reiniciar. Se instalar antes de viajar, ao chegar na Europa só liga os dados móveis e pronto.",
+  },
+  {
+    q: "Posso usar eSIM e SIM física ao mesmo tempo?",
+    a: "Sim, a maioria dos telefones modernos suporta Dual SIM (um eSIM + um SIM físico). Isso permite manter seu número de casa no SIM físico e usar dados da RUTA34 no eSIM simultaneamente.",
+  },
+  {
+    q: "O que acontece se ficar sem dados antes de 28 dias?",
+    a: "Você pode comprar recarga de dados em qualquer momento durante sua viagem. A recarga se adiciona ao seu plano atual sem cobranças extras nem alterações na data de vencimento.",
+  },
+  {
+    q: "O eSIM funciona em todas as cidades da Europa?",
+    a: "Funciona em cidades principais, zonas turísticas e áreas urbanas. Em áreas muito rurais ou montanhosas pode haver cobertura limitada, mas cobrimos 99% dos destinos onde os turistas viajam.",
+  },
+  {
+    q: "Como verifico se meu iPhone é compatível com eSIM?",
+    a: "Compatíveis: iPhone XS, XS Max, XR (2018) e posteriores. Verificação: Ajustes → Geral → Informações → procure por 'eSIM' na seção de configurações de rede.",
+  },
+  {
+    q: "Como verifico se meu Samsung é compatível com eSIM?",
+    a: "Compatíveis: Galaxy S20 e posteriores, série Galaxy Z Fold/Flip. Verificação: Ajustes → Sobre o telefone → Informações do SIM → Se vê dois IMEI, tem eSIM.",
+  },
+  {
+    q: "Posso cancelar e obter reembolso?",
+    a: "Oferecemos garantia de satisfação de 30 dias. Se não funcionar corretamente, reembolsamos sem perguntas. Após 30 dias, os dados consumidos não são reembolsáveis, mas você pode parar de usar o plano quando quiser.",
   },
 ];
 
@@ -164,13 +237,6 @@ export default async function HomeSchemaOrg({ locale, nonce }: Props) {
     image: `${base}/logo.png`,
     brand: { "@type": "Brand", name: "RUTA34 Telecom" },
     category: "eSIM",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: "150",
-      bestRating: "5",
-      worstRating: "1",
-    },
     offers: {
       "@type": "Offer",
       price: plan.price_usd.toFixed(2),
@@ -180,6 +246,7 @@ export default async function HomeSchemaOrg({ locale, nonce }: Props) {
       priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
         .toISOString()
         .split("T")[0],
+      dateModified: new Date().toISOString().split("T")[0],
       seller: { "@type": "Organization", name: "RUTA34 Telecom" },
       shippingDetails: {
         "@type": "ShippingDeliveryTime",
