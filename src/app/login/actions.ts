@@ -80,8 +80,15 @@ export async function resetPassword(formData: FormData) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'https://www.esimruta34.com'
 
   // Respuesta genérica siempre para evitar user enumeration
-  await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `https://${baseUrl}/recuperar/nueva`,
-  })
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `https://${baseUrl}/recuperar/nueva`,
+    })
+    if (error) {
+      console.error('Password reset error:', error)
+    }
+  } catch (err) {
+    console.error('Password reset exception:', err)
+  }
   // No retornamos si fue exitoso o no — el cliente siempre ve el mismo mensaje
 }
