@@ -77,9 +77,11 @@ export async function resetPassword(formData: FormData) {
 
   const supabase = await createClient()
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'https://www.esimruta34.com'
+
   // Respuesta genérica siempre para evitar user enumeration
   await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/recuperar/nueva`,
+    redirectTo: `https://${baseUrl}/recuperar/nueva`,
   })
   // No retornamos si fue exitoso o no — el cliente siempre ve el mismo mensaje
 }
