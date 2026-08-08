@@ -108,7 +108,10 @@ export default function PlanCard({
                     onClick: () => {
                       const comoFuncionaSection = document.getElementById('como-funciona')
                       if (comoFuncionaSection) {
-                        comoFuncionaSection.scrollIntoView({ behavior: 'smooth' })
+                        comoFuncionaSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        setTimeout(() => {
+                          window.scrollBy(0, -100)
+                        }, 500)
                       }
                     },
                   }}
@@ -192,12 +195,7 @@ export default function PlanCard({
             cta={{
               label: 'Ver detalle completo',
               onClick: () => {
-                const minutosElement = document.getElementById('faq-international_calls')
-                if (minutosElement) {
-                  minutosElement.scrollIntoView({ behavior: 'smooth' })
-                  const button = minutosElement.querySelector('button')
-                  if (button) button.click()
-                }
+                window.location.hash = 'faq-international_calls'
               },
             }}
             icon="ⓘ"
