@@ -106,9 +106,9 @@ export default function PlanCard({
                   cta={{
                     label: 'Ver países incluidos',
                     onClick: () => {
-                      const plansSection = document.getElementById('planes')
-                      if (plansSection) {
-                        plansSection.scrollIntoView({ behavior: 'smooth' })
+                      const comoFuncionaSection = document.getElementById('como-funciona')
+                      if (comoFuncionaSection) {
+                        comoFuncionaSection.scrollIntoView({ behavior: 'smooth' })
                       }
                     },
                   }}
@@ -192,9 +192,11 @@ export default function PlanCard({
             cta={{
               label: 'Ver detalle completo',
               onClick: () => {
-                const faqElement = document.getElementById('faq')
-                if (faqElement) {
-                  faqElement.scrollIntoView({ behavior: 'smooth' })
+                const minutosElement = document.getElementById('faq-international_calls')
+                if (minutosElement) {
+                  minutosElement.scrollIntoView({ behavior: 'smooth' })
+                  const button = minutosElement.querySelector('button')
+                  if (button) button.click()
                 }
               },
             }}
