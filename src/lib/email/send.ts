@@ -15,13 +15,14 @@ export async function sendEmail(
   subject: string,
   html: string,
   attachments?: EmailAttachment[],
+  replyTo?: string,
 ) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { data, error } = await resend.emails.send({
       from: FROM,
       to: Array.isArray(to) ? to : [to],
-      replyTo: 'hola@esimruta34.com',
+      replyTo: replyTo || 'hola@esimruta34.com',
       subject,
       html,
       headers: {

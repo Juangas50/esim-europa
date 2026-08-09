@@ -102,7 +102,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="{WHATSAPP_URL}"
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-white/60 hover:text-white transition-colors"
@@ -112,7 +112,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@ruta34.com"
+                  href="mailto:soporte@esimruta34.com"
                   className="text-sm text-white/60 hover:text-white transition-colors"
                 >
                   Email Support
