@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { InstagramLogo, LinkedinLogo, TwitterLogo, TiktokLogo } from "@phosphor-icons/react";
+import { InstagramLogo, FacebookLogo } from "@phosphor-icons/react";
+import { INSTAGRAM_URL, FACEBOOK_URL } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -9,22 +10,12 @@ const SOCIALS = [
   {
     name: "Instagram",
     icon: InstagramLogo,
-    href: "https://instagram.com/ruta34telecom",
+    href: INSTAGRAM_URL,
   },
   {
-    name: "LinkedIn",
-    icon: LinkedinLogo,
-    href: "https://linkedin.com/company/ruta34",
-  },
-  {
-    name: "Twitter",
-    icon: TwitterLogo,
-    href: "https://twitter.com/ruta34telecom",
-  },
-  {
-    name: "TikTok",
-    icon: TiktokLogo,
-    href: "https://tiktok.com/@ruta34telecom",
+    name: "Facebook",
+    icon: FacebookLogo,
+    href: FACEBOOK_URL,
   },
 ] as const;
 

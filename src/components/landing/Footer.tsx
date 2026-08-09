@@ -2,8 +2,8 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
-import { InstagramLogo } from "@phosphor-icons/react";
-import { WHATSAPP_URL } from "@/config/constants";
+import { InstagramLogo, FacebookLogo } from "@phosphor-icons/react";
+import { WHATSAPP_URL, INSTAGRAM_URL, FACEBOOK_URL } from "@/config/constants";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -136,15 +136,24 @@ export default function Footer() {
           </p>
 
           {/* Social Links */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <a
-              href="https://www.instagram.com/esimruta34/"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/60 hover:text-[var(--color-gold)] transition-colors"
               aria-label="Instagram"
             >
-              <InstagramLogo size={20} weight="bold" />
+              <InstagramLogo size={28} weight="bold" />
+            </a>
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-[var(--color-gold)] transition-colors"
+              aria-label="Facebook"
+            >
+              <FacebookLogo size={28} weight="bold" />
             </a>
           </div>
 

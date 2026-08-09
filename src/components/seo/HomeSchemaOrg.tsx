@@ -1,6 +1,6 @@
 import JsonLd from "./JsonLd";
 import { getPlans } from "@/lib/plans-server";
-import { WHATSAPP_NUMBER } from "@/config/constants";
+import { WHATSAPP_NUMBER, INSTAGRAM_URL, FACEBOOK_URL } from "@/config/constants";
 
 const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
 const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
@@ -195,6 +195,8 @@ export default async function HomeSchemaOrg({ locale, nonce }: Props) {
     sameAs: [
       `https://wa.me/${WHATSAPP_NUMBER}`,
       "https://esimruta34.com",
+      INSTAGRAM_URL,
+      FACEBOOK_URL,
     ],
     contactPoint: {
       "@type": "ContactPoint",
