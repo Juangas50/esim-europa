@@ -76,6 +76,8 @@ export async function POST(req: NextRequest) {
         customer_lastname: order.customer_lastname,
         customer_email: order.customer_email,
         customer_country: order.customer_country,
+        customer_passport: order.customer_passport,
+        customer_dob: order.customer_dob,
         activation_date: order.activation_date,
         status: "paid",
         payment_method: order.payment_method,

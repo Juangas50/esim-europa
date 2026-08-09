@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -9,6 +10,23 @@ const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export default function HowItWorks() {
   const t = useTranslations("howItWorks");
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === "#como-funciona") {
+        const element = document.getElementById("como-funciona");
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        }
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   const steps = [
     { num: "01", key: "1" },

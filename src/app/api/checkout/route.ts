@@ -47,6 +47,23 @@ function isRateLimited(ip: string): boolean {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UUID_RE   = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ALLOWED_COUNTRIES = ["AR","UY","CL","BR","MX","CO","PE","VE","EC","PY","BO","OTHER"];
+const DATE_RE   = /^\d{4}-\d{2}-\d{2}$/;
+
+// Mismo criterio que el formulario (StepData.tsx): mayor de 18 y fecha real.
+// Se revalida en el servidor porque el cliente es manipulable.
+function isAdultDob(dob: string): boolean {
+  if (!DATE_RE.test(dob)) return false;
+  const d = new Date(`${dob}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return false;
+  // `new Date` desborda las fechas inexistentes en lugar de fallar: '2007-02-30'
+  // se convierte en '2007-03-02'. Sin esta comparación, una fecha imposible pasaba
+  // la validación y reventaba después en el INSERT (columna `date` de Postgres).
+  if (d.toISOString().slice(0, 10) !== dob) return false;
+  const today = new Date();
+  if (d.getTime() > today.getTime()) return false;
+  const eighteen = new Date(Date.UTC(today.getUTCFullYear() - 18, today.getUTCMonth(), today.getUTCDate()));
+  return d.getTime() <= eighteen.getTime();
+}
 
 function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody } | { valid: false; error: string } {
   if (!body || typeof body !== "object") return { valid: false, error: "Cuerpo inválido" };
@@ -62,6 +79,8 @@ function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody 
   if (typeof c.lastname !== "string" || c.lastname.trim().length < 2 || c.lastname.length > 80) return { valid: false, error: "Apellido inválido" };
   if (typeof c.email !== "string" || !EMAIL_RE.test(c.email) || c.email.length > 254) return { valid: false, error: "Email inválido" };
   if (typeof c.country !== "string" || !ALLOWED_COUNTRIES.includes(c.country)) return { valid: false, error: "País inválido" };
+  if (typeof c.passport !== "string" || c.passport.trim().length < 5 || c.passport.length > 40) return { valid: false, error: "Pasaporte inválido" };
+  if (typeof c.dob !== "string" || !isAdultDob(c.dob)) return { valid: false, error: "Fecha de nacimiento inválida — debés ser mayor de 18 años" };
 
   // Meta Pixel/CAPI — opcionales, solo viajan si el usuario aceptó cookies
   for (const field of ["meta_event_id", "fbp", "fbc"] as const) {
@@ -76,7 +95,7 @@ function validateCheckoutBody(body: unknown): { valid: true; data: CheckoutBody 
 interface CheckoutBody {
   plan_id: string;
   payment_method: string;
-  customer: { name: string; lastname: string; email: string; country: string };
+  customer: { name: string; lastname: string; email: string; country: string; passport: string; dob: string };
   activation_date?: string;
   locale: string;
   ga_client_id?: string;
@@ -142,6 +161,8 @@ export async function POST(req: NextRequest) {
         customer_lastname: customer.lastname,
         customer_email: customer.email,
         customer_country: customer.country,
+        customer_passport: customer.passport.trim(),
+        customer_dob: customer.dob,
         activation_date: activation_date || null,
         status: "pending_payment",
         payment_method,

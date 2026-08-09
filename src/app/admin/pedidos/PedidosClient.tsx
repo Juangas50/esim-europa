@@ -5,6 +5,14 @@ import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmai
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { toast } from '@/lib/toast'
 
+// Formatea una fecha sin hora ('YYYY-MM-DD') a dd/mm/aaaa.
+// No usa `new Date()` a propósito: ese constructor interpreta la cadena como
+// medianoche UTC y, al renderizar en AR (UTC-3), mostraría el día anterior.
+function formatDateOnly(d: string): string {
+  const [y, m, day] = d.split('-')
+  return y && m && day ? `${day}/${m}/${y}` : d
+}
+
 // ── Tipo unificado ────────────────────────────────────────────────────────────
 export type UnifiedOrder = {
   id: string
@@ -15,6 +23,8 @@ export type UnifiedOrder = {
   customer_lastname: string
   customer_email: string
   customer_passport: string | null
+  // Columna `date` en Postgres → llega como 'YYYY-MM-DD' (sin hora ni zona)
+  customer_dob: string | null
   customer_nationality: string | null
   activation_date: string | null
   pvp_at_time: number
@@ -574,6 +584,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               { label: 'Tipo',          value: (selected.type === 'prepago' || selected.type === 'local') ? 'SIM Local' : 'DataOnly', icon: '📦' },
               { label: 'Cliente',       value: `${selected.customer_name} ${selected.customer_lastname}`, icon: '👥' },
               ...(selected.customer_passport ? [{ label: 'Pasaporte',    value: selected.customer_passport, icon: '📄' }] : []),
+              ...(selected.customer_dob ? [{ label: 'F. nacimiento', value: formatDateOnly(selected.customer_dob), icon: '🎂' }] : []),
               { label: 'Nacionalidad',  value: selected.customer_nationality, icon: '🌍' },
               { label: 'Email',         value: selected.customer_email, icon: '✉️' },
               { label: 'F. compra',     value: new Date(selected.created_at).toLocaleDateString('es-AR'), icon: '📅' },

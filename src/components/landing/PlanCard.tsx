@@ -106,13 +106,7 @@ export default function PlanCard({
                   cta={{
                     label: 'Ver países incluidos',
                     onClick: () => {
-                      const comoFuncionaSection = document.getElementById('como-funciona')
-                      if (comoFuncionaSection) {
-                        comoFuncionaSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                        setTimeout(() => {
-                          window.scrollBy(0, -100)
-                        }, 500)
-                      }
+                      window.location.hash = 'como-funciona'
                     },
                   }}
                   icon="ⓘ"

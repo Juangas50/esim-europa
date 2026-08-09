@@ -29,6 +29,8 @@ export interface OrderFormData {
   customer_lastname: string;
   customer_email: string;
   customer_country: string;
+  customer_passport: string;  // requerido para registrar la línea española
+  customer_dob: string;       // 'YYYY-MM-DD' — el checkout exige +18
   activation_date?: string; // solo para prepago
   device_confirmed: boolean;
   payment_method: "stripe" | "mercadopago";

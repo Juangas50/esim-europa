@@ -1,23 +1,10 @@
 import { ImageResponse } from "next/og";
+import { getPlans } from "@/lib/plans-server";
 
 export const runtime = "edge";
 export const alt = "RUTA34 Telecom — eSIM para Europa";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-// ── Per-locale copy ──────────────────────────────────────────────────────────
-const COPY = {
-  es: {
-    headline: "Llegás a Europa",
-    accent: "y ya estás conectado.",
-    sub: "eSIM instantánea · 30+ países · Desde USD 19.90",
-  },
-  pt: {
-    headline: "Chega na Europa",
-    accent: "e já está conectado.",
-    sub: "eSIM instantâneo · 30+ países · A partir de USD 19,90",
-  },
-} as const;
 
 // ── Image ────────────────────────────────────────────────────────────────────
 export default async function OgImage({
@@ -26,7 +13,37 @@ export default async function OgImage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const copy = COPY[locale as "es" | "pt"] ?? COPY.es;
+
+  // Get minimum price from database (always fresh)
+  let minPrice = 19.90;
+  try {
+    const plans = await getPlans({ webOnly: true });
+    if (plans.length > 0) {
+      minPrice = Math.min(...plans.map((p) => p.price_usd));
+    }
+  } catch {
+    // Fallback to default price if DB fails
+  }
+
+  // Format price based on locale
+  const formattedPrice =
+    locale === "pt"
+      ? `A partir de USD ${minPrice.toFixed(2).replace(".", ",")}`
+      : `Desde USD ${minPrice.toFixed(2)}`;
+
+  // Per-locale copy
+  const copy =
+    locale === "pt"
+      ? {
+          headline: "Chega na Europa",
+          accent: "e já está conectado.",
+          sub: `eSIM instantâneo · 30+ países · ${formattedPrice}`,
+        }
+      : {
+          headline: "Llegás a Europa",
+          accent: "y ya estás conectado.",
+          sub: `eSIM instantánea · 30+ países · ${formattedPrice}`,
+        };
 
   // Inter 700 via JSDelivr (fontsource mirror) — woff is Satori-compatible
   let fontData: ArrayBuffer | undefined;

@@ -121,6 +121,8 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
             lastname: formData.customer_lastname,
             email: formData.customer_email,
             country: formData.customer_country,
+            passport: formData.customer_passport,
+            dob: formData.customer_dob,
           },
           activation_date: formData.activation_date,
           locale,

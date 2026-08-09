@@ -115,16 +115,22 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash.startsWith("#faq-")) return;
-    const key = hash.replace("#faq-", "");
-    const idx = KEY_INDEX[key];
-    if (idx != null) {
-      setOpenIndex(idx);
-      setTimeout(() => {
-        document.getElementById(`faq-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 150);
-    }
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (!hash.startsWith("#faq-")) return;
+      const key = hash.replace("#faq-", "");
+      const idx = KEY_INDEX[key];
+      if (idx != null) {
+        setOpenIndex(idx);
+        setTimeout(() => {
+          document.getElementById(`faq-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   const toggle = (i: number) => {
