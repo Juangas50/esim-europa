@@ -113,13 +113,18 @@ export async function resetPassword(formData: FormData) {
 
     // Enviar email con Resend
     const resetLink = `${baseUrl}/recuperar/nueva?token=${resetToken}`
-    const { error: emailError } = await sendPasswordResetEmail({
+    console.log('[resetPassword] Enviando email a:', email)
+    console.log('[resetPassword] Reset link:', resetLink)
+    const result = await sendPasswordResetEmail({
       to: email,
       resetLink,
     })
+    console.log('[resetPassword] Resultado de sendPasswordResetEmail:', result)
 
-    if (emailError) {
-      console.error('Email send error:', emailError)
+    if (result.error) {
+      console.error('[resetPassword] Email send error:', result.error)
+    } else {
+      console.log('[resetPassword] Email enviado exitosamente:', result)
     }
   } catch (err) {
     console.error('Password reset exception:', err)
