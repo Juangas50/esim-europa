@@ -15,7 +15,7 @@ export function BottomHelpBanner() {
         ¿Necesitás más ayuda?
       </h3>
       <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-        Nuestro equipo de soporte está disponible 24/7 para resolver cualquier duda sobre tu eSIM.
+        Nuestro equipo atiende de lunes a sábado, de 8 a 21 h (hora de España), para resolver cualquier duda sobre tu eSIM.
       </p>
       <CTAWhatsApp />
     </motion.div>

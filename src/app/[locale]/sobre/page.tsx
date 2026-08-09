@@ -363,11 +363,11 @@ export default function SobreRuta34() {
           >
             <motion.div variants={fadeInUp} className="space-y-4">
               <h2 className="font-serif text-4xl lg:text-5xl text-[var(--color-navy)]">
-                Si tu viaje dura más, podés seguir conectado.
+                Si tu viaje dura más, comprás otro plan y listo.
               </h2>
 
               <p className="text-lg text-[var(--color-ink)] leading-relaxed max-w-3xl">
-                Cada plan tiene una duración definida. Si necesitás más días, podés recargar saldo y continuar usando tu plan conforme a las condiciones del servicio.
+                Cada plan dura 28 días desde que te enviamos el código QR. Si tu viaje se alarga, podés comprar un plan nuevo cuando lo necesites: es un pago único, sin permanencia y sin renovación automática.
               </p>
 
               <div className="pt-4 space-y-2">
@@ -381,17 +381,17 @@ export default function SobreRuta34() {
             <motion.div variants={fadeInUp} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div className="p-8 lg:p-10 rounded-xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/30 space-y-6">
                 <div className="space-y-1">
-                  <h4 className="font-sans font-semibold text-lg text-[var(--color-navy)]">28 días + Recarga</h4>
-                  <p className="text-[var(--color-ink-2)]">Continúa tu plan cuando lo necesites</p>
+                  <h4 className="font-sans font-semibold text-lg text-[var(--color-navy)]">28 días, un solo pago</h4>
+                  <p className="text-[var(--color-ink-2)]">Sin renovación automática ni cargos sorpresa</p>
                 </div>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-[var(--color-ink)]">
                     <span className="text-[var(--color-gold)] font-bold">+</span>
-                    <span>Recarga saldo en cualquier momento</span>
+                    <span>Elegís la fecha de activación, hasta 12 meses después de comprar</span>
                   </li>
                   <li className="flex items-start gap-2 text-[var(--color-ink)]">
                     <span className="text-[var(--color-gold)] font-bold">+</span>
-                    <span>Extiende tu viaje sin límites</span>
+                    <span>Cuando se acaba, no se cobra nada más</span>
                   </li>
                 </ul>
               </div>

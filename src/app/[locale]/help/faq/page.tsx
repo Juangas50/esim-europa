@@ -38,7 +38,7 @@ export default function FAQPage() {
       id: "data-usage",
       question: "¿Cómo se cuenta mi uso de datos?",
       answer:
-        "Tu consumo de datos se cuenta desde el servidor de RUTA34. Cuando activas la eSIM, comienza a contarse el uso. Puedes ver tu consumo en tiempo real desde tu cuenta de usuario. Si alcanzas el límite de tu plan, se desactivará automáticamente.",
+        "Tu consumo se cuenta desde el servidor de RUTA34 en cuanto la eSIM empieza a usar datos. No hay panel de cliente: si querés consultar cuánto llevás gastado, escribinos por WhatsApp con tu referencia de pedido. Cuando agotás los GB de tu plan, el servicio de datos se detiene y no se te cobra nada adicional.",
     },
     {
       id: "multiple-esims",
@@ -50,7 +50,7 @@ export default function FAQPage() {
       id: "delete-esim",
       question: "¿Puedo eliminar mi eSIM?",
       answer:
-        "Sí, puedes eliminar tu eSIM en cualquier momento desde Configuración. Si la eliminas accidentalmente antes de usarla, simplemente solicita un nuevo código QR. Si ya fue usada, no podrás recuperarla.",
+        "Sí, puedes eliminar tu eSIM en cualquier momento desde Configuración. Si la eliminas accidentalmente antes de instalarla, escribinos por WhatsApp con tu referencia de pedido y te reenviamos el código QR. Si ya fue instalada, no podrá recuperarse.",
     },
     {
       id: "airplane-mode",
@@ -62,37 +62,31 @@ export default function FAQPage() {
       id: "roaming",
       question: "¿Necesito activar Roaming Internacional?",
       answer:
-        "No. Con RUTA34, tu eSIM funciona como una tarjeta local en tu destino. No necesitas roaming internacional. De hecho, te recomendamos que desactives el roaming de tu plan local para evitar cargos inesperados.",
+        "Depende de qué línea hablemos. En la eSIM de RUTA34 sí: cuando salgas de España, hacia cualquiera de los países incluidos, necesitás tener activada la itinerancia de datos en esa línea — es una línea española y fuera de España funciona en roaming, con el límite de GB que incluya tu plan. En cambio, en la SIM de tu operadora de origen te recomendamos mantener la itinerancia desactivada, para evitar cargos inesperados.",
     },
     {
       id: "calls-sms",
       question: "¿Mi plan incluye llamadas y SMS?",
       answer:
-        "Depende del plan que compres. Algunos planes incluyen solo datos, mientras que otros incluyen un número de teléfono con minutos y SMS incluidos. Verifica los detalles de tu plan al comprar.",
+        "Sí. Todos los planes de la tienda incluyen un número español con llamadas y SMS ilimitados dentro de España. Los minutos para llamadas internacionales varían según el destino y el plan que elijas.",
     },
     {
       id: "validity",
       question: "¿Cuánto tiempo es válido mi plan?",
       answer:
-        "La validez depende del plan específico que compres. Puedes ver la duración exacta en la descripción del plan. Algunos planes duran 7 días, otros 30 días o más. La validez comienza cuando activas tu eSIM.",
-    },
-    {
-      id: "shared-plan",
-      question: "¿Puedo compartir datos con otro teléfono?",
-      answer:
-        "No directamente. Tu eSIM es específica de tu teléfono. Sin embargo, puedes usar tu teléfono como punto de acceso WiFi (tethering) para compartir datos con otros dispositivos.",
+        "Todos los planes de la tienda duran 28 días. Los días empiezan a contar desde que te enviamos el código QR, no desde que lo instalás en el teléfono. Tenés hasta 12 meses desde la compra para elegir la fecha de activación.",
     },
     {
       id: "no-service",
       question: "¿Qué pasa si me quedo sin datos?",
       answer:
-        "Cuando alcances el límite de datos de tu plan, tu conexión de datos se desactivará automáticamente. Para volver a tener conexión, puedes comprar una extensión de datos, cambiar a otro plan o esperar a que termine la validez del plan.",
+        "Cuando agotes los datos de tu plan, la conexión de datos se desactiva y no se te cobra nada adicional. Para volver a tener conexión podés comprar un plan nuevo cuando lo necesites.",
     },
     {
       id: "coverage",
       question: "¿Qué operadores usa RUTA34?",
       answer:
-        "RUTA34 se asocia con operadores locales en cada destino para garantizar la mejor cobertura. Trabajamos con operadores de confianza en más de 150 países para asegurar conectividad confiable.",
+        "El servicio se presta sobre una red de telecomunicaciones española certificada, con cobertura 4G/5G en España y en los 30 países europeos incluidos en el plan.",
     },
     {
       id: "emergency",
@@ -141,7 +135,7 @@ export default function FAQPage() {
           className="mb-16"
         >
           <p className="text-lg text-[var(--color-ink-2)] leading-relaxed max-w-2xl">
-            Si tu pregunta no está aquí, siempre puedes contactarnos por WhatsApp. Nuestro equipo está disponible 24/7 para ayudarte.
+            Si tu pregunta no está aquí, escribinos por WhatsApp. Atendemos de lunes a sábado, de 8 a 21 h (hora de España).
           </p>
         </motion.div>
 
@@ -206,7 +200,7 @@ export default function FAQPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

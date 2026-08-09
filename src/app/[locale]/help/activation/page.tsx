@@ -72,7 +72,7 @@ export default function ActivationPage() {
               {
                 when: "En el aeropuerto (origen)",
                 what: "NO actives aún",
-                details: "Mantén desactivada mientras estés en tu país. Evitarás roaming accidental.",
+                details: "Mantené desactivada la eSIM mientras estés en tu país, y la itinerancia de tu SIM de origen apagada para evitar cargos.",
               },
               {
                 when: "En el aire (vuelo)",
@@ -143,7 +143,7 @@ export default function ActivationPage() {
                 🌍 Roaming internacional
               </h4>
               <p className="text-[var(--color-ink-2)] mb-4">
-                Con RUTA34, no necesitas activar roaming internacional en tu plan local. Tu eSIM funciona como una tarjeta local en el destino.
+                En la eSIM de RUTA34 tenés que activar la itinerancia de datos cuando salgas de España, hacia cualquiera de los países incluidos: es una línea española y fuera de España funciona en roaming. En la SIM de tu operadora de origen, en cambio, mantené la itinerancia desactivada para evitar cargos inesperados.
               </p>
             </div>
 
@@ -211,7 +211,7 @@ export default function ActivationPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

@@ -17,6 +17,7 @@ import SocialLinks from "@/components/landing/SocialLinks";
 import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 import { getPlans } from "@/lib/plans-server";
+import { formatUSD } from "@/lib/utils";
 
 // Siempre usar el dominio real en producción — ignorar si apunta a vercel.app
 const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
@@ -27,24 +28,24 @@ const META = {
   es: {
     title: "Chip para Europa sin roaming | eSIM prepago para Argentinos y Latinoamericanos — RUTA34",
     description:
-      "eSIM prepago para viajar a Europa. Conectate desde US$15.90 sin roaming. Instalás con QR en 2 minutos. Llega a 30+ países. Ideal para argentinos, chilenos, uruguayos y brasileños.",
+      "eSIM prepago para viajar a Europa. Conectate desde {price} con número español incluido. Instalás con QR en 2 minutos. Llega a 30 países. Ideal para argentinos, chilenos, uruguayos y brasileños.",
     keywords:
       "chip para españa, chip prepago europa, chip digital europa, esim europa argentina, chip para viajar a europa, esim sin roaming, chip internet europa, esim chile europa, esim uruguay europa, chip para argentina españa, plan prepago europa latinoamerica, chip virtual europa, internet europa sin contrato",
     ogTitle: "El chip digital para viajar a Europa — RUTA34 Telecom",
     ogDescription:
-      "Chip de datos para argentinos, chilenos y uruguayos que viajan a Europa. eSIM prepago: instalás con QR y llegás conectado. Desde US$15.90.",
+      "Chip de datos para argentinos, chilenos y uruguayos que viajan a Europa. eSIM prepago: instalás con QR y llegás conectado. Desde {price}.",
     ogLocale: "es_AR",
     altLocale: "pt_BR",
   },
   pt: {
     title: "Chip para Europa sem roaming | eSIM pré-pago para Brasileiros e Latino-americanos — RUTA34",
     description:
-      "eSIM pré-pago para viajar à Europa. Conecte-se a partir de US$15,90 sem roaming. Instale com QR em 2 minutos. Alcance 30+ países. Ideal para brasileiros e latino-americanos.",
+      "eSIM pré-pago para viajar à Europa. Conecte-se a partir de {price} com número espanhol incluído. Instale com QR em 2 minutos. Alcance 30 países. Ideal para brasileiros e latino-americanos.",
     keywords:
       "chip para europa brasil, chip digital europa, esim europa brasil, chip prepago europa, internet europa sem roaming, esim brasil europa, chip viagem europa, esim sem contrato europa, chip virtual europa, internet europa latinoamerica",
     ogTitle: "O chip digital para viajar à Europa — RUTA34 Telecom",
     ogDescription:
-      "Chip de dados para brasileiros e latino-americanos que viajam à Europa. eSIM pré-pago: instale com QR e chegue conectado. A partir de US$15,90.",
+      "Chip de dados para brasileiros e latino-americanos que viajam à Europa. eSIM pré-pago: instale com QR e chegue conectado. A partir de {price}.",
     ogLocale: "pt_BR",
     altLocale: "es_AR",
   },
@@ -60,9 +61,17 @@ export async function generateMetadata({
   const m = META[locale as "es" | "pt"] ?? META.es;
   const url = `${base}/${locale}`;
 
+  // El precio de entrada sale del catálogo vivo, nunca escrito a mano: es la
+  // única forma de que la metadata no se desincronice al cambiar una tarifa.
+  const plans = await getPlans({ webOnly: true });
+  const minPrice = plans.length > 0 ? Math.min(...plans.map((p) => p.price_usd)) : undefined;
+  const priceLabel = minPrice != null ? formatUSD(minPrice) : "";
+  const withPrice = (text: string) =>
+    priceLabel ? text.replace("{price}", priceLabel) : text.replace(/\s*(desde|Desde|a partir de|A partir de)?\s*\{price\}\.?/g, "").trim();
+
   return {
     title: m.title,
-    description: m.description,
+    description: withPrice(m.description),
     keywords: m.keywords,
     alternates: {
       canonical: url,
@@ -73,7 +82,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: m.ogTitle,
-      description: m.ogDescription,
+      description: withPrice(m.ogDescription),
       type: "website",
       url,
       locale: m.ogLocale,
@@ -84,7 +93,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: m.ogTitle,
-      description: m.ogDescription,
+      description: withPrice(m.ogDescription),
       // twitter:image is inferred from opengraph-image.tsx
     },
   };

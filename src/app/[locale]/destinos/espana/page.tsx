@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "eSIM para España — RUTA34 Telecom",
     description:
-      "Conectate en España al llegar. eSIM instantánea con cobertura nacional en todas las redes. Desde USD 4.99",
+      "Conectate en España al llegar. eSIM con cobertura nacional 4G/5G y número español incluido.",
     openGraph: {
       title: "eSIM para España — RUTA34 Telecom",
       description: "Internet sin roaming en España",
@@ -21,10 +21,8 @@ export default function SpainPage() {
         country="España"
         flag=""
         headline="Llega a España y ya tenés internet"
-        subheadline="Cobertura nacional en Vodafone, Movistar y Orange. Activá en minutos, usá al llegar."
-        coverage="99% nacional"
-        speed="5G disponible"
-        priceUSD="4.99"
+        subheadline="Cobertura nacional 4G/5G sobre red española certificada. Instalá antes de viajar y usá al llegar."
+        speed="4G/5G"
       />
       <section className="py-16 px-4 bg-white">
         <div className="max-w-4xl mx-auto space-y-12">

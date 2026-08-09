@@ -121,7 +121,7 @@ export default function HelpPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

@@ -106,7 +106,7 @@ export default function IPhoneInstallPage() {
             description="Tu eSIM está instalada y tus días de plan ya corren desde que la recibiste. Cuando llegues a destino, activa los datos móviles en Configuración y comienza a navegar."
             imageSrc="/images/help-iphone-step-5.png"
             imageAlt="Paso 5: Activación completada - eSIM activa"
-            tip="Desactiva el roaming si estás en una zona con costos adicionales."
+            tip="Fuera de España, activá la itinerancia de datos en la línea de RUTA34 para tener conexión en los países incluidos."
           />
         </div>
 
@@ -196,7 +196,7 @@ export default function IPhoneInstallPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

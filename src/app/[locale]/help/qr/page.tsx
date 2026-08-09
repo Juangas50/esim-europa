@@ -78,7 +78,7 @@ export default function QRPage() {
                 ¿Dónde lo encuentro?
               </h3>
               <p className="text-[var(--color-ink-2)] leading-relaxed">
-                Revisa tu email (incluyendo carpeta de spam) bajo el asunto "Tu código QR RUTA34 está listo". También lo encontrarás en tu cuenta de usuario.
+                Revisa tu email (incluyendo la carpeta de spam) bajo el asunto "Tu código QR RUTA34 está listo". Si no lo encontrás, escribinos por WhatsApp con tu referencia de pedido.
               </p>
             </div>
           </motion.div>
@@ -165,7 +165,7 @@ export default function QRPage() {
             <TipCard
               variant="warning"
               title="Código no válido"
-              description="Cada código QR expira después de cierto tiempo. Si tu código ha expirado, solicita uno nuevo desde tu cuenta."
+              description="Si tu código ya no funciona, escribinos por WhatsApp con tu referencia de pedido y te enviamos uno nuevo."
             />
             <TipCard
               variant="tip"
@@ -203,7 +203,7 @@ export default function QRPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

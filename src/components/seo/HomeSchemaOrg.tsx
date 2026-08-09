@@ -23,7 +23,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Cómo sé si mi celular es compatible con eSIM?",
-    a: "Modelos compatibles: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 4a+. Verificación rápida: en iPhone → Ajustes → General → Información → eSIM. En Android → Ajustes → Acerca del teléfono → si ves dos IMEI, tienes eSIM.",
+    a: "Modelos compatibles: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 3+. Verificación rápida: en iPhone → Ajustes → General → Información → eSIM. En Android → Ajustes → Acerca del teléfono → si ves dos IMEI, tienes eSIM.",
   },
   {
     q: "¿Puedo mantener mi número de teléfono latinoamericano?",
@@ -31,19 +31,19 @@ const FAQ_ES = [
   },
   {
     q: "¿Cuándo activo la eSIM de RUTA34?",
-    a: "Para Prepago, tus 28 días empiezan a correr desde que te enviamos el código QR (no desde que lo instalás) — dentro de 24h si elegís activación inmediata, o en la fecha que elijas si la programás. Instalá el QR con WiFi antes de viajar para tener conexión apenas aterrices. Para DataOnly, tenés 60 días desde la compra para instalarlo cuando quieras.",
+    a: "Tus 28 días empiezan a correr desde que te enviamos el código QR (no desde que lo instalás) — el mismo día si elegís activación inmediata, o en la fecha que elijas si la programás, hasta 12 meses después de la compra. Instalá el QR con WiFi antes de viajar para tener conexión apenas aterrices.",
   },
   {
     q: "¿Hay costos adicionales o sorpresas en la factura?",
     a: "No. El precio mostrado es el final — en dólares USD, sin renovación automática. Cuando se agotan los GB o días, el servicio se detiene sin cobros adicionales.",
   },
   {
-    q: "¿Qué diferencia hay entre el plan Prepago y DataOnly?",
-    a: "Prepago: 28 días desde que te enviamos el QR — inmediato o en la fecha programada que elijas (hasta 12 meses a futuro). DataOnly: comprás ahora, 60 días para instalar cuando quieras — perfecto si tu viaje aún no está confirmado al 100%.",
+    q: "¿Cuándo empiezan a contar mis 28 días?",
+    a: "Desde que te enviamos el código QR — inmediato o en la fecha programada que elijas, hasta 12 meses a futuro. No dependen de cuándo lo instalás en el teléfono.",
   },
   {
     q: "¿En cuántos países funciona el eSIM de RUTA34?",
-    a: "En más de 30 países europeos, incluyendo España, Francia, Italia, Alemania, Portugal, Bélgica, Holanda, Austria, Suiza, Suecia, Noruega, Dinamarca, Polonia, República Checa, Hungría, Rumania, Croacia, Eslovenia, Grecia, Irlanda, Reino Unido, Finlandia, Estonia, Letonia, Lituania y otros.",
+    a: "En 30 países europeos, incluyendo España, Francia, Italia, Alemania, Portugal, Bélgica, Holanda, Austria, Suiza, Suecia, Noruega, Dinamarca, Polonia, República Checa, Hungría, Rumania, Croacia, Eslovenia, Grecia, Irlanda, Reino Unido, Finlandia, Estonia, Letonia, Lituania y otros.",
   },
   {
     q: "¿Qué velocidad de internet tengo en Europa?",
@@ -58,12 +58,12 @@ const FAQ_ES = [
     a: "Sí, la mayoría de teléfonos modernos soportan Dual SIM (una eSIM + una SIM física). Esto te permite mantener tu número de casa en la SIM física y usar datos de RUTA34 en la eSIM simultáneamente.",
   },
   {
-    q: "¿Qué pasa si me queda sin datos antes de terminar mis 28 días?",
-    a: "Podés comprar recarga de datos en cualquier momento durante tu viaje. Se suma a tu plan actual sin cargos adicionales ni cambios en la fecha de caducidad de tu plan principal.",
+    q: "¿Qué pasa si me quedo sin datos antes de terminar mis 28 días?",
+    a: "El servicio de datos se detiene y no se te cobra nada adicional. Podés comprar un plan nuevo cuando lo necesites.",
   },
   {
     q: "¿La eSIM funciona en todas las ciudades de Europa?",
-    a: "Funciona en ciudades principales, zonas turísticas y áreas urbanas. En zonas muy rurales o montañosas puede haber cobertura limitada, pero cubrimos 99% de destinos donde viajan los turistas.",
+    a: "Funciona en ciudades principales, zonas turísticas y áreas urbanas. En zonas muy rurales o montañosas puede haber cobertura limitada.",
   },
   {
     q: "¿Cómo verifico que mi iPhone sea compatible con eSIM?",
@@ -75,7 +75,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Puedo cancelar mi plan y obtener un reembolso?",
-    a: "Ofrecemos garantía de satisfacción de 30 días. Si no funcionas correctamente, reembolsamos sin preguntas. Después de 30 días, los datos consumidos no son reembolsables, pero podés dejar de usar el plan cuando quieras.",
+    a: "Podés pedir la cancelación y el reembolso completo dentro de las 24 horas siguientes a la compra, siempre que no hayas instalado el código QR en ningún dispositivo. Una vez instalada la eSIM no procede reembolso, porque el perfil ya quedó activado en tu teléfono.",
   },
 ];
 
@@ -87,7 +87,7 @@ const FAQ_PT = [
   },
   {
     q: "Como sei se meu celular é compatível com eSIM?",
-    a: "Modelos compatíveis: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 4a+. Verificação rápida: no iPhone → Ajustes → Geral → Informações → eSIM. No Android → Ajustes → Sobre o telefone → se vê dois IMEI, tem eSIM.",
+    a: "Modelos compatíveis: iPhone XS/XR (2018+), Samsung Galaxy S20+, Google Pixel 3+. Verificação rápida: no iPhone → Ajustes → Geral → Informações → eSIM. No Android → Ajustes → Sobre o telefone → se vê dois IMEI, tem eSIM.",
   },
   {
     q: "Posso manter meu número de telefone brasileiro?",
@@ -95,19 +95,19 @@ const FAQ_PT = [
   },
   {
     q: "Quando ativo o eSIM da RUTA34?",
-    a: "No Pré-pago, seus 28 dias começam a contar desde que enviamos o código QR (não desde que você instala) — em até 24h se escolher ativação imediata, ou na data que agendar. Instale o QR com WiFi antes de viajar para ter conexão assim que aterrissar. No DataOnly, você tem 60 dias desde a compra para instalar quando quiser.",
+    a: "Seus 28 dias começam a contar desde que enviamos o código QR (não desde que você instala) — no mesmo dia se escolher ativação imediata, ou na data que agendar, até 12 meses após a compra. Instale o QR com WiFi antes de viajar para ter conexão assim que aterrissar.",
   },
   {
     q: "Há custos adicionais ou surpresas na fatura?",
     a: "Não. O preço mostrado é o final — em dólares USD, sem renovação automática. Quando os GB ou dias acabarem, o serviço para sem cobranças adicionais.",
   },
   {
-    q: "Qual a diferença entre o plano Pré-pago e DataOnly?",
-    a: "Pré-pago: 28 dias desde que enviamos o QR — imediato ou na data agendada que você escolher (até 12 meses no futuro). DataOnly: compra agora, 60 dias para instalar quando quiser — perfeito se sua viagem ainda não está 100% confirmada.",
+    q: "Quando começam a contar meus 28 dias?",
+    a: "Desde que enviamos o código QR — imediato ou na data agendada que você escolher, até 12 meses no futuro. Não dependem de quando você instala no telefone.",
   },
   {
     q: "Em quantos países o eSIM da RUTA34 funciona?",
-    a: "Em mais de 30 países europeus, incluindo Espanha, França, Itália, Alemanha, Portugal, Bélgica, Holanda, Áustria, Suíça, Suécia, Noruega, Dinamarca, Polônia, República Checa, Hungria, Romênia, Croácia, Eslovênia, Grécia, Irlanda, Reino Unido, Finlândia, Estônia, Letônia, Lituânia e outros.",
+    a: "Em 30 países europeus, incluindo Espanha, França, Itália, Alemanha, Portugal, Bélgica, Holanda, Áustria, Suíça, Suécia, Noruega, Dinamarca, Polônia, República Checa, Hungria, Romênia, Croácia, Eslovênia, Grécia, Irlanda, Reino Unido, Finlândia, Estônia, Letônia, Lituânia e outros.",
   },
   {
     q: "Qual é a velocidade da internet na Europa?",
@@ -123,11 +123,11 @@ const FAQ_PT = [
   },
   {
     q: "O que acontece se ficar sem dados antes de 28 dias?",
-    a: "Você pode comprar recarga de dados em qualquer momento durante sua viagem. A recarga se adiciona ao seu plano atual sem cobranças extras nem alterações na data de vencimento.",
+    a: "O serviço de dados para e nada extra é cobrado. Você pode comprar um plano novo quando precisar.",
   },
   {
     q: "O eSIM funciona em todas as cidades da Europa?",
-    a: "Funciona em cidades principais, zonas turísticas e áreas urbanas. Em áreas muito rurais ou montanhosas pode haver cobertura limitada, mas cobrimos 99% dos destinos onde os turistas viajam.",
+    a: "Funciona em cidades principais, zonas turísticas e áreas urbanas. Em áreas muito rurais ou montanhosas pode haver cobertura limitada.",
   },
   {
     q: "Como verifico se meu iPhone é compatível com eSIM?",
@@ -139,7 +139,7 @@ const FAQ_PT = [
   },
   {
     q: "Posso cancelar e obter reembolso?",
-    a: "Oferecemos garantia de satisfação de 30 dias. Se não funcionar corretamente, reembolsamos sem perguntas. Após 30 dias, os dados consumidos não são reembolsáveis, mas você pode parar de usar o plano quando quiser.",
+    a: "Você pode pedir o cancelamento e o reembolso integral dentro das 24 horas seguintes à compra, desde que não tenha instalado o código QR em nenhum dispositivo. Uma vez instalado o eSIM não há reembolso, pois o perfil já foi ativado no seu telefone.",
   },
 ];
 
@@ -148,9 +148,13 @@ const FAQ_PT = [
 interface Plan {
   id: string;
   name: string;
+  /** Bolsa TOTAL de datos del plan. */
   data_gb: number;
+  /** Máximo de esa MISMA bolsa que puede gastarse fuera de España. No se suma a `data_gb`. */
+  eu_data_gb?: number;
   price_usd: number;
   zone: "espana" | "europa";
+  countries_count: number;
   duration_days: number;
   type: "local" | "dataonly";
 }
@@ -160,7 +164,7 @@ function buildProductName(plan: Plan, locale: "es" | "pt"): string {
   const zone =
     plan.zone === "espana"
       ? locale === "es" ? "España" : "Espanha"
-      : locale === "es" ? "Europa (30+ países)" : "Europa (30+ países)";
+      : `Europa (${plan.countries_count} ${locale === "es" ? "países" : "países"})`;
   const type =
     plan.type === "local"
       ? locale === "es" ? "con número español" : "com número espanhol"
@@ -168,14 +172,22 @@ function buildProductName(plan: Plan, locale: "es" | "pt"): string {
   return `eSIM ${zone} ${gb} ${type} — RUTA34 Telecom`;
 }
 
+/**
+ * `data_gb` es la bolsa TOTAL del plan y `eu_data_gb` el máximo de esa MISMA
+ * bolsa que puede gastarse fuera de España. No se suman: describir el plan
+ * como "N GB para 30 países" sobredeclara la cobertura real fuera de España.
+ */
 function buildProductDescription(plan: Plan, locale: "es" | "pt"): string {
-  const zone =
-    plan.zone === "espana"
-      ? locale === "es" ? "España" : "Espanha"
-      : locale === "es" ? "más de 30 países europeos" : "mais de 30 países europeus";
-  return locale === "es"
-    ? `eSIM con ${plan.data_gb} GB de datos para ${zone}. Válida por ${plan.duration_days} días desde la activación. Sin tarjeta física, instalación por QR.`
-    : `eSIM com ${plan.data_gb} GB de dados para ${zone}. Válida por ${plan.duration_days} dias desde a ativação. Sem cartão físico, instalação por QR.`;
+  if (locale === "es") {
+    const euLimit = plan.eu_data_gb
+      ? ` Fuera de España, en los ${plan.countries_count} países incluidos, podés usar hasta ${plan.eu_data_gb} GB de esa misma bolsa.`
+      : "";
+    return `eSIM con ${plan.data_gb} GB de datos en total.${euLimit} Válida ${plan.duration_days} días desde que se envía el código QR. Sin tarjeta física, instalación por QR.`;
+  }
+  const euLimit = plan.eu_data_gb
+    ? ` Fora da Espanha, nos ${plan.countries_count} países incluídos, você pode usar até ${plan.eu_data_gb} GB da mesma franquia.`
+    : "";
+  return `eSIM com ${plan.data_gb} GB de dados no total.${euLimit} Válido ${plan.duration_days} dias desde o envio do código QR. Sem cartão físico, instalação por QR.`;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -183,7 +195,20 @@ function buildProductDescription(plan: Plan, locale: "es" | "pt"): string {
 export default async function HomeSchemaOrg({ locale, nonce }: Props) {
   const url = `${base}/${locale}`;
   const faqItems = locale === "pt" ? FAQ_PT : FAQ_ES;
-  const plans = await getPlans();
+  // webOnly: solo publicar como Product los planes realmente comprables en la
+  // tienda. Sin este filtro se emiten datos estructurados de tarifas ocultas.
+  const plans = await getPlans({ webOnly: true });
+
+  // Precio de entrada desde el catálogo vivo, nunca escrito a mano.
+  const minPrice = plans.length > 0 ? Math.min(...plans.map((p) => p.price_usd)) : undefined;
+  const minPriceLabel =
+    minPrice != null
+      ? locale === "es"
+        ? `desde USD ${minPrice.toFixed(2)}`
+        : `a partir de USD ${minPrice.toFixed(2).replace(".", ",")}`
+      : locale === "es"
+        ? "sin roaming"
+        : "sem roaming";
 
   // Organization
   const organization = {
@@ -213,8 +238,8 @@ export default async function HomeSchemaOrg({ locale, nonce }: Props) {
     inLanguage: locale === "es" ? "es-AR" : "pt-BR",
     description:
       locale === "es"
-        ? "eSIM instantánea para viajeros latinoamericanos que van a Europa. Conectate desde USD 19.90."
-        : "eSIM instantâneo para viajantes latino-americanos que vão à Europa. Conecte-se a partir de USD 19,90.",
+        ? `eSIM para viajeros latinoamericanos que van a Europa. Número español incluido, ${minPriceLabel}.`
+        : `eSIM para viajantes latino-americanos que vão à Europa. Número espanhol incluído, ${minPriceLabel}.`,
   };
 
   // FAQPage — genera rich results en SERPs

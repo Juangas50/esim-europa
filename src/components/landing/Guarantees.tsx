@@ -13,8 +13,8 @@ const GUARANTEES = [
   },
   {
     icon: Timer,
-    title: "30 días de garantía",
-    desc: "Pruébalo sin riesgo. Si no funciona, devolvemos tu dinero",
+    title: "Reembolso en 24 h",
+    desc: "Si aún no instalaste la eSIM, te devolvemos el importe completo",
   },
   {
     icon: CurrencyDollar,

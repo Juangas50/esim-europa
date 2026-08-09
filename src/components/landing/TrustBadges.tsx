@@ -13,13 +13,13 @@ const BADGES = [
   },
   {
     icon: CheckCircle,
-    title: "Garantía 30 días",
-    desc: "Satisfacción o dinero devuelto",
+    title: "Reembolso en 24 h",
+    desc: "Si aún no instalaste la eSIM",
   },
   {
     icon: Headphones,
-    title: "Soporte 24/7",
-    desc: "WhatsApp en tu idioma",
+    title: "Soporte L–S 8–21 h",
+    desc: "WhatsApp en tu idioma (hora de España)",
   },
 ] as const;
 

@@ -8,7 +8,6 @@ const locales = ["es", "pt"] as const;
 const publicRoutes = [
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   { path: "/sobre", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/planes", priority: 0.9, changeFrequency: "weekly" },
   { path: "/terminos", priority: 0.7, changeFrequency: "monthly" },
   { path: "/privacidad", priority: 0.7, changeFrequency: "monthly" },
 ] as const;

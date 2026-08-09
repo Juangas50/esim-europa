@@ -23,8 +23,8 @@
     "countries": "Países",
     "heroAlt": "Viajero con teléfono usando eSIM en Europa",
     "noAutoRenew": "Sin renovación automática",
-    "support": "Soporte 24/7",
-    "travelers": "Viajeros satisfechos"
+    "support": "Soporte L–S (hora ES)",
+    "validity": "de validez"
   },
   "benefits": {
     "title": "Internet como en casa, pero en Europa",
@@ -283,7 +283,7 @@
     "step1": "Recibís un email de RUTA34 Telecom con tu código QR y las instrucciones completas",
     "step2": "Instalá la eSIM antes de viajar — tarda menos de 5 minutos",
     "step3": "Prendé los datos al aterrizar en Europa y navegá sin roaming — tus días ya corren desde que recibiste el QR",
-    "sla": "Atendemos de lunes a sábado de 8 a 21 hs (hora Argentina). Pedidos recibidos fuera de ese horario se tramitan al día siguiente.",
+    "sla": "Atendemos de lunes a sábado de 8 a 21 h (hora de España). Pedidos recibidos fuera de ese horario se tramitan al inicio del siguiente horario de atención.",
     "support": "¿Tenés dudas? Escribinos por WhatsApp",
     "backHome": "Volver al inicio"
   },

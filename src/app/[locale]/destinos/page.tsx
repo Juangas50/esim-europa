@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Destinos — eSIM para Europa | RUTA34 Telecom",
     description:
-      "eSIM con cobertura en 34+ países de Europa. Elige tu destino y conectate sin roaming.",
+      "eSIM con cobertura en 30 países de Europa. Elegí tu destino y viajá conectado.",
     openGraph: {
       title: "Destinos — eSIM para Europa",
       description: "Cobertura en toda Europa",
@@ -14,17 +14,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Solo destinos con página propia publicada. Añadir una entrada aquí sin crear
+// la ruta correspondiente genera un enlace interno a un 404.
 const DESTINATIONS = [
-  { name: "España", slug: "espana", flag: "🇪🇸", coverage: "99%" },
-  { name: "Italia", slug: "italia", flag: "🇮🇹", coverage: "98%" },
-  { name: "Francia", slug: "francia", flag: "🇫🇷", coverage: "99%" },
-  { name: "Alemania", slug: "alemania", flag: "🇩🇪", coverage: "99%" },
-  { name: "Portugal", slug: "portugal", flag: "🇵🇹", coverage: "98%" },
-  { name: "Suiza", slug: "suiza", flag: "🇨🇭", coverage: "97%" },
-  { name: "Reino Unido", slug: "reino-unido", flag: "🇬🇧", coverage: "99%" },
-  { name: "Holanda", slug: "holanda", flag: "🇳🇱", coverage: "98%" },
-  { name: "Bélgica", slug: "belgica", flag: "🇧🇪", coverage: "99%" },
-  { name: "Polonia", slug: "polonia", flag: "🇵🇱", coverage: "97%" },
+  { name: "España", slug: "espana", flag: "🇪🇸" },
+  { name: "Italia", slug: "italia", flag: "🇮🇹" },
 ];
 
 export default function DestinationsPage() {
@@ -36,7 +30,7 @@ export default function DestinationsPage() {
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-black text-[#1B2F4E] mb-4 tracking-tight">
-            34+ Destinos en Europa
+            Destinos en Europa
           </h1>
           <p className="text-xl text-[#64748B] max-w-2xl mx-auto">
             Elige tu destino y obtén internet instantáneo sin roaming. La misma
@@ -57,12 +51,6 @@ export default function DestinationsPage() {
                 <h3 className="text-xl font-bold text-[#1B2F4E] mb-2">
                   {dest.name}
                 </h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#94A3B8]">Cobertura</span>
-                  <span className="text-lg font-bold text-[#C9973A]">
-                    {dest.coverage}
-                  </span>
-                </div>
                 <div className="mt-4 text-sm font-semibold text-[#C9973A] group-hover:translate-x-1 transition-transform">
                   Ver detalles →
                 </div>
@@ -77,9 +65,8 @@ export default function DestinationsPage() {
             ¿Tu destino no está listado?
           </h2>
           <p className="text-[#64748B] mb-4">
-            RUTA34 cubre 34+ países en Europa. Si tu destino no aparece aquí,
-            contactanos y lo agregamos. Cada semana sumamos nuevos países a
-            nuestra red.
+            Tu plan de RUTA34 incluye 30 países europeos. Si querés confirmar
+            si tu destino entra, escribinos y te lo decimos.
           </p>
           <a
             href="mailto:soporte@ruta34.com"

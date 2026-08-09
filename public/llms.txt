@@ -2,100 +2,127 @@
 
 ## What We Do
 
-RUTA34 provides instant eSIM activation for travelers from Argentina, Brazil, Chile, and Uruguay visiting Europe. Users scan a QR code on their smartphone, instantly get European connectivity, and avoid roaming charges completely.
+RUTA34 sells prepaid eSIMs for travelers from Latin America (Argentina, Brazil,
+Chile, Uruguay) visiting Spain and the rest of Europe. The customer buys online,
+receives a QR code by email, installs it on a compatible phone, and arrives in
+Europe already connected.
 
 ## Key Facts
 
-- **Company:** RUTA34 Telecom
-- **Founded:** 2024
-- **Primary Market:** Latin American travelers (Argentina, Brazil, Chile, Uruguay)
-- **Service Area:** 30+ European countries (EU + UK + Ukraine)
-- **Network Provider:** Premium 4G/5G European infrastructure
-- **Activation Method:** QR code scan (no app installation required)
-- **Activation Speed:** <5 minutes
-- **Price Range:** From USD $15 for 90GB / 28 days
+- **Company:** RUTA34 TELECOM, S.L. (registered in Spain)
+- **Primary market:** Latin American travelers
+- **Service area:** Spain plus the 30 European countries included in the plan
+- **Network:** certified Spanish telecommunications network, 4G/5G coverage
+- **Delivery method:** QR code sent by email (no app required)
 - **Languages:** Spanish (ES), Portuguese (PT)
 
-## How It Works
+## Pricing
 
-1. **Buy Online** — Select plan based on data needs and duration
-2. **Receive QR Code** — Get instant QR code via email
-3. **Scan QR** — Open camera app, scan QR, select eSIM profile
-4. **Activate** — Confirm activation on your phone
-5. **Get Connected** — Instantly connected with reliable 4G/5G coverage across Europe
+**This file intentionally contains no prices or data allowances.** The catalog is
+managed in an admin panel and any hand-written copy goes stale. The only
+up-to-date source is the website:
 
-No physical SIM card needed. Works on any eSIM-compatible device (iPhone XS+, Samsung Galaxy S20+, Google Pixel 4a+).
+- https://www.esimruta34.com/es
+- https://www.esimruta34.com/pt
 
-## Plan Types
+Plans are published there with schema.org `Product` structured data.
 
-### Prepago (Standard)
-- Data: 60GB Spain + 30GB EU Roaming
-- Calls: Unlimited international minutes to Latin America
-- Duration: 28 days from activation
-- Flexibility: Activate within 12 months of purchase
-- Price: From USD $25/month
+## Plan Type
 
-### DataOnly
-- Data: 60GB Spain + 30GB EU Roaming
-- Calls: Not included (data-only)
-- Duration: 28 days from activation
-- Flexibility: Activate within 60 days of purchase
-- Price: From USD $12.90
+Every plan currently sold in the store is the same product in different sizes:
 
-## Coverage
+- Spanish phone number included
+- Unlimited calls and SMS **within Spain**; international call minutes vary by
+  destination and plan
+- 4G/5G data in Spain and in the 30 included European countries
+- 28 days of service
+- One-time payment in USD, taxes included, **no auto-renewal**
 
-Available in 30+ European countries:
-- **EU:** Spain, France, Germany, Italy, Netherlands, Belgium, Austria, Portugal, Poland, Greece, and 20+ more
-- **UK & Non-EU:** United Kingdom, Ukraine, Moldova
-- **Special Coverage:** 5G available in major cities
+There is no data-only product in the store, and there are no data or day top-ups.
+If the trip runs longer, the customer buys another plan.
 
-## Why Choose RUTA34?
+## How the Data Allowance Works
 
-- **Instant Activation:** No waiting for physical card delivery
-- **No Roaming Charges:** Fixed pricing, no surprise bills
-- **Flexibility:** Activate anytime within 60 days
-- **Reliable Network:** Powered by Europe's certified carrier network infrastructure
-- **Local Support:** Spanish and Portuguese customer service
-- **Transparent Pricing:** All-inclusive pricing in USD, no hidden fees
+Each plan has **one** data allowance plus a **sub-cap** on how much of it can be
+spent outside Spain:
 
-## Learn More
+- `data_gb` — the **total** allowance of the plan
+- `eu_data_gb` — the maximum share of **that same** allowance usable outside
+  Spain, in the included countries
 
-- **Homepage:** https://esimruta34.com/es
-- **Plans & Pricing:** https://esimruta34.com/es/planes
-- **How It Works:** https://esimruta34.com/es#how-it-works
-- **FAQ:** https://esimruta34.com/es#faq
-- **Coverage Map:** https://esimruta34.com/es/planes#coverage
-- **Terms & Conditions:** https://esimruta34.com/es/terminos
-- **Privacy Policy:** https://esimruta34.com/es/privacidad
+**They are not additive.** A plan with 270 GB total and a 23 GB sub-cap is 270 GB
+in total, of which at most 23 GB can be used outside Spain — not 293 GB.
 
-## Support
+## When the 28 Days Start
 
-- **Email:** soporte@esimruta34.com
-- **WhatsApp:** +34 600 000 000 (Spanish/Portuguese)
-- **Response Time:** <24 hours
+The 28 days start **when RUTA34 activates the eSIM and sends the QR code**, not
+when the customer installs it.
+
+- The customer can pick immediate activation or **schedule a date up to 12 months
+  after purchase**.
+- The QR is emailed within business hours, within 2 hours maximum. Orders placed
+  outside business hours are processed at the start of the next business period.
+
+## Data Roaming
+
+- **On the RUTA34 eSIM:** data roaming must be **switched on** when outside Spain,
+  in the included countries. It is a Spanish line and roams outside Spain.
+- **On the customer's home SIM:** we recommend keeping data roaming **off** to
+  avoid unexpected charges from their own carrier.
+
+## Payment
+
+Credit or debit card (Visa, Mastercard, American Express) via **Stripe**. Prices
+are shown in USD including applicable taxes. RUTA34 does not store card data.
+
+## Refunds
+
+Full refund within **24 hours of purchase**, provided the QR code has **not been
+installed** on any device. Once the eSIM is installed no refund applies, since the
+profile has already been activated on the device.
+
+Full terms: https://www.esimruta34.com/es/terminos
 
 ## Compatibility
 
-**Compatible Devices:**
-- iPhone XS, XR, 11, 12, 13, 14, 15 and newer
-- Samsung Galaxy S20, S21, S22, S23, S24 and newer
-- Google Pixel 4a, 5, 6, 7, 8 and newer
-- Most modern flagship devices with eSIM support
+The device must support eSIM and must **not be carrier-locked**. Verifying this is
+the customer's responsibility before purchase.
 
-**Not Compatible:**
-- Older Android devices (pre-2020)
-- Feature phones
-- Some mid-range devices (check compatibility before purchase)
+General reference: iPhone XS / XR (2018) and newer · Samsung Galaxy S20 and newer ·
+Google Pixel 3 and newer, plus models from Motorola, Xiaomi, Oppo, Huawei, Sony,
+Nokia, Honor, TCL, ZTE, Vivo, Realme, Nothing and Crosscall. Phones only — tablets
+are not covered.
 
-## Additional Information
+The up-to-date, model-by-model checker is at
+https://www.esimruta34.com/es/compatibility
 
-RUTA34 is committed to:
-- **Customer Privacy:** No data collection beyond necessary billing information
-- **Transparent Operations:** All pricing includes taxes; no hidden fees
-- **Sustainability:** Digital-only solution reduces plastic waste
-- **Accessibility:** Support in Spanish and Portuguese
-- **Security:** Secure QR-based activation with instant protection
+## Customer Accounts
+
+**There is no customer account or dashboard.** The QR code and order updates are
+delivered by email; order questions are handled over WhatsApp using the order
+reference.
+
+## Support
+
+- **WhatsApp:** +54 9 11 3658-3054
+- **Email:** soporte@esimruta34.com
+- **Hours:** Monday to Saturday, 08:00–21:00 (Spain time)
+
+## Privacy
+
+The site uses analytics and advertising cookies subject to consent. See
+https://www.esimruta34.com/es/privacidad and https://www.esimruta34.com/es/cookies
+
+## Learn More
+
+- Homepage: https://www.esimruta34.com/es
+- Compatibility checker: https://www.esimruta34.com/es/compatibility
+- Help center: https://www.esimruta34.com/es/help
+- FAQ: https://www.esimruta34.com/es/help/faq
+- Destinations: https://www.esimruta34.com/es/destinos
+- Terms & conditions: https://www.esimruta34.com/es/terminos
+- Privacy policy: https://www.esimruta34.com/es/privacidad
 
 ---
 
-Last Updated: June 6, 2026
+Last updated: 9 August 2026

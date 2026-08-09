@@ -307,7 +307,7 @@ export default function ConfirmacionView({
                 <span className="text-3xl">💬</span>
               </div>
               <h4 className="font-bold text-[var(--color-navy)] mb-2">Escribir por WhatsApp</h4>
-              <p className="text-xs text-[var(--color-ink-2)]">Estamos aquí para ayudarte las 24 horas.</p>
+              <p className="text-xs text-[var(--color-ink-2)]">Te respondemos de lunes a sábado, de 8 a 21 h (hora de España).</p>
             </motion.a>
 
             {/* Guide */}
@@ -357,7 +357,7 @@ export default function ConfirmacionView({
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>

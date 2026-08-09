@@ -102,12 +102,12 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="{WHATSAPP_URL}"
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-white/60 hover:text-white transition-colors"
                 >
-                  WhatsApp 24/7
+                  WhatsApp · L–S 8–21 h (ES)
                 </a>
               </li>
               <li>

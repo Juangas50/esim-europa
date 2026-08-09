@@ -10,9 +10,9 @@ interface DestinationHeroProps {
   flag: string;
   headline: string;
   subheadline: string;
-  coverage: string;
+  coverage?: string;
   speed: string;
-  priceUSD: string;
+  priceUSD?: string;
 }
 
 export default function DestinationHero({
@@ -51,13 +51,15 @@ export default function DestinationHero({
 
           {/* Coverage Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl pt-8">
-            {/* Coverage */}
-            <div className="rounded-2xl bg-white border border-black/[0.07] p-6">
-              <p className="text-sm font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
-                Cobertura
-              </p>
-              <p className="text-3xl font-black text-[#1B2F4E]">{coverage}</p>
-            </div>
+            {/* Coverage — solo si hay un dato de cobertura verificable */}
+            {coverage && (
+              <div className="rounded-2xl bg-white border border-black/[0.07] p-6">
+                <p className="text-sm font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
+                  Cobertura
+                </p>
+                <p className="text-3xl font-black text-[#1B2F4E]">{coverage}</p>
+              </div>
+            )}
 
             {/* Speed */}
             <div className="rounded-2xl bg-white border border-black/[0.07] p-6">
@@ -67,13 +69,15 @@ export default function DestinationHero({
               <p className="text-3xl font-black text-[#1B2F4E]">{speed}</p>
             </div>
 
-            {/* Price */}
-            <div className="rounded-2xl bg-white border border-black/[0.07] p-6">
-              <p className="text-sm font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
-                Desde
-              </p>
-              <p className="text-3xl font-black text-[#C9973A]">USD {priceUSD}</p>
-            </div>
+            {/* Price — el precio vivo está en la home; no se escribe a mano aquí */}
+            {priceUSD && (
+              <div className="rounded-2xl bg-white border border-black/[0.07] p-6">
+                <p className="text-sm font-bold text-[#94A3B8] uppercase tracking-wider mb-2">
+                  Desde
+                </p>
+                <p className="text-3xl font-black text-[#C9973A]">USD {priceUSD}</p>
+              </div>
+            )}
           </div>
 
           {/* CTA */}

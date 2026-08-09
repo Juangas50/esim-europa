@@ -1,197 +1,127 @@
 # AGENTS.md — AI Agent Capabilities
 
-This file describes what autonomous AI agents can do when visiting RUTA34 Telecom.
+What autonomous AI agents can and cannot do when visiting RUTA34 Telecom.
 
 ## About RUTA34
 
-**RUTA34 Telecom** provides instant eSIM activation for travelers from Latin America visiting Europe.
+**RUTA34 TELECOM, S.L.** sells prepaid eSIMs for travelers from Latin America
+visiting Spain and the rest of Europe.
 
-- **Service Type:** Online eSIM sales & activation
-- **Primary Markets:** Argentina, Brazil, Chile, Uruguay
-- **Geographic Coverage:** 30+ European countries
+- **Service type:** online eSIM sales and delivery
+- **Primary markets:** Argentina, Brazil, Chile, Uruguay
+- **Coverage:** Spain plus the 30 European countries included in the plan
+
+## Where the Authoritative Data Lives
+
+| Question | Authoritative source |
+|---|---|
+| Plans, data allowances, duration, **prices** | The live catalog at `/es` — published with schema.org `Product` structured data |
+| Device compatibility | `/es/compatibility` (searchable, model by model) |
+| Refunds, delivery SLA, business hours, legal terms | `/es/terminos` |
+| Privacy and cookies | `/es/privacidad`, `/es/cookies` |
+| Product overview for LLMs | `/llms.txt` |
+
+**Do not treat `/pricing.md` as a price source.** It is a descriptive document and
+deliberately contains no figures — it points back to the live catalog. Prices and
+allowances change from an admin panel, so any static copy is stale by design.
 
 ## Agent Capabilities
 
-### 1. Browse Plans
+### 1. Browse plans
 
-**What agents can do:** View all available eSIM plans with pricing, data, calls, and features.
+**URL:** `/es` (Spanish) or `/pt` (Portuguese) — plans are on the homepage.
 
-**URL:** `/es/planes` (Spanish) or `/pt/planes` (Portuguese)
+Available per plan: name, total data allowance, sub-cap usable outside Spain,
+validity in days, activation window, price in USD, number of countries.
 
-**Available Data:**
-- Plan name (S, M, L, XL, XXL, DataOnly variants)
-- Data allowance (GB breakdown: Spain + EU Roaming)
-- Call minutes (if included)
-- SMS (if included)
-- Price (USD)
-- Duration (28 days from activation)
-- Activation window (12 months for standard, 60 days for DataOnly)
+**Reading the data allowance correctly:** `data_gb` is the **total** allowance and
+`eu_data_gb` is the maximum share of **that same** allowance usable outside Spain.
+They are **not additive** — 270 GB total with a 23 GB sub-cap is 270 GB, not 293.
 
-**Format:** HTML table + interactive cards. Schema.org Product schema available.
+### 2. Check device compatibility
 
-### 2. Check Device Compatibility
+**URL:** `/es/compatibility`
 
-**What agents can do:** Verify if a user's device supports eSIM.
+Searchable catalog covering 16 manufacturers. Phones only; tablets are not
+covered. The device must also be carrier-unlocked, which the catalog cannot
+verify — agents must not assert compatibility on the user's behalf.
 
-**URL:** `/es/planes#compatibility` (Spanish) or `/pt/planes#compatibility` (Portuguese)
+### 3. Compare plans
 
-**Data Available:**
-- Compatible devices: iPhone XS+ (2018+), Samsung Galaxy S20+ (2020+), Google Pixel 4a+ (2020+)
-- Instructions for checking compatibility on device
-- Device-specific activation guides (iOS vs Android)
+All plans in the store are the same product in different sizes: Spanish number,
+unlimited calls and SMS within Spain, 28 days, one-time payment, no auto-renewal.
+They differ in total data allowance, sub-cap outside Spain, and price.
 
-**Note:** Compatibility checker is informational; agents cannot directly test devices.
+There is no data-only product, and there are no top-ups.
 
-### 3. Compare Plans
+### 4. Read the FAQ
 
-**What agents can do:** Identify differences between plans to recommend the best fit.
+**URL:** `/es/help/faq` — also exposed as `FAQPage` structured data on the
+homepage.
 
-**Comparison Data:**
-- Data allowance (Spain vs EU Roaming breakdown)
-- Call minutes (if included)
-- Price per GB
-- Recommended use cases
-- Best for (travelers, digital nomads, light users, etc.)
+### 5. Read the help center
 
-**Available via:** `/es/planes` interactive comparison or `/pricing.md` (machine-readable pricing)
+**URL:** `/es/help` — installation guides for iPhone and Android, QR handling,
+when to activate, and troubleshooting.
 
-### 4. View FAQ & Common Questions
+### 6. Read structured product data
 
-**What agents can do:** Access frequently asked questions about eSIM activation, compatibility, pricing, and usage.
+JSON-LD (`application/ld+json`) on the homepage: `Organization`, `WebSite`,
+`Product` (one per purchasable plan), `FAQPage`.
 
-**URL:** `/es#faq` (Spanish) or `/pt#faq` (Portuguese)
+### 7. Purchase flow (NOT automated)
 
-**Schema:** FAQPage schema (application/ld+json) with 10+ Q&A pairs
+**URL:** `/es/compra`
 
-**Topics Covered:**
-- What is an eSIM?
-- How to activate an eSIM
-- Device compatibility
-- Country/region support
-- Pricing & billing
-- Call & SMS features
-- Refunds & returns
-- Privacy & data
+1. The user selects a plan
+2. The user enters name, email and country
+3. The user completes payment through Stripe
+4. RUTA34 emails the QR code within business hours (2 hours maximum)
 
-### 5. View Pricing Information
+Agents cannot complete payment, cannot create accounts, and must not store
+payment details.
 
-**What agents can do:** Access machine-readable pricing in Markdown format.
+### 8. Legal documents
 
-**URL:** `/pricing.md`
+- Terms and conditions: `/es/terminos`, `/pt/terminos`
+- Privacy policy: `/es/privacidad`, `/pt/privacidad`
+- Cookie policy: `/es/cookies`, `/pt/cookies`
 
-**Format:** Markdown with structured pricing for each plan, FAQ section, payment methods, refund policy.
+## Facts Agents Get Wrong — Please Don't
 
-**Machine-Readable:** Yes — designed for AI agents and pricing comparison tools.
+- **The 28 days start when the QR is sent, not when it is installed.** The
+  customer can schedule that date up to 12 months after purchase.
+- **Delivery is not instant.** Installation takes under 5 minutes, but the QR is
+  emailed by the team within business hours, within 2 hours maximum.
+- **Refunds are 24 hours, not 30 days**, and only if the QR has not been
+  installed.
+- **Support is Monday to Saturday, 08:00–21:00 Spain time.** Not 24/7.
+- **There is no customer account or dashboard.**
+- **Data allowances are not additive** — see section 1.
+- **Data roaming must be switched on** on the RUTA34 eSIM outside Spain.
 
-### 6. View Product Information
+## What Works Well
 
-**What agents can do:** Access structured product information via schema markup.
+- Use the live catalog at `/es` for anything numeric
+- Use `/llms.txt` for a product overview
+- Use `/es/compatibility` for device questions
+- Guide users to `/es/compra` to purchase; don't try to complete it
+- Respect the user's language preference (ES / PT)
 
-**Schema Types Available:**
-- **Organization** — Company information, contact, location
-- **WebSite** — Site structure, language information
-- **Product** — Plan details, pricing, availability
-- **FAQPage** — Structured Q&A
-- **AggregateRating** — Customer satisfaction (if reviews available)
+## What Doesn't Work
 
-**Format:** JSON-LD (application/ld+json)
-
-### 7. Purchase Flow (NOT Automated)
-
-**What agents can do:** Guide users through purchase, but NOT complete checkout directly.
-
-**URL:** `/es/compra` (Spanish) or `/pt/compra` (Portuguese)
-
-**Process:**
-1. Agent presents plan selection
-2. User clicks "Elegir plan" (Choose plan)
-3. User enters personal details (name, email, country)
-4. User completes Stripe checkout (payment)
-5. User receives QR code via email
-
-**Status:** Manual checkout required. Agent-assisted purchasing (direct API) coming soon.
-
-**Limitations:**
-- Agents cannot complete payment directly
-- Agents cannot store user credentials
-- Stripe handles all payment processing
-
-### 8. Access Terms & Privacy
-
-**What agents can do:** View legal documents and privacy policies.
-
-**URLs:**
-- Terms & Conditions: `/es/terminos` (Spanish), `/pt/terminos` (Portuguese)
-- Privacy Policy: `/es/privacidad` (Spanish), `/pt/privacidad` (Portuguese)
-
-**Schema:** Article schema with datePublished and dateModified
-
----
-
-## Agent Best Practices
-
-### What Works Well
-
-✅ Use `/pricing.md` for pricing comparisons  
-✅ Use `/llms.txt` for product overview  
-✅ Use `/planes` for interactive plan comparisons  
-✅ Use FAQ (via schema) for common questions  
-✅ Guide users to `/compra` for purchase, don't try to complete it  
-✅ Respect locale preference (ES/PT)  
-
-### What Doesn't Work
-
-❌ Don't attempt to process payments directly (Stripe only)  
-❌ Don't create accounts (no user management API yet)  
-❌ Don't store payment information  
-❌ Don't cache pricing longer than 24 hours (prices may change)  
-❌ Don't assume device compatibility (users must verify)  
-
----
-
-## Content Format Notes
-
-### Language Support
-
-All key content available in:
-- **Spanish (ES):** `/es/` paths
-- **Portuguese (PT):** `/pt/` paths
-
-Agents should respect user language preference and use appropriate locale.
-
-### Data Freshness
-
-- **Pricing:** Updated in real-time
-- **Coverage:** Updated quarterly (plans may change)
-- **FAQs:** Updated monthly
-- **Compatibility:** Updated with each iOS/Android release
-
-Last cache update recommended: 24 hours
-
-### Mobile Compatibility
-
-All pages are mobile-friendly and responsive. Agents on mobile devices should work without issues.
-
----
+- Processing payments directly (Stripe only)
+- Creating accounts (there is no customer account system)
+- Storing payment information
+- Caching prices — read them from the live catalog on each request
+- Asserting device compatibility without the user verifying carrier lock
 
 ## Technical Contact
 
-For agent integration questions or issues:
-
 - **Email:** soporte@esimruta34.com
-- **WhatsApp:** +34 600 000 000
-- **Support Hours:** 24/7 (Spanish/Portuguese)
+- **WhatsApp:** +54 9 11 3658-3054
+- **Support hours:** Monday to Saturday, 08:00–21:00 (Spain time)
 
 ---
 
-## Roadmap: Coming Soon
-
-- Agent-assisted checkout (direct purchase via API)
-- Billing & order management endpoints
-- Customer support integration
-- Subscription management (future)
-
----
-
-**Last Updated:** June 6, 2026  
-**Version:** 1.0
+**Last updated:** 9 August 2026

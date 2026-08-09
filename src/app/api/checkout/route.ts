@@ -170,10 +170,21 @@ export async function POST(req: NextRequest) {
             currency: "usd",
             unit_amount: Math.round(plan.price_usd * 100),
             product_data: {
+              // Usar el nombre comercial de la tarifa, no la talla inferida:
+              // la talla puede no estar disponible y antes hacía que todos los
+              // planes llegaran a Stripe como "eSIM Plan XXL".
               name: quantity > 1
-                ? `eSIM Plan ${plan.size ?? plan.name} × ${quantity} — RUTA34 Telecom`
-                : `eSIM Plan ${plan.size ?? plan.name} — RUTA34 Telecom`,
-              description: `${plan.data_gb} GB · ${plan.duration_days} días · Número español incluido · 30+ países`,
+                ? `eSIM ${plan.name} × ${quantity} — RUTA34 Telecom`
+                : `eSIM ${plan.name} — RUTA34 Telecom`,
+              description: [
+                `${plan.data_gb} GB en total`,
+                plan.eu_data_gb ? `hasta ${plan.eu_data_gb} GB fuera de España` : null,
+                `${plan.duration_days} días`,
+                "Número español incluido",
+                `${plan.countries_count} países`,
+              ]
+                .filter(Boolean)
+                .join(" · "),
             },
           },
         },

@@ -97,7 +97,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           {t("cta")} <ArrowRight size={20} weight="bold" />
         </motion.a>
 
-        {/* METRIC SUPERIOR FLOTANTE - Top right, 100K+ */}
+        {/* METRIC SUPERIOR FLOTANTE - Top right, validez */}
         <motion.div
           custom={0.65}
           variants={fadeUp}
@@ -107,8 +107,8 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
         >
           <div className="flex flex-col gap-2 px-5 py-4 rounded-[12px] bg-[rgba(201,151,58,0.08)] border border-[rgba(201,151,58,0.2)] backdrop-blur-sm shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <DeviceMobile size={26} weight="bold" className="text-[var(--color-gold)]" />
-            <p className="text-2xl font-black font-mono text-white">100K+</p>
-            <p className="text-xs text-white/75">{t("travelers")}</p>
+            <p className="text-2xl font-black font-mono text-white">28 días</p>
+            <p className="text-xs text-white/75">{t("validity")}</p>
           </div>
         </motion.div>
 
@@ -196,8 +196,8 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-2 px-4 py-3 rounded-[12px] bg-[rgba(201,151,58,0.08)] border border-[rgba(201,151,58,0.2)] backdrop-blur-sm shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
               <DeviceMobile size={22} weight="bold" className="text-[var(--color-gold)]" />
-              <p className="text-xl font-black font-mono text-white">100K+</p>
-              <p className="text-xs text-white/75">{t("travelers")}</p>
+              <p className="text-xl font-black font-mono text-white">28 días</p>
+              <p className="text-xs text-white/75">{t("validity")}</p>
             </div>
             <div className="flex flex-col gap-2 px-4 py-3 rounded-[12px] bg-[rgba(201,151,58,0.08)] border border-[rgba(201,151,58,0.2)] backdrop-blur-sm shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
               <Lightning size={22} weight="bold" className="text-[var(--color-gold)]" />
@@ -287,8 +287,8 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           >
             <div className="flex flex-col gap-2">
               <DeviceMobile size={20} weight="bold" className="text-[var(--color-gold)]" />
-              <p className="text-lg font-black font-mono text-[var(--color-navy)]">100K+</p>
-              <p className="text-xs text-[var(--color-ink-2)]">{t("travelers")}</p>
+              <p className="text-lg font-black font-mono text-[var(--color-navy)]">28 días</p>
+              <p className="text-xs text-[var(--color-ink-2)]">{t("validity")}</p>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -299,13 +299,13 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
 
             <div className="flex flex-col gap-2">
               <Globe size={20} weight="bold" className="text-[var(--color-gold)]" />
-              <p className="text-lg font-black font-mono text-[var(--color-navy)]">30+</p>
+              <p className="text-lg font-black font-mono text-[var(--color-navy)]">30</p>
               <p className="text-xs text-[var(--color-ink-2)]">{t("countries")}</p>
             </div>
 
             <div className="flex flex-col gap-2">
               <CheckCircle size={20} weight="bold" className="text-[var(--color-gold)]" />
-              <p className="text-lg font-black font-mono text-[var(--color-navy)]">24/7</p>
+              <p className="text-lg font-black font-mono text-[var(--color-navy)]">8–21 h</p>
               <p className="text-xs text-[var(--color-ink-2)]">{t("support")}</p>
             </div>
           </motion.div>

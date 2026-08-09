@@ -1,277 +1,138 @@
-# RUTA34 Telecom — Pricing & Plans
+# RUTA34 Telecom — Planes y condiciones
 
-## Overview
+> **Este documento no contiene precios ni GB.**
+> El catálogo cambia desde el panel de administración, así que cualquier copia
+> escrita a mano queda obsoleta. La única fuente actualizada de planes, GB,
+> duración y precio es la web:
+>
+> **https://www.esimruta34.com/es** (español) · **https://www.esimruta34.com/pt** (portugués)
+>
+> Los planes se publican ahí con datos estructurados schema.org de tipo `Product`.
 
-All RUTA34 eSIM plans are prepaid, one-time purchases with no recurring charges. Choose your plan based on your data needs, call requirements, and travel duration.
-
-**Pricing Currency:** USD (all prices shown in US dollars)  
-**Activation Method:** QR code scan (instant)  
-**Validity:** 28 days from activation  
-**Coverage:** 30+ European countries (EU + UK + Ukraine)
-
----
-
-## Plan S — Light Traveler
-
-**Best for:** Short trips, minimal data usage, light users
-
-### Data
-- **Spain:** 60GB
-- **EU Roaming:** 30GB
-- **Total:** 90GB available
-- **Speed:** 4G/5G (premium European network)
-
-### Calls & SMS
-- **International Calls:** Unlimited minutes to Latin America (AR, BR, CL, UY)
-- **SMS:** Unlimited international SMS
-- **Local Calls:** Unlimited calls within Spain/Europe
-
-### Duration
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 12 months of purchase
-
-### Price
-- **USD:** $15/month
-- **EUR:** €14/month (approximate)
-
-### What's Included
-✅ Unlimited international calls to Latin America  
-✅ Unlimited SMS worldwide  
-✅ 4G/5G connectivity  
-✅ Instant QR activation  
-✅ No hidden fees  
-✅ 24/7 support (Spanish/Portuguese)
+**Última actualización:** 9 de agosto de 2026
 
 ---
 
-## Plan M — Most Popular
+## Qué vendemos
 
-**Best for:** Extended stays, content creators, moderate data usage
+eSIM de prepago para viajeros de Latinoamérica que van a España y al resto de Europa.
+Todos los planes publicados en la tienda son del mismo tipo:
 
-### Data
-- **Spain:** 240GB
-- **EU Roaming:** 30GB
-- **Total:** 270GB available
-- **Speed:** 4G/5G (premium European network)
+- Línea **española** con número español incluido.
+- **Llamadas y SMS ilimitados dentro de España.** Los minutos para llamadas
+  internacionales varían según el destino y el plan.
+- Datos 4G/5G en España y en los **30 países europeos** incluidos.
+- **28 días** de servicio.
+- Pago **único** en USD, impuestos incluidos. **Sin renovación automática.**
 
-### Calls & SMS
-- **International Calls:** 2,000 minutes to Latin America
-- **SMS:** Unlimited international SMS
-- **Local Calls:** Unlimited calls within Spain/Europe
-
-### Duration
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 12 months of purchase
-
-### Price
-- **USD:** $25/month
-- **EUR:** €23/month (approximate)
-
-### What's Included
-✅ 2,000 minutes international calls  
-✅ Unlimited SMS worldwide  
-✅ 4G/5G connectivity  
-✅ Instant QR activation  
-✅ No hidden fees  
-✅ 24/7 support (Spanish/Portuguese)
-
-**Why Most Popular?** Best balance of data, calls, and price. Covers 95% of traveler needs.
+No existe producto de solo datos en la tienda, ni recargas de datos o de días.
+Si el viaje se alarga, se compra un plan nuevo.
 
 ---
 
-## Plan L — Power User
+## Cómo funcionan los GB (importante)
 
-**Best for:** Heavy data users, video streaming, working remotely
+Cada plan tiene **una sola bolsa de datos**, y un **subtope** de esa misma bolsa
+para usar fuera de España:
 
-### Data
-- **Spain:** 330GB
-- **EU Roaming:** 30GB
-- **Total:** 360GB available
-- **Speed:** 4G/5G (premium European network)
+- `data_gb` — GB **totales** del plan.
+- `eu_data_gb` — máximo de **esos mismos** GB que pueden gastarse fuera de
+  España, en los países incluidos.
 
-### Calls & SMS
-- **International Calls:** 3,000 minutes to Latin America
-- **SMS:** Unlimited international SMS
-- **Local Calls:** Unlimited calls within Spain/Europe
+**No se suman.** Un plan de 270 GB totales con un subtope de 23 GB son 270 GB en
+total, de los cuales como máximo 23 pueden gastarse fuera de España — no 293 GB.
 
-### Duration
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 12 months of purchase
-
-### Price
-- **USD:** $35/month
-- **EUR:** €32/month (approximate)
-
-### What's Included
-✅ 3,000 minutes international calls  
-✅ Unlimited SMS worldwide  
-✅ 4G/5G connectivity  
-✅ Instant QR activation  
-✅ No hidden fees  
-✅ 24/7 support (Spanish/Portuguese)
+Las cifras concretas de cada plan están en la web.
 
 ---
 
-## Plan XL — Professional
+## Cuándo empiezan a contar los días
 
-**Best for:** Digital nomads, business travelers, remote workers
+Los 28 días empiezan **cuando RUTA34 activa la eSIM y envía el código QR**, no
+cuando el cliente lo instala en el teléfono.
 
-### Data
-- **Spain:** 380GB
-- **EU Roaming:** 30GB
-- **Total:** 410GB available
-- **Speed:** 4G/5G (premium European network)
-
-### Calls & SMS
-- **International Calls:** 3,000 minutes to Latin America
-- **SMS:** Unlimited international SMS
-- **Local Calls:** Unlimited calls within Spain/Europe
-
-### Duration
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 12 months of purchase
-
-### Price
-- **USD:** $45/month
-- **EUR:** €41/month (approximate)
-
-### What's Included
-✅ 3,000 minutes international calls  
-✅ Unlimited SMS worldwide  
-✅ 4G/5G connectivity  
-✅ Priority customer support  
-✅ No hidden fees  
-✅ 24/7 support (Spanish/Portuguese)
+- El cliente puede elegir activación inmediata o **programar la fecha, hasta 12
+  meses después de la compra**.
+- El QR se envía por email dentro del horario de atención, en un plazo máximo de
+  2 horas. Los pedidos hechos fuera de ese horario se procesan al inicio del
+  siguiente período de atención.
 
 ---
 
-## Plan XXL — Ultimate
+## Itinerancia de datos
 
-**Best for:** Unlimited usage, entire European trips, maximum flexibility
-
-### Data
-- **Spain:** 430GB
-- **EU Roaming:** 30GB
-- **Total:** 460GB available
-- **Speed:** 4G/5G (premium European network)
-
-### Calls & SMS
-- **International Calls:** 3,000 minutes to Latin America
-- **SMS:** Unlimited international SMS
-- **Local Calls:** Unlimited calls within Spain/Europe
-
-### Duration
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 12 months of purchase
-
-### Price
-- **USD:** $55/month
-- **EUR:** €50/month (approximate)
-
-### What's Included
-✅ 3,000 minutes international calls  
-✅ Unlimited SMS worldwide  
-✅ 4G/5G connectivity  
-✅ Priority customer support  
-✅ Maximum data allocation  
-✅ No hidden fees  
-✅ 24/7 support (Spanish/Portuguese)
+- **En la eSIM de RUTA34:** fuera de España, en los países incluidos, hay que
+  tener **activada** la itinerancia de datos. Es una línea española y fuera de
+  España funciona en roaming.
+- **En la SIM de la operadora de origen:** se recomienda mantenerla
+  **desactivada** para evitar cargos inesperados.
 
 ---
 
-## DataOnly Plans
+## Pago
 
-**Best for:** Users who only need data, already have a SIM for calls
-
-### DataOnly S
-- **Data:** 60GB Spain + 30GB EU Roaming = 90GB total
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 60 days
-- **Price:** USD $12.90
-
-### DataOnly M
-- **Data:** 120GB Spain + 30GB EU Roaming = 150GB total
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 60 days
-- **Price:** USD $18.90
-
-### DataOnly L
-- **Data:** 180GB Spain + 30GB EU Roaming = 210GB total
-- **Validity:** 28 days from activation
-- **Purchase Window:** Activate within 60 days
-- **Price:** USD $24.90
+- Tarjeta de crédito o débito (Visa, Mastercard, American Express) a través de
+  **Stripe**.
+- Precios en USD con los impuestos aplicables incluidos. El importe final en el
+  extracto puede variar por el tipo de cambio, impuestos o percepciones del país
+  de residencia del cliente, ajenos al precio publicado.
+- RUTA34 no almacena datos de tarjetas.
 
 ---
 
-## Frequently Asked Questions
+## Reembolsos
 
-### Billing & Payments
+Cancelación y **reembolso completo dentro de las 24 horas siguientes a la
+compra**, siempre que el código QR **no haya sido instalado** en ningún
+dispositivo.
 
-**Q: Do you charge monthly or is it one-time?**  
-A: One-time purchase. No recurring charges, no subscription. You buy once, you get 28 days of service.
+Una vez instalada la eSIM no procede reembolso, porque el perfil ya quedó
+activado en el dispositivo. Antes de procesar un reembolso se verifica con el
+operador si el perfil fue descargado o activado.
 
-**Q: What payment methods do you accept?**  
-A: Stripe (credit card, debit card). We accept Visa, Mastercard, and American Express.
-
-**Q: Can I get a refund?**  
-A: Yes, within 30 days of purchase if you haven't activated the eSIM.
-
-**Q: Is there tax included in the price?**  
-A: Yes, all prices shown include any applicable taxes.
-
-### Plans & Switching
-
-**Q: Can I switch plans after purchase?**  
-A: Yes, you can upgrade to a higher plan within 7 days of purchase.
-
-**Q: What happens after 28 days?**  
-A: Your eSIM stops working. You can purchase a new plan anytime to reactivate.
-
-**Q: Can I pause my service?**  
-A: No, but you can keep your eSIM and reactivate with a new purchase.
-
-### Data & Roaming
-
-**Q: How much data can I use per day?**  
-A: No daily limits. Use as much as you need within your plan's total.
-
-**Q: What happens when I run out of data?**  
-A: Service stops. You can purchase additional data or a new plan.
-
-**Q: Do international calls count toward data?**  
-A: No, calls use your call minutes, not data.
-
-### Device Compatibility
-
-**Q: Will this work on my phone?**  
-A: Check compatibility on our site: devices from 2018+ with eSIM support are generally compatible.
-
-**Q: Can I use this on an iPad or tablet?**  
-A: Yes, if your device supports eSIM (iPad Pro, iPad Air 3+).
+Condiciones completas: https://www.esimruta34.com/es/terminos
 
 ---
 
-## How to Choose Your Plan
+## Compatibilidad
 
-| Need | Recommended Plan |
-|------|------------------|
-| Weekend trip, light browsing | Plan S (90GB) |
-| Week-long trip, regular use | Plan M (270GB) ⭐ |
-| 2-3 weeks, heavy streaming | Plan L (360GB) |
-| 1 month+ stay, working remotely | Plan XL (410GB) or Plan XXL (460GB) |
-| Data-only (using another SIM for calls) | DataOnly S/M/L |
+El dispositivo debe soportar eSIM y **no estar bloqueado** por la operadora de
+origen. Verificarlo es responsabilidad del cliente antes de comprar.
+
+Referencias generales: iPhone XS / XR (2018) y posteriores · Samsung Galaxy S20
+y posteriores · Google Pixel 3 y posteriores, además de modelos de Motorola,
+Xiaomi, Oppo, Huawei, Sony, Nokia, Honor, TCL, ZTE, Vivo, Realme, Nothing y
+Crosscall.
+
+El buscador de compatibilidad por modelo, que es la fuente actualizada, está en
+**https://www.esimruta34.com/es/compatibility**
 
 ---
 
-## Support
+## Cuenta de cliente
 
-Have questions about pricing?
+**No existe panel ni cuenta de cliente.** El código QR y las novedades del
+pedido llegan por email, y cualquier consulta sobre un pedido se resuelve por
+WhatsApp indicando la referencia.
 
+---
+
+## Soporte
+
+- **WhatsApp:** +54 9 11 3658-3054
 - **Email:** soporte@esimruta34.com
-- **WhatsApp:** +34 600 000 000
-- **Response Time:** <24 hours
+- **Horario:** lunes a sábado, 8:00–21:00 h (hora de España)
 
 ---
 
-**Last Updated:** June 6, 2026  
-**Currency:** All prices in USD. EUR prices approximate.
+## Enlaces
+
+| Recurso | URL |
+|---|---|
+| Planes y precios vigentes | https://www.esimruta34.com/es |
+| Compatibilidad de dispositivos | https://www.esimruta34.com/es/compatibility |
+| Centro de ayuda | https://www.esimruta34.com/es/help |
+| Preguntas frecuentes | https://www.esimruta34.com/es/help/faq |
+| Destinos | https://www.esimruta34.com/es/destinos |
+| Términos y condiciones | https://www.esimruta34.com/es/terminos |
+| Política de privacidad | https://www.esimruta34.com/es/privacidad |

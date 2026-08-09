@@ -55,7 +55,7 @@ export default function TroubleshootingPage() {
         "Mejora la iluminación del código",
         "Intenta desde una distancia de 10-15 cm",
         "Verifica tu conexión a internet",
-        "Solicita un nuevo código QR desde tu cuenta",
+        "Escribinos por WhatsApp con tu referencia de pedido para recibir un código QR nuevo",
       ],
     },
     {
@@ -99,11 +99,11 @@ export default function TroubleshootingPage() {
         "Se desconecta constantemente",
       ],
       solutions: [
-        "Verifica tu saldo de datos en tu cuenta RUTA34",
+        "Escribinos por WhatsApp con tu referencia de pedido y verificamos los datos que te quedan",
         "Algunos teléfonos desactivan datos si se cumplen los límites",
         "Ve a Configuración y reactiva los datos manualmente",
         "Reinicia tu teléfono",
-        "Si tienes saldo y se desactiva, contactanos",
+        "Si aún te quedan datos y se desactiva igual, contactanos",
       ],
     },
     {
@@ -260,7 +260,7 @@ export default function TroubleshootingPage() {
           <div className="p-8 rounded-3xl bg-gradient-to-r from-[var(--color-navy)] to-[var(--color-navy)]/80 text-white">
             <h3 className="text-2xl font-black mb-4">¿Aún tienes problemas?</h3>
             <p className="mb-6 text-white/90">
-              Si probaste todas las soluciones y el problema persiste, nuestro equipo de soporte está disponible 24/7 para ayudarte.
+              Si probaste todas las soluciones y el problema persiste, escribinos: atendemos de lunes a sábado, de 8 a 21 h (hora de España).
             </p>
             <a
               href={WHATSAPP_URL}
@@ -286,7 +286,7 @@ export default function TroubleshootingPage() {
           <span>•</span>
           <span>🛡️ Tus datos protegidos</span>
           <span>•</span>
-          <span>📞 Soporte 24/7</span>
+          <span>📞 Soporte L–S 8–21 h (ES)</span>
           <span>•</span>
           <span>© RUTA34 Telecom 2026</span>
         </div>
