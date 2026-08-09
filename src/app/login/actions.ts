@@ -75,23 +75,33 @@ export async function resetPassword(formData: FormData) {
   const email = String(formData.get('email') ?? '').trim().toLowerCase().slice(0, 254)
 
   // P2-06: validar email antes de llamar a Supabase
-  if (!EMAIL_RE.test(email)) return
+  if (!EMAIL_RE.test(email)) {
+    console.log('[resetPassword] Email inválido:', email)
+    return
+  }
+
+  console.log('[resetPassword] Iniciando resetPassword para:', email)
 
   const supabase = await createClient()
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'https://www.esimruta34.com'
 
   try {
     // Verificar que el usuario existe en nuestra tabla users
+    console.log('[resetPassword] Buscando usuario en tabla users...')
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('id')
       .eq('email', email)
       .single()
 
+    console.log('[resetPassword] Resultado de búsqueda:', { user, userError })
+
     if (userError || !user) {
       // Respuesta genérica para evitar user enumeration
+      console.log('[resetPassword] Usuario no encontrado o error:', userError)
       return
     }
+    console.log('[resetPassword] Usuario encontrado:', user.id)
 
     // Generar token de recuperación
     const resetToken = crypto.randomBytes(32).toString('hex')
