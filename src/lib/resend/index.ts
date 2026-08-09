@@ -141,3 +141,58 @@ export async function sendActivationReminder({
     `,
   });
 }
+
+export async function sendPasswordResetEmail({
+  to,
+  resetLink,
+}: {
+  to: string;
+  resetLink: string;
+}) {
+  return resend.emails.send({
+    from: process.env.EMAIL_FROM ?? "RUTA34 Telecom <hola@esimruta34.com>",
+    to,
+    subject: "Recuperar tu contraseña — RUTA34",
+    html: `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recuperar contraseña</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F8F8F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
+    <div style="background:white;border-radius:16px;padding:32px;border:1px solid rgba(0,0,0,0.06);">
+      <h1 style="font-size:22px;font-weight:900;color:#1B2F4E;margin:0 0 16px;">Recuperar tu contraseña</h1>
+      <p style="color:#555555;font-size:15px;line-height:1.6;margin:0 0 24px;">
+        Recibimos una solicitud para recuperar tu contraseña. Haz clic en el botón de abajo para establecer una nueva contraseña.
+      </p>
+      <p style="color:#999999;font-size:13px;line-height:1.6;margin:0 0 24px;">
+        Este link expira en 1 hora por razones de seguridad.
+      </p>
+      <div style="text-align:center;margin-bottom:24px;">
+        <a href="${resetLink}" style="background:#C9973A;color:white;padding:12px 32px;text-decoration:none;border-radius:8px;font-weight:700;font-size:15px;display:inline-block;">
+          Recuperar contraseña
+        </a>
+      </div>
+      <p style="color:#999999;font-size:13px;line-height:1.6;margin:0 0 16px;">
+        O copia este link en tu navegador:
+      </p>
+      <p style="color:#555555;font-size:12px;word-break:break-all;background:#F8F8F8;padding:12px;border-radius:8px;margin:0;">
+        ${resetLink}
+      </p>
+      <p style="color:#999999;font-size:13px;line-height:1.6;margin:24px 0 0;">
+        Si no solicitaste recuperar tu contraseña, ignora este email.
+      </p>
+    </div>
+    <p style="text-align:center;color:#bbb;font-size:12px;margin:16px 0 0;">
+      RUTA34 Telecom · Partner Portal<br />
+      <a href="https://esimruta34.com" style="color:#bbb;">esimruta34.com</a>
+    </p>
+  </div>
+</body>
+</html>
+    `,
+  });
+}

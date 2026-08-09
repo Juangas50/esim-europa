@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
+import { sendPasswordResetEmail } from '@/lib/resend'
+import crypto from 'crypto'
 
 // ── Rate limiting en memoria (P2-05) ─────────────────────────────────────────
 // Funciona por instancia serverless. Para producción con tráfico alto,
@@ -76,19 +78,102 @@ export async function resetPassword(formData: FormData) {
   if (!EMAIL_RE.test(email)) return
 
   const supabase = await createClient()
-
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'https://www.esimruta34.com'
 
-  // Respuesta genérica siempre para evitar user enumeration
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `https://${baseUrl}/recuperar/nueva`,
+    // Verificar que el usuario existe en nuestra tabla users
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single()
+
+    if (userError || !user) {
+      // Respuesta genérica para evitar user enumeration
+      return
+    }
+
+    // Generar token de recuperación
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hora
+
+    // Guardar token en la tabla users
+    const { error: dbError } = await supabase
+      .from('users')
+      .update({
+        password_reset_token: resetToken,
+        password_reset_expires: expiresAt.toISOString(),
+      })
+      .eq('id', user.id)
+
+    if (dbError) {
+      console.error('Database error saving reset token:', dbError)
+      return
+    }
+
+    // Enviar email con Resend
+    const resetLink = `${baseUrl}/recuperar/nueva?token=${resetToken}`
+    const { error: emailError } = await sendPasswordResetEmail({
+      to: email,
+      resetLink,
     })
-    if (error) {
-      console.error('Password reset error:', error)
+
+    if (emailError) {
+      console.error('Email send error:', emailError)
     }
   } catch (err) {
     console.error('Password reset exception:', err)
   }
   // No retornamos si fue exitoso o no — el cliente siempre ve el mismo mensaje
+}
+
+export async function resetPasswordWithToken(token: string, newPassword: string) {
+  if (!token || !newPassword || newPassword.length < 8) {
+    return { error: 'Token o contraseña inválidos' }
+  }
+
+  const supabase = await createClient()
+
+  try {
+    // Buscar el usuario por token
+    const { data: users, error: queryError } = await supabase
+      .from('users')
+      .select('id, email')
+      .eq('password_reset_token', token)
+      .gt('password_reset_expires', new Date().toISOString())
+      .single()
+
+    if (queryError || !users) {
+      return { error: 'Link de recuperación inválido o expirado' }
+    }
+
+    // Cambiar la contraseña del usuario en Supabase Auth
+    const { error: updateAuthError } = await supabase.auth.admin.updateUserById(
+      users.id,
+      { password: newPassword }
+    )
+
+    if (updateAuthError) {
+      console.error('Auth update error:', updateAuthError)
+      return { error: 'Error al cambiar la contraseña' }
+    }
+
+    // Limpiar el token de recuperación
+    const { error: cleanupError } = await supabase
+      .from('users')
+      .update({
+        password_reset_token: null,
+        password_reset_expires: null,
+      })
+      .eq('id', users.id)
+
+    if (cleanupError) {
+      console.error('Cleanup error:', cleanupError)
+    }
+
+    return { success: true }
+  } catch (err) {
+    console.error('Password reset exception:', err)
+    return { error: 'Error al procesar la solicitud' }
+  }
 }

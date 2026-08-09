@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { resetPasswordWithToken } from '../../login/actions'
 
 export default function RecuperarContrasenaBienvenidaClient() {
   const router = useRouter()
@@ -18,23 +19,21 @@ export default function RecuperarContrasenaBienvenidaClient() {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        // El token viene en el hash de la URL (Supabase lo pone allí)
-        const hash = window.location.hash
+        // Obtener el token de la URL (parámetro de query)
+        const params = new URLSearchParams(window.location.search)
+        const token = params.get('token')
 
-        if (!hash || !hash.includes('type=recovery')) {
+        if (!token) {
           setError('Link de recuperación inválido o expirado')
           setIsCheckingToken(false)
           return
         }
 
-        // Supabase automáticamente procesa el hash y establece la sesión
-        const { data: { session } } = await supabase.auth.getSession()
-
-        if (session) {
-          setIsValidToken(true)
-        } else {
-          setError('Link de recuperación inválido o expirado')
-        }
+        // Validar token contra la BD (esto se hace cuando se intenta cambiar la contraseña)
+        // Por ahora, solo verificamos que existe el token en la URL
+        setIsValidToken(true)
+        // Guardar el token en estado para usarlo después
+        ;(window as any).__resetToken = token
       } catch (err) {
         console.error('Token verification error:', err)
         setError('Error al verificar el link')
@@ -74,12 +73,17 @@ export default function RecuperarContrasenaBienvenidaClient() {
     setLoading(true)
 
     try {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword,
-      })
+      const token = (window as any).__resetToken
+      if (!token) {
+        setError('Token no encontrado')
+        setLoading(false)
+        return
+      }
 
-      if (updateError) {
-        setError(updateError.message)
+      const result = await resetPasswordWithToken(token, newPassword)
+
+      if (!result.success) {
+        setError(result.error || 'Error al cambiar contraseña')
         return
       }
 
