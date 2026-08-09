@@ -1,13 +1,31 @@
 /**
- * plans-server.ts — Server-side plan fetching from Supabase tariffs table.
- * Only import this from Server Components, Route Handlers, or Server Actions.
- * Client components should receive plans as props.
+ * plans-server.ts — Lectura del catálogo desde la tabla `tariffs` de Supabase.
+ * Importar solo desde Server Components, Route Handlers o Server Actions.
+ * Los componentes cliente reciben los planes como props.
  *
- * Falls back to hardcoded PLANS if Supabase is not configured or returns empty.
+ * Si Supabase no está disponible se usa el fallback de `plans.ts`.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * REGLA DE NEGOCIO: separación identidad comercial ↔ provisión interna
+ *
+ * La provisión mayorista se contrata con Vodafone España, pero Ruta34 NO
+ * comercializa bajo naming Vodafone. Los únicos nombres públicos del producto
+ * son los de Ruta34: Europa Básico / Plus / Total / Max / Premium.
+ *
+ * · `vodafone_code` y cualquier talla del operador son METADATA TÉCNICA INTERNA.
+ * · Viven en `TariffRow` (privado de este módulo) y en `ProvisioningRef`.
+ * · NO forman parte del DTO público `Plan`, porque `Plan` se serializa en el
+ *   payload RSC y es legible desde el navegador.
+ * · Nunca deben alimentar naming comercial, UI, checkout visible, descripciones
+ *   de Stripe, emails, SEO/JSON-LD, analytics de cliente ni el futuro chatbot.
+ *
+ * La asociación producto Ruta34 ↔ referencia de provisión se resuelve solo en
+ * servidor y por `tariff.id` — ver `getProvisioningRef()` al final del archivo.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 import { createAdminClient } from "@/lib/supabase/server";
-import type { Plan, PlanType, PlanSize } from "@/types";
+import type { Plan, PlanType } from "@/types";
 import { PLANS } from "@/lib/plans";
 
 // ── Supabase row shape ────────────────────────────────────────────────────────
@@ -15,7 +33,6 @@ import { PLANS } from "@/lib/plans";
 interface TariffRow {
   id: string;
   name: string;
-  vodafone_code: string | null;  // Código Vodafone para activación (ej: "Vodafone S", "Vodafone M")
   type: string;            // esim_type enum from B2B portal
   data_gb: number;
   validity_days: number | null;
@@ -32,34 +49,6 @@ interface TariffRow {
 }
 
 // ── Mapping helpers ───────────────────────────────────────────────────────────
-
-const SIZE_TOKENS = new Set(["S", "M", "L", "XL", "XXL"]);
-
-/**
- * Talla S/M/L/XL/XXL del plan.
- *
- * Fuente única: `vodafone_code`, el código del operador — campo obligatorio en
- * /admin/tarifas, con valores del tipo "Vodafone S" … "Vodafone XXL". Como
- * respaldo se busca la talla como palabra suelta en el nombre comercial.
- *
- * Si no se puede determinar, devuelve `undefined` de forma deliberada.
- * Antes esta función adivinaba la talla por tramos de GB (`> 35 GB → XXL`), lo
- * que con el catálogo real (90–430 GB) etiquetaba las cinco tarifas como XXL y
- * hacía que todas llegaran a Stripe como "eSIM Plan XXL". Preferimos no saber
- * la talla a inventarla.
- *
- * Nunca leer `badge` aquí: en /admin/tarifas ese campo es el textarea de
- * "Características (una por línea)", no una talla.
- */
-function inferSize(name: string, vodafone_code: string | null): PlanSize | undefined {
-  for (const source of [vodafone_code, name]) {
-    if (!source) continue;
-    for (const token of source.trim().toUpperCase().split(/\s+/)) {
-      if (SIZE_TOKENS.has(token)) return token as PlanSize;
-    }
-  }
-  return undefined;
-}
 
 function mapType(raw: string): PlanType {
   const t = raw.toLowerCase();
@@ -136,11 +125,8 @@ function mapTariffToPlan(t: TariffRow): Plan {
     id: t.id,
     slug: slugify(t.name),
     name: t.name,
-    vodafone_code: t.vodafone_code ?? undefined,
     badge: t.badge ?? undefined,
     type,
-    // Talla S/M/L/XL/XXL solo para planes locales (data-only no tiene talla)
-    size: type === "local" ? inferSize(t.name, t.vodafone_code) : undefined,
     position: t.position ?? undefined,
     data_gb: t.data_gb,
     eu_data_gb: t.eu_data_gb ?? undefined,
@@ -164,7 +150,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
 // ── Public API ────────────────────────────────────────────────────────────────
 
 const TARIFF_COLUMNS =
-  "id, name, vodafone_code, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible";
+  "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible";
 
 /** De dónde salieron los planes que se están devolviendo. */
 export type PlansSource = "supabase" | "fallback";
@@ -260,5 +246,59 @@ export async function getPlanById(id: string, opts?: { webOnly?: boolean }): Pro
     return mapTariffToPlan(data as TariffRow);
   } catch (err) {
     return fallback(`excepción inesperada: ${String(err)}`);
+  }
+}
+
+// ── Provisión interna (server-only) ───────────────────────────────────────────
+
+/**
+ * Referencia técnica de provisión de una tarifa.
+ *
+ * ⚠️ NUNCA pasar esto como prop a un componente cliente ni incluirlo en una
+ * respuesta pública: es metadata del mayorista, no identidad de producto.
+ * El nombre comercial que ve el cliente sale siempre de `Plan.name`.
+ */
+export interface ProvisioningRef {
+  /** `tariffs.id` — la única clave con la que se cruza producto ↔ provisión. */
+  tariffId: string;
+  /** Código de tarifa del mayorista. Uso exclusivamente interno. */
+  provisioningCode: string | null;
+}
+
+/**
+ * Resuelve la referencia de provisión de una tarifa por su `id`.
+ *
+ * Pensado para flujos internos de aprovisionamiento y soporte (panel de admin,
+ * preparación de la entrega). Lanza si se invoca desde el navegador: es la
+ * barrera que impide que esta metadata acabe en una superficie pública aunque
+ * alguien importe este módulo por error desde un componente cliente.
+ */
+export async function getProvisioningRef(tariffId: string): Promise<ProvisioningRef | null> {
+  if (typeof window !== "undefined") {
+    throw new Error(
+      "getProvisioningRef() es server-only: la referencia de provisión no puede salir al cliente."
+    );
+  }
+
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("tariffs")
+      .select("id, vodafone_code")
+      .eq("id", tariffId)
+      .single();
+
+    if (error || !data) {
+      console.error(`[provisioning] No se pudo resolver la tarifa ${tariffId}: ${error?.message ?? "sin resultados"}`);
+      return null;
+    }
+
+    return {
+      tariffId: data.id as string,
+      provisioningCode: (data.vodafone_code as string | null) ?? null,
+    };
+  } catch (err) {
+    console.error(`[provisioning] Excepción resolviendo la tarifa ${tariffId}: ${String(err)}`);
+    return null;
   }
 }

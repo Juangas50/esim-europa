@@ -1,16 +1,26 @@
 export type Locale = "es" | "pt";
 
 export type PlanType = "local" | "dataonly";
-export type PlanSize = "S" | "M" | "L" | "XL" | "XXL";
 
+/**
+ * DTO PÚBLICO de un plan.
+ *
+ * ⚠️ Todo lo que esté aquí acaba serializado en el payload RSC y es legible
+ * desde "ver código fuente" en cuanto un componente cliente recibe un `Plan`
+ * como prop. Por eso este tipo contiene **solo identidad comercial Ruta34**.
+ *
+ * La metadata de provisión del mayorista (código de tarifa, tallas del
+ * operador) NO va aquí: vive en `ProvisioningRef`, en `plans-server.ts`, y no
+ * sale del servidor. Ver la regla de negocio en ese archivo.
+ *
+ * Antes de añadir un campo, preguntate: ¿puede leerlo un cliente?
+ */
 export interface Plan {
   id: string;
   slug: string;
-  name: string;
-  vodafone_code?: string;    // Código Vodafone para activación (ej: "Vodafone S", "Vodafone M")
+  name: string;              // Nombre comercial Ruta34 — la única identidad pública del producto
   badge?: string | null;     // Características (una por línea) — editable en admin
   type: PlanType;
-  size?: PlanSize;           // S/M/L/XL/XXL — derivado de position o badge
   position?: number;         // 1 = más izquierda, 5 = más derecha en la home
   data_gb: number;
   eu_data_gb?: number;        // GB en roaming UE (solo planes local/España)

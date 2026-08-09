@@ -39,19 +39,19 @@ export default function SpainPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="rounded-xl border border-black/[0.07] p-6 bg-[#FAF7F2]">
-              <h3 className="font-bold text-[#1B2F4E] mb-2">Redes soportadas</h3>
+              <h3 className="font-bold text-[#1B2F4E] mb-2">Red</h3>
               <ul className="text-sm text-[#64748B] space-y-1">
-                <li>✓ Vodafone (referencia: ES)</li>
-                <li>✓ Movistar (referencia: Orange ES)</li>
-                <li>✓ Orange</li>
+                <li>✓ Red española certificada</li>
+                <li>✓ Cobertura 4G/5G</li>
+                <li>✓ Número español incluido</li>
               </ul>
             </div>
             <div className="rounded-xl border border-black/[0.07] p-6 bg-[#FAF7F2]">
               <h3 className="font-bold text-[#1B2F4E] mb-2">Planes disponibles</h3>
               <ul className="text-sm text-[#64748B] space-y-1">
-                <li>✓ Plan M: 270 GB por 28 días</li>
-                <li>✓ Plan L: 330 GB por 28 días</li>
-                <li>✓ DataOnly: 60 días para activar</li>
+                <li>✓ Europa Básico, Plus, Total, Max y Premium</li>
+                <li>✓ 28 días de validez</li>
+                <li>✓ Hasta 12 meses para elegir cuándo activar</li>
               </ul>
             </div>
           </div>

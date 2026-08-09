@@ -14,17 +14,16 @@ import type { Plan } from "@/types";
 // máximo de esa MISMA bolsa que puede gastarse fuera de España. No son bolsas
 // que se sumen.
 
-// ── SIM Local — línea española con número, llamadas, SMS y datos ──────────────
-// Tamaños S / M / L / XL / XXL — mismo producto, distintos GB
+// ── Línea española con número, llamadas, SMS y datos ─────────────────────────
+// Mismo producto en cinco gamas comerciales Ruta34, distintos GB.
+// Sin código de provisión ni talla del mayorista: esto es un DTO público.
 
 const LOCAL_PLANS: Plan[] = [
   {
     id: "local-s",
     slug: "local-s",
     name: "Europa Básico",
-    vodafone_code: "Vodafone S",
     type: "local",
-    size: "S",
     data_gb: 90,
     eu_data_gb: 15,
     duration_days: 28,
@@ -44,9 +43,7 @@ const LOCAL_PLANS: Plan[] = [
     id: "local-m",
     slug: "local-m",
     name: "Europa Plus",
-    vodafone_code: "Vodafone M",
     type: "local",
-    size: "M",
     data_gb: 270,
     eu_data_gb: 23,
     duration_days: 28,
@@ -66,9 +63,7 @@ const LOCAL_PLANS: Plan[] = [
     id: "local-l",
     slug: "local-l",
     name: "Europa Total",
-    vodafone_code: "Vodafone L",
     type: "local",
-    size: "L",
     data_gb: 330,
     eu_data_gb: 30,
     duration_days: 28,
@@ -88,9 +83,7 @@ const LOCAL_PLANS: Plan[] = [
     id: "local-xl",
     slug: "local-xl",
     name: "Europa Max",
-    vodafone_code: "Vodafone XL",
     type: "local",
-    size: "XL",
     data_gb: 380,
     eu_data_gb: 45,
     duration_days: 28,
@@ -110,9 +103,7 @@ const LOCAL_PLANS: Plan[] = [
     id: "local-xxl",
     slug: "local-xxl",
     name: "Europa Premium",
-    vodafone_code: "Vodafone XXL",
     type: "local",
-    size: "XXL",
     data_gb: 430,
     eu_data_gb: 60,
     duration_days: 28,

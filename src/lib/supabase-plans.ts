@@ -18,7 +18,10 @@ export async function getTariffsFromSupabase(): Promise<TariffPlan[]> {
     // Traer solo tarifas con web_visible = true, ordenadas por position
     const { data, error } = await client
       .from("tariffs")
-      .select("*")
+      // Columnas explícitas: este cliente corre en el NAVEGADOR con la anon key.
+      // Un select("*") arrastraría metadata interna de provisión (vodafone_code)
+      // hasta el bundle del cliente.
+      .select("id, name, price_usd, eu_data_gb, data_gb, highlight")
       .eq("web_visible", true)
       .order("position", { ascending: true });
 

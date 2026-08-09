@@ -26,13 +26,15 @@ export const trackViewPlans = (plans: Array<{ id: string; name: string; price: n
 };
 
 // ── Select Plan (Click "Elegir plan") ─────────────────────────────
-export const trackSelectPlan = (plan: { id: string; name: string; price: number; size?: string }) => {
+// item_variant usa el nombre comercial Ruta34. Nunca la talla del mayorista:
+// GA4 es una superficie de cliente y esa metadata es interna.
+export const trackSelectPlan = (plan: { id: string; name: string; price: number }) => {
   trackGAEvent("view_item", {
     items: [
       {
         item_id: plan.id,
         item_name: plan.name,
-        item_variant: plan.size || "DataOnly",
+        item_variant: plan.name,
         price: plan.price,
         currency: "USD",
       },

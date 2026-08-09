@@ -239,7 +239,6 @@ export default function PlanCard({
             id: plan.id,
             name: plan.name,
             price: plan.price_usd,
-            size: plan.size,
           })
           trackAddToCart({ id: plan.id, name: plan.name, price_usd: plan.price_usd })
         }}
