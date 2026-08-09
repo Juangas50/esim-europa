@@ -86,11 +86,7 @@ export default function Benefits() {
   const isSearchingUS = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
     // Detecta búsqueda de USA/Estados Unidos - incluye escritura parcial
-    const result = query.includes("usa") || query.includes("esta") || query.includes("eeuu") || query.includes("estado");
-    if (query.length > 0) {
-      console.log("Search query:", query, "isSearchingUS:", result);
-    }
-    return result;
+    return query.includes("usa") || query.includes("esta") || query.includes("eeuu") || query.includes("estado");
   }, [searchQuery]);
 
   const filteredCountries = useMemo(() => {
@@ -104,37 +100,31 @@ export default function Benefits() {
   }, [searchQuery]);
 
   const displayPlans = useMemo(() => {
-    // ID del plan Básico (Europa Básico) - no incluye USA
-    const BASIC_PLAN_ID = "2bf430af-8a08-4425-a188-7bf8df18cfd8";
-
-    // Mapear y ordenar tarifas de Supabase
-    const mapped = plans.map((plan) => ({
-      name: plan.name,
-      gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
-      href: plan.slug,
-      price: formatUSD(plan.price_usd),
-      recommended: plan.is_popular || false,
-      excludes: plan.id === BASIC_PLAN_ID ? ["US"] : [],
-      id: plan.id,
-    })).sort((a, b) => {
-      // Orden: Básico → Plus (recomendado) → Total → Max → Premium
-      const order: {[key: string]: number} = {
-        "2bf430af-8a08-4425-a188-7bf8df18cfd8": 1, // Básico
-        "30c52a68-639a-442b-8eb4-aa19c55b2d92": 2, // Plus
-        "45412b84-a570-4112-ad28-fb2225f01dc5": 3, // Total
-        "61439ac8-772c-4342-8acc-b231e62684fc": 4, // Max
+    // Supabase ya devuelve las tarifas ordenadas por `position` (igual que la Home),
+    // así que no hace falta reordenar acá — evita depender de IDs hardcodeados
+    // que se desalinean cada vez que se edita la tabla de tarifas.
+    const mapped = plans.map((plan) => {
+      const normalizedName = plan.name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "");
+      return {
+        name: plan.name,
+        gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
+        href: plan.slug,
+        price: formatUSD(plan.price_usd),
+        recommended: plan.is_popular || false,
+        // El plan de entrada (Básico) es el único sin cobertura en EE.UU.
+        excludesUS: normalizedName.includes("basico"),
+        id: plan.id,
       };
-      return (order[a.id] || 5) - (order[b.id] || 5);
     });
 
     if (isSearchingUS) {
-      console.log("Filtering US - isSearchingUS:", true, "searchQuery:", searchQuery);
-      const filtered = mapped.filter((plan) => !plan.excludes.includes("US"));
-      console.log("Filtered plans count:", filtered.length, "Original count:", mapped.length);
-      return filtered;
+      return mapped.filter((plan) => !plan.excludesUS);
     }
     return mapped;
-  }, [plans, isSearchingUS, searchQuery]);
+  }, [plans, isSearchingUS]);
 
   return (
     <section className="py-12 px-4 bg-[var(--color-warm-white)]">

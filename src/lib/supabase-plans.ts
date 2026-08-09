@@ -15,10 +15,12 @@ export async function getTariffsFromSupabase(): Promise<TariffPlan[]> {
   const client = createClient();
 
   try {
-    // Traer solo tarifas con web_visible = true, ordenadas por position
+    // Mismo filtro que Home (getPlans webOnly:true): active + web_visible,
+    // para que precios/GB no se desalineen entre secciones.
     const { data, error } = await client
       .from("tariffs")
       .select("*")
+      .eq("active", true)
       .eq("web_visible", true)
       .order("position", { ascending: true });
 
