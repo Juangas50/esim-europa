@@ -81,10 +81,14 @@ export async function resetPassword(formData: FormData) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_PROJECT_PRODUCTION_URL ?? 'https://www.esimruta34.com'
 
   try {
-    // Verificar que el usuario existe
-    const { data: user } = await supabase.auth.admin.getUserByEmail(email)
+    // Verificar que el usuario existe en nuestra tabla users
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single()
 
-    if (!user) {
+    if (userError || !user) {
       // Respuesta genérica para evitar user enumeration
       return
     }

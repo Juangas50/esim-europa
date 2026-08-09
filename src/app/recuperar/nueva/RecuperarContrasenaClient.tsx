@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { resetPasswordWithToken } from '../../../login/actions'
+import { resetPasswordWithToken } from '../../login/actions'
 
 export default function RecuperarContrasenaBienvenidaClient() {
   const router = useRouter()
