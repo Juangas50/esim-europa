@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { routing } from "@/i18n/routing";
 import CookieBanner from "@/components/legal/CookieBanner";
+import { Assistant } from "@/components/assistant";
 import { GTMScript } from "@/components/analytics/GTM";
 import { MetaPixelScript, MetaPixelRouteTracker } from "@/components/analytics/MetaPixel";
 
@@ -38,6 +39,7 @@ export default async function LocaleLayout({
       <MetaPixelRouteTracker />
       {children}
       <CookieBanner />
+      <Assistant />
     </NextIntlClientProvider>
   );
 }

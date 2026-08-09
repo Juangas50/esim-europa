@@ -285,5 +285,38 @@
     "sla": "Atendemos de segunda a sábado das 8 às 21 h (horário da Espanha). Pedidos fora desse horário são processados no início do horário de atendimento seguinte.",
     "support": "Tem dúvidas? Fale conosco pelo WhatsApp",
     "backHome": "Voltar ao início"
+  },
+  "assistant": {
+    "launcherOpen": "Abrir o assistente da Ruta34",
+    "close": "Fechar o assistente",
+    "title": "Ruta34",
+    "status": "Assistente online",
+    "greeting": "Oi. Me conta, como posso ajudar?",
+    "placeholder": "Escreva sua mensagem…",
+    "send": "Enviar mensagem",
+    "typing": "Ruta34 está escrevendo",
+    "conversation": "Conversa com a Ruta34",
+    "handoffMessage": "Oi Ruta34, venho do assistente do site e preciso de ajuda com meu eSIM.",
+    "suggestions": {
+      "plan": "Escolher um plano",
+      "install": "Instalar meu eSIM",
+      "problem": "Tenho um problema"
+    },
+    "actions": {
+      "viewPlans": "Ver planos",
+      "viewPlan": "Ver plano",
+      "compatibility": "Ver compatibilidade",
+      "guide": "Abrir guia",
+      "whatsapp": "Continuar pelo WhatsApp"
+    },
+    "replies": {
+      "planRecommendation": "Para essa viagem vale olhar um plano que cubra também a Itália. Lembre que os GB para usar fora da Espanha têm um limite específico dentro da franquia total do plano.",
+      "installStart": "Posso ajudar com isso. Você tem em mãos o código QR que enviamos por e-mail? Vale instalar com WiFi antes de viajar.",
+      "troubleshootingStart": "Certo, vamos ver o que está acontecendo. O eSIM já aparece instalado no seu telefone?",
+      "troubleshootingInstalled": "Perfeito. Entre em Ajustes → Dados móveis e veja se o eSIM está selecionado como linha de dados.",
+      "troubleshootingMissing": "Então vamos começar por aí. Instale o eSIM com o código QR que enviamos por e-mail, conectado ao WiFi.",
+      "handoff": "Não quero te fazer perder mais tempo com isso. Vou te passar para o suporte e deixamos o contexto do que já testamos.",
+      "fallback": "Acho que não entendi bem. Pode me contar com outras palavras?"
+    }
   }
 }

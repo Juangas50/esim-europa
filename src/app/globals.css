@@ -2,8 +2,8 @@
 
 @theme {
   /* Fuentes */
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-prata);
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-dm-serif);
 
   /* RUTA34 Brand — Navy + Gold (Legacy reds only for error states) */
   --color-navy: #1B2F4E;

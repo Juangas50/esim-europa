@@ -290,5 +290,38 @@
   "about": {
     "title": "Sobre Ruta34",
     "description": "Conectividad para viajeros LATAM"
+  },
+  "assistant": {
+    "launcherOpen": "Abrir el asistente de Ruta34",
+    "close": "Cerrar el asistente",
+    "title": "Ruta34",
+    "status": "Asistente online",
+    "greeting": "Hola. Contame, ¿en qué te ayudo?",
+    "placeholder": "Escribí tu mensaje…",
+    "send": "Enviar mensaje",
+    "typing": "Ruta34 está escribiendo",
+    "conversation": "Conversación con Ruta34",
+    "handoffMessage": "Hola Ruta34, vengo del asistente de la web y necesito ayuda con mi eSIM.",
+    "suggestions": {
+      "plan": "Elegir un plan",
+      "install": "Instalar mi eSIM",
+      "problem": "Tengo un problema"
+    },
+    "actions": {
+      "viewPlans": "Ver planes",
+      "viewPlan": "Ver plan",
+      "compatibility": "Ver compatibilidad",
+      "guide": "Abrir guía",
+      "whatsapp": "Continuar por WhatsApp"
+    },
+    "replies": {
+      "planRecommendation": "Para ese viaje te conviene mirar un plan que cubra también Italia. Tené en cuenta que los GB para usar fuera de España tienen un límite específico dentro de la bolsa total del plan.",
+      "installStart": "Te ayudo con eso. ¿Tenés a mano el código QR que te enviamos por email? Conviene instalarlo con WiFi antes de viajar.",
+      "troubleshootingStart": "Vale, vemos qué está pasando. ¿La eSIM ya aparece instalada en tu teléfono?",
+      "troubleshootingInstalled": "Perfecto. Entrá en Ajustes → Datos móviles y fijate si la eSIM está seleccionada como línea de datos.",
+      "troubleshootingMissing": "Entonces empecemos por ahí. Instalá la eSIM con el código QR que te enviamos por email, conectado a WiFi.",
+      "handoff": "No quiero hacerte perder más tiempo con esto. Te paso con soporte y les dejamos el contexto de lo que ya probamos.",
+      "fallback": "No estoy seguro de haberte entendido. ¿Me lo contás con otras palabras?"
+    }
   }
 }

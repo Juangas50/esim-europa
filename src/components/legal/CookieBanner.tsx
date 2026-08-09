@@ -7,7 +7,13 @@ import { useLocale } from "next-intl";
 const CONSENT_KEY = "ruta34_cookie_consent";
 const CONSENT_MAX_AGE = 60 * 60 * 24 * 365; // 1 año en segundos
 
-function readConsentCookie(): ConsentValue {
+/**
+ * Lee el consentimiento guardado. Exportada para que otros componentes que
+ * dependen del estado del banner (p. ej. el launcher del asistente, que se
+ * eleva mientras el banner ocupa el borde inferior) reutilicen esta lógica en
+ * vez de reimplementar el parseo de la cookie.
+ */
+export function readConsentCookie(): ConsentValue {
   if (typeof document === "undefined") return null;
   // 1. Cookie (fuente de verdad actual)
   const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_KEY}=([^;]*)`));
