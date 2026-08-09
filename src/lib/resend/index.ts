@@ -139,13 +139,7 @@ export async function sendActivationReminder({
       <p>¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "5491136583054"}">Escribinos por WhatsApp</a></p>
       <p>RUTA34 Telecom</p>
     `,
-    })
-    console.log('[sendPasswordResetEmail] Resultado:', result)
-    return result
-  } catch (error) {
-    console.error('[sendPasswordResetEmail] Error:', error)
-    throw error
-  }
+  });
 }
 
 export async function sendPasswordResetEmail({
@@ -205,5 +199,11 @@ export async function sendPasswordResetEmail({
 </body>
 </html>
     `,
-  });
+    })
+    console.log('[sendPasswordResetEmail] Resultado:', result)
+    return result
+  } catch (error) {
+    console.error('[sendPasswordResetEmail] Error:', error)
+    throw error
+  }
 }
