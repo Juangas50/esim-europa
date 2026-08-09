@@ -139,7 +139,13 @@ export async function sendActivationReminder({
       <p>¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? "5491136583054"}">Escribinos por WhatsApp</a></p>
       <p>RUTA34 Telecom</p>
     `,
-  });
+    })
+    console.log('[sendPasswordResetEmail] Resultado:', result)
+    return result
+  } catch (error) {
+    console.error('[sendPasswordResetEmail] Error:', error)
+    throw error
+  }
 }
 
 export async function sendPasswordResetEmail({
@@ -149,11 +155,16 @@ export async function sendPasswordResetEmail({
   to: string;
   resetLink: string;
 }) {
-  return resend.emails.send({
-    from: process.env.EMAIL_FROM ?? "RUTA34 Telecom <hola@esimruta34.com>",
-    to,
-    subject: "Recuperar tu contraseña — RUTA34",
-    html: `
+  console.log('[sendPasswordResetEmail] Iniciando...')
+  console.log('[sendPasswordResetEmail] RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY)
+  console.log('[sendPasswordResetEmail] EMAIL_FROM:', process.env.EMAIL_FROM)
+
+  try {
+    const result = await resend.emails.send({
+      from: process.env.EMAIL_FROM ?? "RUTA34 Telecom <hola@esimruta34.com>",
+      to,
+      subject: "Recuperar tu contraseña — RUTA34",
+      html: `
 <!DOCTYPE html>
 <html lang="es">
 <head>
