@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe, MagnifyingGlass, Check } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import { formatUSD } from "@/lib/utils";
-import { getTariffsFromSupabase, type TariffPlan } from "@/lib/supabase-plans";
+import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -74,14 +74,13 @@ const COUNTRY_DATA = {
   ],
 };
 
-export default function Benefits() {
+interface BenefitsProps {
+  plans: Plan[];
+}
+
+export default function Benefits({ plans }: BenefitsProps) {
   const t = useTranslations("benefits");
   const [searchQuery, setSearchQuery] = useState("");
-  const [plans, setPlans] = useState<TariffPlan[]>([]);
-
-  useEffect(() => {
-    getTariffsFromSupabase().then(setPlans);
-  }, []);
 
   const isSearchingUS = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
@@ -100,25 +99,28 @@ export default function Benefits() {
   }, [searchQuery]);
 
   const displayPlans = useMemo(() => {
-    // Supabase ya devuelve las tarifas ordenadas por `position` (igual que la Home),
-    // así que no hace falta reordenar acá — evita depender de IDs hardcodeados
-    // que se desalinean cada vez que se edita la tabla de tarifas.
-    const mapped = plans.map((plan) => {
-      const normalizedName = plan.name
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/\p{Diacritic}/gu, "");
-      return {
-        name: plan.name,
-        gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
-        href: plan.slug,
-        price: formatUSD(plan.price_usd),
-        recommended: plan.is_popular || false,
-        // El plan de entrada (Básico) es el único sin cobertura en EE.UU.
-        excludesUS: normalizedName.includes("basico"),
-        id: plan.id,
-      };
-    });
+    // Mismos `plans` que recibe <Plans> en la Home (misma llamada a getPlans en
+    // page.tsx) — ya vienen ordenados por `position`, así que no hace falta
+    // reordenar ni volver a pedirlos acá. Esto evita que esta sección se
+    // desalinee de la Home otra vez.
+    const mapped = plans
+      .filter((plan) => plan.type === "local")
+      .map((plan) => {
+        const normalizedName = plan.name
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/\p{Diacritic}/gu, "");
+        return {
+          name: plan.name,
+          gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
+          href: plan.slug,
+          price: formatUSD(plan.price_usd),
+          recommended: plan.is_popular || false,
+          // El plan de entrada (Básico) es el único sin cobertura en EE.UU.
+          excludesUS: normalizedName.includes("basico"),
+          id: plan.id,
+        };
+      });
 
     if (isSearchingUS) {
       return mapped.filter((plan) => !plan.excludesUS);
