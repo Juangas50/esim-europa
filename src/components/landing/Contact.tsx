@@ -167,7 +167,7 @@ function ContactForm() {
 
 export default function Contact() {
   return (
-    <section className="py-10 md:py-12 px-4 bg-[var(--color-warm-white)]">
+    <section id="contact" className="py-10 md:py-12 px-4 bg-[var(--color-warm-white)]">
       <div className="max-w-7xl mx-auto">
 
         <motion.div
