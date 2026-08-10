@@ -210,3 +210,15 @@ export function getPlanById(id: string): Plan | undefined {
 export function getPlanBySlug(slug: string): Plan | undefined {
   return PLANS.find((p) => p.slug === slug);
 }
+
+// Orden izquierda→derecha (menor a mayor) usado en toda la web — Home y
+// cualquier otra sección que liste planes deben ordenar con esta misma
+// función para no desalinearse entre sí.
+export function sortByPosition(plans: Plan[]): Plan[] {
+  return [...plans].sort((a, b) => {
+    if (a.position != null && b.position != null) return a.position - b.position;
+    if (a.position != null) return -1;
+    if (b.position != null) return 1;
+    return a.price_usd - b.price_usd;
+  });
+}

@@ -12,21 +12,13 @@ import { formatUSD } from "@/lib/utils";
 import { analytics } from "@/lib/analytics";
 import { trackSelectPlan, trackViewPlans } from "@/lib/analytics-ga4";
 import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { sortByPosition } from "@/lib/plans";
 import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 interface PlansProps {
   plans: Plan[];
-}
-
-function sortByPosition(plans: Plan[]) {
-  return [...plans].sort((a, b) => {
-    if (a.position != null && b.position != null) return a.position - b.position;
-    if (a.position != null) return -1;
-    if (b.position != null) return 1;
-    return a.price_usd - b.price_usd;
-  });
 }
 
 export default function Plans({ plans }: PlansProps) {
