@@ -194,11 +194,5 @@ export async function sendPasswordResetEmail({
 </body>
 </html>
     `,
-    })
-    console.log('[sendPasswordResetEmail] Resultado:', result)
-    return result
-  } catch (error) {
-    console.error('[sendPasswordResetEmail] Error:', error)
-    throw error
-  }
+  });
 }
