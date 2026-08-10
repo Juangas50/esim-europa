@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe, MagnifyingGlass, Check } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import { formatUSD } from "@/lib/utils";
+import { sortByPosition } from "@/lib/plans";
 import type { Plan } from "@/types";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -100,10 +101,9 @@ export default function Benefits({ plans }: BenefitsProps) {
 
   const displayPlans = useMemo(() => {
     // Mismos `plans` que recibe <Plans> en la Home (misma llamada a getPlans en
-    // page.tsx) — ya vienen ordenados por `position`, así que no hace falta
-    // reordenar ni volver a pedirlos acá. Esto evita que esta sección se
-    // desalinee de la Home otra vez.
-    const mapped = plans
+    // page.tsx), ordenados con la misma función que usa esa sección para que
+    // el orden izquierda→derecha sea siempre idéntico.
+    const mapped = sortByPosition(plans)
       .filter((plan) => plan.type === "local")
       .map((plan) => {
         const normalizedName = plan.name
