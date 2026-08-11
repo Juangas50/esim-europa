@@ -6,6 +6,12 @@ import { DeviceMobile, Lightning, CurrencyDollar, Globe, MagnifyingGlass, Check 
 import { useTranslations } from "next-intl";
 import { formatUSD } from "@/lib/utils";
 import { getTariffsFromSupabase, type TariffPlan } from "@/lib/supabase-plans";
+import {
+  COVERAGE_COUNTRIES,
+  findCoverageCountry,
+  planCoversCountry,
+  searchCoverageCountries,
+} from "@/lib/coverage";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -26,54 +32,6 @@ const BENEFIT_ITEMS = [
   { key: "coverage", Icon: Globe },
 ] as const;
 
-// Países con cobertura en planes UE
-// Estados Unidos está disponible en Plus, Total, Max, Premium (NO en Básico)
-const COUNTRY_DATA = {
-  featured: [
-    { name: "España", flag: "🇪🇸", code: "ES" },
-    { name: "Francia", flag: "🇫🇷", code: "FR" },
-    { name: "Italia", flag: "🇮🇹", code: "IT" },
-    { name: "Alemania", flag: "🇩🇪", code: "DE" },
-    { name: "Portugal", flag: "🇵🇹", code: "PT" },
-  ],
-  all: [
-    { name: "Austria", flag: "🇦🇹", code: "AT", allPlans: true },
-    { name: "Bélgica", flag: "🇧🇪", code: "BE", allPlans: true },
-    { name: "Bulgaria", flag: "🇧🇬", code: "BG", allPlans: true },
-    { name: "Chipre", flag: "🇨🇾", code: "CY", allPlans: true },
-    { name: "Croacia", flag: "🇭🇷", code: "HR", allPlans: true },
-    { name: "Rep. Checa", flag: "🇨🇿", code: "CZ", allPlans: true },
-    { name: "Dinamarca", flag: "🇩🇰", code: "DK", allPlans: true },
-    { name: "Eslovaquia", flag: "🇸🇰", code: "SK", allPlans: true },
-    { name: "Eslovenia", flag: "🇸🇮", code: "SI", allPlans: true },
-    { name: "Estonia", flag: "🇪🇪", code: "EE", allPlans: true },
-    { name: "Estados Unidos", flag: "🇺🇸", code: "US", allPlans: false, excludes: "local-s" },
-    { name: "Finlandia", flag: "🇫🇮", code: "FI", allPlans: true },
-    { name: "Grecia", flag: "🇬🇷", code: "GR", allPlans: true },
-    { name: "Hungría", flag: "🇭🇺", code: "HU", allPlans: true },
-    { name: "Irlanda", flag: "🇮🇪", code: "IE", allPlans: true },
-    { name: "Islandia", flag: "🇮🇸", code: "IS", allPlans: true },
-    { name: "Kosovo", flag: "🇽🇰", code: "XK", allPlans: true },
-    { name: "Letonia", flag: "🇱🇻", code: "LV", allPlans: true },
-    { name: "Liechtenstein", flag: "🇱🇮", code: "LI", allPlans: true },
-    { name: "Lituania", flag: "🇱🇹", code: "LT", allPlans: true },
-    { name: "Luxemburgo", flag: "🇱🇺", code: "LU", allPlans: true },
-    { name: "Malta", flag: "🇲🇹", code: "MT", allPlans: true },
-    { name: "Moldavia", flag: "🇲🇩", code: "MD", allPlans: true },
-    { name: "Mónaco", flag: "🇲🇨", code: "MC", allPlans: true },
-    { name: "Holanda", flag: "🇳🇱", code: "NL", allPlans: true },
-    { name: "Noruega", flag: "🇳🇴", code: "NO", allPlans: true },
-    { name: "Polonia", flag: "🇵🇱", code: "PL", allPlans: true },
-    { name: "Reino Unido", flag: "🇬🇧", code: "GB", allPlans: true },
-    { name: "Rumania", flag: "🇷🇴", code: "RO", allPlans: true },
-    { name: "Suecia", flag: "🇸🇪", code: "SE", allPlans: true },
-    { name: "Suiza", flag: "🇨🇭", code: "CH", allPlans: true },
-    { name: "Turquía", flag: "🇹🇷", code: "TR", allPlans: true },
-    { name: "Ucrania", flag: "🇺🇦", code: "UA", allPlans: true },
-    { name: "Vaticano", flag: "🇻🇦", code: "VA", allPlans: true },
-  ],
-};
-
 export default function Benefits() {
   const t = useTranslations("benefits");
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,58 +41,36 @@ export default function Benefits() {
     getTariffsFromSupabase().then(setPlans);
   }, []);
 
-  const isSearchingUS = useMemo(() => {
-    const query = searchQuery.toLowerCase().trim();
-    // Detecta búsqueda de USA/Estados Unidos - incluye escritura parcial
-    const result = query.includes("usa") || query.includes("esta") || query.includes("eeuu") || query.includes("estado");
-    if (query.length > 0) {
-      console.log("Search query:", query, "isSearchingUS:", result);
-    }
-    return result;
-  }, [searchQuery]);
+  /**
+   * País al que resuelve la consulta, o ninguno.
+   *
+   * Coincidencia EXACTA sobre nombre, código o alias. Antes esto era
+   * `query.includes("usa") || query.includes("esta") || ...`, que ocultaba el
+   * plan Básico en cuanto alguien tecleaba cuatro letras que casualmente
+   * coincidían. Una coincidencia parcial no basta para quitarle un producto de
+   * delante a nadie.
+   */
+  const resolvedCountry = useMemo(() => findCoverageCountry(searchQuery), [searchQuery]);
 
-  const filteredCountries = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const query = searchQuery.toLowerCase();
-    return COUNTRY_DATA.all.filter(
-      (country) =>
-        country.name.toLowerCase().includes(query) ||
-        country.code.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
+  /** Sugerencias del desplegable. Aquí sí vale la subcadena: solo pinta. */
+  const suggestions = useMemo(() => searchCoverageCountries(searchQuery), [searchQuery]);
+
+  const featured = useMemo(() => COVERAGE_COUNTRIES.filter((c) => c.featured), []);
 
   const displayPlans = useMemo(() => {
-    // ID del plan Básico (Europa Básico) - no incluye USA
-    const BASIC_PLAN_ID = "2bf430af-8a08-4425-a188-7bf8df18cfd8";
-
-    // Mapear y ordenar tarifas de Supabase
     const mapped = plans.map((plan) => ({
       name: plan.name,
       gb: (plan.eu_data_gb || plan.data_gb || 0).toString(),
       href: plan.slug,
       price: formatUSD(plan.price_usd),
       recommended: plan.is_popular || false,
-      excludes: plan.id === BASIC_PLAN_ID ? ["US"] : [],
-      id: plan.id,
-    })).sort((a, b) => {
-      // Orden: Básico → Plus (recomendado) → Total → Max → Premium
-      const order: {[key: string]: number} = {
-        "2bf430af-8a08-4425-a188-7bf8df18cfd8": 1, // Básico
-        "30c52a68-639a-442b-8eb4-aa19c55b2d92": 2, // Plus
-        "45412b84-a570-4112-ad28-fb2225f01dc5": 3, // Total
-        "61439ac8-772c-4342-8acc-b231e62684fc": 4, // Max
-      };
-      return (order[a.id] || 5) - (order[b.id] || 5);
-    });
+      key: plan.key,
+    }));
 
-    if (isSearchingUS) {
-      console.log("Filtering US - isSearchingUS:", true, "searchQuery:", searchQuery);
-      const filtered = mapped.filter((plan) => !plan.excludes.includes("US"));
-      console.log("Filtered plans count:", filtered.length, "Original count:", mapped.length);
-      return filtered;
-    }
-    return mapped;
-  }, [plans, isSearchingUS, searchQuery]);
+    // El orden lo fija el catálogo (`position`); no se reordena por identidad.
+    if (!resolvedCountry) return mapped;
+    return mapped.filter((plan) => planCoversCountry(plan.key, resolvedCountry));
+  }, [plans, resolvedCountry]);
 
   return (
     <section className="py-12 px-4 bg-[var(--color-warm-white)]">
@@ -224,7 +160,7 @@ export default function Benefits() {
           <div>
             <p className="text-xs font-semibold text-[var(--color-ink-2)] uppercase tracking-wide mb-2">Populares</p>
             <div className="flex flex-wrap gap-2">
-              {COUNTRY_DATA.featured.map(({ name, flag, code }) => (
+              {featured.map(({ flag, code }) => (
                 <motion.button
                   key={code}
                   whileHover={{ scale: 1.05 }}
@@ -240,7 +176,7 @@ export default function Benefits() {
 
           {/* Resultados de búsqueda */}
           <AnimatePresence>
-            {searchQuery.trim() && filteredCountries.length > 0 && (
+            {searchQuery.trim() && suggestions.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -249,7 +185,7 @@ export default function Benefits() {
                 className="overflow-hidden"
               >
                 <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                  {filteredCountries.map((country, idx) => (
+                  {suggestions.map((country, idx) => (
                     <motion.div
                       key={country.code}
                       initial={{ opacity: 0, x: -8 }}
@@ -273,7 +209,7 @@ export default function Benefits() {
           </AnimatePresence>
 
           {/* Sin resultados */}
-          {searchQuery.trim() && filteredCountries.length === 0 && (
+          {searchQuery.trim() && suggestions.length === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

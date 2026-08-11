@@ -1,5 +1,16 @@
 import { createClient } from "@/lib/supabase/client";
 import { PLANS } from "@/lib/plans";
+import { toPlanKey } from "@/lib/plan-key";
+
+/** Las columnas que este cliente pide, y solo esas. */
+interface TariffRow {
+  id: string;
+  name: string;
+  price_usd: number | null;
+  eu_data_gb: number | null;
+  data_gb: number | null;
+  highlight: boolean | null;
+}
 
 export interface TariffPlan {
   id: string;
@@ -8,6 +19,8 @@ export interface TariffPlan {
   eu_data_gb?: number;
   data_gb?: number;
   slug: string;
+  /** Clave comercial estable (`europa-basico`). Ver `plan-key.ts`. */
+  key: string;
   is_popular?: boolean;
 }
 
@@ -35,15 +48,14 @@ export async function getTariffsFromSupabase(): Promise<TariffPlan[]> {
       return getLocalPlans();
     }
 
-    console.log("Tariffs from Supabase:", data[0]);
-
-    return data.map((t: any) => ({
+    return (data as TariffRow[]).map((t) => ({
       id: t.id,
       name: t.name,
-      price_usd: t.price_usd,
-      eu_data_gb: t.eu_data_gb,
-      data_gb: t.data_gb,
+      price_usd: t.price_usd ?? 0,
+      eu_data_gb: t.eu_data_gb ?? undefined,
+      data_gb: t.data_gb ?? undefined,
       slug: t.id, // Usar ID como slug para URLs
+      key: toPlanKey(t.name),
       is_popular: t.highlight || false,
     }));
   } catch (error) {
@@ -60,6 +72,7 @@ function getLocalPlans(): TariffPlan[] {
     eu_data_gb: p.eu_data_gb,
     data_gb: p.data_gb,
     slug: p.slug,
+    key: toPlanKey(p.name),
     is_popular: p.is_popular,
   }));
 }

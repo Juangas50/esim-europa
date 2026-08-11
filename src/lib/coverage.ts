@@ -1,0 +1,171 @@
+/**
+ * coverage.ts — Fuente única de cobertura por destino.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * QUÉ ES Y QUÉ NO ES
+ *
+ * Esto responde a **dónde funciona cada producto**, y a nada más.
+ *
+ * No responde a cuántos gigas puede gastar el cliente fuera de España: eso es
+ * un dato del catálogo vivo (`outsideSpainMaxGb`) que cambia cuando cambia una
+ * tarifa. Si la cifra viviera aquí, cada cambio de tarifa exigiría acordarse de
+ * tocar dos archivos, y el día que alguien se olvidara tendríamos dos verdades.
+ * Una pregunta como «¿cuántos GB tengo en Francia con el Plus?» se responde
+ * combinando las dos fuentes, no guardando la respuesta en una tercera.
+ *
+ * Tampoco responde a qué planes puede comprar alguien según desde dónde compra
+ * — eso es `plan-compatibility.ts`, que mide el país del **comprador** y no
+ * tiene nada que ver con esto.
+ *
+ * Los planes se referencian por **clave comercial** (`europa-basico`), nunca
+ * por UUID, talla ni identificador de proveedor. Ver `plan-key.ts`.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * CONSUMIDORES
+ *
+ * Este módulo no tiene dependencias de React ni de servidor, a propósito: lo
+ * importan el buscador de la web, el modal de países y la herramienta
+ * `check_coverage` del asistente. Antes había tres listas escritas a mano que
+ * no coincidían entre sí; ahora hay una.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+import coverageData from "@/data/coverage.json";
+import { isKnownPlanKey, PLAN_KEYS, type PlanKey } from "@/lib/plan-key";
+
+export interface CoverageCountry {
+  /** ISO 3166-1 alfa-2. `XK` para Kosovo, que es el código de uso común. */
+  code: string;
+  /** Nombre en español, tal y como se muestra. */
+  name: string;
+  /** Metadata visual, para que la UI no tenga que mantener su propia tabla. */
+  flag: string;
+  /** Se muestra en la fila destacada de la portada. */
+  featured: boolean;
+  /** Otras formas de escribirlo: inglés, siglas, variantes ortográficas. */
+  aliases: string[];
+  /** Claves comerciales que NO incluyen este destino. Vacío = lo incluyen todas. */
+  excludedPlans: string[];
+}
+
+interface CoverageFile {
+  updatedAt: string;
+  countries: CoverageCountry[];
+}
+
+const file = coverageData as unknown as CoverageFile;
+
+// ── Validación al cargar ──────────────────────────────────────────────────────
+
+/**
+ * El archivo es un dato editado a mano por una decisión comercial, así que se
+ * valida al importar: un error tipográfico en una clave de plan o un código
+ * duplicado se convierte en un fallo ruidoso al arrancar, no en una cobertura
+ * mal calculada que nadie nota.
+ */
+function assertValid(countries: CoverageCountry[]): void {
+  const codes = new Set<string>();
+
+  for (const c of countries) {
+    if (!/^[A-Z]{2}$/.test(c.code)) {
+      throw new Error(`coverage.json: código ISO inválido "${c.code}"`);
+    }
+    if (codes.has(c.code)) {
+      throw new Error(`coverage.json: código duplicado "${c.code}"`);
+    }
+    codes.add(c.code);
+
+    for (const key of c.excludedPlans) {
+      if (!isKnownPlanKey(key)) {
+        throw new Error(`coverage.json: ${c.code} excluye "${key}", que no es una clave comercial vigente`);
+      }
+    }
+  }
+}
+
+assertValid(file.countries);
+
+// ── Datos ─────────────────────────────────────────────────────────────────────
+
+export const COVERAGE_COUNTRIES: readonly CoverageCountry[] = Object.freeze(file.countries);
+
+/** Destinos distintos que aparecen en al menos un plan. */
+export const TOTAL_DESTINATIONS = COVERAGE_COUNTRIES.length;
+
+export const COVERAGE_UPDATED_AT = file.updatedAt;
+
+// ── Normalización y búsqueda ──────────────────────────────────────────────────
+
+/** Quita acentos, signos y espacios de más para comparar sin sorpresas. */
+export function normalizeCountryQuery(raw: string): string {
+  return raw
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Todas las formas aceptadas de nombrar un país, ya normalizadas. */
+function formsOf(country: CoverageCountry): string[] {
+  return [country.code, country.name, ...country.aliases].map(normalizeCountryQuery);
+}
+
+const BY_FORM = new Map<string, CoverageCountry>();
+for (const country of COVERAGE_COUNTRIES) {
+  for (const form of formsOf(country)) {
+    if (form) BY_FORM.set(form, country);
+  }
+}
+
+/**
+ * Resuelve una consulta a **un** país, o a nada.
+ *
+ * Coincidencia **exacta** sobre nombre, código o alias normalizados. No hay
+ * coincidencia parcial, y es deliberado: de la resolución cuelga la exclusión
+ * de Europa Básico en Estados Unidos, y ocultarle a alguien un plan porque ha
+ * tecleado cuatro letras que casualmente son el principio de otro país sería
+ * peor que no filtrar nada.
+ *
+ * Para el desplegable de sugerencias está `searchCoverageCountries`, que sí
+ * busca por subcadena — pero eso solo pinta una lista, no decide nada.
+ */
+export function findCoverageCountry(query: string): CoverageCountry | null {
+  return BY_FORM.get(normalizeCountryQuery(query)) ?? null;
+}
+
+/** Coincidencias por subcadena, para autocompletar. Ordenadas por relevancia. */
+export function searchCoverageCountries(query: string): CoverageCountry[] {
+  const q = normalizeCountryQuery(query);
+  if (!q) return [];
+
+  return COVERAGE_COUNTRIES.filter((c) => formsOf(c).some((f) => f.includes(q))).sort((a, b) => {
+    const aStarts = formsOf(a).some((f) => f.startsWith(q));
+    const bStarts = formsOf(b).some((f) => f.startsWith(q));
+    if (aStarts !== bStarts) return aStarts ? -1 : 1;
+    return a.name.localeCompare(b.name, "es");
+  });
+}
+
+// ── Consultas de cobertura ────────────────────────────────────────────────────
+
+/** ¿Este plan cubre este destino? */
+export function planCoversCountry(planKey: string, country: CoverageCountry): boolean {
+  return !country.excludedPlans.includes(planKey);
+}
+
+/** Claves comerciales que incluyen el destino. */
+export function plansCovering(country: CoverageCountry): PlanKey[] {
+  return PLAN_KEYS.filter((key) => planCoversCountry(key, country));
+}
+
+/** Claves comerciales que NO incluyen el destino. */
+export function plansExcluding(country: CoverageCountry): PlanKey[] {
+  return PLAN_KEYS.filter((key) => !planCoversCountry(key, country));
+}
+
+/** Cuántos destinos cubre un plan concreto. */
+export function destinationsForPlan(planKey: string): number {
+  return COVERAGE_COUNTRIES.filter((c) => planCoversCountry(planKey, c)).length;
+}

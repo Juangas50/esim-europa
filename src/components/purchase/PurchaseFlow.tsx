@@ -24,8 +24,14 @@ export default function PurchaseFlow({ plans, initialPlanId, compatibleWith }: P
   const t = useTranslations("purchase");
 
   // If the user clicked "Buy plan" on the landing, skip the plan-picker entirely
+  //
+  // `?plan=` llega con una de dos identidades según de dónde salga el enlace:
+  // el identificador de la fila del catálogo, o la clave comercial estable
+  // (`europa-plus`). Se aceptan las dos. Los dos espacios son disjuntos —lo
+  // comprueba `tests/unit/shared/coverage.spec.ts`—, así que la URL no es
+  // ambigua: ninguna clave puede resolver al plan equivocado.
   const initialPlan = initialPlanId
-    ? (plans.find((p) => p.id === initialPlanId) ?? null)
+    ? (plans.find((p) => p.id === initialPlanId || p.slug === initialPlanId) ?? null)
     : null;
 
   const [step, setStep] = useState<1 | 2 | 3>(initialPlan ? 2 : 1);

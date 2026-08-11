@@ -2,17 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@phosphor-icons/react";
-
-const COUNTRIES_LIST = [
-  "España", "Francia", "Italia", "Alemania", "Portugal",
-  "Austria", "Bélgica", "Bulgaria", "Croacia", "Chipre",
-  "Rep. Checa", "Dinamarca", "Eslovaquia", "Eslovenia", "Estonia",
-  "Finlandia", "Grecia", "Hungría", "Irlanda", "Letonia",
-  "Lituania", "Luxemburgo", "Malta", "Holanda", "Polonia",
-  "Rumania", "Suecia", "Reino Unido", "Islandia", "Liechtenstein",
-  "Noruega", "Suiza", "Turquía", "Kosovo", "Vaticano",
-  "Mónaco", "Ucrania", "Moldavia", "Estados Unidos",
-];
+import { COVERAGE_COUNTRIES, TOTAL_DESTINATIONS, plansExcluding } from "@/lib/coverage";
 
 interface CountriesModalProps {
   isOpen: boolean;
@@ -44,7 +34,7 @@ export default function CountriesModal({ isOpen, onClose }: CountriesModalProps)
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-black/[0.06] px-6 sm:px-8 py-5 sm:py-6 flex items-center justify-between">
               <h2 className="text-2xl font-black text-[#1B2F4E]">
-                Cobertura en {COUNTRIES_LIST.length}+ países
+                Cobertura en {TOTAL_DESTINATIONS} destinos
               </h2>
               <button
                 onClick={onClose}
@@ -58,14 +48,23 @@ export default function CountriesModal({ isOpen, onClose }: CountriesModalProps)
             {/* Content */}
             <div className="p-6 sm:p-8">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                {COUNTRIES_LIST.map((country) => (
-                  <div
-                    key={country}
-                    className="px-4 py-3 bg-[#F5F5F5] rounded-lg border border-black/[0.06] text-sm font-medium text-[#1B2F4E] text-center hover:bg-[#C9973A]/5 hover:border-[#C9973A]/20 transition-colors"
-                  >
-                    {country}
-                  </div>
-                ))}
+                {COVERAGE_COUNTRIES.map((country) => {
+                  const excluded = plansExcluding(country);
+                  return (
+                    <div
+                      key={country.code}
+                      className="px-4 py-3 bg-[#F5F5F5] rounded-lg border border-black/[0.06] text-sm font-medium text-[#1B2F4E] text-center hover:bg-[#C9973A]/5 hover:border-[#C9973A]/20 transition-colors"
+                    >
+                      <span className="mr-1.5">{country.flag}</span>
+                      {country.name}
+                      {excluded.length > 0 && (
+                        <span className="block mt-1 text-[11px] font-normal text-[#8A6D3B]">
+                          No incluido en Europa Básico
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Footer info */}

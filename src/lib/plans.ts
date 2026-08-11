@@ -1,4 +1,5 @@
 import type { Plan } from "@/types";
+import { toPlanKey } from "@/lib/plan-key";
 
 // ⚠️ FALLBACK DE EMERGENCIA — NO es la fuente de verdad.
 //
@@ -125,7 +126,14 @@ const LOCAL_PLANS: Plan[] = [
 
 // No hay planes `dataonly` en el catálogo de producción: las cinco tarifas
 // activas son de tipo `prepago` (línea española con número, llamadas y SMS).
-export const PLANS: Plan[] = [...LOCAL_PLANS];
+//
+// El `slug` se deriva del nombre comercial en vez de escribirse a mano. Antes
+// era el identificador interno heredado del mayorista, que no coincidía con el
+// que produce el catálogo vivo — así que la misma tarifa tenía una clave en
+// producción y otra distinta durante una caída. Derivarlo del nombre hace que
+// las dos fuentes coincidan por construcción, sin columna nueva en la base de
+// datos. Ver `plan-key.ts`.
+export const PLANS: Plan[] = LOCAL_PLANS.map((p) => ({ ...p, slug: toPlanKey(p.name) }));
 
 export function getPlanById(id: string): Plan | undefined {
   return PLANS.find((p) => p.id === id);

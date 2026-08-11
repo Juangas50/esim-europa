@@ -27,6 +27,7 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import type { Plan, PlanType } from "@/types";
 import { PLANS } from "@/lib/plans";
+import { toPlanKey } from "@/lib/plan-key";
 
 // ── Supabase row shape ────────────────────────────────────────────────────────
 
@@ -61,19 +62,6 @@ function inferZone(name: string): "espana" | "europa" {
   const n = name.toLowerCase();
   if (n.includes("espa") || n.includes("spain")) return "espana";
   return "europa";
-}
-
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[áàäâ]/g, "a")
-    .replace(/[éèëê]/g, "e")
-    .replace(/[íìïî]/g, "i")
-    .replace(/[óòöô]/g, "o")
-    .replace(/[úùüû]/g, "u")
-    .replace(/ñ/g, "n")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
 }
 
 function generateFeatures(
@@ -123,7 +111,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
 
   return {
     id: t.id,
-    slug: slugify(t.name),
+    slug: toPlanKey(t.name),
     name: t.name,
     badge: t.badge ?? undefined,
     type,

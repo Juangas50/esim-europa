@@ -1,0 +1,423 @@
+{
+  "$comment": "FUENTE CANÓNICA DE COBERTURA. Ver src/lib/coverage.ts. No editar sin decisión comercial.",
+  "updatedAt": "2026-08-10",
+  "countries": [
+    {
+      "code": "DE",
+      "name": "Alemania",
+      "flag": "🇩🇪",
+      "featured": true,
+      "aliases": [
+        "germany",
+        "alemanya"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "AT",
+      "name": "Austria",
+      "flag": "🇦🇹",
+      "featured": false,
+      "aliases": [
+        "austria"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "BE",
+      "name": "Bélgica",
+      "flag": "🇧🇪",
+      "featured": false,
+      "aliases": [
+        "belgium"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "BG",
+      "name": "Bulgaria",
+      "flag": "🇧🇬",
+      "featured": false,
+      "aliases": [
+        "bulgaria"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "CY",
+      "name": "Chipre",
+      "flag": "🇨🇾",
+      "featured": false,
+      "aliases": [
+        "cyprus"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "HR",
+      "name": "Croacia",
+      "flag": "🇭🇷",
+      "featured": false,
+      "aliases": [
+        "croatia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "DK",
+      "name": "Dinamarca",
+      "flag": "🇩🇰",
+      "featured": false,
+      "aliases": [
+        "denmark"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "SK",
+      "name": "Eslovaquia",
+      "flag": "🇸🇰",
+      "featured": false,
+      "aliases": [
+        "slovakia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "SI",
+      "name": "Eslovenia",
+      "flag": "🇸🇮",
+      "featured": false,
+      "aliases": [
+        "slovenia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "ES",
+      "name": "España",
+      "flag": "🇪🇸",
+      "featured": true,
+      "aliases": [
+        "spain",
+        "espanha",
+        "reino de espana"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "US",
+      "name": "Estados Unidos",
+      "flag": "🇺🇸",
+      "featured": false,
+      "aliases": [
+        "usa",
+        "eeuu",
+        "ee uu",
+        "ee.uu.",
+        "estados unidos de america",
+        "united states",
+        "united states of america",
+        "america"
+      ],
+      "excludedPlans": [
+        "europa-basico"
+      ]
+    },
+    {
+      "code": "EE",
+      "name": "Estonia",
+      "flag": "🇪🇪",
+      "featured": false,
+      "aliases": [
+        "estonia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "FI",
+      "name": "Finlandia",
+      "flag": "🇫🇮",
+      "featured": false,
+      "aliases": [
+        "finland"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "FR",
+      "name": "Francia",
+      "flag": "🇫🇷",
+      "featured": true,
+      "aliases": [
+        "france"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "GR",
+      "name": "Grecia",
+      "flag": "🇬🇷",
+      "featured": false,
+      "aliases": [
+        "greece"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "HU",
+      "name": "Hungría",
+      "flag": "🇭🇺",
+      "featured": false,
+      "aliases": [
+        "hungary"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "IE",
+      "name": "Irlanda",
+      "flag": "🇮🇪",
+      "featured": false,
+      "aliases": [
+        "ireland"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "IS",
+      "name": "Islandia",
+      "flag": "🇮🇸",
+      "featured": false,
+      "aliases": [
+        "iceland"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "IT",
+      "name": "Italia",
+      "flag": "🇮🇹",
+      "featured": true,
+      "aliases": [
+        "italy"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "XK",
+      "name": "Kosovo",
+      "flag": "🇽🇰",
+      "featured": false,
+      "aliases": [
+        "kosovo"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "LV",
+      "name": "Letonia",
+      "flag": "🇱🇻",
+      "featured": false,
+      "aliases": [
+        "latvia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "LI",
+      "name": "Liechtenstein",
+      "flag": "🇱🇮",
+      "featured": false,
+      "aliases": [
+        "liechtenstein"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "LT",
+      "name": "Lituania",
+      "flag": "🇱🇹",
+      "featured": false,
+      "aliases": [
+        "lithuania"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "LU",
+      "name": "Luxemburgo",
+      "flag": "🇱🇺",
+      "featured": false,
+      "aliases": [
+        "luxembourg"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "MT",
+      "name": "Malta",
+      "flag": "🇲🇹",
+      "featured": false,
+      "aliases": [
+        "malta"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "MD",
+      "name": "Moldavia",
+      "flag": "🇲🇩",
+      "featured": false,
+      "aliases": [
+        "moldova",
+        "republica de moldavia"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "MC",
+      "name": "Mónaco",
+      "flag": "🇲🇨",
+      "featured": false,
+      "aliases": [
+        "monaco"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "NO",
+      "name": "Noruega",
+      "flag": "🇳🇴",
+      "featured": false,
+      "aliases": [
+        "norway"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "NL",
+      "name": "Países Bajos",
+      "flag": "🇳🇱",
+      "featured": false,
+      "aliases": [
+        "holanda",
+        "netherlands",
+        "paises bajos"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "PL",
+      "name": "Polonia",
+      "flag": "🇵🇱",
+      "featured": false,
+      "aliases": [
+        "poland"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "PT",
+      "name": "Portugal",
+      "flag": "🇵🇹",
+      "featured": true,
+      "aliases": [
+        "portugal"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "GB",
+      "name": "Reino Unido",
+      "flag": "🇬🇧",
+      "featured": false,
+      "aliases": [
+        "uk",
+        "united kingdom",
+        "inglaterra",
+        "gran bretana",
+        "great britain"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "CZ",
+      "name": "Rep. Checa",
+      "flag": "🇨🇿",
+      "featured": false,
+      "aliases": [
+        "republica checa",
+        "chequia",
+        "czechia",
+        "czech republic"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "RO",
+      "name": "Rumanía",
+      "flag": "🇷🇴",
+      "featured": false,
+      "aliases": [
+        "rumania",
+        "romania"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "SE",
+      "name": "Suecia",
+      "flag": "🇸🇪",
+      "featured": false,
+      "aliases": [
+        "sweden"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "CH",
+      "name": "Suiza",
+      "flag": "🇨🇭",
+      "featured": false,
+      "aliases": [
+        "switzerland",
+        "suissa"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "TR",
+      "name": "Turquía",
+      "flag": "🇹🇷",
+      "featured": false,
+      "aliases": [
+        "turkey",
+        "turkiye"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "UA",
+      "name": "Ucrania",
+      "flag": "🇺🇦",
+      "featured": false,
+      "aliases": [
+        "ukraine"
+      ],
+      "excludedPlans": []
+    },
+    {
+      "code": "VA",
+      "name": "Vaticano",
+      "flag": "🇻🇦",
+      "featured": false,
+      "aliases": [
+        "ciudad del vaticano",
+        "vatican",
+        "santa sede"
+      ],
+      "excludedPlans": []
+    }
+  ]
+}
