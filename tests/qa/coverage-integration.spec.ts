@@ -169,14 +169,55 @@ test.describe("CI-002 · el buscador filtra por cobertura", () => {
     });
   }
 
-  test("una consulta parcial no oculta nada", async ({ page }) => {
+  test("escribir a medias basta cuando no hay duda", async ({ page }) => {
     await irAPortada(page);
 
-    // El fallo que tenía el buscador antes de la fuente única: cuatro letras
-    // bastaban para que «esta» disparara el filtro de Estados Unidos.
-    for (const parcial of ["esta", "franc", "u", "tur", "es"]) {
+    // Si de los 39 destinos solo uno empieza así, no hace falta terminar la
+    // palabra para ver su cobertura.
+    for (const parcial of ["estados", "estados uni", "estados unido", "esta"]) {
       await buscar(page, parcial);
-      await esperarGamas(page, PLANES_EN_ORDEN, `parcial «${parcial}»`);
+      await esperarGamas(page, SIN_BASICO, `a medias «${parcial}»`);
+    }
+  });
+
+  test("escribir a medias un destino de todos los planes no quita nada", async ({ page }) => {
+    await irAPortada(page);
+
+    for (const parcial of ["franc", "turqu", "reino un", "ital"]) {
+      await buscar(page, parcial);
+      await esperarGamas(page, PLANES_EN_ORDEN, `a medias «${parcial}»`);
+    }
+  });
+
+  test("una consulta ambigua no oculta nada", async ({ page }) => {
+    await irAPortada(page);
+
+    // Varios países la cumplen: mientras haya duda, no se decide por nadie.
+    for (const ambigua of ["a", "u", "e", "an"]) {
+      await buscar(page, ambigua);
+      await esperarGamas(page, PLANES_EN_ORDEN, `ambigua «${ambigua}»`);
+    }
+  });
+
+  test("dos caracteres nunca ocultan un plan", async ({ page }) => {
+    await irAPortada(page);
+
+    // «eu» solo casa con el alias de Estados Unidos, pero quien lo teclea está
+    // empezando a escribir «Europa». Es justo el momento en que esconder el
+    // plan Básico sería más absurdo.
+    for (const corta of ["eu", "me", "of", "uu"]) {
+      await buscar(page, corta);
+      await esperarGamas(page, PLANES_EN_ORDEN, `corta «${corta}»`);
+    }
+  });
+
+  test("un trozo suelto de un nombre no oculta nada", async ({ page }) => {
+    await irAPortada(page);
+
+    // «dos» solo aparece en «Estados Unidos», pero no es el principio de nada.
+    for (const trozo of ["dos", "idos", "tad", "ric"]) {
+      await buscar(page, trozo);
+      await esperarGamas(page, PLANES_EN_ORDEN, `trozo «${trozo}»`);
     }
   });
 

@@ -10,6 +10,7 @@ import {
   destinationsForPlan,
   findCoverageCountry,
   plansCovering,
+  resolveCountryForSearch,
   plansExcluding,
   searchCoverageCountries,
 } from "@/lib/coverage";
@@ -99,6 +100,89 @@ test.describe("resolución de países", () => {
     expect(searchCoverageCountries("esta").map((c) => c.code)).toContain("US");
     expect(searchCoverageCountries("tur").map((c) => c.code)).toContain("TR");
     expect(searchCoverageCountries("")).toEqual([]);
+  });
+});
+
+test.describe("resolución del buscador de la web", () => {
+  // A diferencia del asistente, el buscador puede resolver lo tecleado a
+  // medias — pero solo cuando la lista entera responde con un país y uno solo.
+
+  test("las formas exactas siguen resolviendo", () => {
+    for (const forma of ["Estados Unidos", "EEUU", "USA", "US", "ee.uu."]) {
+      expect(resolveCountryForSearch(forma)?.code, forma).toBe("US");
+    }
+    expect(resolveCountryForSearch("Francia")?.code).toBe("FR");
+    expect(resolveCountryForSearch("es")?.code).toBe("ES"); // código exacto
+  });
+
+  test("un principio inequívoco resuelve sin terminar la palabra", () => {
+    for (const parcial of ["esta", "estados", "estados uni", "estados unido", "eeu", "ame"]) {
+      expect(resolveCountryForSearch(parcial)?.code, parcial).toBe("US");
+    }
+    expect(resolveCountryForSearch("franc")?.code).toBe("FR");
+    expect(resolveCountryForSearch("turqu")?.code).toBe("TR");
+  });
+
+  test("si la consulta admite más de un país, no decide", () => {
+    // Ojo: «ital» NO va aquí — solo lo cumple Italia, así que sí resuelve.
+    for (const ambigua of ["a", "u", "e", "i", "an"]) {
+      expect(searchCoverageCountries(ambigua).length, ambigua).toBeGreaterThan(1);
+      expect(resolveCountryForSearch(ambigua), ambigua).toBeNull();
+    }
+  });
+
+  test("una forma exacta manda sobre la ambigüedad", () => {
+    // «es» es subcadena de media lista, pero también es el código de España.
+    // Lo que el usuario escribió existe tal cual: no hay nada que adivinar.
+    expect(searchCoverageCountries("es").length).toBeGreaterThan(1);
+    expect(resolveCountryForSearch("es")?.code).toBe("ES");
+  });
+
+  test("si no coincide con nada, no decide", () => {
+    for (const fuera of ["Marruecos", "Freedonia", "zzzz", "japon"]) {
+      expect(resolveCountryForSearch(fuera), fuera).toBeNull();
+    }
+  });
+
+  test("un trozo de en medio no decide, aunque sea único", () => {
+    // «dos» solo aparece en «Estados Unidos», pero no es el principio de nada:
+    // quien escribe eso no está escribiendo un país.
+    for (const trozo of ["dos", "idos", "tad", "ric", "ates"]) {
+      expect(searchCoverageCountries(trozo).length, trozo).toBe(1);
+      expect(resolveCountryForSearch(trozo), trozo).toBeNull();
+    }
+  });
+
+  test("dos caracteres no bastan aunque sean únicos", () => {
+    // «eu» solo casa con el alias «eeuu». Pero casi siempre es alguien
+    // empezando a escribir «Europa», y esconderle el plan Básico ahí sería
+    // exactamente el fallo que estamos evitando.
+    for (const corta of ["eu", "me", "of", "uu"]) {
+      expect(searchCoverageCountries(corta).length, corta).toBe(1);
+      expect(resolveCountryForSearch(corta), corta).toBeNull();
+    }
+  });
+
+  test("el asistente no hereda esta tolerancia", () => {
+    // `findCoverageCountry` sigue exigiendo forma exacta: una máquina que
+    // afirma cobertura no adivina a qué país se refería nadie.
+    for (const parcial of ["esta", "estados", "franc", "eeu"]) {
+      expect(findCoverageCountry(parcial), parcial).toBeNull();
+    }
+  });
+
+  test("ninguna consulta de dos caracteres puede esconder un plan", () => {
+    // Barrido, no muestreo: si mañana alguien añade un alias corto, esto falla.
+    const alfabeto = "abcdefghijklmnopqrstuvwxyz";
+    for (const a of alfabeto) {
+      for (const b of alfabeto) {
+        const q = a + b;
+        const resuelto = resolveCountryForSearch(q);
+        if (!resuelto) continue;
+        // Solo puede resolver si es una forma exacta (un código ISO).
+        expect(findCoverageCountry(q), `«${q}» resolvió sin ser forma exacta`).not.toBeNull();
+      }
+    }
   });
 });
 

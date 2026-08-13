@@ -135,6 +135,54 @@ export function findCoverageCountry(query: string): CoverageCountry | null {
   return BY_FORM.get(normalizeCountryQuery(query)) ?? null;
 }
 
+/**
+ * Longitud mínima para que una consulta a medio escribir pueda decidir algo.
+ *
+ * Dos caracteres no son una intención. «eu» solo coincide con un país de la
+ * lista —por el alias «eeuu»— pero quien lo teclea casi siempre está
+ * empezando a escribir «Europa», y no tendría ninguna gracia que se le
+ * escondiera el plan Europa Básico justo entonces.
+ */
+const MIN_PREFIJO = 3;
+
+/**
+ * Resuelve la consulta del buscador de la web, incluida a medio escribir.
+ *
+ * Se acepta una coincidencia parcial solo cuando no deja lugar a dudas, y eso
+ * son tres condiciones a la vez:
+ *
+ *  1. es la **única** coincidencia de la lista;
+ *  2. lo tecleado es el **principio** de alguna de sus formas, no un trozo
+ *     suelto de en medio;
+ *  3. tiene al menos tres caracteres.
+ *
+ * Las tres hacen falta. Con solo la primera, 52 consultas distintas resuelven
+ * a Estados Unidos y esconden Europa Básico; entre ellas «eu», «me» y «of».
+ * Con las tres, quedan cinco, y todas son intentos legítimos de escribirlo:
+ * «esta», «eeu», «ee u», «ee  u» y «ame».
+ *
+ * Esto NO es la vuelta a la heurística de subcadenas que había antes. Aquella
+ * preguntaba si la consulta contenía ciertas letras escritas a mano; esta
+ * pregunta si la lista entera responde con un país y solo uno.
+ *
+ * Para el asistente sigue valiendo `findCoverageCountry`, que exige forma
+ * exacta: una máquina que afirma cobertura no debe adivinar a qué país se
+ * refería nadie.
+ */
+export function resolveCountryForSearch(query: string): CoverageCountry | null {
+  const exacto = findCoverageCountry(query);
+  if (exacto) return exacto;
+
+  const q = normalizeCountryQuery(query);
+  if (q.length < MIN_PREFIJO) return null;
+
+  const coincidencias = searchCoverageCountries(query);
+  if (coincidencias.length !== 1) return null;
+
+  const [unico] = coincidencias;
+  return formsOf(unico).some((f) => f.startsWith(q)) ? unico : null;
+}
+
 /** Coincidencias por subcadena, para autocompletar. Ordenadas por relevancia. */
 export function searchCoverageCountries(query: string): CoverageCountry[] {
   const q = normalizeCountryQuery(query);

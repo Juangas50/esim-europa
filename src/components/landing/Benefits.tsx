@@ -9,8 +9,8 @@ import { toPlanKey } from "@/lib/plan-key";
 import type { Plan } from "@/types";
 import {
   COVERAGE_COUNTRIES,
-  findCoverageCountry,
   planCoversCountry,
+  resolveCountryForSearch,
   searchCoverageCountries,
 } from "@/lib/coverage";
 
@@ -57,13 +57,15 @@ export default function Benefits({ plans }: BenefitsProps) {
   /**
    * País al que resuelve la consulta, o ninguno.
    *
-   * Coincidencia EXACTA sobre nombre, código o alias. Antes esto era
-   * `query.includes("usa") || query.includes("esta") || ...`, que ocultaba el
-   * plan Básico en cuanto alguien tecleaba cuatro letras que casualmente
-   * coincidían. Una coincidencia parcial no basta para quitarle un producto de
-   * delante a nadie.
+   * Acepta el nombre completo, el código y los alias, y también lo tecleado a
+   * medias mientras no haya duda: si de los 39 destinos solo uno empieza así,
+   * es ese. Escribir «estados» ya basta para ver la cobertura de Estados
+   * Unidos sin terminar la palabra.
+   *
+   * La decisión de cuándo hay duda vive en `coverage.ts`, no aquí: esta
+   * sección no sabe nada de países ni de excepciones, solo pregunta.
    */
-  const resolvedCountry = useMemo(() => findCoverageCountry(searchQuery), [searchQuery]);
+  const resolvedCountry = useMemo(() => resolveCountryForSearch(searchQuery), [searchQuery]);
 
   /** Sugerencias del desplegable. Aquí sí vale la subcadena: solo pinta. */
   const suggestions = useMemo(() => searchCoverageCountries(searchQuery), [searchQuery]);
