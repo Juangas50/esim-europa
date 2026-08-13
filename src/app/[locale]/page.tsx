@@ -121,7 +121,8 @@ export default async function HomePage({
         <Plans plans={plans} />
         <HowItWorks />
         <Definition />
-        <Benefits />
+        {/* Mismo catálogo que `<Plans>`: una consulta, una decisión. */}
+        <Benefits plans={plans} />
         <Testimonials />
         <Compatibility />
         <FAQ />

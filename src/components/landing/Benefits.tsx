@@ -1,11 +1,12 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { DeviceMobile, Lightning, CurrencyDollar, Globe, MagnifyingGlass, Check } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import { formatUSD } from "@/lib/utils";
-import { getTariffsFromSupabase, type TariffPlan } from "@/lib/supabase-plans";
+import { toPlanKey } from "@/lib/plan-key";
+import type { Plan } from "@/types";
 import {
   COVERAGE_COUNTRIES,
   findCoverageCountry,
@@ -32,14 +33,26 @@ const BENEFIT_ITEMS = [
   { key: "coverage", Icon: Globe },
 ] as const;
 
-export default function Benefits() {
+interface BenefitsProps {
+  /**
+   * El catálogo, ya resuelto en el servidor.
+   *
+   * Antes esta sección lo pedía por su cuenta desde el navegador. Eso daba dos
+   * cargas del mismo catálogo con dos decisiones de degradación independientes
+   * —la portada podía servir el catálogo vivo mientras el buscador servía otro,
+   * o ninguno— y dependía de que la clave pública de la base de datos estuviera
+   * en el bundle del navegador. Cuando no lo estaba, el cliente reventaba antes
+   * de poder recurrir a nada y la rejilla se quedaba vacía sin decir por qué.
+   *
+   * Ahora lo recibe hecho, del mismo `getPlans()` que alimenta la sección de
+   * precios: una consulta, una decisión, dos consumidores.
+   */
+  plans: Plan[];
+}
+
+export default function Benefits({ plans }: BenefitsProps) {
   const t = useTranslations("benefits");
   const [searchQuery, setSearchQuery] = useState("");
-  const [plans, setPlans] = useState<TariffPlan[]>([]);
-
-  useEffect(() => {
-    getTariffsFromSupabase().then(setPlans);
-  }, []);
 
   /**
    * País al que resuelve la consulta, o ninguno.
@@ -64,7 +77,10 @@ export default function Benefits() {
       href: plan.slug,
       price: formatUSD(plan.price_usd),
       recommended: plan.is_popular || false,
-      key: plan.key,
+      // Clave comercial derivada del nombre público. Es lo único con lo que la
+      // cobertura sabe hablar: no entiende de UUID ni de identificadores del
+      // catálogo. Ver `plan-key.ts`.
+      key: toPlanKey(plan.name),
     }));
 
     // El orden lo fija el catálogo (`position`); no se reordena por identidad.

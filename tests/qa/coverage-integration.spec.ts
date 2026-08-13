@@ -1,47 +1,21 @@
 import { test, expect, Page } from "@playwright/test";
 
 /**
- * Integración de la unificación de cobertura.
+ * El buscador de cobertura, de punta a punta.
  *
- * Estos tests no comprueban la fuente de cobertura —de eso se encargan
- * `tests/unit/shared/coverage.spec.ts` y `tests/unit/assistant/sec-coverage.spec.ts`—
- * sino que la portada y el flujo de compra siguen funcionando después de
- * unificarla: que salen los cinco planes en el orden del catálogo, que el
- * buscador filtra donde debe y solo donde debe, y que al pulsar un plan se
- * llega a la compra.
+ * Este fichero existía antes y estaba verde mientras la rejilla de planes
+ * aparecía vacía en producción. El agujero era el propio test: doblaba la
+ * respuesta del catálogo e inyectaba las variables públicas de la base de
+ * datos, así que esquivaba por construcción la única condición que rompía —que
+ * el navegador no pudiera construir su cliente— y encima se saltaba entero
+ * cuando esas variables faltaban, que era justo el caso roto.
  *
- * Lo que ya cubre `naming.spec.ts` (que `/es` y `/es/compra` responden, que no
- * se filtra naming interno en el HTML público, que los cinco nombres
- * comerciales aparecen en la portada) no se repite aquí.
+ * Ahora el catálogo llega del servidor como props, así que no hay nada que
+ * doblar ni ninguna condición que saltarse: si la portada carga, la rejilla
+ * tiene planes. Estos tests corren siempre.
  *
- * ── Por qué se dobla el catálogo ─────────────────────────────────────────────
- * La rejilla de planes de la portada se pinta en el navegador con lo que
- * devuelve el catálogo vivo. Sin credenciales de base de datos —el caso de este
- * entorno— esa llamada nunca llega a devolver nada y la rejilla se queda vacía,
- * con o sin estos cambios (comprobado también sobre HEAD). Para poder mirar la
- * rejilla hay que responder por el catálogo, y eso se hace aquí interceptando
- * la petición: ni se instala nada ni sale tráfico de la máquina.
+ * Lo que ya cubre `naming.spec.ts` no se repite aquí.
  */
-
-/**
- * El cliente de catálogo se construye con las variables públicas de la base de
- * datos y revienta si faltan, antes de llegar a su propio `try`. Sin ellas la
- * rejilla no se pinta y no hay nada que mirar, así que estos tests se saltan en
- * vez de fallar en falso. Para ejecutarlos basta con un destino cualquiera del
- * dominio permitido por la CSP —no se conecta a él, lo responde el doble:
- *
- *   NEXT_PUBLIC_SUPABASE_URL=https://catalogo-doble.supabase.co \
- *   NEXT_PUBLIC_SUPABASE_ANON_KEY=doble \
- *   npx playwright test coverage-integration.spec.ts
- */
-const CATALOGO_CONSTRUIBLE = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
-
-test.skip(
-  !CATALOGO_CONSTRUIBLE,
-  "Requiere NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY (ver cabecera)"
-);
 
 const PLANES_EN_ORDEN = [
   "Europa Básico",
@@ -51,65 +25,73 @@ const PLANES_EN_ORDEN = [
   "Europa Premium",
 ];
 
-/** Filas tal y como las devuelve el catálogo, sin metadata interna. */
-const FILAS_CATALOGO = [
-  { id: "aaaaaaaa-0000-4000-8000-000000000001", name: "Europa Básico", price_usd: 29, eu_data_gb: 15, data_gb: 15, highlight: false },
-  { id: "aaaaaaaa-0000-4000-8000-000000000002", name: "Europa Plus", price_usd: 39, eu_data_gb: 30, data_gb: 30, highlight: true },
-  { id: "aaaaaaaa-0000-4000-8000-000000000003", name: "Europa Total", price_usd: 49, eu_data_gb: 60, data_gb: 60, highlight: false },
-  { id: "aaaaaaaa-0000-4000-8000-000000000004", name: "Europa Max", price_usd: 59, eu_data_gb: 120, data_gb: 120, highlight: false },
-  { id: "aaaaaaaa-0000-4000-8000-000000000005", name: "Europa Premium", price_usd: 69, eu_data_gb: 270, data_gb: 270, highlight: false },
+const SIN_BASICO = PLANES_EN_ORDEN.slice(1);
+
+/** Destinos que cubren las cinco gamas, uno por familia de la lista. */
+const CUBIERTOS_POR_TODOS = [
+  "Francia",
+  "Reino Unido",
+  "Turquía",
+  "Ucrania",
+  "Moldavia",
+  "Kosovo",
+  "Vaticano",
+  "Mónaco",
 ];
 
-/** El catálogo se pide desde el navegador; sin esto el preflight lo tumba. */
-const CORS = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-headers": "*",
-  "access-control-allow-methods": "*",
-};
-
-type Catalogo = "vivo" | "caido";
+/** Las cuatro formas en que alguien escribe Estados Unidos. */
+const FORMAS_DE_EEUU = ["Estados Unidos", "EEUU", "USA", "US"];
 
 /**
- * Responde por el catálogo sin tocar la red.
- *
- * - `vivo`: el catálogo contesta y la portada pinta lo que venga de él.
- * - `caido`: contesta con error, que es como la portada acaba en el catálogo
- *   local de emergencia. Es el camino donde las claves comerciales importan.
- */
-async function doblarCatalogo(page: Page, modo: Catalogo) {
-  await page.route("**/rest/v1/tariffs*", (route) =>
-    modo === "vivo"
-      ? route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          headers: CORS,
-          body: JSON.stringify(FILAS_CATALOGO),
-        })
-      : route.fulfill({
-          status: 500,
-          contentType: "application/json",
-          headers: CORS,
-          body: JSON.stringify({ message: "catálogo no disponible" }),
-        })
-  );
-}
-
-/**
- * Las tarjetas del selector de planes del buscador —no las del bloque de
- * precios, que es otra sección y no filtra por país.
+ * Las tarjetas del selector del buscador. No las del bloque de precios, que es
+ * otra sección y no filtra por país.
  */
 function tarjetasDePlan(page: Page) {
-  return page.locator('div.grid-cols-5 a[href^="/es/compra?plan="]');
+  return page.locator('div.grid-cols-5 a[href*="/compra?plan="]');
 }
 
 function buscador(page: Page) {
   return page.locator('input[placeholder*="Buscar país"]').first();
 }
 
-async function irAPortada(page: Page, modo: Catalogo = "caido") {
-  await doblarCatalogo(page, modo);
-  await page.goto("/es", { waitUntil: "domcontentloaded" });
+/** El desplegable: sugerencias o el aviso. Solo se pinta desde React. */
+function desplegable(page: Page) {
+  return page.getByText(/4G\/5G|No encontramos ese país/).first();
+}
+
+/**
+ * Espera a que el buscador esté vivo, no solo pintado.
+ *
+ * Hace falta desde que las cards vienen servidas en el HTML: antes solo
+ * aparecían cuando el navegador terminaba de cargar el catálogo, así que verlas
+ * implicaba que la página ya estaba hidratada. Ahora se ven desde el primer
+ * pintado, y escribir antes de que React enganche su listener deja el texto
+ * puesto sin que el filtro se entere. Peor: reescribir el mismo valor no
+ * dispara ningún evento, así que reintentar tal cual no desbloquea nada — hay
+ * que vaciar y volver a escribir.
+ */
+async function asegurarHidratado(page: Page) {
+  const input = buscador(page);
+
+  await expect(async () => {
+    await input.fill("");
+    await input.fill("Francia");
+    await expect(desplegable(page)).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 20_000 });
+
+  await input.fill("");
+  await expect(desplegable(page)).toBeHidden();
+}
+
+async function irAPortada(page: Page, locale: "es" | "pt" = "es") {
+  await page.goto(`/${locale}`, { waitUntil: "domcontentloaded" });
   await expect(tarjetasDePlan(page).first()).toBeVisible({ timeout: 20_000 });
+  await asegurarHidratado(page);
+}
+
+async function buscar(page: Page, texto: string) {
+  await buscador(page).fill(texto);
+  await expect(buscador(page)).toHaveValue(texto);
 }
 
 async function nombresVisibles(page: Page) {
@@ -118,155 +100,179 @@ async function nombresVisibles(page: Page) {
   );
 }
 
-test.describe("CI-001 · la portada muestra el catálogo entero", () => {
-  for (const modo of ["vivo", "caido"] as const) {
-    test(`los cinco planes, en el orden del catálogo (catálogo ${modo})`, async ({ page }) => {
-      await irAPortada(page, modo);
-
-      await expect(tarjetasDePlan(page)).toHaveCount(5);
-      const nombres = await nombresVisibles(page);
-      for (const [i, esperado] of PLANES_EN_ORDEN.entries()) {
-        expect(nombres[i], `posición ${i}`).toContain(esperado);
-      }
-    });
+/** Comprueba el resultado de una consulta: cuántas gamas y cuáles. */
+async function esperarGamas(page: Page, esperadas: string[], contexto: string) {
+  await expect(tarjetasDePlan(page), contexto).toHaveCount(esperadas.length);
+  const texto = (await nombresVisibles(page)).join(" | ");
+  for (const gama of PLANES_EN_ORDEN) {
+    if (esperadas.includes(gama)) {
+      expect(texto, `${contexto}: falta ${gama}`).toContain(gama);
+    } else {
+      expect(texto, `${contexto}: sobra ${gama}`).not.toContain(gama);
+    }
   }
+}
 
-  test("con el catálogo local, el enlace lleva la clave comercial", async ({ page }) => {
-    await irAPortada(page, "caido");
+test.describe("CI-001 · la portada trae el catálogo hecho", () => {
+  test("carga con las cinco gamas, en el orden del catálogo", async ({ page }) => {
+    await irAPortada(page);
 
-    const hrefs = await tarjetasDePlan(page).evaluateAll((nodos) =>
-      nodos.map((n) => n.getAttribute("href") ?? "")
-    );
-    const claves = hrefs.map(
-      (h) => new URL(h, "http://localhost").searchParams.get("plan") ?? ""
-    );
+    await expect(tarjetasDePlan(page)).toHaveCount(5);
+    const nombres = await nombresVisibles(page);
+    for (const [i, esperado] of PLANES_EN_ORDEN.entries()) {
+      expect(nombres[i], `posición ${i}`).toContain(esperado);
+    }
+  });
 
-    expect(claves).toEqual([
-      "europa-basico",
-      "europa-plus",
-      "europa-total",
-      "europa-max",
-      "europa-premium",
-    ]);
-    // Ni identificador de mayorista ni talla de operador delante del comprador.
-    for (const clave of claves) {
-      expect(clave).not.toMatch(/^local-/);
+  test("las cards ya están en el HTML, sin esperar a ninguna consulta", async ({ page }) => {
+    // La regresión que arreglamos: la rejilla se pintaba vacía y se rellenaba
+    // después, si es que se rellenaba. Ahora viene servida.
+    await page.goto("/es", { waitUntil: "domcontentloaded" });
+    await expect(tarjetasDePlan(page)).toHaveCount(5, { timeout: 5_000 });
+  });
+
+  test("el buscador y el bloque de precios cuentan lo mismo", async ({ page }) => {
+    // Misma fuente, un solo catálogo: si discreparan, una de las dos secciones
+    // estaría sirviendo algo distinto.
+    await irAPortada(page);
+
+    const delBuscador = await nombresVisibles(page);
+    const delBloque = await page
+      .locator('a[href*="/compra?plan="]')
+      .filter({ hasText: /Elegir plan/i })
+      .count();
+
+    expect(delBuscador).toHaveLength(5);
+    expect(delBloque).toBe(5);
+
+    for (const gama of PLANES_EN_ORDEN) {
+      expect(delBuscador.join(" | "), gama).toContain(gama);
+      await expect(page.getByText(gama).first(), gama).toBeVisible();
     }
   });
 });
 
-test.describe("CI-002 · el buscador de países", () => {
-  test("buscar Francia no oculta ningún plan", async ({ page }) => {
-    await irAPortada(page);
+test.describe("CI-002 · el buscador filtra por cobertura", () => {
+  for (const pais of CUBIERTOS_POR_TODOS) {
+    test(`${pais} mantiene las cinco`, async ({ page }) => {
+      await irAPortada(page);
+      await buscar(page, pais);
+      await esperarGamas(page, PLANES_EN_ORDEN, pais);
+    });
+  }
 
-    await buscador(page).fill("Francia");
-    await expect(tarjetasDePlan(page)).toHaveCount(5);
-  });
-
-  test.describe("Estados Unidos oculta Europa Básico, y solo ese", () => {
-    for (const forma of ["Estados Unidos", "EEUU", "USA", "US"]) {
-      test(`escrito «${forma}»`, async ({ page }) => {
-        await irAPortada(page);
-
-        await buscador(page).fill(forma);
-        await expect(tarjetasDePlan(page)).toHaveCount(4);
-
-        const texto = (await nombresVisibles(page)).join(" | ");
-        expect(texto).not.toContain("Europa Básico");
-        for (const plan of PLANES_EN_ORDEN.slice(1)) {
-          expect(texto, plan).toContain(plan);
-        }
-      });
-    }
-  });
-
-  test("la excepción también se aplica con el catálogo vivo", async ({ page }) => {
-    // El filtro va por la clave derivada del nombre comercial, no por el
-    // identificador de la fila: da igual de qué fuente venga el plan.
-    await irAPortada(page, "vivo");
-
-    await buscador(page).fill("EEUU");
-    await expect(tarjetasDePlan(page)).toHaveCount(4);
-    expect((await nombresVisibles(page)).join(" | ")).not.toContain("Europa Básico");
-  });
+  for (const forma of FORMAS_DE_EEUU) {
+    test(`«${forma}» deja cuatro y quita solo Europa Básico`, async ({ page }) => {
+      await irAPortada(page);
+      await buscar(page, forma);
+      await esperarGamas(page, SIN_BASICO, forma);
+    });
+  }
 
   test("una consulta parcial no oculta nada", async ({ page }) => {
     await irAPortada(page);
 
-    // El fallo que tenía el buscador: cuatro letras bastaban para que «esta»
-    // disparara el filtro de Estados Unidos y escondiera el plan más barato.
-    for (const parcial of ["esta", "franc", "u"]) {
-      await buscador(page).fill(parcial);
-      await expect(tarjetasDePlan(page), parcial).toHaveCount(5);
+    // El fallo que tenía el buscador antes de la fuente única: cuatro letras
+    // bastaban para que «esta» disparara el filtro de Estados Unidos.
+    for (const parcial of ["esta", "franc", "u", "tur", "es"]) {
+      await buscar(page, parcial);
+      await esperarGamas(page, PLANES_EN_ORDEN, `parcial «${parcial}»`);
     }
   });
 
-  test("un país fuera de la lista no oculta planes", async ({ page }) => {
+  test("un país fuera de la lista no oculta nada", async ({ page }) => {
     await irAPortada(page);
 
-    await buscador(page).fill("Marruecos");
-    await expect(tarjetasDePlan(page)).toHaveCount(5);
+    for (const fuera of ["Marruecos", "Japón", "Freedonia", "zzzz"]) {
+      await buscar(page, fuera);
+      await esperarGamas(page, PLANES_EN_ORDEN, `desconocido «${fuera}»`);
+    }
     await expect(page.getByText("No encontramos ese país")).toBeVisible();
   });
 
-  test("vaciar la búsqueda devuelve los cinco planes", async ({ page }) => {
+  test("vaciar la búsqueda restaura las cinco", async ({ page }) => {
     await irAPortada(page);
 
-    await buscador(page).fill("EEUU");
-    await expect(tarjetasDePlan(page)).toHaveCount(4);
+    await buscar(page, "EEUU");
+    await esperarGamas(page, SIN_BASICO, "EEUU");
 
-    await buscador(page).fill("");
-    await expect(tarjetasDePlan(page)).toHaveCount(5);
+    await buscar(page, "");
+    await esperarGamas(page, PLANES_EN_ORDEN, "búsqueda vacía");
   });
 });
 
-test.describe("CI-003 · de la portada a la compra", () => {
-  test("pulsar un plan lleva al flujo de compra", async ({ page }) => {
+test.describe("CI-003 · las dos lenguas", () => {
+  for (const locale of ["es", "pt"] as const) {
+    test(`/${locale}: cinco gamas, y Estados Unidos deja cuatro`, async ({ page }) => {
+      await irAPortada(page, locale);
+
+      await expect(tarjetasDePlan(page)).toHaveCount(5);
+      // El nombre comercial no se traduce: es el mismo producto.
+      const nombres = await nombresVisibles(page);
+      for (const [i, esperado] of PLANES_EN_ORDEN.entries()) {
+        expect(nombres[i], `${locale} · posición ${i}`).toContain(esperado);
+      }
+
+      await buscar(page, "Estados Unidos");
+      await esperarGamas(page, SIN_BASICO, `${locale} · Estados Unidos`);
+
+      // Y el enlace respeta la lengua desde la que se compra.
+      const href = await tarjetasDePlan(page).first().getAttribute("href");
+      expect(href, locale).toContain("/compra?plan=");
+    });
+  }
+});
+
+test.describe("CI-004 · de la portada a la compra", () => {
+  test("la card lleva a la compra con su plan", async ({ page }) => {
     await irAPortada(page);
 
     const tarjeta = tarjetasDePlan(page).nth(1); // Europa Plus
     await tarjeta.click();
 
-    await page.waitForURL("**/compra?plan=europa-plus", { timeout: 20_000 });
-    await expect(page.getByText("Europa Plus").first()).toBeVisible({ timeout: 20_000 });
+    await page.waitForURL("**/compra?plan=*", { timeout: 20_000 });
+    await expect(page.getByText("Tu información básica")).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText("Europa Plus").first()).toBeVisible();
   });
 
-  /**
-   * Las dos identidades con las que puede llegar `?plan=`.
-   *
-   * El enlace del buscador lleva la clave comercial (`europa-plus`); el del
-   * bloque de precios lleva el identificador de la fila del catálogo —un UUID
-   * en producción, el identificador heredado cuando se sirve el catálogo local.
-   * Las dos tienen que abrir la compra en el paso de datos, con el plan puesto:
-   * si no, el comprador que ya eligió tiene que volver a elegir.
-   *
-   * El paso 2 se reconoce por «Tu información básica»; el paso 1 vuelve a
-   * mostrar el selector de planes.
-   */
-  test("el plan llega preseleccionado desde la clave comercial", async ({ page }) => {
+  test("cada card lleva a su gama, sin cruces", async ({ page }) => {
+    // Si un identificador resolviera al plan de otro, se vería aquí: se compra
+    // una tarifa distinta de la que se pulsó.
     await irAPortada(page);
-    await tarjetasDePlan(page).nth(1).click(); // Europa Plus
-    await page.waitForURL("**/compra?plan=europa-plus", { timeout: 20_000 });
+    const enlaces = await tarjetasDePlan(page).evaluateAll((nodos) =>
+      nodos.map((n) => ({
+        href: n.getAttribute("href") ?? "",
+        nombre: (n.textContent ?? "").replace(/\s+/g, " ").trim(),
+      }))
+    );
 
-    await expect(page.getByText("Tu información básica")).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByText("Europa Plus").first()).toBeVisible();
+    for (const [i, enlace] of enlaces.entries()) {
+      const gama = PLANES_EN_ORDEN[i];
+      expect(enlace.nombre, `card ${i}`).toContain(gama);
+
+      await page.goto(enlace.href, { waitUntil: "domcontentloaded" });
+      await expect(page.getByText("Tu información básica"), gama).toBeVisible({
+        timeout: 20_000,
+      });
+      const resumen = await page.locator("body").innerText();
+      expect(resumen, `${gama}: el resumen no coincide`).toContain(gama);
+      for (const otra of PLANES_EN_ORDEN.filter((g) => g !== gama)) {
+        expect(resumen, `${gama}: el resumen menciona ${otra}`).not.toContain(otra);
+      }
+    }
   });
 
-  test("el plan llega preseleccionado desde el identificador de la fila", async ({ page }) => {
-    // Este entorno sirve el catálogo local, cuyo identificador de fila no es un
-    // UUID; el camino de código que se ejerce es el mismo que en producción.
-    await page.goto("/es/compra?plan=local-m", { waitUntil: "domcontentloaded" });
-
-    await expect(page.getByText("Tu información básica")).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByText("Europa Plus").first()).toBeVisible();
-  });
-
-  test("una clave desconocida en la URL no rompe la compra", async ({ page }) => {
+  test("una clave desconocida no rompe la compra", async ({ page }) => {
     const respuesta = await page.goto("/es/compra?plan=clave-que-no-existe", {
       waitUntil: "domcontentloaded",
     });
     expect(respuesta?.status()).toBeLessThan(400);
-    // Degrada al selector de planes en vez de romperse.
     await expect(page.getByText("Europa Básico").first()).toBeVisible({ timeout: 20_000 });
+  });
+
+  test("la clave comercial también preselecciona", async ({ page }) => {
+    await page.goto("/es/compra?plan=europa-plus", { waitUntil: "domcontentloaded" });
+    await expect(page.getByText("Tu información básica")).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText("Europa Plus").first()).toBeVisible();
   });
 });
