@@ -213,7 +213,40 @@ export function plansExcluding(country: CoverageCountry): PlanKey[] {
   return PLAN_KEYS.filter((key) => !planCoversCountry(key, country));
 }
 
-/** Cuántos destinos cubre un plan concreto. */
-export function destinationsForPlan(planKey: string): number {
+/**
+ * Cuántos destinos cubre una gama **ya validada**.
+ *
+ * El parámetro es `PlanKey`, no `string`, y es a propósito. La cuenta se hace
+ * restando exclusiones, así que una clave que no está en la lista sale con
+ * cero exclusiones y devuelve el total —39— como si lo cubriera todo. Eso es
+ * correcto como aritmética y peligroso como afirmación: quien pregunta por una
+ * tarifa que no reconocemos no debe llevarse un número, debe llevarse un «no
+ * lo sé».
+ *
+ * El tipo cierra esa puerta en compilación. Quien tenga un `string` sin
+ * validar tiene que pasar por `getPlanCoverageCount`, que valida y puede
+ * responder `null`.
+ */
+export function destinationsForPlan(planKey: PlanKey): number {
   return COVERAGE_COUNTRIES.filter((c) => planCoversCountry(planKey, c)).length;
+}
+
+/**
+ * Cuántos destinos cubre una gama, para decírselo al cliente.
+ *
+ * Esta es la frontera: entra un `string` de procedencia desconocida —derivado
+ * de un nombre comercial, de una fila del catálogo, de lo que sea— y sale un
+ * número solo si la clave es una de las gamas vivas.
+ *
+ * El `null` hay que respetarlo: significa «no lo sé», no «pon el número de
+ * siempre». Los consumidores omiten la cifra en vez de inventarla, porque una
+ * tarifa que no reconocemos —una de España, una retirada, una que alguien
+ * acaba de dar de alta— no tiene por qué cubrir lo mismo que las demás.
+ *
+ * Antes esta cifra era una columna del catálogo con 30 escrito a mano en cinco
+ * sitios. Al derivarla, Europa Básico dice 38 y las otras cuatro 39 sin que
+ * nadie tenga que acordarse de nada.
+ */
+export function getPlanCoverageCount(planKey: string): number | null {
+  return isKnownPlanKey(planKey) ? destinationsForPlan(planKey) : null;
 }

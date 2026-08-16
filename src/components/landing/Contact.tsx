@@ -17,8 +17,8 @@ const CONTACTS = [
   {
     icon: EnvelopeSimple,
     label: "Email",
-    value: "support@ruta34.com",
-    href: "mailto:support@ruta34.com",
+    value: "soporte@esimruta34.com",
+    href: "mailto:soporte@esimruta34.com",
     color: "text-[var(--color-gold)]",
   },
   {

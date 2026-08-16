@@ -9,6 +9,8 @@ import { formatUSD } from "@/lib/utils";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { analytics } from "@/lib/analytics";
+import { getPlanCoverageCount } from "@/lib/coverage";
+import { toPlanKey } from "@/lib/plan-key";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -27,6 +29,11 @@ interface StepPlanProps {
   plans: Plan[];
   initialPlanId?: string;
   onNext: (plan: Plan, quantity: number) => void;
+}
+
+/** Destinos que cubre la gama, o `null` si no la reconocemos. */
+function destinosDe(plan: Plan): number | null {
+  return getPlanCoverageCount(toPlanKey(plan.name));
 }
 
 export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps) {
@@ -156,10 +163,10 @@ export default function StepPlan({ plans, initialPlanId, onNext }: StepPlanProps
                         <span className="font-bold text-[var(--color-navy)]">{plan.data_gb} GB</span>
                         <span className="text-[var(--color-ink-2)]">·</span>
                         <span className="text-[var(--color-ink-2)]">{plan.duration_days} días</span>
-                        {plan.type === "dataonly" && (
+                        {plan.type === "dataonly" && destinosDe(plan) !== null && (
                           <>
                             <span className="text-[var(--color-ink-2)]">·</span>
-                            <span className="text-[var(--color-ink-2)]">{plan.countries_count}+ países</span>
+                            <span className="text-[var(--color-ink-2)]">{destinosDe(plan)} destinos</span>
                           </>
                         )}
                         {plan.type === "local" && (

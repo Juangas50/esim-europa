@@ -29,7 +29,6 @@ export interface Plan {
   price_usd: number;
   is_popular?: boolean;
   zone: "espana" | "europa";
-  countries_count: number;
   features: string[];
 }
 

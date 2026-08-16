@@ -9,12 +9,13 @@ import {
   TOTAL_DESTINATIONS,
   destinationsForPlan,
   findCoverageCountry,
+  getPlanCoverageCount,
   plansCovering,
   resolveCountryForSearch,
   plansExcluding,
   searchCoverageCountries,
 } from "@/lib/coverage";
-import { PLAN_KEYS, toPlanKey } from "@/lib/plan-key";
+import { PLAN_KEYS, toPlanKey, type PlanKey } from "@/lib/plan-key";
 import { PLANS } from "@/lib/plans";
 import { toAssistantPlanDto } from "@/lib/assistant/server/dto";
 import type { Plan } from "@/types";
@@ -40,7 +41,8 @@ test.describe("forma de la lista", () => {
   });
 
   test("las otras cuatro gamas cubren 39", () => {
-    for (const key of ["europa-plus", "europa-total", "europa-max", "europa-premium"]) {
+    const gamas: PlanKey[] = ["europa-plus", "europa-total", "europa-max", "europa-premium"];
+    for (const key of gamas) {
       expect(destinationsForPlan(key), key).toBe(39);
     }
   });
@@ -186,6 +188,178 @@ test.describe("resolución del buscador de la web", () => {
   });
 });
 
+test.describe("cuántos destinos cubre cada gama", () => {
+  // Esta cifra era una columna del catálogo con 30 escrito a mano en cinco
+  // sitios, y de ahí salía a la portada, al JSON-LD y al recibo de Stripe.
+  // Ahora se deriva, y la asimetría de Europa Básico deja de ser un olvido.
+
+  test("Europa Básico cubre 38", () => {
+    expect(getPlanCoverageCount("europa-basico")).toBe(38);
+  });
+
+  test("las otras cuatro cubren 39", () => {
+    for (const key of ["europa-plus", "europa-total", "europa-max", "europa-premium"]) {
+      expect(getPlanCoverageCount(key), key).toBe(39);
+    }
+  });
+
+  test("ninguna gama devuelve 30", () => {
+    for (const key of PLAN_KEYS) {
+      expect(getPlanCoverageCount(key), key).not.toBe(30);
+    }
+  });
+
+  test("la cifra cuadra con la lista, no con una constante", () => {
+    for (const key of PLAN_KEYS) {
+      const contados = COVERAGE_COUNTRIES.filter((c) => !c.excludedPlans.includes(key)).length;
+      expect(getPlanCoverageCount(key), key).toBe(contados);
+    }
+  });
+
+  test("una clave desconocida no inventa una cifra", () => {
+    // Fail closed: `null` significa «no lo sé», y quien pregunta debe callarse
+    // la cifra en vez de poner la de siempre.
+    const desconocidas = [
+      "local-s", // identificador heredado del mayorista
+      "españa-total", // una tarifa de otra zona
+      "", // cadena vacía
+      "plan-nuevo", // una gama recién dada de alta
+      "EUROPA-BASICO", // la misma clave con otra caja
+      " europa-basico", // con espacio delante
+      "europa-basico ", // y detrás
+      "__proto__", // nada de heredar del prototipo
+      "constructor",
+      "toString",
+    ];
+    for (const desconocida of desconocidas) {
+      expect(getPlanCoverageCount(desconocida), desconocida).toBeNull();
+    }
+  });
+
+  test("la aritmética que devolvería 39 ya no acepta cualquier cosa", () => {
+    // Contar restando exclusiones da 39 para una clave que nadie excluye. El
+    // tipo impide llegar ahí con un string sin validar: para reproducirlo hay
+    // que forzar un cast, y ese cast es justo lo que TypeScript ya no permite
+    // escribir por accidente.
+    const forzada = "plan-nuevo" as unknown as PlanKey;
+    expect(destinationsForPlan(forzada)).toBe(39);
+    expect(getPlanCoverageCount("plan-nuevo")).toBeNull();
+  });
+
+  test("el nombre comercial lleva a su cifra sin pasar por el catálogo", () => {
+    expect(getPlanCoverageCount(toPlanKey("Europa Básico"))).toBe(38);
+    expect(getPlanCoverageCount(toPlanKey("Europa Plus"))).toBe(39);
+  });
+});
+
+test.describe("nadie guarda ya la cobertura como dato", () => {
+  const FUENTES = [
+    "src/types/index.ts",
+    "src/lib/plans.ts",
+    "src/lib/plans-server.ts",
+    "src/components/seo/HomeSchemaOrg.tsx",
+    "src/app/api/checkout/route.ts",
+    "src/app/[locale]/confirmacion/page.tsx",
+    "src/components/purchase/StepPlan.tsx",
+  ];
+
+  for (const ruta of FUENTES) {
+    test(`${ruta} no lee countries_count`, () => {
+      const fuente = fs.readFileSync(path.join(process.cwd(), ruta), "utf8");
+      expect(fuente).not.toContain("countries_count");
+    });
+  }
+
+  test("solo la frontera validada llega a las superficies", () => {
+    // `destinationsForPlan` cuenta restando exclusiones, así que una clave que
+    // nadie excluye le saca 39. Por eso ningún fichero fuera de la propia capa
+    // de cobertura puede llamarla: quien esté fuera pasa por
+    // `getPlanCoverageCount`, que valida y puede decir que no lo sabe.
+    const fuera: string[] = [];
+    const recorrer = (dir: string) => {
+      for (const entrada of fs.readdirSync(path.join(process.cwd(), dir), {
+        withFileTypes: true,
+      })) {
+        const relativo = path.join(dir, entrada.name);
+        if (entrada.isDirectory()) recorrer(relativo);
+        else if (/\.tsx?$/.test(entrada.name)) {
+          if (relativo === path.join("src", "lib", "coverage.ts")) continue;
+          if (fs.readFileSync(path.join(process.cwd(), relativo), "utf8").includes("destinationsForPlan")) {
+            fuera.push(relativo);
+          }
+        }
+      }
+    };
+    recorrer("src");
+    expect(fuera, "estos ficheros cuentan destinos sin validar la clave").toEqual([]);
+  });
+
+  test("ninguna clave desconocida puede acabar diciendo 39 destinos", () => {
+    // El recorrido completo: clave sospechosa → frontera → copy de cada
+    // superficie pública. Se reproduce aquí la forma de cada frase; si alguna
+    // dejara de respetar el `null`, aparecería un número donde no debe.
+    const sospechosas = [
+      "local-s",
+      "local-xxl",
+      "españa-total",
+      "europa basico",
+      "EUROPA-PREMIUM",
+      "plan-nuevo",
+      "",
+      "   ",
+      "__proto__",
+      "39",
+    ];
+
+    for (const clave of sospechosas) {
+      const destinos = getPlanCoverageCount(clave);
+      expect(destinos, `«${clave}» produjo una cifra`).toBeNull();
+
+      // Stripe: la línea desaparece de la descripción.
+      const stripe = [
+        "90 GB en total",
+        "28 días",
+        "Número español incluido",
+        destinos !== null ? `${destinos} destinos` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+
+      // JSON-LD: el nombre del producto se queda en «Europa» a secas.
+      const jsonLd = destinos !== null ? `Europa (${destinos} destinos)` : "Europa";
+
+      // Confirmación de compra: la fila de cobertura no se pinta.
+      const confirmacion = destinos !== null ? `${destinos} países` : "";
+
+      for (const [superficie, texto] of [
+        ["Stripe", stripe],
+        ["JSON-LD", jsonLd],
+        ["confirmación", confirmacion],
+      ] as const) {
+        expect(texto, `${superficie} con «${clave}»`).not.toMatch(/\d+\s*(?:destinos|países)/);
+        expect(texto, `${superficie} con «${clave}»`).not.toContain("39");
+      }
+    }
+  });
+
+  test("y las cinco gamas vivas sí dicen su cifra", () => {
+    // El contrapunto: endurecer no puede haber apagado el caso bueno.
+    expect(PLAN_KEYS.map((k) => getPlanCoverageCount(k))).toEqual([38, 39, 39, 39, 39]);
+  });
+
+  test("la descripción que recibe Stripe sale de la cobertura", () => {
+    const checkout = fs.readFileSync(
+      path.join(process.cwd(), "src/app/api/checkout/route.ts"),
+      "utf8"
+    );
+    expect(checkout).toContain("getPlanCoverageCount");
+    // Y no hay ninguna cifra de cobertura escrita a mano en la descripción.
+    const descripcion = checkout.match(/description: \[([\s\S]*?)\]\n/)?.[1] ?? "";
+    expect(descripcion, "no se encontró la descripción del producto").not.toBe("");
+    expect(descripcion).not.toMatch(/\d+\s*(?:países|destinos)/);
+  });
+});
+
 test.describe("claves comerciales", () => {
   test("los cinco nombres producen las cinco claves", () => {
     const nombres = ["Europa Básico", "Europa Plus", "Europa Total", "Europa Max", "Europa Premium"];
@@ -237,7 +411,7 @@ test.describe("claves comerciales", () => {
   test("una clave inventada no cubre nada", () => {
     const francia = findCoverageCountry("Francia")!;
     expect(plansCovering(francia)).not.toContain("local-s");
-    expect(destinationsForPlan("plan-que-no-existe")).toBe(39); // no excluido por nadie
+    expect(getPlanCoverageCount("plan-que-no-existe")).toBeNull();
   });
 });
 

@@ -42,7 +42,6 @@ interface TariffRow {
   active: boolean | null;
   price_usd: number | null;
   zone: string | null;
-  countries_count: number | null;
   activation_days: number | null;
   position: number | null;
   eu_data_gb: number | null;  // GB en roaming UE (solo planes local/España)
@@ -123,8 +122,6 @@ function mapTariffToPlan(t: TariffRow): Plan {
     price_usd: t.price_usd ?? 0,
     is_popular: t.highlight ?? false,
     zone,
-    countries_count:
-      t.countries_count ?? (zone === "espana" ? 1 : 30),
     features: generateFeatures(
       t.data_gb,
       t.eu_data_gb,
@@ -138,7 +135,7 @@ function mapTariffToPlan(t: TariffRow): Plan {
 // ── Public API ────────────────────────────────────────────────────────────────
 
 const TARIFF_COLUMNS =
-  "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, countries_count, activation_days, position, web_visible";
+  "id, name, type, data_gb, eu_data_gb, validity_days, badge, highlight, active, price_usd, zone, activation_days, position, web_visible";
 
 /** De dónde salieron los planes que se están devolviendo. */
 export type PlansSource = "supabase" | "fallback";

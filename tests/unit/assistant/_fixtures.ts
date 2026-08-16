@@ -21,7 +21,6 @@ export function plan(overrides: Partial<Plan> & Pick<Plan, "id" | "name">): Plan
     activation_days: 365,
     price_usd: 10,
     zone: "europa",
-    countries_count: 30,
     features: [],
     ...overrides,
   } as Plan;

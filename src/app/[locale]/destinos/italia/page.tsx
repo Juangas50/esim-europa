@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { TOTAL_DESTINATIONS } from "@/lib/coverage";
 import DestinationHero from "@/components/landing/DestinationHero";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -41,7 +42,7 @@ export default function ItalyPage() {
               <h3 className="font-bold text-[#1B2F4E] mb-2">Red</h3>
               <ul className="text-sm text-[#64748B] space-y-1">
                 <li>✓ Cobertura 4G/5G</li>
-                <li>✓ Uno de los 30 países incluidos</li>
+                <li>✓ Uno de los {TOTAL_DESTINATIONS} destinos con cobertura</li>
                 <li>✓ Sin configuración extra al llegar</li>
               </ul>
             </div>

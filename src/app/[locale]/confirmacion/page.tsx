@@ -1,6 +1,8 @@
 import { getPlanById } from "@/lib/plans-server";
 import { createAdminClient } from "@/lib/supabase/server";
 import ConfirmacionView from "./ConfirmacionView";
+import { getPlanCoverageCount } from "@/lib/coverage";
+import { toPlanKey } from "@/lib/plan-key";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +34,7 @@ export default async function ConfirmacionPage({
       quantity={quantity}
       planName={plan?.name ?? "Tu eSIM"}
       priceUsd={plan?.price_usd ?? 0}
-      coverage={plan?.countries_count ?? null}
+      coverage={plan ? getPlanCoverageCount(toPlanKey(plan.name)) : null}
       dataGb={plan?.data_gb ?? null}
       validityDays={plan?.duration_days ?? null}
       activationDate={order?.activation_date ?? null}

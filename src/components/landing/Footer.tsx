@@ -112,7 +112,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:support@ruta34.com"
+                  href="mailto:soporte@esimruta34.com"
                   className="text-sm text-white/60 hover:text-white transition-colors"
                 >
                   Email Support

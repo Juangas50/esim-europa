@@ -17,6 +17,7 @@ import SocialLinks from "@/components/landing/SocialLinks";
 import Footer from "@/components/landing/Footer";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 import { getPlans } from "@/lib/plans-server";
+import { TOTAL_DESTINATIONS } from "@/lib/coverage";
 import { formatUSD } from "@/lib/utils";
 
 // Siempre usar el dominio real en producción — ignorar si apunta a vercel.app
@@ -28,7 +29,7 @@ const META = {
   es: {
     title: "Chip para Europa sin roaming | eSIM prepago para Argentinos y Latinoamericanos — RUTA34",
     description:
-      "eSIM prepago para viajar a Europa. Conectate desde {price} con número español incluido. Instalás con QR en 2 minutos. Llega a 30 países. Ideal para argentinos, chilenos, uruguayos y brasileños.",
+      `eSIM prepago para viajar a Europa. Conectate desde {price} con número español incluido. Instalás con QR en 2 minutos. Cobertura en ${TOTAL_DESTINATIONS} destinos de Europa y Estados Unidos según el plan. Ideal para argentinos, chilenos, uruguayos y brasileños.`,
     keywords:
       "chip para españa, chip prepago europa, chip digital europa, esim europa argentina, chip para viajar a europa, esim sin roaming, chip internet europa, esim chile europa, esim uruguay europa, chip para argentina españa, plan prepago europa latinoamerica, chip virtual europa, internet europa sin contrato",
     ogTitle: "El chip digital para viajar a Europa — RUTA34 Telecom",
@@ -40,7 +41,7 @@ const META = {
   pt: {
     title: "Chip para Europa sem roaming | eSIM pré-pago para Brasileiros e Latino-americanos — RUTA34",
     description:
-      "eSIM pré-pago para viajar à Europa. Conecte-se a partir de {price} com número espanhol incluído. Instale com QR em 2 minutos. Alcance 30 países. Ideal para brasileiros e latino-americanos.",
+      `eSIM pré-pago para viajar à Europa. Conecte-se a partir de {price} com número espanhol incluído. Instale com QR em 2 minutos. Cobertura em ${TOTAL_DESTINATIONS} destinos da Europa e nos Estados Unidos conforme o plano. Ideal para brasileiros e latino-americanos.`,
     keywords:
       "chip para europa brasil, chip digital europa, esim europa brasil, chip prepago europa, internet europa sem roaming, esim brasil europa, chip viagem europa, esim sem contrato europa, chip virtual europa, internet europa latinoamerica",
     ogTitle: "O chip digital para viajar à Europa — RUTA34 Telecom",

@@ -1,12 +1,12 @@
 import { Metadata } from "next";
+import { TOTAL_DESTINATIONS } from "@/lib/coverage";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Destinos — eSIM para Europa | RUTA34 Telecom",
-    description:
-      "eSIM con cobertura en 30 países de Europa. Elegí tu destino y viajá conectado.",
+    description: `eSIM con cobertura en ${TOTAL_DESTINATIONS} destinos de Europa y Estados Unidos. Elegí tu destino y viajá conectado.`,
     openGraph: {
       title: "Destinos — eSIM para Europa",
       description: "Cobertura en toda Europa",
@@ -65,14 +65,15 @@ export default function DestinationsPage() {
             ¿Tu destino no está listado?
           </h2>
           <p className="text-[#64748B] mb-4">
-            Tu plan de RUTA34 incluye 30 países europeos. Si querés confirmar
+            RUTA34 tiene cobertura en {TOTAL_DESTINATIONS} destinos de Europa y
+            Estados Unidos, y lo que incluye cada plan varía. Si querés confirmar
             si tu destino entra, escribinos y te lo decimos.
           </p>
           <a
-            href="mailto:soporte@ruta34.com"
+            href="mailto:soporte@esimruta34.com"
             className="text-[#C9973A] font-semibold hover:underline"
           >
-            soporte@ruta34.com
+            soporte@esimruta34.com
           </a>
         </div>
       </div>

@@ -31,7 +31,6 @@ const LOCAL_PLANS: Plan[] = [
     activation_days: 365,
     price_usd: 15.0,
     zone: "europa",
-    countries_count: 30,
     features: [
       "90 GB de datos 4G/5G en total",
       "Hasta 15 GB de esos 90 GB fuera de España",
@@ -51,7 +50,6 @@ const LOCAL_PLANS: Plan[] = [
     activation_days: 365,
     price_usd: 20.0,
     zone: "europa",
-    countries_count: 30,
     features: [
       "270 GB de datos 4G/5G en total",
       "Hasta 23 GB de esos 270 GB fuera de España",
@@ -71,7 +69,6 @@ const LOCAL_PLANS: Plan[] = [
     activation_days: 365,
     price_usd: 30.0,
     zone: "europa",
-    countries_count: 30,
     features: [
       "330 GB de datos 4G/5G en total",
       "Hasta 30 GB de esos 330 GB fuera de España",
@@ -91,7 +88,6 @@ const LOCAL_PLANS: Plan[] = [
     activation_days: 365,
     price_usd: 40.0,
     zone: "europa",
-    countries_count: 30,
     features: [
       "380 GB de datos 4G/5G en total",
       "Hasta 45 GB de esos 380 GB fuera de España",
@@ -111,7 +107,6 @@ const LOCAL_PLANS: Plan[] = [
     activation_days: 365,
     price_usd: 50.0,
     zone: "europa",
-    countries_count: 30,
     features: [
       "430 GB de datos 4G/5G en total",
       "Hasta 60 GB de esos 430 GB fuera de España",

@@ -43,7 +43,7 @@
       },
       "coverage": {
         "title": "De Madrid a Berlín, seguís conectado",
-        "desc": "Cobertura en España, Francia, Italia, Alemania, Portugal y 25 países más."
+        "desc": "Cobertura en Europa y Estados Unidos según tu plan."
       }
     }
   },
@@ -58,14 +58,14 @@
     "buyPlan": "Elegir plan",
     "activateAnytime": "Elegís cuándo empieza tu plan",
     "noAutoRenew": "Sin renovación automática",
-    "coverage": "Cobertura en 30+ países",
+    "coverage": "Cobertura en Europa y Estados Unidos según tu plan",
     "daysDuration": "días",
     "euRoaming": "Roaming UE",
     "summary": "Resumen del pedido",
     "tabLocal": "eSIM España",
     "tabLocalSub": "Número · Llamadas · SMS · Datos",
     "tabData": "eSIM Europa",
-    "tabDataSub": "Solo datos · 30+ países",
+    "tabDataSub": "Solo datos · cobertura europea",
     "localIncludes": "Todas las tallas incluyen:",
     "localFeatureNumber": "Número español 🇪🇸",
     "localFeatureCalls": "Llamadas ilimitadas",
@@ -78,7 +78,7 @@
     },
     "dataonly": {
       "badge": "Solo datos",
-      "desc": "Sin número ni llamadas. Solo datos en 30+ países europeos. Tenés 60 días para activarla."
+      "desc": "Sin número ni llamadas. Solo datos en los destinos europeos incluidos. Tenés 60 días para activarla."
     },
     "prepago": {
       "badge": "Línea española",

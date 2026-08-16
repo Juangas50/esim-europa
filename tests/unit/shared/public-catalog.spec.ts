@@ -39,7 +39,6 @@ const CAMPOS_PUBLICOS = [
   "price_usd",
   "is_popular",
   "zone",
-  "countries_count",
   "features",
 ] as const;
 

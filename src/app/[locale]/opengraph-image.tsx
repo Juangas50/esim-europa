@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { TOTAL_DESTINATIONS } from "@/lib/coverage";
 
 export const runtime = "edge";
 export const alt = "RUTA34 Telecom — eSIM para Europa";
@@ -10,12 +11,12 @@ const COPY = {
   es: {
     headline: "Llegás a Europa",
     accent: "y ya estás conectado.",
-    sub: "eSIM para Europa · 30 países · Número español incluido",
+    sub: `eSIM para Europa · ${TOTAL_DESTINATIONS} destinos · Número español incluido`,
   },
   pt: {
     headline: "Chega na Europa",
     accent: "e já está conectado.",
-    sub: "eSIM para Europa · 30 países · Número espanhol incluído",
+    sub: `eSIM para Europa · ${TOTAL_DESTINATIONS} destinos · Número espanhol incluído`,
   },
 } as const;
 

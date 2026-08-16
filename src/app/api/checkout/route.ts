@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
 import { generateOrderRef } from "@/lib/utils";
+import { getPlanCoverageCount } from "@/lib/coverage";
+import { toPlanKey } from "@/lib/plan-key";
 
 let stripe: Stripe | null = null;
 
@@ -181,7 +183,14 @@ export async function POST(req: NextRequest) {
                 plan.eu_data_gb ? `hasta ${plan.eu_data_gb} GB fuera de España` : null,
                 `${plan.duration_days} días`,
                 "Número español incluido",
-                `${plan.countries_count} países`,
+                // Sale de `coverage.json`, no del catálogo: Europa Básico son 38
+                // destinos y las demás gamas 39. Si la tarifa no es una de las
+                // gamas vivas, esta línea no aparece en vez de arriesgar una
+                // cifra falsa en el recibo del cliente.
+                (() => {
+                  const destinos = getPlanCoverageCount(toPlanKey(plan.name));
+                  return destinos !== null ? `${destinos} destinos` : null;
+                })(),
               ]
                 .filter(Boolean)
                 .join(" · "),

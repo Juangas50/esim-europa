@@ -86,7 +86,7 @@ export default function FAQPage() {
       id: "coverage",
       question: "¿Qué operadores usa RUTA34?",
       answer:
-        "El servicio se presta sobre una red de telecomunicaciones española certificada, con cobertura 4G/5G en España y en los 30 países europeos incluidos en el plan.",
+        "El servicio se presta sobre una red de telecomunicaciones española certificada, con cobertura 4G/5G en España y en los destinos europeos incluidos en el plan.",
     },
     {
       id: "emergency",

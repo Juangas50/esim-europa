@@ -1,5 +1,7 @@
 import JsonLd from "./JsonLd";
 import { getPlans } from "@/lib/plans-server";
+import { TOTAL_DESTINATIONS, getPlanCoverageCount } from "@/lib/coverage";
+import { toPlanKey } from "@/lib/plan-key";
 import { WHATSAPP_NUMBER } from "@/config/constants";
 
 const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
@@ -43,7 +45,10 @@ const FAQ_ES = [
   },
   {
     q: "¿En cuántos países funciona el eSIM de RUTA34?",
-    a: "En 30 países europeos, incluyendo España, Francia, Italia, Alemania, Portugal, Bélgica, Holanda, Austria, Suiza, Suecia, Noruega, Dinamarca, Polonia, República Checa, Hungría, Rumania, Croacia, Eslovenia, Grecia, Irlanda, Reino Unido, Finlandia, Estonia, Letonia, Lituania y otros.",
+    // La cifra sale de `coverage.json`, no de una lista escrita aquí: si mañana
+    // se añade un destino, esta respuesta cambia sola. La excepción se dice,
+    // porque Europa Básico no llega a todos.
+    a: `En ${TOTAL_DESTINATIONS} destinos de Europa y Estados Unidos. Todos los planes cubren los destinos europeos; Estados Unidos entra en Europa Plus, Total, Max y Premium, pero no en Europa Básico.`,
   },
   {
     q: "¿Qué velocidad de internet tengo en Europa?",
@@ -107,7 +112,7 @@ const FAQ_PT = [
   },
   {
     q: "Em quantos países o eSIM da RUTA34 funciona?",
-    a: "Em 30 países europeus, incluindo Espanha, França, Itália, Alemanha, Portugal, Bélgica, Holanda, Áustria, Suíça, Suécia, Noruega, Dinamarca, Polônia, República Checa, Hungria, Romênia, Croácia, Eslovênia, Grécia, Irlanda, Reino Unido, Finlândia, Estônia, Letônia, Lituânia e outros.",
+    a: `Em ${TOTAL_DESTINATIONS} destinos da Europa e nos Estados Unidos. Todos os planos cobrem os destinos europeus; os Estados Unidos entram no Europa Plus, Total, Max e Premium, mas não no Europa Básico.`,
   },
   {
     q: "Qual é a velocidade da internet na Europa?",
@@ -154,17 +159,22 @@ interface Plan {
   eu_data_gb?: number;
   price_usd: number;
   zone: "espana" | "europa";
-  countries_count: number;
   duration_days: number;
   type: "local" | "dataonly";
 }
 
 function buildProductName(plan: Plan, locale: "es" | "pt"): string {
   const gb = `${plan.data_gb} GB`;
+  // La cobertura de la gama sale de `coverage.json`. Si la tarifa no es una de
+  // las gamas vivas no se pone cifra: mejor «Europa» a secas que un número
+  // inventado.
+  const destinos = getPlanCoverageCount(toPlanKey(plan.name));
   const zone =
     plan.zone === "espana"
       ? locale === "es" ? "España" : "Espanha"
-      : `Europa (${plan.countries_count} ${locale === "es" ? "países" : "países"})`;
+      : destinos !== null
+        ? `Europa (${destinos} ${locale === "es" ? "destinos" : "destinos"})`
+        : "Europa";
   const type =
     plan.type === "local"
       ? locale === "es" ? "con número español" : "com número espanhol"
@@ -178,14 +188,18 @@ function buildProductName(plan: Plan, locale: "es" | "pt"): string {
  * como "N GB para 30 países" sobredeclara la cobertura real fuera de España.
  */
 function buildProductDescription(plan: Plan, locale: "es" | "pt"): string {
+  const destinos = getPlanCoverageCount(toPlanKey(plan.name));
+  const incluidos = destinos !== null ? `los ${destinos} destinos incluidos` : "los destinos incluidos";
+  const incluidosPt = destinos !== null ? `os ${destinos} destinos incluídos` : "os destinos incluídos";
+
   if (locale === "es") {
     const euLimit = plan.eu_data_gb
-      ? ` Fuera de España, en los ${plan.countries_count} países incluidos, podés usar hasta ${plan.eu_data_gb} GB de esa misma bolsa.`
+      ? ` Fuera de España, en ${incluidos}, podés usar hasta ${plan.eu_data_gb} GB de esa misma bolsa.`
       : "";
     return `eSIM con ${plan.data_gb} GB de datos en total.${euLimit} Válida ${plan.duration_days} días desde que se envía el código QR. Sin tarjeta física, instalación por QR.`;
   }
   const euLimit = plan.eu_data_gb
-    ? ` Fora da Espanha, nos ${plan.countries_count} países incluídos, você pode usar até ${plan.eu_data_gb} GB da mesma franquia.`
+    ? ` Fora da Espanha, em ${incluidosPt}, você pode usar até ${plan.eu_data_gb} GB da mesma franquia.`
     : "";
   return `eSIM com ${plan.data_gb} GB de dados no total.${euLimit} Válido ${plan.duration_days} dias desde o envio do código QR. Sem cartão físico, instalação por QR.`;
 }
