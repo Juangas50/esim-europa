@@ -672,7 +672,7 @@ export default function StepData({ plan, initialData, onNext, onBack }: StepData
 
             {!isLocal && (
               <div className="rounded-2xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/20 p-6">
-                <p className="text-sm font-semibold text-[var(--color-gold)] mb-3">Cómo funciona DataOnly</p>
+                <p className="text-sm font-semibold text-[var(--color-gold)] mb-3">Cómo funciona tu eSIM de solo datos</p>
                 <p className="text-sm text-[var(--color-ink)]">
                   Se envía el QR al email. Tenés <strong>60 días para escanearlo</strong>. El plan{" "}
                   <strong>no empieza hasta que lo actives</strong>.

@@ -243,7 +243,10 @@ test.describe("las dos lenguas dicen lo mismo", () => {
       "about.title",
       "about.description",
     ],
-    soloPt: ["faq.items.diff.q", "faq.items.diff.a"],
+    // `faq.items.diff` comparaba Prepago con DataOnly. Ese producto no está
+    // en el catálogo vivo, así que la entrada se retiró y la divergencia
+    // en portugués se redujo a cero.
+    soloPt: [],
   };
 
   test("no aparecen claves nuevas sin traducir", () => {

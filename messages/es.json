@@ -16,13 +16,13 @@
     "trust3": "QR por email",
     "trust4": "Conservás tu WhatsApp",
     "trust5": "Soporte por WhatsApp",
-    "priceAnchor": "Desde {price} · Sin renovación automática",
+    "priceAnchor": "Desde {price} · Sin suscripción",
     "activateIn2Min": "Activa en 2 minutos",
     "activation": "Activación instantánea",
     "connected": "Internet activado",
     "countries": "Países",
     "heroAlt": "Viajero con teléfono usando eSIM en Europa",
-    "noAutoRenew": "Sin renovación automática",
+    "noAutoRenew": "Sin suscripción ni cargos recurrentes",
     "support": "Soporte L–S (hora ES)",
     "validity": "de validez"
   },
@@ -45,11 +45,12 @@
         "title": "De Madrid a Berlín, seguís conectado",
         "desc": "Cobertura en Europa y Estados Unidos según tu plan."
       }
-    }
+    },
+    "renewal": "¿Necesitás más GB antes de los 28 días? Podés renovar tu tarifa por anticipado — escribinos y te ayudamos a gestionarlo."
   },
   "plans": {
     "title": "Elegí tu plan",
-    "subtitle": "Precios en dólares, un solo pago, sin renovación automática.",
+    "subtitle": "Precios en dólares, un solo pago, sin cargos recurrentes a tu tarjeta.",
     "popular": "Más elegido",
     "socialProof": "Atención L-S · 8 a 21 h España",
     "perMonth": "por 28 días",
@@ -57,7 +58,7 @@
     "countries": "países",
     "buyPlan": "Elegir plan",
     "activateAnytime": "Elegís cuándo empieza tu plan",
-    "noAutoRenew": "Sin renovación automática",
+    "noAutoRenew": "Sin suscripción ni cargos recurrentes",
     "coverage": "Cobertura en Europa y Estados Unidos según tu plan",
     "daysDuration": "días",
     "euRoaming": "Roaming UE",
@@ -149,11 +150,11 @@
       },
       "when": {
         "q": "¿Cuándo activo la eSIM?",
-        "a": "Tus días de plan Prepago ya corren desde que te enviamos el QR, no desde que lo activás en tu celular. Te recomendamos instalarlo antes de salir de tu país (con WiFi) y prender los datos apenas aterrizás en Europa. Para el plan DataOnly, tenés 60 días desde la compra para instalarlo cuando quieras."
+        "a": "Tus días de plan ya corren desde que te enviamos el QR, no desde que lo activás en tu celular. Te recomendamos instalarlo antes de salir de tu país (con WiFi) y prender los datos apenas aterrizás en Europa."
       },
       "costs": {
         "q": "¿Hay costos adicionales o sorpresas?",
-        "a": "No. El precio que ves es el precio final en dólares. Sin renovación automática, sin costos ocultos. Cuando se terminan los GB o los días, simplemente dejás de tener datos (no se cobra nada extra)."
+        "a": "No. El precio de la compra es el final, en dólares, y no hay suscripción ni cargos recurrentes a tu tarjeta. La tarifa tiene un ciclo de 28 días y, al terminar, se renueva automáticamente si la línea tiene saldo suficiente — usando ese saldo, sin volver a cobrar en tu tarjeta. Si te quedás sin GB antes, podés pedirnos una renovación anticipada."
       },
       "whatsapp": {
         "q": "¿La eSIM me cambia el número de WhatsApp?",
@@ -257,7 +258,7 @@
       "mpSub": "Ideal para Argentina, Chile, México y más",
       "secure": "Pago 100% seguro",
       "processing": "Procesando...",
-      "once": "pago único · sin renovación",
+      "once": "pago único · sin cargos recurrentes",
       "noStore": "No almacenamos datos de tu tarjeta"
     },
     "countries": {

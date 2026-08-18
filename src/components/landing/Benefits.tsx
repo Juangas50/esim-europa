@@ -265,8 +265,18 @@ export default function Benefits({ plans }: BenefitsProps) {
                 </motion.a>
               ))}
             </div>
+            {/*
+              Aquí ponía «Después: 1,33 €/GB según normativa europea». El
+              importe es válido para su supuesto, pero debajo de las cinco
+              tarjetas se leía como si fuera el comportamiento normal del
+              producto: no mencionaba que se puede renovar antes de tiempo,
+              invocaba una normativa que no aplica a todos los destinos que
+              cubrimos, y estaba en castellano también en portugués. La salida
+              que le sirve a quien se queda sin datos es renovar, no una tarifa
+              por giga.
+            */}
             <p className="text-xs text-[var(--color-ink-2)] text-center mt-3">
-              Después: 1,33 €/GB según normativa europea
+              {t("renewal")}
             </p>
           </div>
         </motion.div>

@@ -367,7 +367,7 @@ export default function SobreRuta34() {
               </h2>
 
               <p className="text-lg text-[var(--color-ink)] leading-relaxed max-w-3xl">
-                Cada plan dura 28 días desde que te enviamos el código QR. Si tu viaje se alarga, podés comprar un plan nuevo cuando lo necesites: es un pago único, sin permanencia y sin renovación automática.
+                Cada plan dura 28 días desde que te enviamos el código QR. Si tu viaje se alarga, podés comprar un plan nuevo cuando lo necesites: es un pago único, sin permanencia y sin cargos recurrentes a tu tarjeta.
               </p>
 
               <div className="pt-4 space-y-2">
@@ -382,7 +382,7 @@ export default function SobreRuta34() {
               <div className="p-8 lg:p-10 rounded-xl bg-[var(--color-warm-white)] border border-[var(--color-gold)]/30 space-y-6">
                 <div className="space-y-1">
                   <h4 className="font-sans font-semibold text-lg text-[var(--color-navy)]">28 días, un solo pago</h4>
-                  <p className="text-[var(--color-ink-2)]">Sin renovación automática ni cargos sorpresa</p>
+                  <p className="text-[var(--color-ink-2)]">Sin suscripción ni cargos sorpresa en tu tarjeta</p>
                 </div>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-[var(--color-ink)]">
@@ -391,7 +391,7 @@ export default function SobreRuta34() {
                   </li>
                   <li className="flex items-start gap-2 text-[var(--color-ink)]">
                     <span className="text-[var(--color-gold)] font-bold">+</span>
-                    <span>Cuando se acaba, no se cobra nada más</span>
+                    <span>Si necesitás más datos antes de tiempo, podés renovar la tarifa por anticipado</span>
                   </li>
                 </ul>
               </div>

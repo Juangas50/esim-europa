@@ -38,7 +38,7 @@ export default function FAQPage() {
       id: "data-usage",
       question: "¿Cómo se cuenta mi uso de datos?",
       answer:
-        "Tu consumo se cuenta desde el servidor de RUTA34 en cuanto la eSIM empieza a usar datos. No hay panel de cliente: si querés consultar cuánto llevás gastado, escribinos por WhatsApp con tu referencia de pedido. Cuando agotás los GB de tu plan, el servicio de datos se detiene y no se te cobra nada adicional.",
+        "Tu consumo se cuenta desde el servidor de RUTA34 en cuanto la eSIM empieza a usar datos. No hay panel de cliente: si querés consultar cuánto llevás gastado, escribinos por WhatsApp con tu referencia de pedido. Si ves que se te acaban antes de tiempo, podés pedirnos una renovación anticipada de la tarifa; y al terminar los 28 días se renueva automáticamente si la línea tiene saldo suficiente.",
     },
     {
       id: "multiple-esims",
@@ -80,13 +80,13 @@ export default function FAQPage() {
       id: "no-service",
       question: "¿Qué pasa si me quedo sin datos?",
       answer:
-        "Cuando agotes los datos de tu plan, la conexión de datos se desactiva y no se te cobra nada adicional. Para volver a tener conexión podés comprar un plan nuevo cuando lo necesites.",
+        "No tenés que esperar a que terminen los 28 días: podés pedirnos una renovación anticipada de la tarifa y te ayudamos a gestionarla. Si no renovás, dentro de España la conexión puede quedar a velocidad mínima —sigue disponible, pero muy limitada para un uso normal—. En roaming por la Unión Europea, agotado el máximo que tu plan permite gastar fuera de España y si hay saldo en la línea, el consumo adicional puede cobrarse a 1,33 €/GB. Para destinos que no son de la UE escribinos y te lo confirmamos.",
     },
     {
       id: "coverage",
       question: "¿Qué operadores usa RUTA34?",
       answer:
-        "El servicio se presta sobre una red de telecomunicaciones española certificada, con cobertura 4G/5G en España y en los destinos europeos incluidos en el plan.",
+        "El servicio se presta sobre una red de telecomunicaciones española certificada, con cobertura 4G/5G en España y en los destinos incluidos en tu plan.",
     },
     {
       id: "emergency",

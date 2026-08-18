@@ -37,7 +37,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Hay costos adicionales o sorpresas en la factura?",
-    a: "No. El precio mostrado es el final — en dólares USD, sin renovación automática. Cuando se agotan los GB o días, el servicio se detiene sin cobros adicionales.",
+    a: "No. El precio de la compra es el final —en dólares USD— y no hay suscripción ni cargos recurrentes a tu tarjeta. La tarifa tiene un ciclo de 28 días y, al terminar, se renueva automáticamente si la línea tiene saldo suficiente: se usa ese saldo, no se vuelve a cobrar en la tarjeta. Si durante el viaje necesitás más datos antes de que termine el ciclo, podés pedir una renovación anticipada; escribinos y te ayudamos a gestionarlo.",
   },
   {
     q: "¿Cuándo empiezan a contar mis 28 días?",
@@ -52,7 +52,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Qué velocidad de internet tengo en Europa?",
-    a: "La velocidad depende de la cobertura local del operador móvil, pero generalmente es 4G/LTE o 5G en ciudades principales. En zonas rurales puede ser 3G. No hay límites de velocidad — una vez agotados los GB, el servicio se pausa sin cargos adicionales.",
+    a: "La velocidad depende de la cobertura local del operador móvil, pero generalmente es 4G/LTE o 5G en ciudades principales. En zonas rurales puede ser 3G. Mientras te queden GB incluidos no hay límite de velocidad; una vez agotados y sin saldo disponible, la conexión puede quedar a velocidad mínima.",
   },
   {
     q: "¿Cuánto tiempo tarda la instalación de la eSIM?",
@@ -64,7 +64,7 @@ const FAQ_ES = [
   },
   {
     q: "¿Qué pasa si me quedo sin datos antes de terminar mis 28 días?",
-    a: "El servicio de datos se detiene y no se te cobra nada adicional. Podés comprar un plan nuevo cuando lo necesites.",
+    a: "No hace falta esperar al día 28: podés pedir una renovación anticipada de la tarifa y te ayudamos a gestionarla. Si no renovás, dentro de España la conexión puede quedar a velocidad mínima. En roaming por la Unión Europea, agotado el máximo que tu plan permite gastar fuera de España y si hay saldo en la línea, el consumo adicional puede cobrarse a 1,33 €/GB; en destinos fuera de la UE, escribinos y lo confirmamos.",
   },
   {
     q: "¿La eSIM funciona en todas las ciudades de Europa?",
@@ -104,7 +104,7 @@ const FAQ_PT = [
   },
   {
     q: "Há custos adicionais ou surpresas na fatura?",
-    a: "Não. O preço mostrado é o final — em dólares USD, sem renovação automática. Quando os GB ou dias acabarem, o serviço para sem cobranças adicionais.",
+    a: "Não. O preço da compra é o final —em dólares USD— e não há assinatura nem cobranças recorrentes no seu cartão. A tarifa tem um ciclo de 28 dias e, ao terminar, é renovada automaticamente se a linha tiver saldo suficiente: usa-se esse saldo, não se cobra de novo no cartão. Se durante a viagem precisar de mais dados antes do fim do ciclo, pode pedir uma renovação antecipada; fale com a gente e ajudamos a tratar disso.",
   },
   {
     q: "Quando começam a contar meus 28 dias?",
@@ -116,7 +116,7 @@ const FAQ_PT = [
   },
   {
     q: "Qual é a velocidade da internet na Europa?",
-    a: "A velocidade depende da cobertura local da operadora móvel, mas geralmente é 4G/LTE ou 5G nas cidades principais. Em zonas rurais pode ser 3G. Sem limites de velocidade — quando os GB acabarem, o serviço pausa sem cobranças extras.",
+    a: "A velocidade depende da cobertura local da operadora móvel, mas geralmente é 4G/LTE ou 5G nas cidades principais. Em zonas rurais pode ser 3G. Enquanto houver GB incluídos não há limite de velocidade; depois de esgotados e sem saldo disponível, a conexão pode ficar em velocidade mínima.",
   },
   {
     q: "Quanto tempo leva para instalar o eSIM?",
@@ -128,7 +128,7 @@ const FAQ_PT = [
   },
   {
     q: "O que acontece se ficar sem dados antes de 28 dias?",
-    a: "O serviço de dados para e nada extra é cobrado. Você pode comprar um plano novo quando precisar.",
+    a: "Não precisa esperar o dia 28: pode pedir uma renovação antecipada da tarifa e ajudamos a tratar disso. Sem renovar, na Espanha a conexão pode ficar em velocidade mínima. Em roaming pela União Europeia, esgotado o máximo que o seu plano permite gastar fora da Espanha e havendo saldo na linha, o consumo adicional pode ser cobrado a 1,33 €/GB; em destinos fora da UE, fale com a gente e confirmamos.",
   },
   {
     q: "O eSIM funciona em todas as cidades da Europa?",

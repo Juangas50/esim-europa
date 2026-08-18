@@ -137,8 +137,12 @@ function TerminosES() {
           </li>
         </ul>
         <p>
-          El cobro es único y no existe renovación automática. La empresa no almacena datos de
-          tarjetas de pago; este proceso es gestionado íntegramente por los proveedores de pago.
+          El cobro realizado mediante tarjeta en la compra es único y no implica una suscripción ni
+          cargos recurrentes sobre dicho medio de pago. La tarifa tiene un ciclo de 28 días y, al
+          finalizar dicho periodo, si la línea dispone de saldo suficiente, puede renovarse
+          automáticamente utilizando ese saldo, sin generar un nuevo cargo automático sobre la
+          tarjeta utilizada en la compra. La empresa no almacena datos de tarjetas de pago; este
+          proceso es gestionado íntegramente por los proveedores de pago.
         </p>
         <p>
           Los precios se muestran en dólares estadounidenses (USD). El importe final que el cliente

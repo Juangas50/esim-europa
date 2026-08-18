@@ -96,7 +96,7 @@ export default function Plans({ plans }: PlansProps) {
           <div className="flex items-center gap-1.5">
             <span className="text-[var(--color-gold)]">✓</span>
             <span className="text-xs md:text-sm text-[var(--color-ink-2)] font-medium">
-              Sin renovación automática
+              Sin suscripción ni cargos recurrentes
             </span>
           </div>
         </motion.div>

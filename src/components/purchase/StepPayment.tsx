@@ -350,7 +350,7 @@ export default function StepPayment({ plan, formData, onBack }: StepPaymentProps
               {formatUSD(plan.price_usd * (formData.quantity ?? 1))}
             </span>
           </div>
-          <p className="text-xs text-[var(--color-ink-2)] text-right">USD · pago único · sin renovación automática</p>
+          <p className="text-xs text-[var(--color-ink-2)] text-right">USD · pago único · sin cargos recurrentes</p>
 
           {/* Mini trust badge en summary */}
           <div className="mt-4 pt-3 border-t border-[var(--color-border)] flex items-center gap-1.5 justify-center">

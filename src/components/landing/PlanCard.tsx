@@ -97,8 +97,9 @@ export default function PlanCard({
                         ✓ No son GB adicionales
                       </p>
                       <p className="text-xs text-[var(--color-ink-2)]">
-                        Una vez que uses los {plan.eu_data_gb} GB en roaming, solo podrás seguir usando datos dentro de
-                        España.
+                        Una vez que uses los {plan.eu_data_gb} GB fuera de España, podés renovar la tarifa por
+                        anticipado. Si no, en roaming por la Unión Europea el consumo adicional puede cobrarse
+                        del saldo de la línea; en destinos fuera de la UE, consultanos.
                       </p>
                     </div>
                   }

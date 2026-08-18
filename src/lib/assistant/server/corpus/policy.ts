@@ -7,7 +7,7 @@
  *
  * Lo que NO está aquí, y por qué:
  *
- * · **Precios y GB.** Salen del catálogo vivo vía `list_plans`. Nunca del
+ * · **Precios y GB.** Salen del catálogo vivo vía \`list_plans\`. Nunca del
  *   corpus, porque un número escrito aquí queda congelado el día que se
  *   escribió y nadie lo actualiza cuando cambia una tarifa.
  * · **Lista de países.** No existe lista contractual canónica: las fuentes
@@ -73,9 +73,87 @@ grave: es prometer datos que no existen.
 
 ## Cobros
 
-- El precio mostrado es el precio final, en dólares.
-- No hay renovación automática ni cargos ocultos. Cuando se acaban los GB o los
-  días, el servicio simplemente deja de dar datos; no se cobra nada extra.
+- El precio mostrado es el precio final, en dólares. No hay cargos ocultos en la
+  compra ni renovación automática cobrada por sorpresa.
+- **No se puede decir que al agotar los GB «no se cobra nada».** Eso era lo que
+  decía la web y no describe bien el producto. Lo que se puede decir está en la
+  sección siguiente.
+
+## Qué pasa al agotar los GB
+
+Tres situaciones distintas. Conviene no mezclarlas.
+
+**Dentro de España.** Consumida la bolsa incluida y sin renovar, la conexión no
+queda necesariamente bloqueada del todo: sin saldo disponible la velocidad puede
+bajar a niveles mínimos, de modo que la línea sigue técnicamente disponible pero
+resulta muy limitada para un uso normal. No se dice «te quedás sin conexión», ni
+«el servicio se bloquea», ni «se detiene automáticamente»: ninguna de las tres es
+lo bastante precisa.
+
+**Fuera de España.** Cada gama tiene un máximo de esa misma bolsa que puede
+gastarse fuera de España — el \`outsideSpainMaxGb\` que devuelve \`list_plans\`, y
+que hay que consultar ahí en vez de recordarlo. Ese tope es igual para todos los
+destinos incluidos. **Lo que no es igual en todos es qué ocurre después**, y ahí
+hay que distinguir.
+
+**Roaming en la Unión Europea.** Agotada la franquicia, si la línea tiene saldo
+disponible, el consumo adicional puede cobrarse a **1,33 €/GB**. Esta condición
+está confirmada para roaming en la Unión Europea y **solo** para ese caso.
+
+Antes de mencionarla hay que cumplir dos requisitos, los dos:
+
+1. que el destino esté **incluido en la cobertura de esa gama** — lo dice
+   \`check_coverage\`, no la memoria. Si la gama no cubre el destino no hay
+   franquicia que agotar allí, y hablar de precio por giga es responder a otra
+   pregunta;
+2. que se trate de **roaming en la Unión Europea**.
+
+**Destinos que no son de la Unión Europea.** La cobertura incluye destinos fuera
+de la UE. Para ellos **no tenemos confirmada** esa condición, así que no se
+menciona el precio: se dice que no está confirmado qué ocurre después de agotar
+la franquicia allí y se deriva a soporte si hace falta.
+
+«Fuera de España» y «roaming UE» **no son lo mismo**, y confundirlos es prometer
+un precio que nadie ha confirmado. Ante la duda sobre si un destino pertenece a
+la Unión Europea, se trata como no confirmado: no se adivina. Aquí no hay dato
+que consultar —el catálogo guarda tarifas y gigas, y \`coverage.json\` guarda
+dónde funciona cada gama; ninguno de los dos dice qué destino es de la UE—, así
+que la única salida honesta cuando no consta es reconocerlo y derivar.
+
+**Renovación.** Aquí hay tres cosas distintas que se confunden con facilidad, y
+conviene separarlas cada vez:
+
+1. **La tarjeta con la que se compró.** No hay suscripción ni cargo recurrente:
+   Ruta34 no vuelve a cobrar sola en esa tarjeta. A «¿me van a cobrar todos los
+   meses?» la respuesta es que no.
+2. **El saldo de la línea.** Es otra cosa. La tarifa tiene un ciclo de 28 días
+   —el \`validityDays\` del catálogo— y, al terminar, **se renueva
+   automáticamente si la línea tiene saldo suficiente**, usando ese saldo. Por
+   eso no se puede decir «no se renueva automáticamente» a secas: sí se renueva,
+   pero con el saldo de la línea, no cobrando de nuevo en la tarjeta. Sin saldo
+   suficiente no se renueva.
+3. **La renovación anticipada.** Antes de que terminen los 28 días se puede
+   pedir, y es justo lo que sirve cuando alguien gasta los GB a mitad de viaje.
+   Es una **gestión de soporte** de Ruta34: se ofrece acompañarla, nunca como
+   algo que el cliente ejecute solo desde la web ni que ocurra al instante.
+
+Esa es la salida que se ofrece primero: renovar es mejor respuesta que explicarle
+a alguien cuánto le costará cada giga suelto.
+
+## Lo que no se sabe y no se inventa
+
+Sobre todo esto hay cosas que el asistente **no** puede afirmar, ni siquiera
+aproximando. Si hacen falta para responder, se reconoce el límite y se deriva a
+soporte:
+
+- cómo se ejecuta la renovación por dentro, o cuánto tarda Ruta34 en gestionarla;
+- si la renovación anticipada es instantánea;
+- cuánto saldo exacto necesita alguien, si no sale del precio vivo del catálogo;
+- a qué velocidad concreta queda la línea al agotar los datos, o qué aplicaciones
+  seguirán siendo usables;
+- cómo se tarifica en una zona concreta si no está documentado aquí;
+- condiciones regulatorias de un país en particular;
+- qué ocurre en un destino que no esté cubierto.
 
 ## Llamadas internacionales
 
