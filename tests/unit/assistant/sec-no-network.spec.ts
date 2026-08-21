@@ -9,7 +9,12 @@ import net from "node:net";
 import dns from "node:dns";
 
 import { NetworkAccessError } from "./_no-network";
-import { AVAILABLE_PROVIDERS, createProvider } from "@/lib/assistant/server/provider";
+import {
+  AVAILABLE_PROVIDERS,
+  createFakeProvider,
+  createProviderFromEnv,
+  readAssistantConfig,
+} from "@/lib/assistant/server/provider";
 
 /**
  * El candado, y la comprobación de que nadie se lo salta.
@@ -75,18 +80,46 @@ test.describe("cobertura del candado", () => {
 });
 
 test.describe("proveedores disponibles", () => {
-  test("en Fase 2A solo existe el proveedor de pruebas", () => {
-    expect(AVAILABLE_PROVIDERS).toEqual(["fake"]);
+  test("un despliegue solo puede pedir los dos reales", () => {
+    // En 2A la lista era `["fake"]` y esa era la garantía de que no se abría un
+    // socket. Ahora los adaptadores existen, y la garantía se traslada: el
+    // proveedor de pruebas ya no es seleccionable desde el entorno.
+    expect(AVAILABLE_PROVIDERS).toEqual(["openai", "anthropic"]);
+    expect(AVAILABLE_PROVIDERS).not.toContain("fake");
   });
 
-  test("pedir cualquier otro proveedor falla en vez de caer en uno real", () => {
-    // El cast es el escenario que se quiere cubrir: alguien forzando el tipo.
-    expect(() => createProvider("anthropic" as never)).toThrow(/no disponible/);
-    expect(() => createProvider("openai" as never)).toThrow(/no disponible/);
+  test("sin ASSISTANT_ENABLED no se construye ningún proveedor", () => {
+    // Apagado por defecto: un despliegue al que se le olvidó la variable no
+    // empieza a gastar dinero solo.
+    expect(createProviderFromEnv({})).toBeNull();
+    expect(createProviderFromEnv({ ASSISTANT_ENABLED: "false" })).toBeNull();
+    expect(readAssistantConfig({ ASSISTANT_PROVIDER: "openai" }).enabled).toBe(false);
+  });
+
+  test("el proveedor de pruebas no se puede seleccionar por entorno", () => {
+    expect(() =>
+      createProviderFromEnv({
+        ASSISTANT_ENABLED: "true",
+        ASSISTANT_PROVIDER: "fake",
+        ASSISTANT_MODEL: "lo-que-sea",
+      })
+    ).toThrow(/no es un proveedor admitido/);
+  });
+
+  test("construir un proveedor real sin transporte inyectado no sale a la red aquí", () => {
+    // Se construye, que es barato y no habla con nadie. La llamada es lo que
+    // saldría a la red, y el candado la cazaría.
+    const provider = createProviderFromEnv({
+      ASSISTANT_ENABLED: "true",
+      ASSISTANT_PROVIDER: "anthropic",
+      ASSISTANT_MODEL: "claude-haiku-4-5",
+      ANTHROPIC_API_KEY: "clave-de-mentira",
+    });
+    expect(provider?.id).toBe("anthropic");
   });
 
   test("el proveedor de pruebas no tiene cliente HTTP", async () => {
-    const provider = createProvider("fake");
+    const provider = createFakeProvider();
     // Si tuviese uno, esta llamada saldría a la red y el candado la cazaría.
     const res = await provider.complete({
       system: "s",
