@@ -10,6 +10,25 @@ uso de herramientas, latencia y coste.
 
 ## anthropic · `claude-haiku-4-5` — 2026-08-23
 
+> ⚠️ **REFERENCIA HISTÓRICA — NO COMPARAR CON LOS BLOQUES POSTERIORES.**
+>
+> Esta tirada se ejecutó desde el **contenedor de desarrollo**, no desde el
+> despliegue, y en dos aspectos no reproduce las condiciones de la comparativa
+> definitiva:
+>
+> · **CONV-1 y CONV-2 corrieron con el catálogo degradado.** No había
+>   credenciales de Supabase, así que `getPlansWithSource` devolvió el fallback
+>   y la regla de puertas cerradas impidió dar precios y gigas. Su
+>   comportamiento con el catálogo vivo no está medido aquí.
+> · **La latencia es la de esa máquina**, con su propia salida a internet.
+>
+> Las otras tres dimensiones —disciplina factual fuera de los escenarios de
+> catálogo, uso de herramientas y tokens— sí valen como primera lectura, y de
+> ellas salieron los hallazgos anotados en `DECISION_LOG.md` §4.3.
+>
+> La decisión de proveedor se toma con la comparativa Vercel↔Vercel, donde los
+> dos modelos se miden en el mismo despliegue y con el mismo catálogo.
+
 reasoning: no aplica a este proveedor
 
 Escenarios: 9 · repeticiones: 3 · turnos: 27 · errores: 0

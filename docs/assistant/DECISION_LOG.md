@@ -331,6 +331,25 @@ Se revisan **después** de tener las dos mitades:
 Activar la caché es la que más peso tiene en el coste y la que más tienta a tocar
 ya. No se toca: o se activa en los dos lados o se anota que ninguno la usa.
 
+### 4.4 `/api/assistant/bench` — **bloqueante de producción**
+
+La ruta existe porque la comparativa necesita medir a los dos modelos desde el
+mismo sitio, con el catálogo real delante, y el entorno de desarrollo del
+proyecto no tiene salida hacia OpenAI. Es instrumental, no producto:
+
+- **Es exclusivamente una herramienta temporal de Preview.** No forma parte de
+  ninguna funcionalidad del asistente ni de la web.
+- **Production no debe tener `BENCH_ENABLED=true`** en ningún momento. Sin esa
+  variable la ruta responde 404, que es su estado por defecto.
+- **Antes del release final hay que verificar que la ruta queda deshabilitada o
+  eliminada.** Verificarlo, no suponerlo: comprobar que la variable no está en
+  el entorno de Production y, preferiblemente, borrar la ruta cuando la Fase 2B
+  cierre.
+- **`BENCH_SECRET` no se reutiliza como secreto de ninguna otra
+  funcionalidad.** Es el único guardia de una superficie que gasta dinero real
+  al recibir una petición; compartirlo extendería ese riesgo a todo lo que lo
+  usara, y rotarlo por un incidente ajeno obligaría a tocar esta ruta.
+
 ---
 
 ## 5. Estado de las fases
