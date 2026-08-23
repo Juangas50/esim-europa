@@ -20,11 +20,15 @@
  *   ASSISTANT_ENABLED=true \
  *   ASSISTANT_PROVIDER=openai ASSISTANT_MODEL=gpt-5.6-luna OPENAI_API_KEY=… \
  *   ASSISTANT_REASONING_EFFORT=low \
- *   node --experimental-strip-types scripts/assistant-benchmark.mjs
+ *   npm run assistant:bench
  *
  *   ASSISTANT_ENABLED=true \
  *   ASSISTANT_PROVIDER=anthropic ASSISTANT_MODEL=claude-haiku-4-5 ANTHROPIC_API_KEY=… \
- *   node --experimental-strip-types scripts/assistant-benchmark.mjs
+ *   npm run assistant:bench
+ *
+ * Se lanza por `npm run` y no con `node` a pelo porque el script importa los
+ * módulos TypeScript del proyecto, y eso necesita los hooks de resolución de
+ * `scripts/ts-hooks.mjs` — ver ese fichero para el porqué.
  *
  * Cada ejecución añade su bloque a `docs/assistant/PROVIDER_REPORT.md`. Se
  * lanza una vez por modelo y luego se comparan los bloques.
@@ -290,8 +294,21 @@ function escribirInforme({ config, filas, precios, repeticiones }) {
   lineas.push(
     "La naturalidad y la disciplina factual se juzgan leyendo, no con una expresión regular.\n"
   );
-  for (const f of filas.filter((f) => f.intento === 1)) {
-    lineas.push(`**${f.escenario}** — ${f.error ? `error: ${f.error}` : ""}`);
+  lineas.push(
+    "Se vuelcan **todas** las repeticiones, no solo la primera: cuando un turno se " +
+      "desvía suele hacerlo en una de las tres, y esa es justo la que hay que leer. " +
+      "Los turnos marcados con ⚠️ son los que no cumplieron alguna expectativa.\n"
+  );
+  for (const f of filas) {
+    const marcas = [];
+    if (!f.herramientaEsperada) marcas.push("no llamó a la herramienta esperada");
+    if (!f.contieneOk) marcas.push("no contiene lo esperado");
+    if (!f.prohibidoOk) marcas.push("**dice algo prohibido**");
+    if (f.error) marcas.push(`error: ${f.error}`);
+
+    lineas.push(
+      `**${f.escenario} · repetición ${f.intento}**${marcas.length ? ` — ⚠️ ${marcas.join("; ")}` : ""}`
+    );
     lineas.push("");
     lineas.push("> " + (f.texto || "(sin texto)").replace(/\n/g, "\n> "));
     lineas.push("");

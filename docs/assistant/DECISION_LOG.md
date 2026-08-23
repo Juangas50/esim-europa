@@ -296,6 +296,41 @@ lo que se compara son dos integraciones, no dos modelos. Cinco dimensiones:
 4. **Latencia** — percibida en el primer token y total del turno.
 5. **Coste** — medido con `usage` real, no con la estimación de arriba.
 
+### 4.3 Hallazgos pendientes de la tirada de Haiku — *no accionar todavía*
+
+De la primera mitad de la Fase 2B-B (27 turnos contra `claude-haiku-4-5`, informe
+completo en `PROVIDER_REPORT.md`). Están anotados, no corregidos, **y es
+deliberado**: Luna tiene que ejecutarse contra exactamente el mismo prompt,
+corpus, dispatcher y herramientas. Tocar cualquiera de estos puntos antes de esa
+segunda tirada convertiría la comparación en dos sistemas distintos medidos por
+separado, que es justo lo que 4.2 dice que no se hace.
+
+Se revisan **después** de tener las dos mitades:
+
+1. **Lenguaje demasiado afirmativo tras `escalate_to_human`.** El turno promete
+   lo que hará una persona («te contactan por WhatsApp en un momento») en vez de
+   describir lo que el asistente acaba de hacer. El asistente no controla ni el
+   cuándo ni el desenlace.
+2. **La frase de dual SIM.** Observada: «podés tener tanto la eSIM de Ruta34
+   como tu SIM física con el mismo número — los dos números en un solo celular».
+   Se contradice dentro de la misma línea y puede leerse como que las dos SIM
+   comparten número, que es falso.
+3. **Inconsistencia en CONV-4b (2 de 3).** Ante un modelo inventado, dos
+   repeticiones pidieron marca y modelo reales en lugar de llamar a
+   `check_device_compatibility`. Ninguna llegó a decir que fuera incompatible,
+   así que la prohibición se respetó; lo que falla es la constancia.
+4. **CONV-5 (1 de 3).** Una repetición escaló sin explicar antes la renovación
+   anticipada. Las otras dos la explicaron primero, que es el orden correcto.
+5. **Caché de prompt a cero y contexto real de ~6.800 tokens.** Ninguno de los
+   27 turnos reportó tokens cacheados: el adaptador no envía `cache_control`.
+   Además la primera llamada consume ~6.800 tokens de entrada —y ~13.700 con una
+   ida y vuelta de herramienta—, frente a los 3.463 estimados en 4.1. Las cifras
+   de coste de esa sección se quedan cortas **para los dos proveedores**, así que
+   el orden relativo probablemente aguanta, pero las magnitudes no.
+
+Activar la caché es la que más peso tiene en el coste y la que más tienta a tocar
+ya. No se toca: o se activa en los dos lados o se anota que ninguno la usa.
+
 ---
 
 ## 5. Estado de las fases
