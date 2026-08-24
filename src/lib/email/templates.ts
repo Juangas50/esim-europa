@@ -258,7 +258,7 @@ function premiumHeader() {
 }
 
 function premiumFooter() {
-  return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34647204011'}" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
+  return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '34647204011'}" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
 }
 
 function qrBlock(qrUrl: string, confirmationCode: string, activationString: string) {
@@ -273,7 +273,7 @@ function orderSummaryBlock(planName: string, planGB: number, planEUGB: number | 
 }
 
 function supportBlock() {
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="https://wa.me/${process.env.WHATSAPP_NUMBER ?? '34647204011'}">Hablar por WhatsApp</a></div></td></tr>`
+  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '34647204011'}">Hablar por WhatsApp</a></div></td></tr>`
 }
 
 // ── B2C: Entrega de eSIM con QR embebido ──────────────────────────────────────
