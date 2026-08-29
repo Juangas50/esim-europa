@@ -195,9 +195,39 @@ No bloquea implementación ni pruebas internas. Sí bloquea la apertura al
 público. La sanitización de PII previa al modelo (D-I) es una precondición
 técnica, no un sustituto del acuerdo.
 
-### D5 · Proveedor de modelo — *pendiente, se decide en Fase 2B*
+### D5 · Proveedor de modelo — **RESUELTA (2026-08-29)**
 
-Ver la sección 4. **No se selecciona hasta ver los resultados de la suite CONV.**
+| | |
+|---|---|
+| **Proveedor** | OpenAI |
+| **Modelo** | `gpt-5.6-luna` |
+| **Reasoning** | `low` |
+| **Fecha de decisión** | 2026-08-29 |
+| **Estado** | Seleccionado para producción, **pendiente de correcciones funcionales y revalidación final** |
+
+Se midieron tres candidatos contra el mismo prompt, corpus, dispatcher,
+herramientas y catálogo: Claude Haiku 4.5, GPT-5.6 Luna y GPT-5 nano. Gemini 3.7
+Flash se preparó y se descartó antes de medir, por partir de un coste superior a
+Luna. Los datos están en `PROVIDER_REPORT.md`.
+
+**Por qué Luna y no nano**, que era el challenger barato. En la comparativa
+cache-equivalent —los dos de OpenAI, mismo adaptador, ambos con `low`—:
+
+| | Luna | nano |
+|---|---:|---:|
+| Coste / 27 turnos | $0,008248 | $0,006166 |
+| Latencia mediana | 2.693 ms | 3.624 ms |
+| Latencia p90 | 4.656 ms | 5.752 ms |
+| Tokens de salida | 2.302 | 10.643 |
+
+El ahorro real de nano es **≈25%**, no el 4× que sugiere su tarifa: genera
+**≈4,6× más salida** y eso se come el descuento. Encima es **más lento**. Un
+ahorro absoluto de esa magnitud no compensa la degradación observada, y por eso
+la decisión no se toma por coste.
+
+**No habrá una segunda tirada de nano con el prompt ajustado.** Parte de la
+verbosidad probablemente se corregiría así, pero los defectos 2, 3 y 4 de abajo
+no son de longitud.
 
 ---
 
@@ -417,6 +447,62 @@ Se revisan **después** de tener las dos mitades:
 Activar la caché es la que más peso tiene en el coste y la que más tienta a tocar
 ya. No se toca: o se activa en los dos lados o se anota que ninguno la usa.
 
+### 4.3 bis · Hallazgos cualitativos de GPT-5 nano — CONFIRMADOS (2026-08-29)
+
+**Los seis se detectaron leyendo las respuestas, no midiéndolas.** En las dos
+columnas automáticas nano empata con Luna: 24/27 en herramienta esperada y 0/27
+en prohibiciones violadas. Nada de lo que sigue aparece en esas cifras.
+
+1. **Truncamiento.** CONV-2 repetición 1: agotó los 600 tokens de tope y entregó
+   «Para recomendarte el plan exacto», cortado a media frase. Única truncación
+   en los 54 turnos de la comparativa.
+2. **Deliberación interna expuesta.** CONV-2 repetición 2 abre con «¿30 días?
+   No, 20 días.»: se corrige a sí mismo en voz alta sobre un dato que nadie
+   había dicho.
+3. **Vocabulario y nombres internos a la vista del cliente.**
+   `covered_with_exceptions` y `"covered with exceptions"` en CONV-3b,
+   «necesito consultar `list_plans`» dos veces, y «el catálogo está
+   `unavailable`» en CONV-7.
+4. **Lectura incorrecta de `covered_with_exceptions`.** CONV-3b repetición 1:
+   «Sí, Europa Plus está cubierto en Estados Unidos, pero con excepciones», sin
+   decir cuál. Ese estado significa que **unas gamas cubren el destino y otras
+   no**, y la excluida es Europa Básico — la excepción no es de Europa Plus.
+   Además el resultado de la herramienta trae la instrucción explícita de
+   nombrar la gama excluida *antes* de que la persona compre, y esa repetición
+   no la nombra. **Es el defecto más grave: distorsiona cobertura justo antes de
+   una compra.** Luna nombra Europa Básico en las tres repeticiones.
+5. **Promesas de capacidades inexistentes o de acciones que no controla.**
+   CONV-5: «Puedo iniciar una solicitud de renovación anticipada… te mantengo al
+   tanto del progreso». CONV-6: «¿te mando un correo para seguimiento?», cuando
+   no existe ninguna herramienta de correo. Es el hallazgo §4.3-1 agravado.
+6. **Registro inconsistente y erratas.** Mezcla tuteo y voseo dentro del mismo
+   mensaje —«Asegúrate… Verificá», «puedes… decime»— cuando la web y el prompt
+   son rioplatense; y «¿ querés» con el espacio mal, cuatro veces.
+
+### 4.3 ter · Conclusión metodológica
+
+**`expected tool call` y `prohibition regex` no bastan para decidir proveedor.**
+Miden adherencia al contrato de las herramientas y ausencia de unas frases
+concretas; no miden si la respuesta es correcta en su contexto ni si es
+publicable.
+
+De los defectos de arriba, las métricas automáticas no capturan ninguno. Y en
+sentido contrario, §4.3-6 documenta que la métrica **penalizó a Luna** por pedir
+una aclaración correcta en CONV-2 y **premió** una llamada formalmente esperada
+a la que le faltaba un criterio material.
+
+Por tanto, la revisión humana sigue siendo obligatoria para:
+
+- **factualidad contextual** — que la respuesta sea correcta *para esa pregunta*,
+  no solo que no contenga una frase prohibida;
+- **exposición de internals** — nombres de herramientas, estados, literales de
+  la API;
+- **capacidad real del asistente** — que no prometa lo que no puede hacer;
+- **calidad editorial** — registro, coherencia, ausencia de erratas.
+
+Las cifras sirven para descartar y para comparar coste y latencia. No para
+elegir.
+
 ### 4.4 `/api/assistant/bench` — **bloqueante de producción**
 
 La ruta existe porque la comparativa necesita medir a los dos modelos desde el
@@ -443,7 +529,7 @@ proyecto no tiene salida hacia OpenAI. Es instrumental, no producto:
 | Fase | Contenido | Estado |
 |---|---|---|
 | 2A | DTOs, esquemas, corpus, prompt, registro, herramientas, proveedor falso, dispatcher, límites, sanitización, tests SEC | **Implementada** |
-| 2B | Adaptadores OpenAI y Anthropic, configuración, suite CONV, informe comparativo | Pendiente |
+| 2B | Adaptadores OpenAI y Anthropic, configuración, suite CONV, informe comparativo | **Implementada.** Proveedor seleccionado el 2026-08-29 (D5). Quedan las correcciones funcionales de §4.3 y la revalidación final antes de 2C |
 | 2C | `/api/assistant/chat`, SSE sobre POST, `HttpTransport`, eventos con lista blanca, UI a prueba de fallos | Pendiente |
 | 2D | Rate limiting distribuido, tope de gasto, firewall, cortacircuitos de presupuesto, revisión de PII, DPA/RGPD, suite de seguridad, kill switch | Pendiente |
 

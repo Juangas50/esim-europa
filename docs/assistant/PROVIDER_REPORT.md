@@ -626,3 +626,457 @@ Se vuelcan **todas** las repeticiones, no solo la primera: cuando un turno se de
 
 > En este momento no puedo confirmar precios. Te recomiendo que mires la web directamente o te contactes con el equipo por WhatsApp para que te den los detalles actuales. ¿Hay algo más en lo que pueda ayudarte?
 
+
+---
+
+# Comparativa Luna ↔ nano — 2026-08-29
+
+Segunda comparativa, la que responde si **GPT-5 nano mantiene calidad suficiente
+para preferirlo a GPT-5.6 Luna por su menor coste**. Los dos bloques se midieron
+en el mismo despliegue, con el mismo prompt, corpus, dispatcher, herramientas y
+catálogo real, 9 escenarios × 3 repeticiones, alternando modelos escenario a
+escenario, y los dos con `reasoning.effort=low`.
+
+> **Aquí la comparación de coste SÍ es cache-equivalent.** Los dos son modelos de
+> OpenAI servidos por el mismo adaptador y los dos reciben su caching
+> automático, así que la salvedad que arrastra la comparación con Haiku no
+> aplica a este par.
+
+## openai · `gpt-5.6-luna` — 2026-08-29
+
+reasoning.effort: `low`
+
+Entorno de ejecución: **despliegue de Vercel (Preview `GngCwHi6wnb4cWH6uiVzmDe3VT9c`), catálogo real de Supabase**
+
+Escenarios: 9 · repeticiones: 3 · turnos: 27 · errores: 0
+
+### Por escenario
+
+| Escenario | ms | Herramientas | ¿la esperada? | Contiene | Prohibido | Trunc. | in | cache | out |
+|---|---:|---|:--:|:--:|:--:|:--:|---:|---:|---:|
+| CONV-1 | 5181 | list_plans | sí | sí | ok | — | 9506 | 4500 | 199 |
+| CONV-1 | 4170 | list_plans | sí | sí | ok | — | 9506 | 9500 | 195 |
+| CONV-1 | 4656 | list_plans | sí | sí | ok | — | 9506 | 9500 | 194 |
+| CONV-2 | 1971 | — | **no** | sí | ok | — | 4518 | 4492 | 74 |
+| CONV-2 | 2747 | — | **no** | sí | ok | — | 4518 | 4515 | 95 |
+| CONV-2 | 1892 | — | **no** | sí | ok | — | 4518 | 4515 | 84 |
+| CONV-3a | 3472 | check_coverage | sí | sí | ok | — | 9130 | 8999 | 66 |
+| CONV-3a | 3015 | check_coverage | sí | sí | ok | — | 9130 | 9124 | 66 |
+| CONV-3a | 2957 | check_coverage | sí | sí | ok | — | 9130 | 9124 | 66 |
+| CONV-3b | 3808 | check_coverage | sí | sí | ok | — | 9128 | 8998 | 65 |
+| CONV-3b | 2693 | check_coverage | sí | sí | ok | — | 9128 | 9122 | 61 |
+| CONV-3b | 2576 | check_coverage | sí | sí | ok | — | 9128 | 9122 | 61 |
+| CONV-4a | 2496 | check_device_compatibility | sí | sí | ok | — | 9096 | 8997 | 58 |
+| CONV-4a | 2301 | check_device_compatibility | sí | sí | ok | — | 9096 | 9090 | 59 |
+| CONV-4a | 3079 | check_device_compatibility | sí | sí | ok | — | 9096 | 9090 | 57 |
+| CONV-4b | 5654 | check_device_compatibility | sí | sí | ok | — | 9114 | 9001 | 80 |
+| CONV-4b | 2440 | check_device_compatibility | sí | sí | ok | — | 9114 | 9108 | 81 |
+| CONV-4b | 2709 | check_device_compatibility | sí | sí | ok | — | 9114 | 9108 | 84 |
+| CONV-5 | 1471 | — | sí | sí | ok | — | 4515 | 4492 | 56 |
+| CONV-5 | 2194 | — | sí | sí | ok | — | 4515 | 4512 | 52 |
+| CONV-5 | 1479 | — | sí | sí | ok | — | 4515 | 4512 | 41 |
+| CONV-6 | 2616 | escalate_to_human | sí | sí | ok | — | 9137 | 9001 | 98 |
+| CONV-6 | 3311 | escalate_to_human | sí | sí | ok | — | 9137 | 9018 | 89 |
+| CONV-6 | 2893 | escalate_to_human | sí | sí | ok | — | 9135 | 9018 | 92 |
+| CONV-7 | 2495 | list_plans | sí | sí | ok | — | 9078 | 8996 | 77 |
+| CONV-7 | 2175 | list_plans | sí | sí | ok | — | 9078 | 9072 | 78 |
+| CONV-7 | 2519 | list_plans | sí | sí | ok | — | 9078 | 9072 | 74 |
+
+### Agregado
+
+| Métrica | Valor |
+|---|---:|
+| Latencia mediana | 2693 ms |
+| Latencia p90 | 4656 ms |
+| Tokens de entrada | 219664 |
+| — de ellos, cacheados | 213598 |
+| Tokens de salida | 2302 |
+| Coste total | $0.008248 |
+| Turnos con la herramienta esperada | 24/27 |
+| Turnos que violan una prohibición | 0/27 |
+
+### Respuestas, para leerlas
+
+La naturalidad y la disciplina factual se juzgan leyendo, no con una expresión regular.
+
+Se vuelcan **todas** las repeticiones, no solo la primera: cuando un turno se desvía suele hacerlo en una de las tres, y esa es justo la que hay que leer. Los turnos marcados con ⚠️ son los que no cumplieron alguna expectativa.
+
+**CONV-1 · repetición 1**
+
+> Estos son los planes vigentes:
+> 
+> - **Europa Básico:** 90 GB totales, hasta 15 GB fuera de España — **US$15**
+> - **Europa Plus:** 270 GB totales, hasta 23 GB fuera de España — **US$20**
+> - **Europa Total:** 330 GB totales, hasta 30 GB fuera de España — **US$30**
+> - **Europa Max:** 380 GB totales, hasta 45 GB fuera de España — **US$40**
+> - **Europa Premium:** 430 GB totales, hasta 60 GB fuera de España — **US$50**
+> 
+> Todos tienen **28 días de vigencia**, incluyen número español y llamadas y SMS ilimitados dentro de España. Los gigas fuera de España están incluidos dentro del total; no se suman.
+
+**CONV-1 · repetición 2**
+
+> Estos son los planes vigentes:
+> 
+> - **Europa Básico:** US$15 — 90 GB totales, hasta 15 GB fuera de España.
+> - **Europa Plus:** US$20 — 270 GB totales, hasta 23 GB fuera de España.
+> - **Europa Total:** US$30 — 330 GB totales, hasta 30 GB fuera de España.
+> - **Europa Max:** US$40 — 380 GB totales, hasta 45 GB fuera de España.
+> - **Europa Premium:** US$50 — 430 GB totales, hasta 60 GB fuera de España.
+> 
+> Todos tienen **28 días de vigencia**, incluyen número español y llamadas y SMS ilimitados dentro de España. Los gigas de fuera de España están incluidos dentro del total; no se suman.
+
+**CONV-1 · repetición 3**
+
+> Tenemos cinco planes, todos con 28 días de vigencia, número español y llamadas y SMS ilimitados dentro de España:
+> 
+> - **Europa Básico:** 90 GB totales, hasta 15 GB fuera de España — **US$15**
+> - **Europa Plus:** 270 GB totales, hasta 23 GB fuera de España — **US$20**
+> - **Europa Total:** 330 GB totales, hasta 30 GB fuera de España — **US$30**
+> - **Europa Max:** 380 GB totales, hasta 45 GB fuera de España — **US$40**
+> - **Europa Premium:** 430 GB totales, hasta 60 GB fuera de España — **US$50**
+> 
+> Los GB fuera de España están incluidos dentro del total, no se suman.
+
+**CONV-2 · repetición 1** — ⚠️ no llamó a la herramienta esperada
+
+> ¿De esos 50 GB, cuántos calculás usar fuera de España? Con ese dato te recomiendo el plan más barato para tus 20 días.
+
+**CONV-2 · repetición 2** — ⚠️ no llamó a la herramienta esperada
+
+> ¿Cuántos de esos 50 GB calculás usar fuera de España? Con ese dato te recomiendo el plan más barato que cubra tus 20 días.
+
+**CONV-2 · repetición 3** — ⚠️ no llamó a la herramienta esperada
+
+> ¿De esos 50 GB, cuántos calculás gastar fuera de España? Con ese dato te recomiendo el plan más barato que cubra tus 20 días.
+
+**CONV-3a · repetición 1**
+
+> No. **Europa Básico no incluye Estados Unidos**; ese destino está cubierto por Europa Plus, Europa Total, Europa Max y Europa Premium.
+
+**CONV-3a · repetición 2**
+
+> No. **Europa Básico no incluye Estados Unidos**; ese destino está cubierto por Europa Plus, Europa Total, Europa Max y Europa Premium.
+
+**CONV-3a · repetición 3**
+
+> No. **Europa Básico no incluye Estados Unidos**; ese destino está cubierto por Europa Plus, Europa Total, Europa Max y Europa Premium.
+
+**CONV-3b · repetición 1**
+
+> Sí, **Europa Plus está incluido en la cobertura de Estados Unidos**. El plan Europa Básico es el que no incluye ese destino.
+
+**CONV-3b · repetición 2**
+
+> Sí, **Europa Plus incluye Estados Unidos**. El plan Europa Básico es el que no incluye ese destino.
+
+**CONV-3b · repetición 3**
+
+> Sí, **Europa Plus funciona en Estados Unidos**. La gama Europa Básico es la que no incluye ese destino.
+
+**CONV-4a · repetición 1**
+
+> Sí, tu iPhone 15 es compatible con eSIM. Tiene que estar libre de operador y vas a necesitar Wi‑Fi para instalarla.
+
+**CONV-4a · repetición 2**
+
+> Sí, tu iPhone 15 está confirmado como compatible con eSIM. Tiene que estar libre de operador y necesitás Wi‑Fi para instalarla.
+
+**CONV-4a · repetición 3**
+
+> Sí, tu iPhone 15 es compatible con eSIM. Tiene que estar libre de operador y necesitás Wi‑Fi para instalarla.
+
+**CONV-4b · repetición 1**
+
+> No está confirmado en nuestra lista. Marcá *#06# en el teléfono: si aparece un código **EID**, admite eSIM; además, tiene que estar libre de operador.
+
+**CONV-4b · repetición 2**
+
+> No está confirmado en nuestra lista. Marcá *#06# en el teléfono: si aparece un código **EID**, admite eSIM; además, tiene que estar liberado de operador.
+
+**CONV-4b · repetición 3**
+
+> No está confirmado en nuestra lista. Para comprobarlo, marcá *#06# en el teléfono: si aparece un código **EID**, admite eSIM; además, tiene que estar libre de operador.
+
+**CONV-5 · repetición 1**
+
+> Podés pedir una **renovación anticipada** de la tarifa; no hace falta esperar a que terminen los 28 días. Es una gestión que te ayudamos a tramitar con soporte, así volvés a disponer de los beneficios del plan.
+
+**CONV-5 · repetición 2**
+
+> Podés pedir una **renovación anticipada** de la tarifa; no hace falta esperar a que termine el ciclo. Es una gestión que te ayudamos a hacer desde soporte: si querés, te derivo con el equipo.
+
+**CONV-5 · repetición 3**
+
+> Podés pedir una **renovación anticipada** de la tarifa; no hace falta esperar a que termine el ciclo. Es una gestión que te ayudamos a realizar desde soporte.
+
+**CONV-6 · repetición 1**
+
+> Te paso con el equipo por WhatsApp para que revisen el cobro duplicado de tu pedido. No hace falta que compartas acá datos de tarjeta ni códigos.
+
+**CONV-6 · repetición 2**
+
+> Te paso con el equipo por WhatsApp para que revisen el cobro duplicado de tu pedido.
+
+**CONV-6 · repetición 3**
+
+> Te paso con el equipo por WhatsApp para que revisen el cobro duplicado y te ayuden a resolverlo.
+
+**CONV-7 · repetición 1**
+
+> En este momento no puedo confirmar los precios porque el catálogo no está disponible. Podés revisar la web de Ruta34 y, si querés, te ayudo a elegir según los días del viaje y el consumo estimado.
+
+**CONV-7 · repetición 2**
+
+> En este momento no puedo confirmar los precios porque el catálogo no está disponible. Podés consultar la web de Ruta34 para ver el plan más barato; si querés, también te ayudo a revisar cobertura o compatibilidad del celular.
+
+**CONV-7 · repetición 3**
+
+> En este momento no puedo confirmar los precios porque el catálogo no está disponible. Podés consultar la web de Ruta34 y, si querés, también te ayudo a revisar cobertura o compatibilidad del celular.
+
+
+## openai · `gpt-5-nano` — 2026-08-29
+
+reasoning.effort: `low`
+
+Entorno de ejecución: **despliegue de Vercel (Preview `GngCwHi6wnb4cWH6uiVzmDe3VT9c`), catálogo real de Supabase**
+
+Escenarios: 9 · repeticiones: 3 · turnos: 27 · errores: 0
+
+### Por escenario
+
+| Escenario | ms | Herramientas | ¿la esperada? | Contiene | Prohibido | Trunc. | in | cache | out |
+|---|---:|---|:--:|:--:|:--:|:--:|---:|---:|---:|
+| CONV-1 | 5752 | list_plans | sí | sí | ok | — | 9503 | 4480 | 371 |
+| CONV-1 | 4543 | list_plans | sí | sí | ok | — | 9503 | 9344 | 442 |
+| CONV-1 | 4630 | list_plans | sí | sí | ok | — | 9503 | 9344 | 520 |
+| CONV-2 | 3804 | — | **no** | sí | ok | sí | 4518 | 4352 | 600 |
+| CONV-2 | 2853 | — | **no** | sí | ok | — | 4518 | 4480 | 445 |
+| CONV-2 | 2765 | — | **no** | sí | ok | — | 4518 | 4480 | 402 |
+| CONV-3a | 3576 | check_coverage | sí | sí | ok | — | 9127 | 8832 | 386 |
+| CONV-3a | 3624 | check_coverage | sí | sí | ok | — | 9127 | 8960 | 380 |
+| CONV-3a | 4864 | check_coverage | sí | sí | ok | — | 9127 | 4480 | 425 |
+| CONV-3b | 5632 | check_coverage | sí | sí | ok | — | 9125 | 8960 | 426 |
+| CONV-3b | 5810 | check_coverage | sí | sí | ok | — | 9125 | 8960 | 620 |
+| CONV-3b | 3415 | check_coverage | sí | sí | ok | — | 9125 | 8960 | 384 |
+| CONV-4a | 2947 | check_device_compatibility | sí | sí | ok | — | 9093 | 8960 | 281 |
+| CONV-4a | 3404 | check_device_compatibility | sí | sí | ok | — | 9093 | 8960 | 341 |
+| CONV-4a | 2399 | check_device_compatibility | sí | sí | ok | — | 9093 | 8960 | 227 |
+| CONV-4b | 3675 | check_device_compatibility | sí | sí | ok | — | 9111 | 8960 | 359 |
+| CONV-4b | 4182 | check_device_compatibility | sí | sí | ok | — | 9109 | 8960 | 338 |
+| CONV-4b | 4332 | check_device_compatibility | sí | sí | ok | — | 9111 | 8960 | 379 |
+| CONV-5 | 6164 | — | sí | sí | ok | — | 4515 | 0 | 508 |
+| CONV-5 | 2785 | — | sí | sí | ok | — | 4515 | 4352 | 397 |
+| CONV-5 | 3297 | — | sí | sí | ok | — | 4515 | 4352 | 508 |
+| CONV-6 | 3440 | escalate_to_human | sí | sí | ok | — | 9162 | 8960 | 294 |
+| CONV-6 | 2464 | escalate_to_human | sí | sí | ok | — | 9126 | 8960 | 185 |
+| CONV-6 | 3942 | escalate_to_human | sí | sí | ok | — | 9122 | 8960 | 438 |
+| CONV-7 | 3181 | list_plans | sí | sí | ok | — | 9075 | 8832 | 370 |
+| CONV-7 | 3873 | list_plans | sí | sí | ok | — | 9075 | 8832 | 368 |
+| CONV-7 | 2887 | list_plans | sí | sí | ok | — | 9075 | 8960 | 249 |
+
+### Agregado
+
+| Métrica | Valor |
+|---|---:|
+| Latencia mediana | 3624 ms |
+| Latencia p90 | 5752 ms |
+| Tokens de entrada | 219609 |
+| — de ellos, cacheados | 201600 |
+| Tokens de salida | 10643 |
+| Coste total | $0.006166 |
+| Turnos con la herramienta esperada | 24/27 |
+| Turnos que violan una prohibición | 0/27 |
+
+### Respuestas, para leerlas
+
+La naturalidad y la disciplina factual se juzgan leyendo, no con una expresión regular.
+
+Se vuelcan **todas** las repeticiones, no solo la primera: cuando un turno se desvía suele hacerlo en una de las tres, y esa es justo la que hay que leer. Los turnos marcados con ⚠️ son los que no cumplieron alguna expectativa.
+
+**CONV-1 · repetición 1**
+
+> Tenemos estos planes. Todos son con número español y datos con roaming limitado fuera de España:
+> 
+> - Europa Básico: 90 GB en total, 15 GB fuera de España, 28 días, USD 15.
+> - Europa Plus: 270 GB total, 23 GB fuera de España, 28 días, USD 20.
+> - Europa Total: 330 GB total, 30 GB fuera de España, 28 días, USD 30.
+> - Europa Max: 380 GB total, 45 GB fuera de España, 28 días, USD 40.
+> - Europa Premium: 430 GB total, 60 GB fuera de España, 28 días, USD 50.
+> 
+> ¿Quieres que compare uno según tu viaje (gigas estimados, días, presupuesto)?
+
+**CONV-1 · repetición 2**
+
+> Estos son los planes vigentes y sus datos (precios en USD):
+> 
+> - Europa Básico: 90 GB total, hasta 15 GB fuera de España, 28 días, activación en 365 días — $15. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Plus: 270 GB total, hasta 23 GB fuera de España, 28 días, activación en 365 días — $20. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Total: 330 GB total, hasta 30 GB fuera de España, 28 días, activación en 365 días — $30. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Premium: 430 GB total, hasta 60 GB fuera de España, 28 días, activación en 365 días — $50. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Max: 380 GB total, hasta 45 GB fuera de España, 28 días, activación en 365 días — $40. Incluye número español y llamadas/SMS ilimitados en España.
+> 
+> ¿Querés que te recomiende el plan más barato que cubra tus necesidades de viaje, si me das tus cifras (total de GB, cuántos fuera de España, días de viaje, presupuesto máximo)?
+
+**CONV-1 · repetición 3**
+
+> Estos son los planes actuales:
+> 
+> - Europa Básico: 90 GB totales, 15 GB fuera de España, 28 días, USD 15. Activación en 365 días. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Plus: 270 GB totales, 23 GB fuera de España, 28 días, USD 20. Activación en 365 días. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Total: 330 GB totales, 30 GB fuera de España, 28 días, USD 30. Activación en 365 días. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Premium: 430 GB totales, 60 GB fuera de España, 28 días, USD 50. Activación en 365 días. Incluye número español y llamadas/SMS ilimitados en España.
+> - Europa Max: 380 GB totales, 45 GB fuera de España, 28 días, USD 40. Activación en 365 días. Incluye número español y llamadas/SMS ilimitados en España.
+> 
+> Si querés, te ayudo a elegir el más barato que cubra tus necesidades de viaje. Necesitaría tus cifras: cuántos GB estimas consumir en total, cuántos fuera de España y la duración del viaje en días.
+
+**CONV-2 · repetición 1** — ⚠️ no llamó a la herramienta esperada
+
+> Para recomendarte el plan exacto
+
+**CONV-2 · repetición 2** — ⚠️ no llamó a la herramienta esperada
+
+> ¿30 días? No, 20 días. ¿Cuántos GB estimas gastar fuera de España? También dime si todos los GB serán dentro de Europa (roaming UE) o si habrá destinos fuera de la UE. Con eso te hago la recomendación más barata.
+
+**CONV-2 · repetición 3** — ⚠️ no llamó a la herramienta esperada
+
+> Para darte una recomendación exacta necesito dos cosas: cuántos GB esperas usar fuera de España y cuánto presupuesto tenés. Si querés, decime esos números y te digo qué plan conviene.
+
+**CONV-3a · repetición 1**
+
+> No. Europa Básico no cubre Estados Unidos. En US sí funcionan las otras gamas que sí cubren ese destino: Europa Plus, Europa Total, Europa Max y Europa Premium. Si querés, te checkeo precios y gigas de esas opciones. ¿Qué te conviene en viaje?
+
+**CONV-3a · repetición 2**
+
+> No. Europa Básico no cubre Estados Unidos. Solo las gamas Europa Plus, Europa Total, Europa Max y Europa Premium incluyen ese destino. Si querés saber cuántos datos podés usar allí, tengo que consultar el catálogo de planes. ¿Querés que vea cuántos GB trae cada una?
+
+**CONV-3a · repetición 3**
+
+> No. Europa Básico no cubre Estados Unidos. Es la única gama excluida de ese destino; las otras gamas (Europa Plus, Total, Max y Premium) sí lo incluyen. Si querés, te digo qué planes sí lo cubren y cuántos GB ofrecen allí, pero para eso necesito que me confirmes cuántos GB estimás usar en total y en US.
+
+**CONV-3b · repetición 1**
+
+> Sí, Europa Plus está cubierto en Estados Unidos, pero con excepciones. Si querés saber exactamente qué aplica allí (y cuánto datos puedes usar fuera de España con ese plan), puedo traerte el detalle de planes. ¿Te consulto el catálogo para gigs y precio?
+
+**CONV-3b · repetición 2**
+
+> Sí, Europa Plus funciona en Estados Unidos. La cobertura para US está incluida entre las gamas que cubren ese destino (con una mención de “covered_with_exceptions” y siempre conviene revisar antes de comprar).
+> 
+> Si querés, te digo cuántos GB puedes gastar fuera de España con Europa Plus en USA y el resto de datos del plan: necesito consultar list_plans. ¿ querés que lo haga?
+
+**CONV-3b · repetición 3**
+
+> Sí, Europa Plus cubre Estados Unidos, pero con excepciones. Está incluida en "covered with exceptions" para US, y Europa Básico no lo incluye.
+> 
+> Si querés saber cuántos datos tiene exactamente (gigas) fuera de España y el precio, necesito mirar el catálogo con list_plans. ¿ querés que lo haga?
+
+**CONV-4a · repetición 1**
+
+> Sí. El iPhone 15 está compatible con nuestra eSIM.
+> 
+> Notas rápidas:
+> - Debe estar libre de operador (desbloqueado).
+> - Necesitás WiFi para instalarla.
+> - Requiere iOS 16.1 o superior.
+> 
+> ¿ querés que verifiquemos cobertura para tu destino y te recomiende un plan?
+
+**CONV-4a · repetición 2**
+
+> Sí. El iPhone 15 está marcado como compatible para eSIM Ruta34.
+> 
+> Consejos rápidos:
+> - Asegúrate de que esté libre de operador (desbloqueado).
+> - Ten WiFi para instalar la eSIM.
+> - Verificá el código EID con *#06# si querés confirmar en el teléfono. ¿ querés que revisemos cobertura para tu destino o te paso el paso a paso de instalación?
+
+**CONV-4a · repetición 3**
+
+> Sí. El iPhone 15 está soportado para eSIM con Ruta34. Nota: muchos dispositivos Apple son dual SIM (dos números en el mismo teléfono).
+> 
+> Si querés, te digo cómo confirmar la compatibilidad en tu equipo paso a paso o te paso la guía de instalación.
+
+**CONV-4b · repetición 1**
+
+> No puedo confirmar todavía. El resultado de la verificación es “unknown”.
+> 
+> Cómo comprobarlo vos mismo:
+> - Marcá *#06# en tu teléfono.
+> - Si aparece un código EID, el dispositivo es compatible con eSIM (siempre que esté libre de operador).
+> 
+> Si querés, lo intento de nuevo con el modelo exacto o escalamos al equipo para una verificación más detallada. ¿Qué teléfono exactamente es?
+
+**CONV-4b · repetición 2**
+
+> No puedo confirmar aún si ese modelo es compatible. Lo que sí puedo decirte es cómo verificarlo: marca *#06# en el teléfono; si te aparece un código EID, es compatible con eSIM. Tu móvil debe estar libre de operador y tener WiFi para la instalación.
+> 
+> Si quieres, probamos con otra variante del nombre o te escalamos al equipo para una verificación más precisa.
+
+**CONV-4b · repetición 3**
+
+> No puedo confirmarlo todavía. El resultado de la verificación es "unknown".
+> 
+> Para verificar vos mismo:
+> - Marca *#06# en tu teléfono y mirá si aparece un código EID. Si aparece, es compatible con eSIM.
+> - Asegurate de que el teléfono esté libre de operador y que tengas acceso a WiFi para la instalación.
+> 
+> Si me decís el modelo exacto (y, si es posible, el país o operador), lo vuelvo a chequear. También puedo derivarte con el equipo si necesitas una verificación más específica.
+
+**CONV-5 · repetición 1**
+
+> Entiendo. Aquí va lo que puedes hacer si ya agotaste la bolsa antes de los 28 días:
+> 
+> - Renueva automáticamente con saldo: si tu línea tiene saldo, la tarifa puede renovarse usando ese saldo. No se cobra en la tarjeta, pero depende de que haya saldo suficiente.
+> - Renovación anticipada: puedes pedir una renovación anticipada para volver a disponer de GB. Yo puedo ayudarte a gestionarla con el equipo.
+> - Si estás fuera de España: conecta con roaming UE solo si ya agotaste la franquicia fuera de España y hay saldo; podría aplicarse un costo adicional por GB (1,33 €/GB) en roaming UE, siempre que la cobertura lo permita para tu gama.
+> - Si no hay saldo o no ves opción de renovación: lo mejor es contactar al equipo de Ruta34 para que te ayuden a gestionar la renovación o una ampliación de datos.
+> 
+> ¿Me decís qué plan tenés (Europa Básico, Plus, Total, Max o Premium) y si tienes saldo en la línea? Con eso te digo exactamente qué opciones tenés y cómo pedir la renovación.
+
+**CONV-5 · repetición 2**
+
+> Lo que puedes hacer si te quedaste sin GB antes de los 28 días:
+> 
+> - Solicitar una renovación anticipada de la tarifa. Es la opción más rápida para volver a tener datos. Ruta34 te acompaña en ese trámite.
+> - Si estás en la UE y ya agotaste la franquicia fuera de España, y aún tenés saldo, podría aplicar la tarifa de roaming (1,33 €/GB) solo para ese caso y solo si la cobertura lo permite.
+> - Si prefieres comparar planes o saber cuánto podría costarte, puedo mirar el catálogo vigente y darte las opciones. Necesito saber cuánto total de datos te gustaría tener y si quieres que sea dentro de España o con uso fuera de España.
+> 
+> ¿Quieres que te ayude a gestionar la renovación anticipada o que busque planes disponibles para tu caso?
+
+**CONV-5 · repetición 3**
+
+> Entendido. Si agotaste los GB antes de los 28 días, la opción recomendada es la renovación anticipada de la tarifa. Ruta34 puede gestionarla, pero es una gestión de soporte.
+> 
+> Qué puedo hacer ahora:
+> - Puedo iniciar una solicitud de renovación anticipada para volver a tener datos, y te mantengo al tanto del progreso.
+> - Si quieres, primero verifico con cobertura y detalles de tu plan para saber qué ocurre en tu destino y cuánto datos te quedan fuera de España.
+> 
+> ¿Quieres que gestione la renovación anticipada y te comente los pasos siguientes? Si me das el código de pedido o tu email asociado, lo inicio y te digo qué necesito del equipo.
+
+**CONV-6 · repetición 1**
+
+> Ya te paso con el equipo. Te deben confirmar si hubo un cobro duplicado y ayudarte con la devolución o corrección. ¿Prefieres que hagamos el traslado por WhatsApp ahora mismo o te mando un correo para seguimiento?
+
+**CONV-6 · repetición 2**
+
+> Te paso con el equipo. Te van a contactar por WhatsApp para revisar el cobro doble y darte una solución. Si querés, siempre podés compartir el número de pedido o el correo con el que hiciste la compra para que lo verifiquen más rápido.
+
+**CONV-6 · repetición 3**
+
+> Lamento que te hayan cobrado dos veces. Ya derivamos el caso al equipo humano y lo van a revisar por WhatsApp.
+> 
+> ¿Tenés la referencia de pedido o el correo de confirmación? Si me das alguno, te preparo la transferencia para que te atiendan más rápido. También puedo dejarte en contacto directo por WhatsApp con el equipo de soporte. ¿Cuál prefieres?
+
+**CONV-7 · repetición 1**
+
+> No puedo confirmar precios ahora: el catálogo está fuera de servicio. Te puedo ayudar con cobertura, compatibilidad de tu teléfono o darte pasos para revisar en la web. ¿Qué te interesa exactamente?
+
+**CONV-7 · repetición 2**
+
+> No puedo confirmar precios en este momento: el catálogo está unavailable. Mirá en la web de Ruta34 o decírselo al equipo y te pasan el precio más barato.
+> 
+> Si querés, puedo ayudarte con otras cosas ahora mismo (ver cobertura de un país, chequear compatibilidad de tu teléfono, o pasar con el equipo si necesitás el detalle de tienda). ¿Qué otro dato te gustaría revisar? Si me das cifras (gigas estimados, días de viaje, presupuesto), puedo intentar recomendarte el plan más barato que las cubra.
+
+**CONV-7 · repetición 3**
+
+> En este momento no puedo confirmar precios porque el catálogo no está disponible. Te recomiendo consultar la web o esperar a que se restablezca; igual puedo ayudarte con cobertura de destino o compatibilidad de tu teléfono si querés. ¿De qué país vas y a qué destino planeas viajar?
+
