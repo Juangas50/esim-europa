@@ -307,10 +307,22 @@ separado, que es justo lo que 4.2 dice que no se hace.
 
 Se revisan **después** de tener las dos mitades:
 
-1. **Lenguaje demasiado afirmativo tras `escalate_to_human`.** El turno promete
-   lo que hará una persona («te contactan por WhatsApp en un momento») en vez de
-   describir lo que el asistente acaba de hacer. El asistente no controla ni el
-   cuándo ni el desenlace.
+1. **Lenguaje demasiado afirmativo tras `escalate_to_human` — CONFIRMADO
+   (comparativa Vercel↔Vercel, 2026-08-29).** Regla que se establece: **el
+   asistente no promete acciones ni plazos del equipo humano, porque no controla
+   ninguna de las dos cosas.** Puede decir qué acaba de hacer él —dejar el caso
+   en manos del equipo— y nada más.
+
+   Reproducido en las tres repeticiones de CONV-6 con Haiku: «Listo, te escriben
+   por WhatsApp en los próximos minutos», «Vas a recibir un mensaje por WhatsApp
+   en los próximos minutos», «El equipo te va a responder allá y resuelven el
+   doble cobro». Las dos primeras prometen un plazo; la tercera promete un
+   desenlace.
+
+   Luna no incurre: «Te paso con el equipo por WhatsApp para que revisen el cobro
+   duplicado», que describe la acción sin comprometer a nadie. Es decir, el
+   comportamiento correcto es alcanzable con el prompt actual, así que la
+   corrección va en el prompt y no en la herramienta.
 2. **La frase de dual SIM.** Observada: «podés tener tanto la eSIM de Ruta34
    como tu SIM física con el mismo número — los dos números en un solo celular».
    Se contradice dentro de la misma línea y puede leerse como que las dos SIM
@@ -327,6 +339,65 @@ Se revisan **después** de tener las dos mitades:
    ida y vuelta de herramienta—, frente a los 3.463 estimados en 4.1. Las cifras
    de coste de esa sección se quedan cortas **para los dos proveedores**, así que
    el orden relativo probablemente aguanta, pero las magnitudes no.
+
+6. **CONV-2 — recomendación formalmente correcta y materialmente insegura —
+   CONFIRMADO (comparativa Vercel↔Vercel, 2026-08-29).**
+
+   Es el único hallazgo de la comparativa con impacto sobre un cliente real: un
+   comprador podría llevarse un plan que se le queda corto por más de tres veces
+   en lo único que le importa.
+
+   Los hechos, en orden:
+
+   - **El prompt de CONV-2 no dice cuántos de los 50 GB se usarán fuera de
+     España.** «Viajo 20 días y necesito unos 50 GB, ¿cuál me conviene?» El dato
+     que decide la respuesta no está en la pregunta, y eso es deliberado: los
+     clientes tampoco lo dicen.
+   - **`recommend_plan` distingue correctamente `totalGb` y `outsideSpainMaxGb`**
+     —son dos filtros duros independientes— **pero solo evalúa el segundo cuando
+     recibe `estimatedGbOutsideSpain`.** La capacidad existe; sin ese argumento
+     no se usa.
+   - **Con `{estimatedTotalGb: 50, tripDays: 20}` recomienda Europa Básico**,
+     porque 90 ≥ 50 y es el más barato que cumple **las restricciones que
+     recibió**. Reproducido contra el catálogo real. El resultado no incluye
+     `meets_outside_spain_gb`, y esa ausencia es la señal de que el tope de
+     roaming nunca se evaluó.
+   - **Esa recomendación no es materialmente segura para un viaje por Europa**
+     mientras no se sepa cuánto consumo ocurrirá fuera de España: el tope de
+     Básico son 15 GB. Con el mismo usuario y el dato añadido, la herramienta
+     devuelve Europa Premium — $50 en vez de $15.
+   - **Luna pidió el dato que faltaba**, que es lo correcto.
+   - **Haiku llamó a la herramienta ajustándose al schema vigente**, pero
+     presentó la recomendación como suficiente —«te sobra», «más que
+     suficiente»— **incluso habiendo visto el límite de 15 GB fuera de España**,
+     que llegó a citar.
+   - **Por tanto, el 24/27 de uso de herramientas no significa que Haiku actuara
+     mejor en CONV-2.** Los dos fallan tres turnos, pero no son fallos
+     equivalentes.
+
+   **Limitación conocida del benchmark.** Esta métrica penaliza una aclaración
+   correcta y premia una llamada formalmente esperada aunque falte un criterio
+   material. Mide adherencia al contrato de la herramienta, no acierto
+   comercial, y hay que leerla sabiéndolo. Se anota aquí en vez de cambiar la
+   métrica: alterarla ahora rompería la comparabilidad de la tirada.
+
+   **Corrección futura acordada, pendiente de implementar:**
+
+   1. `recommend_plan` devuelve `insufficient_criteria` cuando hay una necesidad
+      total de GB pero falta la estimación relevante de consumo fuera de España.
+      Es el arreglo estructural: no depende de que el modelo lea bien.
+   2. `tripDays` por sí solo no habilita una recomendación de precio. Hoy sí lo
+      hace, y no filtra nada.
+   3. Un estado o aviso explícito equivalente a `outside_spain_not_evaluated`,
+      para que el modelo no pueda presentar como verificada una dimensión que
+      nadie miró.
+   4. Actualizar descripción y schema para que el modelo sepa cuándo tiene que
+      pedir aclaración. Hoy la descripción dice lo contrario: que con una sola
+      cifra basta.
+
+   **Cuándo.** No ahora. Cambiar la herramienta altera el sistema medido e
+   invalidaría la comparativa, así que se aplica **después** de elegir proveedor
+   con los tres candidatos, y se revalida solo contra el elegido.
 
 Activar la caché es la que más peso tiene en el coste y la que más tienta a tocar
 ya. No se toca: o se activa en los dos lados o se anota que ninguno la usa.
