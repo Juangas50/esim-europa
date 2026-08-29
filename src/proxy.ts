@@ -54,6 +54,13 @@ export default async function middleware(request: NextRequest) {
     return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
   }
 
+  // /vicky (colaboración Victoria Casteluchi) es un Route Handler propio
+  // (app/vicky/route.ts) que fija la atribución y redirige a /es/compra —
+  // no lleva locale prefix, así que no debe pasar por next-intl.
+  if (pathname === "/vicky") {
+    return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
+  }
+
   // Rutas del portal: verificar sesión Supabase
   if (isPortalRoute(pathname)) {
     let response = NextResponse.next({ request: { headers: requestHeaders } });
