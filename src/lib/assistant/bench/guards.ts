@@ -12,9 +12,9 @@
  * Por eso todo lo que llega por la petición está en lista blanca, y la lista es
  * cerrada:
  *
- * · **Modelo.** Cada proveedor admite exactamente uno. No es una restricción de
- *   configuración sino de seguridad: sin ella, quien tuviera el secreto podría
- *   pedir el modelo más caro del catálogo del proveedor.
+ * · **Modelo.** Cada proveedor admite una lista cerrada, nombre a nombre. No es
+ *   una restricción de configuración sino de seguridad: sin ella, quien tuviera
+ *   el secreto podría pedir el modelo más caro del catálogo del proveedor.
  * · **Escenario.** Solo por identificador, de los nueve que existen. **No hay
  *   ningún camino por el que un mensaje escrito en la petición llegue al
  *   modelo**, que es lo que convertiría esta ruta en un proxy de LLM abierto
@@ -30,11 +30,21 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { buscarEscenario, type EscenarioBench } from "./scenarios";
 
-/** Un modelo por proveedor: los dos que compara la Fase 2B. */
+/**
+ * Los modelos que compara la Fase 2B, enumerados uno a uno.
+ *
+ * Es una lista cerrada, no un prefijo ni un patrón: `openai` admite estos dos y
+ * ningún otro. La diferencia importa porque el catálogo de un proveedor incluye
+ * modelos hasta cien veces más caros, y aquí cada petición gasta dinero real.
+ *
+ * `gpt-5-nano` entra como challenger de `gpt-5.6-luna` por coste, y comparte
+ * adaptador con él: es el mismo proveedor y la misma API, así que no hace falta
+ * código nuevo para medirlo.
+ */
 export const MODELOS_PERMITIDOS = {
-  openai: "gpt-5.6-luna",
-  anthropic: "claude-haiku-4-5",
-} as const;
+  openai: ["gpt-5.6-luna", "gpt-5-nano"],
+  anthropic: ["claude-haiku-4-5"],
+} as const satisfies Record<string, readonly string[]>;
 
 export type ProveedorBench = keyof typeof MODELOS_PERMITIDOS;
 
@@ -70,8 +80,12 @@ export function leerPortador(cabecera: string | null): string | null {
 /**
  * Comprueba la pareja proveedor/modelo contra la lista blanca.
  *
- * Devuelve `null` ante cualquier combinación que no sea exacta — proveedor
- * desconocido, modelo de otro proveedor, o el modelo correcto mal escrito.
+ * Devuelve `null` ante cualquier combinación que no esté enumerada — proveedor
+ * desconocido, modelo de otro proveedor, otro modelo del mismo proveedor, o el
+ * modelo correcto mal escrito.
+ *
+ * El nombre que sale es el de la lista, no el que llegó en la petición: así lo
+ * que se manda al proveedor no depende de cómo viniera escrito.
  */
 export function resolverModelo(
   proveedor: string | null,
@@ -82,8 +96,11 @@ export function resolverModelo(
   const p = proveedor.trim().toLowerCase();
   if (!Object.prototype.hasOwnProperty.call(MODELOS_PERMITIDOS, p)) return null;
 
-  const permitido = MODELOS_PERMITIDOS[p as ProveedorBench];
-  if (modelo.trim() !== permitido) return null;
+  const pedido = modelo.trim();
+  const permitido = (MODELOS_PERMITIDOS[p as ProveedorBench] as readonly string[]).find(
+    (m) => m === pedido
+  );
+  if (!permitido) return null;
 
   return { proveedor: p as ProveedorBench, modelo: permitido };
 }

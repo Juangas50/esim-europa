@@ -121,18 +121,22 @@ test.describe("la ruta no existe si no debe existir", () => {
 
 // ── Guarda 1: lista blanca de modelos ─────────────────────────────────────────
 
-test.describe("solo un modelo por proveedor", () => {
+test.describe("solo los modelos enumerados", () => {
   test("la lista es exactamente la de la Fase 2B", () => {
     expect(MODELOS_PERMITIDOS).toEqual({
-      openai: "gpt-5.6-luna",
-      anthropic: "claude-haiku-4-5",
+      openai: ["gpt-5.6-luna", "gpt-5-nano"],
+      anthropic: ["claude-haiku-4-5"],
     });
   });
 
-  test("las dos parejas correctas se aceptan", () => {
+  test("las tres parejas correctas se aceptan", () => {
     expect(resolverModelo("openai", "gpt-5.6-luna")).toEqual({
       proveedor: "openai",
       modelo: "gpt-5.6-luna",
+    });
+    expect(resolverModelo("openai", "gpt-5-nano")).toEqual({
+      proveedor: "openai",
+      modelo: "gpt-5-nano",
     });
     expect(resolverModelo("anthropic", "claude-haiku-4-5")).toEqual({
       proveedor: "anthropic",
@@ -143,14 +147,40 @@ test.describe("solo un modelo por proveedor", () => {
   test("cruzar proveedor y modelo se rechaza", () => {
     expect(resolverModelo("openai", "claude-haiku-4-5")).toBeNull();
     expect(resolverModelo("anthropic", "gpt-5.6-luna")).toBeNull();
+    expect(resolverModelo("anthropic", "gpt-5-nano")).toBeNull();
   });
 
-  test("un modelo más caro del mismo proveedor se rechaza", () => {
-    for (const m of ["gpt-5.6-terra", "gpt-5.6-sol", "gpt-4o", "o3"]) {
-      expect(resolverModelo("openai", m)).toBeNull();
+  test("otro modelo de OpenAI se rechaza, sea más caro o más barato", () => {
+    // Admitir dos modelos no es admitir la familia: la lista sigue cerrada, y
+    // el catálogo del proveedor tiene modelos cien veces más caros.
+    for (const m of [
+      "gpt-5.6-terra",
+      "gpt-5.6-sol",
+      "gpt-5",
+      "gpt-5-mini",
+      "gpt-5-nano-2025-08-07",
+      "gpt-4o",
+      "o3",
+      "GPT-5-NANO",
+    ]) {
+      expect(resolverModelo("openai", m), m).toBeNull();
     }
     for (const m of ["claude-opus-4-5", "claude-sonnet-4-5", "claude-haiku-4-5-20251001"]) {
-      expect(resolverModelo("anthropic", m)).toBeNull();
+      expect(resolverModelo("anthropic", m), m).toBeNull();
+    }
+  });
+
+  test("los espacios sobran pero las mayúsculas no", () => {
+    // Recortar es cómodo y no amplía la lista. Ignorar mayúsculas sí la
+    // ampliaría a variantes que el proveedor no reconoce, así que el nombre se
+    // compara tal cual.
+    expect(resolverModelo("openai", "  gpt-5-nano  ")?.modelo).toBe("gpt-5-nano");
+    expect(resolverModelo("openai", "Gpt-5-Nano")).toBeNull();
+  });
+
+  test("no hay forma de pedir un modelo por prefijo o comodín", () => {
+    for (const m of ["gpt-5-nano*", "gpt-5*", "*", "", "gpt", "gpt-5-nano;gpt-5"]) {
+      expect(resolverModelo("openai", m), m).toBeNull();
     }
   });
 
@@ -174,10 +204,41 @@ test.describe("solo un modelo por proveedor", () => {
 
   test("la ruta devuelve 404 ante una combinación no admitida", async () => {
     await conEntorno({ BENCH_ENABLED: "true", BENCH_SECRET: SECRETO }, async () => {
+      for (const m of ["gpt-5.6-sol", "gpt-5-mini", "gpt-4o"]) {
+        const res = await GET(
+          peticion(`provider=openai&model=${m}&escenario=CONV-1&repeticiones=1`)
+        );
+        expect(res.status, m).toBe(404);
+      }
+    });
+  });
+
+  test("la ruta acepta los dos modelos de OpenAI y ninguno más", async () => {
+    await conEntorno({ BENCH_ENABLED: "true", BENCH_SECRET: SECRETO }, async () => {
+      // Sin credencial configurada, un modelo admitido llega hasta el 500 que
+      // nombra la variable que falta. Eso prueba que pasó la lista blanca: uno
+      // rechazado se habría quedado en el 404 de arriba.
+      for (const m of ["gpt-5.6-luna", "gpt-5-nano"]) {
+        const res = await GET(
+          peticion(`provider=openai&model=${m}&escenario=CONV-1&repeticiones=1`)
+        );
+        expect(res.status, m).toBe(500);
+        expect(await res.text()).toContain("OPENAI_API_KEY");
+      }
+    });
+  });
+
+  test("nano admite el mismo reasoning que Luna", async () => {
+    // Los dos se miden con `low`; si uno lo rechazara, la comparación de coste
+    // y latencia estaría midiendo esfuerzos distintos.
+    await conEntorno({ BENCH_ENABLED: "true", BENCH_SECRET: SECRETO }, async () => {
       const res = await GET(
-        peticion("provider=openai&model=gpt-5.6-sol&escenario=CONV-1&repeticiones=1")
+        peticion(
+          "provider=openai&model=gpt-5-nano&escenario=CONV-1&repeticiones=1&reasoning=low"
+        )
       );
-      expect(res.status).toBe(404);
+      // 500 por falta de clave, no 400: el parámetro se aceptó.
+      expect(res.status).toBe(500);
     });
   });
 });

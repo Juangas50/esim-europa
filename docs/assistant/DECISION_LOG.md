@@ -245,6 +245,21 @@ de seleccionar proveedor y antes de cada revisión de coste.
 | GPT-5.6 Luna | 0,20 | 0,02 | 1,20 | 2026-08-10 | Aportado por el responsable del proyecto | Official pricing externally verified on 2026-08-10; revalidate before provider selection |
 | GPT-5.6 Terra | 2,00 | 0,20 | 12,00 | 2026-08-10 | Aportado por el responsable del proyecto | Official pricing externally verified on 2026-08-10; revalidate before provider selection |
 | GPT-5.6 Sol | 5,00 | 0,50 | 30,00 | 2026-08-10 | Aportado por el responsable del proyecto | Official pricing externally verified on 2026-08-10; revalidate before provider selection |
+| GPT-5 nano | 0,05 | 0,005 | 0,40 | 2026-08-29 | Ficha oficial del modelo, OpenAI | Verificado contra la documentación oficial de OpenAI el 2026-08-29 |
+
+**GPT-5 nano entra como challenger de Luna, por coste.** Cuatro veces más barato
+en entrada y tres en salida, con el mismo adaptador y la misma API. La pregunta
+que responde su tirada es si mantiene disciplina factual y uso correcto de
+herramientas suficientes para Ruta34; si no los mantiene, el ahorro no importa.
+
+Ventaja de método frente a la comparativa anterior: **Luna y nano sí son
+cache-equivalent** —los dos reciben el caching automático de OpenAI—, así que la
+salvedad que arrastra la comparación con Haiku no aplica a este par.
+
+Reasoning: OpenAI documenta `gpt-5`, `gpt-5-mini` y `gpt-5-nano` como las tres
+variantes GPT-5 y las tres admiten `reasoning_effort`, con niveles `minimal`,
+`low`, `medium` y `high`. La comparativa usa **`low`** en los dos, que es lo que
+la hace comparable.
 
 **Nota sobre el modelo de caché.** Anthropic cobra una prima por *escribir* en
 caché (1,25× la entrada con TTL de 5 minutos) y descuenta la *lectura* a 0,1×.
