@@ -55,7 +55,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   // /vicky (colaboración Victoria Casteluchi) es un Route Handler propio
-  // (app/vicky/route.ts) que fija la atribución y redirige a /es/compra —
+  // (app/vicky/route.ts) que fija la atribución y redirige a la home —
   // no lleva locale prefix, así que no debe pasar por next-intl.
   if (pathname === "/vicky") {
     return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
