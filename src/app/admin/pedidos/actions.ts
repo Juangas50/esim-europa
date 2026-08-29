@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { sendEmail } from '@/lib/email/send'
 import { emailEntregaB2C, emailEntregaMultiple } from '@/lib/email/templates'
+import { qrProxyUrl } from '@/lib/utils'
 import QRCode from 'qrcode'
 
 // B2B (`orders`) y B2C (`b2c_orders`) tienen CHECK constraints de status
@@ -138,8 +139,7 @@ async function _deliverCore(
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
     if (uploadError) throw uploadError
-    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
-    qrUrl = urlData.publicUrl
+    qrUrl = qrProxyUrl(orderId)
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
     console.error('[deliver] Fallo subiendo QR a Storage, abortando entrega:', e)
@@ -287,8 +287,7 @@ export async function resendDeliveryEmail(
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
     if (uploadError) throw uploadError
-    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
-    qrUrl = urlData.publicUrl
+    qrUrl = qrProxyUrl(orderId)
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
     console.error('[resend] Fallo subiendo QR a Storage, abortando reenvío:', e)
@@ -384,8 +383,7 @@ export async function resendGroupOrders(
       const qrBuffer = await QRCode.toBuffer(parsed.data.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
       const { error: uploadError } = await supabase.storage.from('qr-codes').upload(`${o.id}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
       if (uploadError) throw uploadError
-      const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${o.id}.png`)
-      qrUrl = urlData.publicUrl
+      qrUrl = qrProxyUrl(o.id)
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
       console.error(`[resend-group] Fallo subiendo QR de ${o.order_ref}, abortando reenvío del grupo:`, e)
@@ -478,8 +476,7 @@ export async function deliverGroupOrders(
       const qrBuffer = await QRCode.toBuffer(p.parsed.lpaUri, { width: 400, margin: 2, color: { dark: '#000000', light: '#FFFFFF' } })
       const { error: uploadError } = await supabase.storage.from('qr-codes').upload(`${d.orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
       if (uploadError) throw uploadError
-      const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${d.orderId}.png`)
-      qrUrl = urlData.publicUrl
+      qrUrl = qrProxyUrl(d.orderId)
     } catch (e) {
       const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
       console.error(`[group-deliver] QR ${i + 1} no subido a Storage, abortando entrega del grupo:`, e)

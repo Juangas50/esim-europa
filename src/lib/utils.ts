@@ -21,3 +21,16 @@ export function generateOrderRef(): string {
   const random = crypto.randomUUID().replace(/-/g, "").substring(0, 6).toUpperCase();
   return `${prefix}-${timestamp}-${random}`;
 }
+
+// URL base del sitio — usada para que los links e imágenes en emails salgan
+// del dominio de envío en vez de dominios externos (wa.me, Supabase Storage),
+// que Resend marca como señal de riesgo para deliverability.
+export function siteBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
+}
+
+// URL propia (no la de Supabase Storage) para el QR de un pedido — se sirve
+// vía /api/qr/[orderId], que hace de proxy contra el bucket privado.
+export function qrProxyUrl(orderId: string): string {
+  return `${siteBaseUrl()}/api/qr/${orderId}`;
+}
