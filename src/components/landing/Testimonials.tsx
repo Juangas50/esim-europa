@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Star } from "@phosphor-icons/react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
+import { getPlanById } from "@/lib/plans";
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
@@ -14,7 +15,7 @@ const TESTIMONIALS_ES = [
     destination: "Madrid",
     flag: "🇦🇷",
     text: "Me salvó el viaje. Llegué a Madrid y ya tenía internet, sin hacer nada en el aeropuerto. El QR con todas las instrucciones me llegó directo al email. Increíble.",
-    plan: "SIM Local M · 270 GB",
+    planId: "local-m",
     rating: 5,
     image: "/images/imagen3.png",
     journey: "Viaje a España",
@@ -25,7 +26,7 @@ const TESTIMONIALS_ES = [
     destination: "Europa",
     flag: "🇲🇽",
     text: "Lo usé en un viaje de 3 semanas por España, Francia e Italia. Funcionó perfecto en todos lados. Muy fácil de instalar, escaneás el QR y listo.",
-    plan: "SIM Local L · 330 GB",
+    planId: "local-l",
     rating: 5,
     image: "/images/imagen5.png",
     journey: "3 semanas por Europa",
@@ -36,7 +37,7 @@ const TESTIMONIALS_ES = [
     destination: "Lisboa",
     flag: "🇧🇷",
     text: "Facilísimo. Instalé el QR antes de embarcar y cuando llegué a Lisboa ya estaba conectada. Sin colas, sin estrés. Lo recomiendo a todos los que viajan a Europa.",
-    plan: "SIM Local M · 270 GB",
+    planId: "local-m",
     rating: 5,
     image: "/images/imagen6.png",
     journey: "Viaje a Portugal",
@@ -50,7 +51,7 @@ const TESTIMONIALS_PT = [
     destination: "Madrid",
     flag: "🇦🇷",
     text: "Me salvou a viagem. Cheguei a Madrid e já tinha internet, sem fazer nada no aeroporto. O QR com todas as instruções chegou direto no meu email. Incrível.",
-    plan: "SIM Local M · 270 GB",
+    planId: "local-m",
     rating: 5,
     image: "/images/imagen3.png",
     journey: "Viagem para Espanha",
@@ -61,7 +62,7 @@ const TESTIMONIALS_PT = [
     destination: "Europa",
     flag: "🇲🇽",
     text: "Usei numa viagem de 3 semanas pela Espanha, França e Itália. Funcionou perfeitamente em todos os lugares. Muito fácil de instalar.",
-    plan: "SIM Local L · 330 GB",
+    planId: "local-l",
     rating: 5,
     image: "/images/imagen5.png",
     journey: "3 semanas pela Europa",
@@ -72,7 +73,7 @@ const TESTIMONIALS_PT = [
     destination: "Lisboa",
     flag: "🇧🇷",
     text: "Muito fácil! Instalei o QR antes de embarcar e quando cheguei em Lisboa já estava conectada. Sem fila, sem estresse. Super recomendo.",
-    plan: "SIM Local M · 270 GB",
+    planId: "local-m",
     rating: 5,
     image: "/images/imagen6.png",
     journey: "Viagem para Portugal",
@@ -116,7 +117,9 @@ export default function Testimonials() {
 
         {/* Historias Visuales — Grid Asimétrico */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {TESTIMONIALS.map((item, i) => (
+          {TESTIMONIALS.map((item, i) => {
+            const plan = getPlanById(item.planId);
+            return (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 24 }}
@@ -174,13 +177,14 @@ export default function Testimonials() {
                 {/* Plan Badge */}
                 <div className="flex items-center justify-between pt-6 border-t border-[var(--color-border)]">
                   <span className="text-xs font-semibold uppercase tracking-wide text-[var(--color-ink-2)]">
-                    {item.plan}
+                    {plan ? `${plan.name} · ${plan.data_gb} GB` : ""}
                   </span>
                   <div className="text-2xl">✓</div>
                 </div>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Aggregate Rating Section */}
