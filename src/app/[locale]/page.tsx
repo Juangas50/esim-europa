@@ -112,7 +112,7 @@ export default async function HomePage({
         <HowItWorks />
         <Definition />
         <Benefits plans={plans} />
-        <Testimonials />
+        <Testimonials plans={plans} />
         <Compatibility />
         <FAQ />
         <PaymentMethods />
