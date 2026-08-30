@@ -51,6 +51,19 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // ── Redirect canónico de la raíz ──────────────────────────────────────────
+  // Un único 301 fijo a /es (ver next.config redirects: corre antes que
+  // proxy.ts, así que next-intl nunca llega a negociar / con Accept-Language).
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/es",
+        statusCode: 301,
+      },
+    ];
+  },
+
   // ── Security headers ───────────────────────────────────────────────────────
   async headers() {
     return [

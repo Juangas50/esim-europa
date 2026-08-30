@@ -4,6 +4,7 @@ import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { GTMNoScript } from "@/components/analytics/GTM";
 import { MetaPixelNoScript } from "@/components/analytics/MetaPixel";
 import MaintenanceBanner from "@/components/landing/MaintenanceBanner";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -21,6 +22,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "RUTA34 Telecom — eSIM para Europa",
   description:
     "Llegás a Europa y ya estás conectado. eSIM instantánea para argentinos, uruguayos, chilenos y brasileños que viajan a Europa.",
