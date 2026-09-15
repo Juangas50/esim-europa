@@ -15,6 +15,7 @@ import Guarantees from "@/components/landing/Guarantees";
 import Contact from "@/components/landing/Contact";
 import SocialLinks from "@/components/landing/SocialLinks";
 import Footer from "@/components/landing/Footer";
+import Link from "next/link";
 import HomeSchemaOrg from "@/components/seo/HomeSchemaOrg";
 import { getPlans } from "@/lib/plans-server";
 import { formatUSD } from "@/lib/utils";
@@ -118,6 +119,16 @@ export default async function HomePage({
       <Navbar />
       <main>
         <Hero minPrice={minPrice} />
+        {locale === "es" && (
+          <div className="px-4 py-3 bg-[var(--color-navy)] text-center">
+            <Link
+              href="/es/esim-europa-desde-argentina"
+              className="text-sm font-semibold text-white hover:text-[var(--color-gold)] transition-colors"
+            >
+              🇦🇷 ¿Viajás desde Argentina? Mirá cómo evitar el roaming y viajar con número español →
+            </Link>
+          </div>
+        )}
         <Plans plans={plans} />
         <HowItWorks />
         <Definition />

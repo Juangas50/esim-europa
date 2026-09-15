@@ -130,16 +130,15 @@ async function _deliverCore(
     return { ok: false, error: 'Error generando el código QR. Verificá los datos.' }
   }
 
-  // Subir a Storage — si falla, el email NO debe salir: se aborta y el pedido
-  // queda visible en estado de error en vez de silenciarlo con el fallback cid:.
-  let qrUrl: string | undefined
+  // Subir a Storage — no para linkearlo en el email (va como adjunto cid:
+  // embebido, ver más abajo), sino como respaldo/auditoría y para validar que
+  // el QR se generó bien antes de mandar nada: si falla, el email NO debe
+  // salir, se aborta y el pedido queda visible en estado de error.
   try {
     const { error: uploadError } = await supabase.storage
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
     if (uploadError) throw uploadError
-    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
-    qrUrl = urlData.publicUrl
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
     console.error('[deliver] Fallo subiendo QR a Storage, abortando entrega:', e)
@@ -184,6 +183,11 @@ async function _deliverCore(
   }
 
   // Ahora enviar email (los datos ya están guardados)
+  // NOTA: no pasamos qrUrl al template a propósito — así usa el fallback
+  // 'cid:esim-qr' y el QR se muestra desde el adjunto embebido en vez de
+  // pedirlo a lrlvugdzkkstjrqrarxk.supabase.co. Gmail penaliza imágenes que
+  // no viven en el dominio de envío (ver Resend → Insights); embebido no
+  // depende de que el destinatario cargue imágenes externas.
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -195,7 +199,6 @@ async function _deliverCore(
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
     amountUSD,
-    qrUrl,
   })
 
   const { error: emailError } = await sendEmail(
@@ -281,14 +284,11 @@ export async function resendDeliveryEmail(
     return { ok: false, error: 'Error generando el código QR.' }
   }
 
-  let qrUrl: string | undefined
   try {
     const { error: uploadError } = await supabase.storage
       .from('qr-codes')
       .upload(`${orderId}.png`, qrBuffer, { contentType: 'image/png', upsert: true })
     if (uploadError) throw uploadError
-    const { data: urlData } = supabase.storage.from('qr-codes').getPublicUrl(`${orderId}.png`)
-    qrUrl = urlData.publicUrl
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error desconocido subiendo el QR'
     console.error('[resend] Fallo subiendo QR a Storage, abortando reenvío:', e)
@@ -305,6 +305,7 @@ export async function resendDeliveryEmail(
     ? (order.amount_usd ?? 0)
     : (order.pvp_at_time ?? 0)
 
+  // Ver nota en deliverOrder: sin qrUrl a propósito, usa el adjunto cid:esim-qr.
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
@@ -315,7 +316,6 @@ export async function resendDeliveryEmail(
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
     amountUSD,
-    qrUrl,
   })
 
   const { error: emailError } = await sendEmail(

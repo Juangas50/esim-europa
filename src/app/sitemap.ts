@@ -39,5 +39,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
+  // Landing específica para Argentina — solo existe en /es, sin contraparte en
+  // /pt (contenido en voseo rioplatense sobre roaming AR que no aplica a Brasil).
+  entries.push({
+    url: `${base}/es/esim-europa-desde-argentina`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.9,
+    alternates: {
+      languages: {
+        es: `${base}/es/esim-europa-desde-argentina`,
+        "x-default": `${base}/es/esim-europa-desde-argentina`,
+      },
+    },
+  });
+
   return entries;
 }
