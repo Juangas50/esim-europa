@@ -73,7 +73,7 @@ export default function GeoBlockedPage() {
           </div>
 
           <a
-            href="mailto:soporte@esimruta34.com"
+            href="mailto:contacto@esimruta34.com"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-navy)] text-white rounded-xl font-semibold hover:bg-[var(--color-navy)]/90 transition-colors"
           >
             Contactar soporte

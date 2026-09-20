@@ -21,8 +21,8 @@ const CONTACTS = [
   {
     icon: EnvelopeSimple,
     label: "Email",
-    value: "soporte@esimruta34.com",
-    href: "mailto:soporte@esimruta34.com",
+    value: "contacto@esimruta34.com",
+    href: "mailto:contacto@esimruta34.com",
     color: "text-[var(--color-gold)]",
   },
   {

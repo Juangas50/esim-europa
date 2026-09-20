@@ -73,7 +73,7 @@ function TerminosES() {
           El presente servicio es prestado por RUTA34 TELECOM, S.L., sociedad con domicilio en
           España, en adelante &quot;RUTA34 Telecom&quot; o &quot;la empresa&quot;. Para cualquier
           consulta relacionada con la identificación legal del prestador, podés escribir a
-          soporte@esimruta34.com.
+          contacto@esimruta34.com.
         </p>
       </Section>
 
@@ -153,7 +153,7 @@ function TerminosES() {
         <p>
           El comprobante de pago emitido automáticamente por la pasarela de pago no constituye una
           factura fiscal española. Si el cliente requiere factura, podrá solicitarla escribiendo a
-          soporte@esimruta34.com indicando el número de pedido y los datos fiscales necesarios
+          contacto@esimruta34.com indicando el número de pedido y los datos fiscales necesarios
           (nombre/razón social, domicilio, identificación fiscal de su país). La factura será
           emitida por RUTA34 TELECOM, S.L. conforme a la normativa española aplicable, en un plazo
           de hasta 7 días hábiles desde la solicitud.
@@ -174,7 +174,7 @@ function TerminosES() {
         </p>
         <p>
           Para solicitar un reembolso, el cliente deberá contactar con el soporte por WhatsApp o
-          mediante correo a soporte@esimruta34.com, indicando la referencia del pedido.
+          mediante correo a contacto@esimruta34.com, indicando la referencia del pedido.
         </p>
       </Section>
 
@@ -286,7 +286,7 @@ function TerminosES() {
       <Section title="Contacto">
         <p>
           Para cualquier consulta relacionada con estos términos, podés contactarnos por WhatsApp o
-          en soporte@esimruta34.com.
+          en contacto@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>
@@ -302,7 +302,7 @@ function TerminosPT() {
           O presente serviço é prestado pela RUTA34 TELECOM, S.L., sociedade com domicílio na
           Espanha, doravante &quot;RUTA34 Telecom&quot; ou &quot;a empresa&quot;. Para qualquer
           dúvida relacionada à identificação legal do prestador, você pode escrever para
-          soporte@esimruta34.com.
+          contacto@esimruta34.com.
         </p>
       </Section>
 
@@ -376,7 +376,7 @@ function TerminosPT() {
         </p>
         <p>
           Para solicitar um reembolso, o cliente deverá entrar em contato com o suporte pelo
-          WhatsApp ou por e-mail em soporte@esimruta34.com, informando a referência do pedido.
+          WhatsApp ou por e-mail em contacto@esimruta34.com, informando a referência do pedido.
         </p>
       </Section>
 
@@ -428,7 +428,7 @@ function TerminosPT() {
       <Section title="Contato">
         <p>
           Para qualquer dúvida relacionada a estes termos, você pode nos contatar pelo WhatsApp ou
-          pelo e-mail soporte@esimruta34.com.
+          pelo e-mail contacto@esimruta34.com.
         </p>
       </Section>
     </LegalLayout>

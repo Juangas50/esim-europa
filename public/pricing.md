@@ -267,7 +267,7 @@ A: Yes, if your device supports eSIM (iPad Pro, iPad Air 3+).
 
 Have questions about pricing?
 
-- **Email:** soporte@esimruta34.com
+- **Email:** contacto@esimruta34.com
 - **WhatsApp:** +34 600 000 000
 - **Response Time:** <24 hours
 

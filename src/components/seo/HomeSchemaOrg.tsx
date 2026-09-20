@@ -200,7 +200,7 @@ export default async function HomeSchemaOrg({ locale, nonce }: Props) {
     ],
     contactPoint: {
       "@type": "ContactPoint",
-      email: "soporte@esimruta34.com",
+      email: "contacto@esimruta34.com",
       contactType: "customer support",
       availableLanguage: ["Spanish", "Portuguese"],
     },

@@ -82,10 +82,10 @@ export default function DestinationsPage() {
             nuestra red.
           </p>
           <a
-            href="mailto:soporte@esimruta34.com"
+            href="mailto:contacto@esimruta34.com"
             className="text-[#C9973A] font-semibold hover:underline"
           >
-            soporte@esimruta34.com
+            contacto@esimruta34.com
           </a>
         </div>
       </div>

@@ -178,7 +178,7 @@ All pages are mobile-friendly and responsive. Agents on mobile devices should wo
 
 For agent integration questions or issues:
 
-- **Email:** soporte@esimruta34.com
+- **Email:** contacto@esimruta34.com
 - **WhatsApp:** +34 600 000 000
 - **Support Hours:** 24/7 (Spanish/Portuguese)
 

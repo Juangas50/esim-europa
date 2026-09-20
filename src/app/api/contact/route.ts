@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email/send";
 
-const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "soporte@esimruta34.com";
+const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? "contacto@esimruta34.com";
 
 // ── Rate limiting (in-memory, per serverless instance) ───────────────────────
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
