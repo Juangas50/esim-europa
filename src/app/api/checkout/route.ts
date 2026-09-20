@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/plans-server";
 import { generateOrderRef } from "@/lib/utils";
+import { readAttribution } from "@/lib/attribution";
 
 let stripe: Stripe | null = null;
 
@@ -150,6 +151,11 @@ export async function POST(req: NextRequest) {
     // 4. Generar referencia de pedido
     const orderRef = generateOrderRef();
 
+    // Atribución de campaña (ej. /vicky) — cookie httpOnly, nunca viaja en el
+    // body ni es visible para el cliente. Se persiste en el pedido y en el
+    // metadata de Stripe para que el webhook la tenga disponible en Purchase.
+    const attribution = readAttribution(req);
+
     // 5. Crear pedido en Supabase (pending_payment) — solo para Stripe
     const supabase = createAdminClient();
     const { error: dbError } = await supabase
@@ -167,6 +173,7 @@ export async function POST(req: NextRequest) {
         status: "pending_payment",
         payment_method,
         amount_usd: plan.price_usd,
+        ...attribution,
       });
 
     if (dbError) {
@@ -192,9 +199,11 @@ export async function POST(req: NextRequest) {
             unit_amount: Math.round(plan.price_usd * 100),
             product_data: {
               name: quantity > 1
-                ? `eSIM Plan ${plan.size ?? plan.name} × ${quantity} — RUTA34 Telecom`
-                : `eSIM Plan ${plan.size ?? plan.name} — RUTA34 Telecom`,
-              description: `${plan.data_gb} GB · ${plan.duration_days} días · Número español incluido · 30+ países`,
+                ? `eSIM ${plan.name} × ${quantity} — RUTA34 Telecom`
+                : `eSIM ${plan.name} — RUTA34 Telecom`,
+              description: plan.type === "local"
+                ? `${plan.data_gb} GB · ${plan.duration_days} días · Número español incluido`
+                : `${plan.data_gb} GB · ${plan.duration_days} días · ${plan.countries_count}+ países · Solo datos`,
             },
           },
         },
@@ -212,6 +221,7 @@ export async function POST(req: NextRequest) {
         ...(meta_event_id ? { meta_event_id } : {}),
         ...(fbp ? { fbp } : {}),
         ...(fbc ? { fbc } : {}),
+        ...attribution,
         client_user_agent: (req.headers.get("user-agent") ?? "").slice(0, 400),
         client_ip_address: ip,
       },

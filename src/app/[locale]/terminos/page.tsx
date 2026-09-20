@@ -2,10 +2,10 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import LegalLayout from "@/components/legal/LegalLayout";
 import LegalSchemaOrg from "@/components/seo/LegalSchemaOrg";
+import { SITE_URL } from "@/lib/site";
 
 // ── Metadata ─────────────────────────────────────────────────────────────────
-const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
-const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
+const base = SITE_URL;
 
 export async function generateMetadata({
   params,

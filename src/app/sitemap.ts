@@ -1,14 +1,16 @@
 import { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
-const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
-const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
 const locales = ["es", "pt"] as const;
 
-// Rutas públicas indexables (excluye compra, confirmacion, admin, login)
+// Rutas públicas indexables (excluye compra, confirmacion, reprogramar,
+// cookies [noindex], admin, login)
 const publicRoutes = [
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   { path: "/sobre", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/planes", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/destinos", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/compatibility", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/help", priority: 0.6, changeFrequency: "monthly" },
   { path: "/terminos", priority: 0.7, changeFrequency: "monthly" },
   { path: "/privacidad", priority: 0.7, changeFrequency: "monthly" },
 ] as const;
@@ -20,20 +22,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Entrada canónica con alternates para hreflang
     const alternates: Record<string, string> = {};
     for (const locale of locales) {
-      alternates[locale] = `${base}/${locale}${route.path}`;
+      alternates[locale] = `${SITE_URL}/${locale}${route.path}`;
     }
 
     // Una entrada por locale (ES es el canónico / x-default)
     for (const locale of locales) {
       entries.push({
-        url: `${base}/${locale}${route.path}`,
+        url: `${SITE_URL}/${locale}${route.path}`,
         lastModified: new Date(),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
         alternates: {
           languages: {
             ...alternates,
-            "x-default": `${base}/es${route.path}`,
+            "x-default": `${SITE_URL}/es${route.path}`,
           },
         },
       });

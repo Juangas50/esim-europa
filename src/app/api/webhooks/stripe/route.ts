@@ -83,6 +83,10 @@ export async function POST(req: NextRequest) {
         payment_method: order.payment_method,
         payment_id: session.payment_intent as string,
         amount_usd: order.amount_usd,
+        utm_source: order.utm_source,
+        utm_medium: order.utm_medium,
+        utm_campaign: order.utm_campaign,
+        utm_content: order.utm_content,
       }));
       const { error: extrasError } = await supabase.from("b2c_orders").insert(extras);
       if (extrasError) {
@@ -184,6 +188,19 @@ export async function POST(req: NextRequest) {
     const ga4ApiSecret = process.env.GA4_API_SECRET;
     const ga4ClientId = session.metadata?.ga_client_id;
 
+    // Atribución de campaña (ej. /vicky) — viaja en el metadata de Stripe desde
+    // /api/checkout. No cambia la dimensión nativa "session campaign" de GA4
+    // (esa se resuelve al momento del hit, no server-side), pero queda como
+    // parámetro consultable en Explore/BigQuery para identificar estas compras.
+    const attributionParams = session.metadata?.utm_campaign
+      ? {
+          attribution_source: session.metadata?.utm_source,
+          attribution_medium: session.metadata?.utm_medium,
+          attribution_campaign: session.metadata?.utm_campaign,
+          attribution_content: session.metadata?.utm_content,
+        }
+      : undefined;
+
     if (ga4MeasurementId && ga4ApiSecret && ga4ClientId && plan) {
       try {
         const ga4Res = await fetch(
@@ -200,6 +217,7 @@ export async function POST(req: NextRequest) {
                     transaction_id: orderRef,
                     value: plan.price_usd,
                     currency: "USD",
+                    ...attributionParams,
                     items: [
                       {
                         item_id: planId,
@@ -234,11 +252,14 @@ export async function POST(req: NextRequest) {
         eventName: "Purchase",
         eventId: metaEventId,
         eventSourceUrl: `${baseUrl}/confirmacion`,
-        customData: buildPurchasePayload(
-          { id: planId, name: plan.name, price_usd: plan.price_usd },
-          quantity,
-          orderRef
-        ),
+        customData: {
+          ...buildPurchasePayload(
+            { id: planId, name: plan.name, price_usd: plan.price_usd },
+            quantity,
+            orderRef
+          ),
+          ...attributionParams,
+        },
         userData: {
           fbp: session.metadata?.fbp,
           fbc: session.metadata?.fbc,

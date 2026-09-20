@@ -1,7 +1,7 @@
 import JsonLd from "./JsonLd";
+import { SITE_URL } from "@/lib/site";
 
-const rawBase = process.env.NEXT_PUBLIC_BASE_URL ?? "https://www.esimruta34.com";
-const base = rawBase.includes("vercel.app") ? "https://www.esimruta34.com" : rawBase;
+const base = SITE_URL;
 
 interface Props {
   locale: "es" | "pt";
