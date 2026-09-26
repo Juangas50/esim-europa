@@ -61,6 +61,14 @@ export default async function middleware(request: NextRequest) {
     return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
   }
 
+  // /wa es el redirect a WhatsApp que usan los emails (ver app/wa/route.ts) —
+  // tampoco lleva locale prefix. Sin este bypass, next-intl lo redirige a
+  // /es/wa, que no existe, y da 404 (bug reportado: el botón de WhatsApp de
+  // los emails llevaba a esimruta34.com/es/wa).
+  if (pathname === "/wa") {
+    return withCsp(NextResponse.next({ request: { headers: requestHeaders } }));
+  }
+
   // Rutas del portal: verificar sesión Supabase
   if (isPortalRoute(pathname)) {
     let response = NextResponse.next({ request: { headers: requestHeaders } });
