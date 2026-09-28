@@ -37,11 +37,20 @@ export const SUPPORT_URL = `${siteBaseUrl()}/wa`
 export const LIGHT_MODE_META = `<meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">`
 
+/** Preheader oculto — el resumen que muestran Gmail/Apple Mail junto al subject. */
+function hiddenPreheader(text: string): string {
+  // Relleno con espacios de ancho cero para que el cliente no siga
+  // tomando el resto del body como preview una vez que el texto termina.
+  const padding = "&nbsp;&zwnj;".repeat(40)
+  return `<div style="display:none;overflow:hidden;line-height:1px;opacity:0;max-height:0;max-width:0;mso-hide:all;">${text}${padding}</div>`
+}
+
 /** Documento completo: head + outer table + header (wordmark) + footer. */
 export function emailDocument(opts: {
   title: string
   headerRight: string
   bodyHtml: string
+  preheader?: string
 }): string {
   return `<!DOCTYPE html>
 <html lang="es">
@@ -64,6 +73,7 @@ ${LIGHT_MODE_META}
 </style>
 </head>
 <body style="margin:0;padding:0;background:${COLORS.bg};">
+${opts.preheader ? hiddenPreheader(opts.preheader) : ""}
 <table role="presentation" width="100%" style="background:${COLORS.bg};margin:0;padding:0;border-collapse:collapse;">
 <tr><td align="center">
 <table role="presentation" width="100%" style="max-width:640px;background:${COLORS.bg};" class="r34-container">

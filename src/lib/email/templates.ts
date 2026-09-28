@@ -434,33 +434,86 @@ ${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
 }
 
 // ── B2C: Confirmación de cambio de fecha de activación ────────────────────────
+//
+// Reproduce "Ruta34 Email4 Reprogramacion.dc.html". Tres estados aprobados
+// (FASE 4B §11):
+//   SINGLE          — affectedEsims ausente.
+//   MULTI · TODAS    — affectedEsims presente, isPartialSelection falso/ausente.
+//   MULTI · SELECCIÓN — affectedEsims presente + isPartialSelection true,
+//                        agrega "El resto de tus eSIMs mantiene su fecha
+//                        de activación." (copy aprobado literalmente).
+// Subject/preheader copiados literalmente de lo aprobado. No hay
+// previousActivationDate (el master lo descarta explícitamente) ni
+// reassurance adicional. Fallback sin rescheduleUrl: oculta el CTA y
+// reutiliza el mismo patrón aprobado que Email 3.
 export function emailFechaReprogramada(data: {
   customerName: string
   orderRef: string
   planName: string
   newActivationDate: string
+  rescheduleUrl?: string
+  affectedEsims?: Array<{ label: string; orderRef: string }>
+  isPartialSelection?: boolean
 }) {
+  const isMulti = !!data.affectedEsims && data.affectedEsims.length > 0
+  const affectedCount = data.affectedEsims?.length ?? 1
+
+  const subject = isMulti
+    ? `Actualizamos la fecha de tus eSIMs Ruta34`
+    : `Actualizamos la fecha de tu eSIM Ruta34`
+
+  const preheader = affectedCount === 1
+    ? `La activaremos el ${data.newActivationDate}.`
+    : `Las activaremos el ${data.newActivationDate}.`
+
+  const dateCardIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#1C3454" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#1C3454" stroke-width="1.8" stroke-linecap="round"/><path d="M8.5 15l2.2 2.2 4.8-4.7" stroke="#C79A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+
+  const affectedList = isMulti
+    ? `<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(199,154,62,0.25);">
+        <div style="font-family:${FONTS.body};font-size:10px;font-weight:700;letter-spacing:0.06em;color:#9AA0AC;margin-bottom:6px;">APLICA A</div>
+        ${data.affectedEsims!.map((e) => `<div style="font-family:${FONTS.body};font-size:12.5px;line-height:1.7;color:#5B6579;">${e.label} &middot; Ref. <span style="font-weight:700;color:#1C3454;font-family:monospace;">${e.orderRef}</span></div>`).join("")}
+      </div>`
+    : ""
+
+  const partialNote = data.isPartialSelection
+    ? blockRow(`<div style="font-family:${FONTS.body};font-size:13px;line-height:1.55;color:#5B6579;">El resto de tus eSIMs mantiene su fecha de activaci&oacute;n.</div>`)
+    : ""
+
+  const rescheduleSection = data.rescheduleUrl
+    ? blockRow(`
+        <div style="font-family:${FONTS.body};font-size:14px;line-height:1.55;color:#33415A;margin-bottom:16px;">Cuando est&eacute; lista, te la enviaremos por email con todo lo necesario para instalarla.</div>
+        ${ctaButtonOutline("Reprogramar activación", data.rescheduleUrl)}
+      `)
+    : blockRow(`<div style="font-family:${FONTS.body};font-size:14px;line-height:1.55;color:#33415A;">Si necesit&aacute;s cambiar la fecha, <a href="${SUPPORT_URL}" style="color:#C79A3E;font-weight:700;">escribinos</a>.</div>`)
+
+  const body = `
+${blockRow(`
+  ${eyebrow('ACTIVACIÓN · FECHA ACTUALIZADA')}
+  ${h1(isMulti ? 'Actualizamos la fecha de tus eSIMs.' : 'Actualizamos la fecha de tu eSIM.')}
+`, '8px 40px 22px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-email4.jpg`, 'Persona marcando una nueva fecha en una agenda de papel, con una flecha dorada desde la fecha anterior; al fondo, una valija navy lista para el viaje'), '0 40px 28px')}
+${blockRow(bodyText(`
+  <div style="margin-bottom:8px;">Hola, ${data.customerName}.</div>
+  <div>Listo. Cambiamos la fecha de activaci&oacute;n de ${isMulti ? `tus eSIMs` : `tu eSIM`} <b style="color:#1C3454;">${data.planName}</b>.</div>
+`), '0 40px 14px')}
+${blockRow(`<table role="presentation" width="100%" style="background:#FFFFFF;border:1px solid #C79A3E;border-radius:18px;"><tr><td style="padding:22px 28px;">
+  <table role="presentation" width="100%"><tr>
+    <td width="36" valign="top"><table role="presentation" width="36" height="36" style="background:#EFE6D2;border-radius:50%;"><tr><td align="center">${dateCardIcon}</td></tr></table></td>
+    <td style="padding-left:14px;">
+      <div style="font-family:${FONTS.body};font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:#1C3454;margin-bottom:3px;"><span style="color:#A97F2E;">NUEVA</span> FECHA DE ACTIVACIÓN</div>
+      <div style="font-family:${FONTS.header};font-size:22px;line-height:1.2;color:#1C3454;">${data.newActivationDate}</div>
+    </td>
+  </tr></table>
+  ${affectedList}
+</td></tr></table>`)}
+${partialNote}
+${rescheduleSection}
+${blockRow(`<div style="border-top:1px solid #C79A3E;padding-top:16px;"><div style="font-family:${FONTS.body};font-size:13.5px;line-height:1.6;color:#5B6579;">La vigencia empieza cuando activamos tu eSIM.</div></div>`)}
+${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
+
   return {
-    subject: `Tu nueva fecha de activación — ${data.newActivationDate}`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Fecha actualizada</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">📆 Nueva fecha confirmada</p><p class="p">Hola <strong style="color:#1B2F4E;">${data.customerName}</strong>, actualizamos la fecha de activación de tu ${data.planName}.</p></div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section">
-${row('Referencia', `<span style="font-family:monospace;">${data.orderRef}</span>`)}
-${row('Recibirás tu QR', `<span style="color:#C9973A;font-weight:800;">${data.newActivationDate}</span>`)}
-</div></td></tr>
-${supportBlock()}
-${premiumFooter()}`
+    subject,
+    html: emailDocument({ title: subject, headerRight: isMulti ? 'Tus eSIMs · Europa' : 'Tu eSIM · Europa', bodyHtml: body, preheader }),
   }
 }
 

@@ -1,52 +1,58 @@
-import { createAdminClient } from "@/lib/supabase/server";
 import ReprogramarView from "./ReprogramarView";
+import { resolveAuthorizedGroup, parsePairsParam, isValidLegacyPair, type ReprogramarPair } from "./resolve";
+import { labelWithinGroup } from "@/lib/esim/order";
 
 export const dynamic = "force-dynamic";
-
-const TOKEN_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function ReprogramarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ref?: string; token?: string }>;
+  searchParams: Promise<{ ref?: string; token?: string; rows?: string }>;
 }) {
-  const { ref, token } = await searchParams;
+  const { ref, token, rows: rowsParam } = await searchParams;
 
-  if (!ref || !token || !TOKEN_RE.test(token)) {
+  // rows= (multi, Alternativa A) tiene prioridad si está presente; si no,
+  // cae al formato legacy ?ref=&token= — que sigue funcionando indefinidamente.
+  const pairs: ReprogramarPair[] | null = rowsParam
+    ? parsePairsParam(rowsParam)
+    : isValidLegacyPair(ref, token)
+      ? [isValidLegacyPair(ref, token)!]
+      : null;
+
+  if (!pairs) {
     return <ReprogramarView status="invalid" />;
   }
 
-  const { data: order } = await createAdminClient()
-    .from("b2c_orders")
-    .select("order_ref, status, activation_date, created_at, tariffs(name)")
-    .eq("order_ref", ref)
-    .eq("reschedule_token", token)
-    .maybeSingle();
-
-  if (!order) {
+  const result = await resolveAuthorizedGroup(pairs);
+  if (!result.ok) {
     return <ReprogramarView status="invalid" />;
   }
 
-  if (order.status !== "paid") {
+  const { rows } = result;
+  const editableCount = rows.filter((r) => r.status === "paid").length;
+  if (editableCount === 0) {
     return <ReprogramarView status="already-delivered" />;
   }
 
+  const primary = rows[0];
   const minDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split("T")[0];
-  const maxDate = new Date(
-    new Date(order.created_at).getTime() + 365 * 24 * 60 * 60 * 1000
-  )
+  const maxDate = new Date(new Date(primary.created_at).getTime() + 365 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0];
 
   return (
     <ReprogramarView
       status="form"
-      orderRef={order.order_ref}
-      token={token}
-      planName={(order as { tariffs?: { name?: string } }).tariffs?.name ?? "tu eSIM"}
-      currentDate={order.activation_date}
+      planName={primary.tariff_name ?? "tu eSIM"}
       minDate={minDate}
       maxDate={maxDate}
+      pairs={pairs}
+      rows={rows.map((r) => ({
+        orderRef: r.order_ref,
+        label: labelWithinGroup(r.order_ref, rows),
+        editable: r.status === "paid",
+        currentDate: r.activation_date,
+      }))}
     />
   );
 }
