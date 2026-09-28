@@ -621,8 +621,8 @@ ${blockRow(`<table role="presentation" width="100%" style="background:#FFFFFF;bo
 </td></tr></table>`)}
 ${partialNote}
 ${rescheduleSection}
-${blockRow(`<div style="border-top:1px solid #C79A3E;padding-top:16px;"><div style="font-family:${FONTS.body};font-size:13.5px;line-height:1.6;color:#5B6579;">La vigencia empieza cuando activamos tu eSIM.</div></div>`)}
-${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
+${blockRow(`<div style="border-top:1px solid #C79A3E;padding-top:16px;"><div style="font-family:${FONTS.body};font-size:13.5px;line-height:1.6;color:#5B6579;">${isMulti ? 'La vigencia empieza cuando activamos tus eSIMs.' : 'La vigencia empieza cuando activamos tu eSIM.'}</div></div>`)}
+${blockRow(sharedSupportBlock(isMulti ? undefined : data.orderRef), '0 40px 32px')}`
 
   return {
     subject,
