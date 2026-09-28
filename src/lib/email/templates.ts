@@ -1,4 +1,9 @@
 import { siteBaseUrl } from "@/lib/utils"
+import {
+  emailDocument, row as blockRow, eyebrow, h1, bodyText, heroImage,
+  supportBlock as sharedSupportBlock, iconValueCard, reassuranceCard, multiRefsList, ICONS,
+  FONTS,
+} from "@/lib/email/blocks"
 
 // ── Bloqueo de dark-mode: sin estas dos líneas, iOS Mail / Gmail / Outlook.com
 // auto-invierten los colores del email y rompen la paleta Ruta34 por completo.
@@ -45,43 +50,53 @@ ${premiumFooter()}`
   }
 }
 
+// SINGLE reproduce "Ruta34 Email2 ActivacionProgramada.dc.html". MULTI sigue
+// el mismo criterio y la misma limitación de fuente que emailConfirmacionB2C
+// (ver comentario arriba y sección K del informe de entrega). planDays ahora
+// viene de tariffs.validity_days real — ya no hardcodea "28 días".
 export function emailAvisoClienteProgramado(data: {
   customerName: string
-  tariffName: string
+  orderRefs: string[]
+  totalCount: number
+  planName: string
+  planDays: number
   activationDate: string
   type: string
 }) {
-  const isLocal = data.type === 'prepago' || data.type === 'local'
+  const isMulti = data.totalCount > 1
+  const orderRef = data.orderRefs[0]
+
+  const subject = isMulti
+    ? `Tus eSIMs están confirmadas — las recibirás el ${data.activationDate}`
+    : `Tu eSIM está confirmada — la recibirás el ${data.activationDate}`
+
+  const planLabel = isMulti ? `tus ${data.totalCount} eSIMs` : `tu eSIM`
+  const activateLabel = isMulti ? `las activaremos` : `la activaremos`
+  const installLabel = isMulti ? `instalarlas` : `instalarla`
+
+  const body = `
+${blockRow(`
+  ${eyebrow('ACTIVACIÓN PROGRAMADA')}
+  ${h1(isMulti ? 'Todo listo.<br>Nos ocupamos de activar tus eSIMs.' : 'Todo listo.<br>Nos ocupamos de activar tu eSIM.')}
+`, '8px 40px 22px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-email2.jpg`, 'Escritorio con cuaderno de plan de viaje, pasaporte, teléfono, taza de café y planta, con luz cálida de ventana'), '0 40px 26px')}
+${blockRow(bodyText(`
+  <div style="margin-bottom:10px;">Hola, ${data.customerName}.</div>
+  <div style="margin-bottom:10px;">Programamos la activación de ${planLabel} <b style="color:#1C3454;">${data.planName}</b> para el <b style="color:#1C3454;">${data.activationDate}</b>.</div>
+  <div>Ese día ${activateLabel} y te enviaremos un email con lo necesario para ${installLabel}.</div>
+`))}
+${blockRow(`<table role="presentation" width="100%" style="margin-bottom:20px;"><tr><td>${iconValueCard(ICONS.calendar, 'FECHA DE ACTIVACIÓN', `<div style="font-family:${FONTS.header};font-size:21px;color:#1C3454;">${data.activationDate}</div>`)}</td></tr></table>
+${reassuranceCard(isMulti ? 'No tenés que hacer nada.' : 'No tenés que hacer nada.', `Te avisaremos por email cuando activemos ${planLabel}.`)}`)}
+${blockRow(iconValueCard(ICONS.plan, 'TU PLAN', `<div style="font-family:${FONTS.header};font-size:23px;color:#1C3454;margin-bottom:4px;">${data.planName}</div><div style="font-family:${FONTS.body};font-size:13.5px;color:#5B6579;">${data.planDays} días</div>`))}
+${isMulti
+  ? blockRow(multiRefsList(data.orderRefs.map((ref, i) => ({ label: `eSIM ${i + 1} de ${data.totalCount}`, orderRef: ref }))))
+  : blockRow(iconValueCard(ICONS.receipt, 'REFERENCIA DE PEDIDO', `<div style="font-family:${FONTS.body};font-size:14px;color:#5B6579;">Pedido <span style="font-weight:700;color:#1C3454;">${orderRef}</span></div>`))
+}
+${blockRow(sharedSupportBlock(), '0 40px 32px')}`
 
   return {
-    subject: `Tu eSIM está confirmada — la recibirás el ${data.activationDate}`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Activación programada</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">📅 Tu eSIM está confirmada</p><p class="p">Hola <strong style="color:#1B2F4E;">${data.customerName}</strong>, tu eSIM está lista y programada.</p></div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section"><h2 class="h2">Tu plan</h2>
-${row('Plan', data.tariffName)}
-${row('Tipo', isLocal ? '28 días desde activación' : 'DataOnly • 60 días')}
-${row('Recibirás tu QR', `<span style="color:#C9973A;font-weight:800;">${data.activationDate}</span>`)}
-</div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section"><h2 class="h2">Cronograma</h2>
-${step(1, `<strong style="color:#1B2F4E;">Compra confirmada</strong><br>Tu pedido está registrado y listo.`)}
-${step(2, `<strong style="color:#1B2F4E;">El ${data.activationDate}</strong><br>Ese día activamos tu eSIM y te enviamos el código QR — ahí empiezan a correr tus días de plan.`)}
-${step(3, `<strong style="color:#1B2F4E;">Instalá apenas lo recibas</strong><br>Tus días ya están corriendo desde que te enviamos el QR, no desde que lo escaneás. Instalá la eSIM apenas la recibas para no perder días de tu plan.`)}
-</div></td></tr>
-${noticeBlock('⏳', 'Importante: cuándo empiezan tus días.', `Tus días de plan arrancan el ${data.activationDate}, el día que te enviamos el código QR — no cuando lo instalás en tu celular. Te recomendamos instalar la eSIM apenas la recibas para aprovechar el plan completo.`)}
-${supportBlock()}
-${premiumFooter()}`
+    subject,
+    html: emailDocument({ title: subject, headerRight: isMulti ? 'Tus eSIMs · Europa' : 'Tu eSIM · Europa', bodyHtml: body }),
   }
 }
 
@@ -131,49 +146,56 @@ ${premiumFooter()}`
 }
 
 // ── B2C: Confirmación de pedido (se envía inmediatamente tras el pago) ─────────
+//
+// SINGLE reproduce "Ruta34 Email1 CompraConfirmada.dc.html" (Design Master
+// aprobado). MULTI (totalCount > 1) extiende el mismo master con copy
+// singular→plural mecánico y el bloque "REFERENCIAS DE PEDIDO" — el subject
+// MULTI y el formato "eSIM X de N · Ref. orderRef" están aprobados
+// literalmente (FASE 4B §5); el resto del copy plural del cuerpo NO fue
+// recibido como archivo/texto literal de Claude Design en este repo — es
+// una derivación mecánica singular→plural siguiendo el mismo patrón ya
+// aprobado para el subject. Ver informe de entrega, sección K.
 export function emailConfirmacionB2C(data: {
   customerName: string
-  orderRef: string
+  orderRefs: string[]
+  totalCount: number
   planName: string
-  planGB: number
   planDays: number
   planType: 'local' | 'dataonly' | string
-  amountUSD: number
 }) {
-  const isLocal = data.planType === 'local' || data.planType === 'prepago'
-  const activationNote = isLocal
-    ? 'Tus 28 días empiezan a correr en cuanto te enviamos el código QR (dentro de las próximas 24 horas) — no cuando lo instalás. Instalá la eSIM apenas la recibas para no perder días de tu plan.'
-    : 'Tenés 60 días desde la compra para activar la eSIM. El plan corre desde que la activás.'
+  const isMulti = data.totalCount > 1
+  const orderRef = data.orderRefs[0]
+
+  const subject = isMulti
+    ? `Tu compra está confirmada — recibirás tus eSIMs en 24 horas`
+    : `Tu compra está confirmada — recibirás tu eSIM en 24 horas`
+
+  const planLabel = isMulti ? `tus ${data.totalCount} eSIMs` : `tu eSIM`
+  const readyLabel = isMulti ? `estén listas` : `esté lista`
+  const installLabel = isMulti ? `instalarlas` : `instalarla`
+
+  const body = `
+${blockRow(`
+  ${eyebrow('COMPRA CONFIRMADA')}
+  ${h1('Ya está.<br>Recibimos tu compra.')}
+`, '8px 40px 22px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-email1.jpg`, 'Valija abierta con ropa doblada, pasaporte, teléfono, botella y neceser sobre una cama, con luz cálida de ventana'), '0 40px 26px')}
+${blockRow(bodyText(`
+  <div style="margin-bottom:10px;">Hola, ${data.customerName}.</div>
+  <div style="margin-bottom:10px;">Tu compra está confirmada y estamos preparando ${planLabel} <b style="color:#1C3454;">${data.planName}</b>.</div>
+  <div>Cuando ${readyLabel}, te enviaremos otro email con todo lo necesario para ${installLabel}.</div>
+`))}
+${blockRow(`<table role="presentation" width="100%" style="margin-bottom:20px;"><tr><td>${iconValueCard(ICONS.plan, 'TU PLAN', `<div style="font-family:${FONTS.header};font-size:23px;color:#1C3454;margin-bottom:4px;">${data.planName}</div><div style="font-family:${FONTS.body};font-size:13.5px;color:#5B6579;">${data.planDays} días</div>`)}</td></tr></table>
+${reassuranceCard('Por ahora no tenés que hacer nada.', `Te avisaremos por email en cuanto ${planLabel} ${readyLabel}.`)}`)}
+${isMulti
+  ? blockRow(multiRefsList(data.orderRefs.map((ref, i) => ({ label: `eSIM ${i + 1} de ${data.totalCount}`, orderRef: ref }))))
+  : blockRow(iconValueCard(ICONS.receipt, 'REFERENCIA DE PEDIDO', `<div style="font-family:${FONTS.body};font-size:14px;color:#5B6579;">Pedido <span style="font-weight:700;color:#1C3454;">${orderRef}</span></div>`))
+}
+${blockRow(sharedSupportBlock(), '0 40px 32px')}`
 
   return {
-    subject: `Tu compra está confirmada — recibirás tu eSIM en 24 horas`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Compra confirmada</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">✅ Compra confirmada</p><p class="p">Hola <strong style="color:#1B2F4E;">${data.customerName}</strong>, tu viaje a Europa está casi listo.</p></div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section"><h2 class="h2">Tu plan</h2>
-${row('Plan', `${data.planName} · ${data.planGB} GB · ${data.planDays} días`)}
-${row('Total', `<span style="color:#C9973A;font-size:18px;">USD ${data.amountUSD.toFixed(2)}</span>`)}
-${row('Referencia de pedido', `<span style="font-family:monospace;">${data.orderRef}</span>`)}
-</div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section"><h2 class="h2">Lo que viene ahora</h2>
-${step(1, `<strong style="color:#1B2F4E;">Preparamos tu eSIM</strong><br>En los próximos minutos verificamos tu compra. Operamos de 8:00 a 21:00 (España).`)}
-${step(2, `<strong style="color:#1B2F4E;">Recibirás tu QR por email</strong><br>En menos de 24 horas recibirás el código QR para instalar tu eSIM.`)}
-${step(3, `<strong style="color:#1B2F4E;">Activá cuando llegues</strong><br>${activationNote}`)}
-</div></td></tr>
-${noticeBlock('📱', 'Antes de instalar tu eSIM', 'Asegurate que tu celular sea compatible (Settings → General → About → eSIM) · Necesitarás WiFi para instalarlo (no internet de datos) · Guardá este email — contiene datos importantes.')}
-${supportBlock()}
-${premiumFooter()}`,
+    subject,
+    html: emailDocument({ title: subject, headerRight: isMulti ? 'Tus eSIMs · Europa' : 'Tu eSIM · Europa', bodyHtml: body }),
   }
 }
 
@@ -219,14 +241,6 @@ ${isScheduled ? noticeBlock('📆', 'No es urgente.', 'Este pedido es de activac
 <tr><td><div class="section" style="text-align:center;"><a class="button" href="${data.portalUrl}">Tramitar en el portal →</a></div></td></tr>
 ${premiumFooter()}`,
   }
-}
-
-function step(n: number, text: string) {
-  return `
-  <div style="display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;">
-    <span style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#C9973A;color:#1B2F4E;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;">${n}</span>
-    <span style="font-size:14px;color:#555555;line-height:1.6;">${text}</span>
-  </div>`
 }
 
 function row(label: string, value: string) {

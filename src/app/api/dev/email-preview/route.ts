@@ -28,17 +28,36 @@ export async function GET(request: Request) {
   const exampleData = {
     confirmacion: {
       customerName: 'Juan García',
-      orderRef: 'ORD-2026-07-001',
+      orderRefs: ['ORD-2026-07-001'],
+      totalCount: 1,
       planName: 'Europa 10 GB',
-      planGB: 10,
       planDays: 30,
       planType: 'prepago' as const,
-      amountUSD: 29.99
+    },
+    confirmacionMulti: {
+      customerName: 'Juan García',
+      orderRefs: ['ORD-2026-07-001-A', 'ORD-2026-07-001-B', 'ORD-2026-07-001-C'],
+      totalCount: 3,
+      planName: 'Europa 10 GB',
+      planDays: 30,
+      planType: 'prepago' as const,
     },
     aviso: {
       customerName: 'Juan García',
-      tariffName: 'Europa 10 GB',
-      activationDate: '2026-07-15',
+      orderRefs: ['ORD-2026-07-001'],
+      totalCount: 1,
+      planName: 'Europa 10 GB',
+      planDays: 30,
+      activationDate: '15 de julio de 2026',
+      type: 'prepago'
+    },
+    avisoMulti: {
+      customerName: 'Juan García',
+      orderRefs: ['ORD-2026-07-001-A', 'ORD-2026-07-001-B', 'ORD-2026-07-001-C'],
+      totalCount: 3,
+      planName: 'Europa 10 GB',
+      planDays: 30,
+      activationDate: '15 de julio de 2026',
       type: 'prepago'
     },
     entrega: {
@@ -149,8 +168,20 @@ export async function GET(request: Request) {
       emailHtml = result.html
       break
     }
+    case 'confirmacion-multi': {
+      const result = emailConfirmacionB2C(exampleData.confirmacionMulti)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
     case 'aviso': {
       const result = emailAvisoClienteProgramado(exampleData.aviso)
+      subject = result.subject
+      emailHtml = result.html
+      break
+    }
+    case 'aviso-multi': {
+      const result = emailAvisoClienteProgramado(exampleData.avisoMulti)
       subject = result.subject
       emailHtml = result.html
       break

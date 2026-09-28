@@ -241,4 +241,57 @@ export function orderRefLine(orderRef: string): string {
   return `<span style="font-family:${BODY_FONT};">Pedido <span style="font-weight:700;color:${COLORS.navy};">${orderRef}</span></span>`
 }
 
+/** Card blanca con icono + eyebrow + valor — patrón "TU PLAN"/"FECHA DE ACTIVACIÓN"/"REFERENCIA DE PEDIDO". */
+export function iconValueCard(iconSvg: string, eyebrowLabel: string, valueHtml: string, opts?: { eyebrowColor?: string }): string {
+  return whiteCard(`
+    <table role="presentation" width="100%"><tr>
+      <td width="34" valign="top">
+        <table role="presentation" width="34" height="34" style="background:#EFE6D2;border-radius:50%;"><tr><td align="center">${iconSvg}</td></tr></table>
+      </td>
+      <td style="padding-left:14px;">
+        <div style="font-family:${BODY_FONT};font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:${opts?.eyebrowColor ?? COLORS.navy};margin-bottom:3px;">${eyebrowLabel}</div>
+        ${valueHtml}
+      </td>
+    </tr></table>
+  `, { padding: "20px 26px" })
+}
+
+const CHECK_ICON_SVG = `<svg width="16" height="13" viewBox="0 0 16 12"><path d="M1 6l4.5 4.5L15 1" stroke="${COLORS.white}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+
+/** Card celeste con check dorado — bloque de tranquilidad ("no tenés que hacer nada"). */
+export function reassuranceCard(title: string, text: string): string {
+  return whiteCard(`
+    <table role="presentation" width="100%"><tr>
+      <td width="32" valign="top">
+        <table role="presentation" width="32" height="32" style="background:${COLORS.gold};border-radius:50%;"><tr><td align="center">${CHECK_ICON_SVG}</td></tr></table>
+      </td>
+      <td style="padding-left:14px;">
+        <div style="font-family:${HEADER_FONT};font-size:16px;color:${COLORS.navy};line-height:1.3;margin-bottom:6px;">${title}</div>
+        <div style="font-family:${BODY_FONT};font-size:12.5px;line-height:1.5;color:${COLORS.inkSecondary};">${text}</div>
+      </td>
+    </tr></table>
+  `, { bg: COLORS.blueAccent, padding: "26px 28px" })
+}
+
+/**
+ * "REFERENCIAS DE PEDIDO" — lista compacta multi-eSIM, formato aprobado
+ * literalmente en FASE 4B sección 5: "eSIM X de N · Ref. orderRef",
+ * siempre en orden canónico (ver src/lib/esim/order.ts).
+ */
+export function multiRefsList(items: Array<{ label: string; orderRef: string }>): string {
+  const rows = items.map(
+    (it) => `<div style="font-family:${BODY_FONT};font-size:13.5px;line-height:1.8;color:${COLORS.inkSecondary};">${it.label} &middot; Ref. <span style="font-weight:700;color:${COLORS.navy};font-family:monospace;">${it.orderRef}</span></div>`
+  ).join("")
+  return whiteCard(`
+    <div style="font-family:${BODY_FONT};font-size:10px;font-weight:700;letter-spacing:0.08em;color:${COLORS.inkTertiary};margin-bottom:10px;">REFERENCIAS DE PEDIDO</div>
+    ${rows}
+  `, { padding: "20px 26px" })
+}
+
+export const ICONS = {
+  plan: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="12" rx="2" stroke="${COLORS.navy}" stroke-width="1.8"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="${COLORS.navy}" stroke-width="1.8"/></svg>`,
+  calendar: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="${COLORS.navy}" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="${COLORS.navy}" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  receipt: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M7 3h8l4 4v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="${COLORS.navy}" stroke-width="1.6"/><path d="M9 12h6M9 16h6" stroke="${COLORS.navy}" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+}
+
 export const FONTS = { header: HEADER_FONT, body: BODY_FONT }

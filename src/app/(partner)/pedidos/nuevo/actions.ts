@@ -55,7 +55,7 @@ export async function createOrder(data: {
   // Datos para el email (con admin client para getUserById)
   const [{ data: seller }, { data: tariff }] = await Promise.all([
     supabase.from('users').select('full_name').eq('id', data.sellerId).single(),
-    supabase.from('tariffs').select('name').eq('id', data.tariffId).single(),
+    supabase.from('tariffs').select('name, validity_days').eq('id', data.tariffId).single(),
   ])
 
   const { error } = await supabase
@@ -101,7 +101,10 @@ export async function createOrder(data: {
   if (data.activationDate && data.type === 'prepago') {
     const tmpl = emailAvisoClienteProgramado({
       customerName,
-      tariffName:     tariff?.name || '',
+      orderRefs:      [orderRef],
+      totalCount:     1,
+      planName:       tariff?.name || '',
+      planDays:       tariff?.validity_days ?? 28,
       activationDate: data.activationDate,
       type:           data.type,
     })
