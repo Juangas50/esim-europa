@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:unit": "vitest run",
     "test:qa": "playwright test",
     "test:qa:b2c": "playwright test b2c.spec.ts",
     "test:qa:b2b": "playwright test b2b.spec.ts",
@@ -58,6 +59,7 @@
     "lighthouse": "^13.4.0",
     "puppeteer": "^25.2.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.9"
   }
 }

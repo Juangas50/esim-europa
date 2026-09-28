@@ -7,6 +7,7 @@ import { parseActivationString, validateConfirmationCode } from '@/lib/esim/vali
 import { sendEmail } from '@/lib/email/send'
 import { emailEntregaB2C, emailEntregaMultiple } from '@/lib/email/templates'
 import { qrProxyUrl } from '@/lib/utils'
+import { canonicalSort } from '@/lib/esim/order'
 import QRCode from 'qrcode'
 
 // B2B (`orders`) y B2C (`b2c_orders`) tienen CHECK constraints de status
@@ -154,11 +155,6 @@ async function _deliverCore(
   // Email de destino — usar override si se proporcionó, si no el registrado
   const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
 
-  // Importe — B2C usa amount_usd, B2B usa pvp_at_time
-  const amountUSD = source === 'b2c'
-    ? (order.amount_usd ?? 0)
-    : (order.pvp_at_time ?? 0)
-
   // Actualizar estado + guardar cadena PRIMERO (antes de enviar email)
   const updatePayload: Record<string, string | null> = {
     status: 'qr_sent',
@@ -194,7 +190,6 @@ async function _deliverCore(
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
-    amountUSD,
     qrUrl,
   })
 
@@ -262,11 +257,11 @@ export async function resendDeliveryEmail(
   const parsed = parseActivationString(order.activation_string)
   if (!parsed.ok) return { ok: false, error: 'La cadena de activación guardada es inválida.' }
 
-  let tariff: { name: string; type: string; data_gb: number; validity_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; validity_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
       .from('tariffs')
-      .select('name, type, data_gb, validity_days')
+      .select('name, type, data_gb, eu_data_gb, validity_days')
       .eq('id', order.tariff_id)
       .single()
     tariff = t
@@ -300,20 +295,17 @@ export async function resendDeliveryEmail(
   }
 
   const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
-  const amountUSD = source === 'b2c'
-    ? (order.amount_usd ?? 0)
-    : (order.pvp_at_time ?? 0)
 
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
+    planEUGB: tariff?.eu_data_gb,
     planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
-    amountUSD,
     qrUrl,
   })
 
@@ -350,12 +342,17 @@ export async function resendGroupOrders(
   const toEmail = (overrideEmail?.trim()) ? overrideEmail.trim() : recipientEmail
 
   // Obtener datos de cada pedido del grupo
-  const { data: orders } = await supabase
+  const { data: ordersRaw } = await supabase
     .from('b2c_orders')
-    .select('id, order_ref, activation_string, confirmation_code, tariff_id, status')
+    .select('id, order_ref, activation_string, confirmation_code, tariff_id, status, created_at')
     .in('id', groupOrderIds)
 
-  if (!orders || orders.length === 0) return { ok: false, error: 'Pedidos no encontrados.' }
+  if (!ordersRaw || ordersRaw.length === 0) return { ok: false, error: 'Pedidos no encontrados.' }
+
+  // Orden canónico (created_at ASC, id ASC) — nunca el orden incidental de
+  // groupOrderIds/la selección del admin, así "eSIM X de N" coincide con lo
+  // que el cliente ya vio en Emails 1/2/4.
+  const orders = canonicalSort(ordersRaw)
 
   const missing = orders.filter(o => !o.activation_string)
   if (missing.length > 0) {
@@ -363,10 +360,10 @@ export async function resendGroupOrders(
   }
 
   // Obtener tarifa del primer pedido
-  let tariff: { name: string; type: string; data_gb: number; validity_days: number } | null = null
+  let tariff: { name: string; type: string } | null = null
   const firstTariffId = orders[0]?.tariff_id
   if (firstTariffId) {
-    const { data: t } = await supabase.from('tariffs').select('name, type, data_gb, validity_days').eq('id', firstTariffId).single()
+    const { data: t } = await supabase.from('tariffs').select('name, type').eq('id', firstTariffId).single()
     tariff = t
   }
 
@@ -406,10 +403,7 @@ export async function resendGroupOrders(
     customerName,
     totalCount: orders.length,
     planName: tariff?.name ?? 'eSIM RUTA34',
-    planGB: tariff?.data_gb ?? 0,
-    planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
-    amountUSD,
     esims: esimItems,
   })
 
@@ -465,6 +459,15 @@ export async function deliverGroupOrders(
   const uniqueRaws = new Set(rawStrings)
   if (uniqueRaws.size !== rawStrings.length) return { ok: false, error: '⛔ Hay cadenas repetidas dentro del grupo. Cada eSIM necesita una cadena distinta.' }
 
+  // 3b. Orden canónico (created_at ASC, id ASC) para "eSIM X de N" — una
+  // sola consulta, nunca el orden en que el admin armó `deliveries`.
+  const { data: canonicalRowsRaw } = await supabase
+    .from('b2c_orders')
+    .select('id, order_ref, created_at')
+    .in('id', deliveries.map(d => d.orderId))
+  const canonicalRows = canonicalSort(canonicalRowsRaw ?? [])
+  const orderRefById = new Map(canonicalRows.map(r => [r.id, r.order_ref]))
+
   // 4. Generar N QRs y subirlos a Storage
   const esimItems: Array<{ label: string; orderRef: string; activationString: string; confirmationCode: string; qrUrl?: string }> = []
 
@@ -488,12 +491,10 @@ export async function deliverGroupOrders(
       return { ok: false, error: `No se pudo subir el QR de eSIM ${i + 1}, la entrega del grupo fue abortada: ${message}` }
     }
 
-    // También guardar el order_ref del pedido
-    const { data: orderData } = await supabase.from('b2c_orders').select('order_ref').eq('id', d.orderId).single()
-
+    const canonicalPosition = canonicalRows.findIndex(r => r.id === d.orderId) + 1
     esimItems.push({
-      label: `eSIM ${i + 1} de ${deliveries.length}`,
-      orderRef: orderData?.order_ref ?? d.orderId,
+      label: `eSIM ${canonicalPosition || i + 1} de ${deliveries.length}`,
+      orderRef: orderRefById.get(d.orderId) ?? d.orderId,
       activationString: p.parsed.raw,
       confirmationCode: p.confirmationCode,
       qrUrl,
@@ -505,10 +506,7 @@ export async function deliverGroupOrders(
     customerName,
     totalCount: deliveries.length,
     planName: planInfo.name,
-    planGB: planInfo.data_gb,
-    planDays: planInfo.validity_days,
     planType: planInfo.type,
-    amountUSD,
     esims: esimItems,
   })
 

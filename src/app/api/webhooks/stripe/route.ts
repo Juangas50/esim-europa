@@ -5,6 +5,7 @@ import { getPlanById } from "@/lib/plans-server";
 import { sendEmail } from "@/lib/email/send";
 import { emailConfirmacionB2C, emailAvisoClienteProgramado, emailNuevoPedidoAdmin } from "@/lib/email/templates";
 import { generateOrderRef } from "@/lib/utils";
+import { canonicalSort } from "@/lib/esim/order";
 import { sendMetaCapiEvent } from "@/lib/meta/capi";
 import { buildPurchasePayload } from "@/lib/meta/events";
 
@@ -68,6 +69,11 @@ export async function POST(req: NextRequest) {
 
     // 1b. Crear órdenes adicionales si quantity > 1 (compra grupal)
     const quantity = Math.min(parseInt(session.metadata?.quantity ?? "1", 10) || 1, 10);
+    // orderRefs se arma en orden canónico (created_at ASC, id ASC — ver
+    // src/lib/esim/order.ts) para que la numeración "eSIM X de N" de Emails
+    // 1 y 2 sea la misma que recalculará Email 4/6 más adelante en el
+    // lifecycle, sin depender del orden de retorno de un insert múltiple.
+    let orderRefs: string[] = [order.order_ref];
     if (quantity > 1) {
       const extras = Array.from({ length: quantity - 1 }, () => ({
         order_ref: generateOrderRef(),
@@ -83,12 +89,16 @@ export async function POST(req: NextRequest) {
         payment_method: order.payment_method,
         payment_id: session.payment_intent as string,
         amount_usd: order.amount_usd,
+        locale: order.locale,
         utm_source: order.utm_source,
         utm_medium: order.utm_medium,
         utm_campaign: order.utm_campaign,
         utm_content: order.utm_content,
       }));
-      const { error: extrasError } = await supabase.from("b2c_orders").insert(extras);
+      const { data: insertedExtras, error: extrasError } = await supabase
+        .from("b2c_orders")
+        .insert(extras)
+        .select("id, order_ref, created_at");
       if (extrasError) {
         // El pago ya se cobró y Stripe ya recibirá 200 de este webhook (no reintentará),
         // así que un fallo acá pierde silenciosamente pedidos ya pagados si no se alerta.
@@ -109,6 +119,10 @@ export async function POST(req: NextRequest) {
         }
       } else {
         console.log(`[webhook] Creadas ${quantity - 1} órdenes adicionales para compra grupal | ref: ${orderRef}`);
+        const canonicalExtras = canonicalSort(
+          (insertedExtras ?? []) as Array<{ id: string; order_ref: string; created_at: string }>
+        );
+        orderRefs = [order.order_ref, ...canonicalExtras.map((e) => e.order_ref)];
       }
     }
 
@@ -159,7 +173,10 @@ export async function POST(req: NextRequest) {
         const tmplCliente = isScheduled
           ? emailAvisoClienteProgramado({
               customerName: order.customer_name,
-              tariffName: plan.name,
+              orderRefs,
+              totalCount: quantity,
+              planName: plan.name,
+              planDays: plan.duration_days,
               activationDate: new Date(`${order.activation_date}T00:00:00`).toLocaleDateString("es-ES", {
                 day: "numeric", month: "long", year: "numeric",
               }),
@@ -167,12 +184,11 @@ export async function POST(req: NextRequest) {
             })
           : emailConfirmacionB2C({
               customerName: order.customer_name,
-              orderRef,
+              orderRefs,
+              totalCount: quantity,
               planName: plan.name,
-              planGB: plan.data_gb,
               planDays: plan.duration_days,
               planType: plan.type,
-              amountUSD: plan.price_usd,
             });
         const res = await sendEmail(order.customer_email, tmplCliente.subject, tmplCliente.html);
         console.log("[email:cliente]", isScheduled ? "aviso programado" : "confirmacion", "enviada | orderRef:", orderRef, "| error:", res.error ?? "none");

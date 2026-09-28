@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { META_PIXEL_ID, markMetaPixelReady, flushViewContentRetry } from "@/lib/meta/pixel";
 import { useMetaEvents } from "@/hooks/useMetaEvents";
+import { isAnalyticsExcludedRoute } from "@/lib/analytics/excluded-routes";
 
 const CONSENT_KEY = "ruta34_cookie_consent";
 
@@ -17,6 +18,7 @@ const CONSENT_KEY = "ruta34_cookie_consent";
  * capa de analítica, no duplicado por componente/página.
  */
 export function MetaPixelScript({ nonce }: { nonce?: string }) {
+  const pathname = usePathname();
   const [canLoad, setCanLoad] = useState(false);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function MetaPixelScript({ nonce }: { nonce?: string }) {
     return () => window.removeEventListener("cookie-consent", handler);
   }, []);
 
-  if (!META_PIXEL_ID || !canLoad) return null;
+  if (!META_PIXEL_ID || !canLoad || isAnalyticsExcludedRoute(pathname)) return null;
 
   return (
     <>
@@ -114,6 +116,11 @@ export function MetaPixelRouteTracker() {
       isFirstRender.current = false;
       return;
     }
+    // No disparar PageView si la navegación SPA entró a una ruta excluida
+    // (ver src/lib/analytics/excluded-routes.ts) — caso residual, ya que
+    // la entrada real a /reprogramar siempre es un document load nuevo
+    // (link de email), donde MetaPixelScript ya evita cargar la librería.
+    if (isAnalyticsExcludedRoute(pathname)) return;
     trackPageView();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);

@@ -173,6 +173,7 @@ export async function POST(req: NextRequest) {
         status: "pending_payment",
         payment_method,
         amount_usd: plan.price_usd,
+        locale,
         ...attribution,
       });
 
@@ -215,6 +216,7 @@ export async function POST(req: NextRequest) {
         plan_id,
         quantity: String(quantity),
         customer_country: customer.country,
+        locale,
         ...(ga_client_id ? { ga_client_id } : {}),
         // Meta CAPI — el webhook usa esto para mandar el Purchase server-side
         // con el mismo event_id que ya usó el Pixel al disparar AddPaymentInfo.
