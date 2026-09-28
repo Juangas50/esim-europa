@@ -154,11 +154,6 @@ async function _deliverCore(
   // Email de destino — usar override si se proporcionó, si no el registrado
   const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
 
-  // Importe — B2C usa amount_usd, B2B usa pvp_at_time
-  const amountUSD = source === 'b2c'
-    ? (order.amount_usd ?? 0)
-    : (order.pvp_at_time ?? 0)
-
   // Actualizar estado + guardar cadena PRIMERO (antes de enviar email)
   const updatePayload: Record<string, string | null> = {
     status: 'qr_sent',
@@ -194,7 +189,6 @@ async function _deliverCore(
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: confirmationCode.trim(),
-    amountUSD,
     qrUrl,
   })
 
@@ -262,11 +256,11 @@ export async function resendDeliveryEmail(
   const parsed = parseActivationString(order.activation_string)
   if (!parsed.ok) return { ok: false, error: 'La cadena de activación guardada es inválida.' }
 
-  let tariff: { name: string; type: string; data_gb: number; validity_days: number } | null = null
+  let tariff: { name: string; type: string; data_gb: number; eu_data_gb?: number; validity_days: number } | null = null
   if (order.tariff_id) {
     const { data: t } = await supabase
       .from('tariffs')
-      .select('name, type, data_gb, validity_days')
+      .select('name, type, data_gb, eu_data_gb, validity_days')
       .eq('id', order.tariff_id)
       .single()
     tariff = t
@@ -300,20 +294,17 @@ export async function resendDeliveryEmail(
   }
 
   const recipientEmail = (overrideEmail && overrideEmail.trim()) ? overrideEmail.trim() : order.customer_email
-  const amountUSD = source === 'b2c'
-    ? (order.amount_usd ?? 0)
-    : (order.pvp_at_time ?? 0)
 
   const tmpl = emailEntregaB2C({
     customerName: order.customer_name,
     orderRef: order.order_ref,
     planName: tariff?.name ?? 'eSIM RUTA34',
     planGB: tariff?.data_gb ?? 0,
+    planEUGB: tariff?.eu_data_gb,
     planDays: tariff?.validity_days ?? 28,
     planType: tariff?.type ?? 'local',
     activationString: parsed.data.raw,
     confirmationCode: order.confirmation_code ?? '—',
-    amountUSD,
     qrUrl,
   })
 

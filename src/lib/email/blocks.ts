@@ -211,8 +211,18 @@ const STEP_ICONS: Array<{ title: string; text: string; svg: string }> = [
   },
 ]
 
-/** "03 · CÓMO INSTALARLAS" — 4 pasos, idéntico en Email 5 y Email 6. */
-export function howToInstallBlock(): string {
+/** Header numerado "N · TÍTULO" — patrón repetido en los pasos 01-05 de Email 5/6. */
+export function stepHeader(n: string, title: string): string {
+  return `<table role="presentation" width="100%"><tr>
+    <td style="width:26px;height:26px;">
+      <table role="presentation" width="26" height="26" style="background:${COLORS.gold};border-radius:50%;"><tr><td align="center" style="font-family:${BODY_FONT};font-size:11px;font-weight:700;color:${COLORS.white};">${n}</td></tr></table>
+    </td>
+    <td style="padding-left:10px;font-family:${BODY_FONT};font-size:12px;font-weight:700;letter-spacing:0.1em;color:${COLORS.navy};">${title}</td>
+  </tr></table>`
+}
+
+/** Grid de 4 pasos (iPhone/Android/otro dispositivo/manual), sin envolver — para componer dentro de una card propia (Email 5 la combina con el bloque de instalación manual). */
+export function howToInstallSteps(): string {
   const cells = STEP_ICONS.map(
     (s) => `<td valign="top" style="width:25%;padding:0 10px;text-align:center;">
       <table role="presentation" width="52" height="52" style="background:#EFE6D2;border-radius:50%;margin:0 auto 12px;"><tr><td align="center">${s.svg}</td></tr></table>
@@ -220,15 +230,15 @@ export function howToInstallBlock(): string {
       <div style="font-family:${BODY_FONT};font-size:12px;line-height:1.5;color:${COLORS.inkSecondary};">${s.text}</div>
     </td>`
   ).join("")
+  return `<table role="presentation" width="100%"><tr>${cells}</tr></table>`
+}
+
+/** "03 · CÓMO INSTALARLAS" completo — usado tal cual por Email 6 (Email 5 compone howToInstallSteps() con su propio bloque de instalación manual, ver emailEntregaB2C). */
+export function howToInstallBlock(): string {
   return whiteCard(`
-    <table role="presentation" width="100%"><tr>
-      <td style="width:26px;height:26px;">
-        <table role="presentation" width="26" height="26" style="background:${COLORS.gold};border-radius:50%;"><tr><td align="center" style="font-family:${BODY_FONT};font-size:11px;font-weight:700;color:${COLORS.white};">03</td></tr></table>
-      </td>
-      <td style="padding-left:10px;font-family:${BODY_FONT};font-size:12px;font-weight:700;letter-spacing:0.1em;color:${COLORS.navy};">C&Oacute;MO INSTALARLAS</td>
-    </tr></table>
+    ${stepHeader("03", "C&Oacute;MO INSTALARLAS")}
     <div style="height:22px;"></div>
-    <table role="presentation" width="100%"><tr>${cells}</tr></table>
+    ${howToInstallSteps()}
   `, { padding: "36px 40px" })
 }
 

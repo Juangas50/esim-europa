@@ -1,8 +1,10 @@
 import { siteBaseUrl } from "@/lib/utils"
+import { parseActivationString } from "@/lib/esim/validate"
 import {
   emailDocument, row as blockRow, eyebrow, h1, bodyText, heroImage,
   supportBlock as sharedSupportBlock, iconValueCard, reassuranceCard, multiRefsList, ICONS,
-  FONTS, ctaButtonOutline, SUPPORT_URL, CHECK_ICON_SVG,
+  FONTS, ctaButtonOutline, SUPPORT_URL, CHECK_ICON_SVG, whiteCard,
+  whenConnectedBlock, italicNote, howToInstallSteps, stepHeader,
 } from "@/lib/email/blocks"
 
 // ── Bloqueo de dark-mode: sin estas dos líneas, iOS Mail / Gmail / Outlook.com
@@ -293,6 +295,17 @@ function supportBlock() {
 }
 
 // ── B2C: Entrega de eSIM con QR embebido ──────────────────────────────────────
+// ── B2C: Entrega de eSIM única — reproduce "Ruta34 Email5 V4.dc.html" ─────────
+//
+// El master solo modela el caso "local" (eSIM ya activa desde el envío del
+// QR). Para dataonly (donde el plan arranca al activar, no al enviar el QR)
+// no hay master aprobado — se adaptan únicamente las 3 líneas que dependen
+// del estado de activación (eyebrow, párrafo de bienvenida, nota de
+// vigencia), reutilizando el copy ya vigente en producción para ese caso,
+// nunca copy nuevo inventado. Todo lo demás (pasos, QR, manual, plan, "cuando
+// te conectes", soporte) es idéntico entre ambos tipos y se reproduce
+// literalmente del master. QR/activationString/confirmationCode/SM-DP+ sin
+// cambios de lógica — solo se integran en el nuevo layout.
 export function emailEntregaB2C(data: {
   customerName: string
   orderRef: string
@@ -303,32 +316,118 @@ export function emailEntregaB2C(data: {
   planType: 'local' | 'dataonly' | string
   activationString: string
   confirmationCode: string
-  amountUSD: number
   qrUrl?: string
 }) {
   const isLocal = data.planType === 'local' || data.planType === 'prepago'
-  const deliveryMessage = isLocal
-    ? 'Tu eSIM ya está activa y tus 28 días ya están corriendo. Instalala cuanto antes para no perder días de tu plan.'
-    : 'Tu eSIM está lista para activar en cualquier momento dentro de los próximos 60 días.'
+  const parsedActivation = parseActivationString(data.activationString)
+  const smdp = parsedActivation.ok ? parsedActivation.data.smdp : ''
+
+  const subject = `Tu eSIM RUTA34 está confirmada — ${data.orderRef}`
+
+  const eyebrowText = isLocal ? 'TU ESIM ESTÁ ACTIVA' : 'TU ESIM ESTÁ LISTA'
+  const greetingBody = isLocal
+    ? `Tu eSIM ${data.planName} está activa y lista para instalar.`
+    : `Tu eSIM ${data.planName} está lista para instalar, activala cuando la necesites.`
+  const greetingBold = isLocal
+    ? 'Instalala cuando quieras y dejá tu celular preparado.'
+    : 'Tenés 60 días desde la compra para activarla.'
+  const vigenciaTitle = isLocal ? 'Tu eSIM ya está activa.' : 'Activación dentro de 60 días.'
+  const vigenciaText = isLocal
+    ? 'Instalarla después no cambia su fecha de inicio.'
+    : 'La vigencia empieza cuando la activás, no antes.'
+
+  const planPlan = data.planEUGB && data.planEUGB > 0
+    ? `<div style="padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid rgba(199,154,62,0.3);">
+        <div style="font-family:${FONTS.body};font-size:11px;letter-spacing:0.08em;color:#9AA0AC;margin-bottom:5px;">ESPAÑA</div>
+        <div style="font-family:${FONTS.header};font-size:36px;color:#1C3454;margin-bottom:5px;">${data.planGB} GB</div>
+        <div style="font-family:${FONTS.body};font-size:14px;color:#5B6579;">para usar en España</div>
+      </div>
+      <div>
+        <div style="font-family:${FONTS.body};font-size:11px;letter-spacing:0.08em;color:#9AA0AC;margin-bottom:5px;">EUROPA</div>
+        <div style="font-family:${FONTS.header};font-size:27px;color:#1C3454;margin-bottom:5px;">${data.planEUGB} GB</div>
+        <div style="font-family:${FONTS.body};font-size:14px;color:#5B6579;margin-bottom:12px;">de tus ${data.planGB} GB para viajar por Europa</div>
+        <div style="font-family:${FONTS.body};font-size:13px;color:#9AA0AC;font-style:italic;">Los GB de Europa forman parte del total. No son adicionales.</div>
+      </div>`
+    : `<div>
+        <div style="font-family:${FONTS.body};font-size:11px;letter-spacing:0.08em;color:#9AA0AC;margin-bottom:5px;">DATOS</div>
+        <div style="font-family:${FONTS.header};font-size:36px;color:#1C3454;margin-bottom:5px;">${data.planGB} GB</div>
+      </div>`
+
+  const body = `
+${blockRow(`
+  ${eyebrow(eyebrowText)}
+  ${h1('Ya podés instalarla.')}
+  <div style="font-family:${FONTS.body};font-size:14.5px;line-height:1.6;color:#33415A;">Ahora sí: tu conexión ya está lista para acompañarte.</div>
+`, '24px 40px 20px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-final.jpg`, 'Pasaporte, anteojos de sol, teléfono con eSIM Ruta34 en pantalla y café sobre una mesa, con ventanal de aeropuerto de fondo', 280))}
+${blockRow(bodyText(`
+  <div style="margin-bottom:10px;">Hola, ${data.customerName}.</div>
+  <div style="margin-bottom:10px;">${greetingBody}</div>
+  <div style="font-weight:700;color:#1C3454;">${greetingBold}</div>
+`))}
+${blockRow(whiteCard(`
+  <table role="presentation" width="100%"><tr>
+    <td width="26"><table role="presentation" width="26" height="26" style="background:#C79A3E;border-radius:50%;"><tr><td align="center" style="font-family:${FONTS.body};font-size:11px;font-weight:700;color:#FFFFFF;">01</td></tr></table></td>
+    <td style="padding-left:10px;font-family:${FONTS.body};font-size:12px;font-weight:700;letter-spacing:0.1em;color:#1C3454;">ANTES DE EMPEZAR</td>
+  </tr></table>
+  <div style="height:16px;"></div>
+  <div style="font-family:${FONTS.header};font-size:26px;line-height:1.25;color:#1C3454;margin-bottom:12px;">Copiá tu código de activación.</div>
+  <div style="font-family:${FONTS.body};font-size:14.5px;line-height:1.6;color:#5B6579;margin-bottom:20px;">Lo vas a necesitar después de usar el QR, durante la instalación de tu eSIM.</div>
+  <table role="presentation"><tr><td style="background:#F5EFE3;border:1px solid #EDE3CE;border-radius:14px;padding:20px 32px;text-align:center;">
+    <div style="font-family:${FONTS.header};font-size:26px;letter-spacing:0.06em;color:#1C3454;white-space:nowrap;">${data.confirmationCode}</div>
+    <div style="font-family:${FONTS.body};font-size:12px;color:#9AA0AC;margin-top:8px;">Copialo ahora y tenelo a mano.</div>
+  </td></tr></table>
+`, { padding: '36px 40px' }))}
+${blockRow(whiteCard(`
+  <table role="presentation" width="100%"><tr>
+    <td width="26"><table role="presentation" width="26" height="26" style="background:#C79A3E;border-radius:50%;"><tr><td align="center" style="font-family:${FONTS.body};font-size:11px;font-weight:700;color:#FFFFFF;">02</td></tr></table></td>
+    <td style="padding-left:10px;font-family:${FONTS.body};font-size:12px;font-weight:700;letter-spacing:0.1em;color:#1C3454;">TU QR</td>
+  </tr></table>
+  <div style="height:16px;"></div>
+  <div style="font-family:${FONTS.header};font-size:26px;line-height:1.25;color:#1C3454;margin-bottom:12px;">Usá el QR para instalar tu eSIM.</div>
+  <div style="font-family:${FONTS.body};font-size:14.5px;line-height:1.6;color:#5B6579;margin-bottom:20px;">Durante la instalación, tu celular te va a pedir el código que copiaste antes.</div>
+  <table role="presentation" width="100%"><tr><td align="center" style="background:#FFFFFF;border:1px solid #EDE7D8;border-radius:14px;padding:20px;">
+    <img src="${data.qrUrl ?? 'cid:esim-qr'}" alt="Código QR de instalación eSIM" width="200" height="200" style="width:200px;height:200px;display:block;border:0;">
+  </td></tr></table>
+`, { padding: '36px 40px' }))}
+${blockRow(whiteCard(`
+  ${stepHeader('03', 'CÓMO INSTALARLA')}
+  <div style="height:8px;"></div>
+  ${howToInstallSteps()}
+  <div style="margin-top:30px;padding-top:22px;border-top:1px solid rgba(199,154,62,0.3);">
+    <div style="font-family:${FONTS.body};font-size:13px;font-weight:700;color:#1C3454;margin-bottom:6px;">Instalación manual</div>
+    <div style="font-family:${FONTS.body};font-size:13px;line-height:1.55;color:#5B6579;margin-bottom:14px;">También podés instalar Ruta34 manualmente con los datos de aprovisionamiento:</div>
+    <div style="border-left:2px solid #C79A3E;padding:2px 0 2px 14px;">
+      <div style="font-family:${FONTS.body};font-size:10.5px;letter-spacing:0.08em;color:#9AA0AC;margin-bottom:4px;">SERVIDOR SM-DP+</div>
+      <div style="font-family:monospace;font-size:14px;font-weight:700;color:#1C3454;margin-bottom:12px;">${smdp}</div>
+      <div style="font-family:${FONTS.body};font-size:10.5px;letter-spacing:0.08em;color:#9AA0AC;margin-bottom:4px;">CÓDIGO MANUAL</div>
+      <div style="font-family:monospace;font-size:13px;font-weight:700;line-height:1.45;color:#1C3454;word-break:break-all;">${data.activationString}</div>
+    </div>
+  </div>
+`, { padding: '36px 40px' }))}
+${blockRow(whenConnectedBlock())}
+${blockRow(italicNote(vigenciaTitle, vigenciaText))}
+${blockRow(whiteCard(`
+  <table role="presentation" width="100%"><tr>
+    <td width="26"><table role="presentation" width="26" height="26" style="background:#C79A3E;border-radius:50%;"><tr><td align="center" style="font-family:${FONTS.body};font-size:11px;font-weight:700;color:#FFFFFF;">05</td></tr></table></td>
+    <td style="padding-left:10px;font-family:${FONTS.body};font-size:12px;font-weight:700;letter-spacing:0.1em;color:#1C3454;">TU PLAN</td>
+  </tr></table>
+  <div style="font-family:${FONTS.header};font-style:italic;font-size:21px;color:#1C3454;margin:24px 0;">${data.planName}</div>
+  <table role="presentation" width="100%"><tr>
+    <td width="2" style="background:#C79A3E;"></td>
+    <td style="padding-left:18px;">${planPlan}</td>
+  </tr></table>
+  <table role="presentation" width="100%" style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(199,154,62,0.3);"><tr>
+    <td style="font-family:${FONTS.body};font-size:14px;color:#5B6579;">Duración</td>
+    <td align="right" style="font-family:${FONTS.body};font-size:14px;font-weight:700;color:#1C3454;">${data.planDays} días</td>
+  </tr></table>
+`, { padding: '36px 40px' }))}
+${blockRow(italicNote('¿Querés evitar posibles cargos en tu SIM habitual?', 'Desactivá los datos móviles de tu SIM habitual. Podés mantener esa SIM encendida.'))}
+${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
 
   return {
-    subject: `Tu eSIM RUTA34 está confirmada — ${data.orderRef}`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Tu eSIM está lista</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">Orden ${data.orderRef}</p><p class="p">${deliveryMessage}</p></div></td></tr>
-${qrBlock(data.qrUrl ?? 'cid:esim-qr', data.confirmationCode, data.activationString)}
-${orderSummaryBlock(data.planName, data.planGB, data.planEUGB, data.planDays, data.amountUSD)}
-${supportBlock()}
-${premiumFooter()}`
+    subject,
+    html: emailDocument({ title: subject, headerRight: 'Tu eSIM · Europa', bodyHtml: body }),
   }
 }
 

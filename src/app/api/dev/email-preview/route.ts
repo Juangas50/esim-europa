@@ -69,7 +69,6 @@ export async function GET(request: Request) {
       planType: 'prepago' as const,
       activationString: '1$eu-prod$ABC123DEF456',
       confirmationCode: '628471',
-      amountUSD: 29.99,
       qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=1%24eu-prod%24ABC123DEF456'
     },
     entregaMultiple: {
