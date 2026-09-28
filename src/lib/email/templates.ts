@@ -2,7 +2,7 @@ import { siteBaseUrl } from "@/lib/utils"
 import {
   emailDocument, row as blockRow, eyebrow, h1, bodyText, heroImage,
   supportBlock as sharedSupportBlock, iconValueCard, reassuranceCard, multiRefsList, ICONS,
-  FONTS,
+  FONTS, ctaButtonOutline, SUPPORT_URL, CHECK_ICON_SVG,
 } from "@/lib/email/blocks"
 
 // ── Bloqueo de dark-mode: sin estas dos líneas, iOS Mail / Gmail / Outlook.com
@@ -380,35 +380,56 @@ ${premiumFooter()}`
 }
 
 // ── B2C: Recordatorio 24h antes de una activación programada ──────────────────
+//
+// Reproduce "Ruta34 Email3 RecordatorioActivacion.dc.html". El master
+// mantiene copy singular sin importar si el grupo del recordatorio tiene
+// una o varias eSIMs ("el CTA no cambia" — spec note del master): lo único
+// que varía con multi-eSIM es qué codifica rescheduleUrl (?ref=&token= vs
+// ?rows=...), nunca el texto visible. orderRef acá es el de referencia del
+// grupo (primero en orden canónico), para la línea "Pedido X" del bloque
+// de soporte.
 export function emailRecordatorioActivacion(data: {
   customerName: string
   orderRef: string
   planName: string
   activationDate: string
-  rescheduleUrl: string
+  rescheduleUrl?: string
 }) {
+  const subject = `Mañana recibís tu eSIM RUTA34 — ${data.activationDate}`
+
+  const rescheduleSection = data.rescheduleUrl
+    ? blockRow(`
+        <div style="font-family:${FONTS.body};font-size:14px;line-height:1.55;color:#33415A;margin-bottom:16px;">Si cambiaron tus planes, todavía podés reprogramar la activación.</div>
+        ${ctaButtonOutline("Reprogramar activación", data.rescheduleUrl)}
+      `)
+    : blockRow(`
+        <div style="font-family:${FONTS.body};font-size:14px;line-height:1.55;color:#33415A;">Si necesitás cambiar la fecha, <a href="${SUPPORT_URL}" style="color:#C79A3E;font-weight:700;">escribinos</a>.</div>
+      `)
+
+  const body = `
+${blockRow(`
+  ${eyebrow('ACTIVACIÓN · MAÑANA')}
+  ${h1('Mañana activamos tu eSIM.')}
+`, '8px 40px 22px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-email3.jpg`, 'Persona terminando de preparar una valija abierta sobre la cama, con ropa doblada, camisa azul, anteojos de sol y neceser alrededor'), '0 40px 28px')}
+${blockRow(bodyText(`
+  <div style="margin-bottom:10px;">Hola, ${data.customerName}.</div>
+  <div>Mañana, ${data.activationDate}, activamos tu <b style="color:#1C3454;">eSIM ${data.planName}</b> y te la enviamos por email.</div>
+`), '0 40px 24px')}
+${blockRow(iconValueCard(ICONS.calendar, 'FECHA DE ACTIVACIÓN', `<div style="font-family:${FONTS.header};font-size:22px;line-height:1.2;color:#1C3454;">${data.activationDate}</div>`))}
+${blockRow(`<table role="presentation" width="100%" style="background:#E7EDF3;border-radius:18px;"><tr><td style="padding:22px 28px;">
+  <table role="presentation" width="100%"><tr>
+    <td width="24" valign="middle"><table role="presentation" width="24" height="24" style="background:#C79A3E;border-radius:50%;"><tr><td align="center">${CHECK_ICON_SVG}</td></tr></table></td>
+    <td style="padding-left:14px;font-family:${FONTS.header};font-size:18px;color:#1C3454;line-height:1.3;">Si tus planes siguen igual, no necesit&aacute;s hacer nada.</td>
+  </tr></table>
+</td></tr></table>`)}
+${rescheduleSection}
+${blockRow(`<div style="border-top:1px solid #C79A3E;padding-top:16px;"><div style="font-family:${FONTS.body};font-size:13.5px;line-height:1.6;color:#5B6579;">La vigencia empieza cuando activamos tu eSIM.</div></div>`)}
+${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
+
   return {
-    subject: `Mañana recibís tu eSIM RUTA34 — ${data.activationDate}`,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Falta poco</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">⏰ Mañana te enviamos tu eSIM</p><p class="p">Hola <strong style="color:#1B2F4E;">${data.customerName}</strong>, tu ${data.planName} está programada para mañana, <strong style="color:#1B2F4E;">${data.activationDate}</strong>. Vas a recibir el código QR por email ese mismo día.</p></div></td></tr>
-<tr><td><div class="divider"></div></td></tr>
-<tr><td><div class="section" style="text-align:center;">
-<p class="p" style="margin-bottom:20px;">¿Necesitás mover la fecha? Podés cambiarla vos mismo, siempre dentro del año permitido desde tu compra.</p>
-<a class="button" href="${data.rescheduleUrl}">Cambiar fecha →</a>
-</div></td></tr>
-${noticeBlock('📌', 'Referencia de tu pedido', `<span style="font-family:monospace;">${data.orderRef}</span> — guardala por si necesitás contactarnos.`)}
-${supportBlock()}
-${premiumFooter()}`
+    subject,
+    html: emailDocument({ title: subject, headerRight: 'Tu eSIM · Europa', bodyHtml: body }),
   }
 }
 

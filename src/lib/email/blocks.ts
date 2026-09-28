@@ -121,10 +121,19 @@ export function ctaButton(label: string, href: string): string {
   return `<a href="${href}" style="display:inline-block;background:${COLORS.navy};color:${COLORS.bg};font-family:${BODY_FONT};font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;padding:14px 24px;">${label}</a>`
 }
 
+/** Variante outline (borde navy, fondo transparente) — CTA "Reprogramar activación" en Email 3/4. */
+export function ctaButtonOutline(label: string, href: string): string {
+  return `<a href="${href}" style="display:inline-block;border:1.5px solid ${COLORS.navy};color:${COLORS.navy};font-family:${BODY_FONT};font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;padding:13px 24px;">${label}</a>`
+}
+
 const HELP_ICON_SVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 13v-1a8 8 0 0116 0v1" stroke="${COLORS.navy}" stroke-width="1.7"/><rect x="2.5" y="13" width="4" height="7" rx="2" fill="${COLORS.navy}"/><rect x="17.5" y="13" width="4" height="7" rx="2" fill="${COLORS.navy}"/><path d="M19.5 20v1a2 2 0 01-2 2h-4" stroke="${COLORS.navy}" stroke-width="1.7" fill="none"/></svg>`
 
-/** "¿Necesitás ayuda? Estamos para acompañarte." — idéntico en los 6 masters. */
-export function supportBlock(): string {
+/**
+ * "¿Necesitás ayuda? Estamos para acompañarte." — idéntico en los 6 masters.
+ * `orderRefFooter` reproduce la línea extra "Pedido {{orderRef}}" que
+ * Email 3 agrega debajo del CTA (los demás emails no la llevan acá).
+ */
+export function supportBlock(orderRefFooter?: string): string {
   return whiteCard(`
     <table role="presentation" width="100%"><tr>
       <td width="52" valign="top">
@@ -135,6 +144,7 @@ export function supportBlock(): string {
         <div style="font-family:${HEADER_FONT};font-size:19px;color:${COLORS.navy};margin-bottom:6px;">Estamos para acompa&ntilde;arte.</div>
         <div style="font-family:${BODY_FONT};font-size:13.5px;line-height:1.5;color:${COLORS.inkSecondary};margin-bottom:16px;">Si algo no funciona como esperabas, escribinos y lo revisamos con vos.</div>
         ${ctaButton("Escribinos", SUPPORT_URL)}
+        ${orderRefFooter ? `<div style="font-family:${BODY_FONT};font-size:11.5px;color:${COLORS.inkTertiary};margin-top:14px;">Pedido <span style="font-weight:700;color:${COLORS.inkSecondary};">${orderRefFooter}</span></div>` : ""}
       </td>
     </tr></table>
   `)
@@ -256,7 +266,7 @@ export function iconValueCard(iconSvg: string, eyebrowLabel: string, valueHtml: 
   `, { padding: "20px 26px" })
 }
 
-const CHECK_ICON_SVG = `<svg width="16" height="13" viewBox="0 0 16 12"><path d="M1 6l4.5 4.5L15 1" stroke="${COLORS.white}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+export const CHECK_ICON_SVG = `<svg width="16" height="13" viewBox="0 0 16 12"><path d="M1 6l4.5 4.5L15 1" stroke="${COLORS.white}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 
 /** Card celeste con check dorado — bloque de tranquilidad ("no tenés que hacer nada"). */
 export function reassuranceCard(title: string, text: string): string {

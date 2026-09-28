@@ -38,3 +38,25 @@ export function labelWithinGroup(orderRef: string, canonicalGroup: CanonicalOrde
   const position = canonicalGroup.findIndex((r) => r.order_ref === orderRef) + 1;
   return `eSIM ${position} de ${total}`;
 }
+
+/**
+ * Agrupa filas por payment_id + activation_date — el "grupo de
+ * recordatorio" (FASE 4B §7): una compra con activation_date distinta por
+ * eSIM (por reprogramaciones previas) produce un grupo por cada fecha, no
+ * un único grupo por payment_id. "TODAS" en un link de reprogramación
+ * significa únicamente las eSIMs de ESE grupo, nunca todas las que
+ * comparten payment_id sin importar la fecha. Cada grupo devuelto ya está
+ * en orden canónico.
+ */
+export function groupByPaymentAndActivationDate<
+  T extends CanonicalOrderable & { payment_id: string | null; activation_date: string | null },
+>(rows: T[]): T[][] {
+  const groups = new Map<string, T[]>();
+  for (const row of rows) {
+    const key = `${row.payment_id ?? row.id}::${row.activation_date ?? ""}`;
+    const bucket = groups.get(key);
+    if (bucket) bucket.push(row);
+    else groups.set(key, [row]);
+  }
+  return [...groups.values()].map(canonicalSort);
+}

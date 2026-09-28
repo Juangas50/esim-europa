@@ -1,6 +1,15 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail } from '@/lib/email/send'
 import { emailAlertaAdmin, emailRecordatorioActivacion } from '@/lib/email/templates'
+import { groupByPaymentAndActivationDate } from '@/lib/esim/order'
+
+function buildRescheduleUrl(baseUrl: string, locale: string, rows: Array<{ order_ref: string; reschedule_token: string }>): string {
+  if (rows.length === 1) {
+    return `${baseUrl}/${locale}/reprogramar?ref=${encodeURIComponent(rows[0].order_ref)}&token=${rows[0].reschedule_token}`
+  }
+  const pairs = rows.map((r) => `${encodeURIComponent(r.order_ref)}:${r.reschedule_token}`).join(',')
+  return `${baseUrl}/${locale}/reprogramar?rows=${pairs}`
+}
 
 export async function GET(request: Request) {
   // ── P1-03: Secret en Authorization header, no en query string ────────────
@@ -36,7 +45,7 @@ export async function GET(request: Request) {
 
   const { data: dueTomorrow } = await supabase
     .from('b2c_orders')
-    .select('id, order_ref, customer_name, customer_email, activation_date, reschedule_token, tariffs(name)')
+    .select('id, order_ref, customer_name, customer_email, activation_date, payment_id, reschedule_token, locale, created_at, tariffs(name)')
     .eq('status', 'paid')
     .eq('activation_date', tomorrow)
     .is('reminder_sent_at', null)
@@ -46,23 +55,39 @@ export async function GET(request: Request) {
       day: 'numeric', month: 'long', year: 'numeric',
     })
 
-    const results = await Promise.all(dueTomorrow.map(async (order: any) => {
+    // Agrupar por payment_id + activation_date (ya fijo = tomorrow en esta
+    // query): "TODAS" en el link de reprogramación de este recordatorio
+    // significa únicamente las eSIMs de este grupo, nunca todas las que
+    // comparten payment_id sin importar la fecha — ver src/lib/esim/order.ts.
+    const groups = groupByPaymentAndActivationDate(
+      dueTomorrow as unknown as Array<{
+        id: string; order_ref: string; customer_name: string; customer_email: string
+        activation_date: string; payment_id: string | null; reschedule_token: string
+        locale: string; created_at: string; tariffs: { name: string } | null
+      }>
+    )
+
+    const results = await Promise.all(groups.map(async (group) => {
+      const primary = group[0]
+      const rescheduleUrl = buildRescheduleUrl(baseUrl, primary.locale ?? 'es', group)
       const tmpl = emailRecordatorioActivacion({
-        customerName: order.customer_name,
-        orderRef: order.order_ref,
-        planName: order.tariffs?.name ?? 'tu eSIM',
+        customerName: primary.customer_name,
+        orderRef: primary.order_ref,
+        planName: primary.tariffs?.name ?? 'tu eSIM',
         activationDate: formattedDate,
-        rescheduleUrl: `${baseUrl}/es/reprogramar?ref=${encodeURIComponent(order.order_ref)}&token=${order.reschedule_token}`,
+        rescheduleUrl,
       })
-      const { error } = await sendEmail(order.customer_email, tmpl.subject, tmpl.html)
+      const { error } = await sendEmail(primary.customer_email, tmpl.subject, tmpl.html)
       if (!error) {
-        await supabase.from('b2c_orders').update({ reminder_sent_at: new Date().toISOString() }).eq('id', order.id)
+        await supabase.from('b2c_orders').update({ reminder_sent_at: new Date().toISOString() }).in('id', group.map((r) => r.id))
       }
-      return { orderRef: order.order_ref, error }
+      return { orderRefs: group.map((r) => r.order_ref), error }
     }))
 
     const failed = results.filter(r => r.error)
-    console.log(`[cron] Recordatorios 24h enviados: ${results.length - failed.length}/${results.length}`)
+    const totalRows = results.reduce((n, r) => n + r.orderRefs.length, 0)
+    const failedRows = failed.reduce((n, r) => n + r.orderRefs.length, 0)
+    console.log(`[cron] Recordatorios 24h enviados: ${results.length - failed.length}/${results.length} grupos (${totalRows - failedRows}/${totalRows} eSIMs)`)
     if (failed.length > 0) console.error('[cron] Fallos enviando recordatorio:', failed)
   }
 
