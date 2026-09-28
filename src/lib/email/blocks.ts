@@ -69,6 +69,7 @@ ${LIGHT_MODE_META}
     .r34-hero { height:210px !important; }
     .r34-pad-desktop { padding-left:20px !important; padding-right:20px !important; }
     .r34-eyebrow { font-size:10.5px !important; }
+    .r34-stack-cell { display:block !important; width:100% !important; }
   }
 </style>
 </head>
@@ -170,17 +171,22 @@ export function manualInstallBlock(smdp: string, activationString: string): stri
 }
 
 /** Bloque "01 · CÓDIGO DE ACTIVACIÓN" + "02 · TU QR" — usado por Email 5 y Email 6. */
+/**
+ * Código + QR lado a lado (desktop) — en mobile (<480px) se apilan
+ * verticalmente vía la clase .r34-stack-cell (ver media query en
+ * emailDocument), igual que el master en su breakpoint A·MOBILE.
+ */
 export function activationAndQrBlock(activationCode: string, qrCidOrUrl: string): string {
   return `<table role="presentation" width="100%"><tr>
-    <td valign="top" style="width:55%;">
+    <td valign="top" class="r34-stack-cell" style="width:55%;">
       <div style="font-family:${BODY_FONT};font-size:11px;font-weight:700;letter-spacing:0.08em;color:${COLORS.navy};margin-bottom:10px;">01 &middot; C&Oacute;DIGO DE ACTIVACI&Oacute;N</div>
       <table role="presentation"><tr><td style="background:${COLORS.bg};border:1px solid #EDE3CE;border-radius:14px;padding:14px 20px;">
         <div style="font-family:${HEADER_FONT};font-size:22px;letter-spacing:0.05em;color:${COLORS.navy};">${activationCode}</div>
       </td></tr></table>
       <div style="font-family:${BODY_FONT};font-size:12.5px;line-height:1.5;color:${COLORS.inkSecondary};margin-top:10px;">Tu celular te lo va a pedir durante la instalaci&oacute;n.</div>
     </td>
-    <td valign="top" align="center" style="width:45%;">
-      <div style="font-family:${BODY_FONT};font-size:11px;font-weight:700;letter-spacing:0.08em;color:${COLORS.navy};margin-bottom:10px;">02 &middot; TU QR</div>
+    <td valign="top" align="center" class="r34-stack-cell" style="width:45%;">
+      <div style="font-family:${BODY_FONT};font-size:11px;font-weight:700;letter-spacing:0.08em;color:${COLORS.navy};margin-bottom:10px;margin-top:20px;">02 &middot; TU QR</div>
       <table role="presentation"><tr><td style="background:${COLORS.white};border:1px solid #EDE7D8;border-radius:14px;padding:12px;">
         <img src="${qrCidOrUrl}" alt="C&oacute;digo QR de instalaci&oacute;n eSIM" width="150" height="150" style="width:150px;height:150px;display:block;border:0;">
       </td></tr></table>

@@ -5,6 +5,7 @@ import {
   supportBlock as sharedSupportBlock, iconValueCard, reassuranceCard, multiRefsList, ICONS,
   FONTS, ctaButtonOutline, SUPPORT_URL, CHECK_ICON_SVG, whiteCard,
   whenConnectedBlock, italicNote, howToInstallSteps, stepHeader,
+  howToInstallBlock, manualInstallBlock, activationAndQrBlock,
 } from "@/lib/email/blocks"
 
 // ── Bloqueo de dark-mode: sin estas dos líneas, iOS Mail / Gmail / Outlook.com
@@ -279,22 +280,6 @@ function premiumFooter() {
   return `<tr><td style="padding:24px 20px;text-align:center;"><p class="muted" style="margin:0 0 8px;">Ruta34 · Conectividad para viajar por España y Europa</p><p class="muted" style="margin:0;">¿Necesitás ayuda? <a href="${siteBaseUrl()}/wa" style="color:#1B2F4E;font-weight:700;text-decoration:none;">Escribinos por WhatsApp</a></p></td></tr></table></td></tr></table></body></html>`
 }
 
-function qrBlock(qrUrl: string, confirmationCode: string, activationString: string) {
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="text-align:center;"><div style="display:inline-block;background:#FFFFFF;border:1px solid #E9E2D8;border-radius:24px;padding:18px;"><img src="${qrUrl}" alt="QR de instalación eSIM" width="220" height="220" style="width:220px;height:220px;margin:0 auto;border-radius:8px;" /></div><div style="height:18px;"></div><p class="muted">Código: <strong style="color:#1B2F4E;">${confirmationCode}</strong></p><div style="height:8px;"></div><p class="muted" style="font-family:monospace;word-break:break-all;">${activationString}</p></div></td></tr>`
-}
-
-function orderSummaryBlock(planName: string, planGB: number, planEUGB: number | undefined, planDays: number, amountUSD: number) {
-  const dataRow = planEUGB && planEUGB > 0
-    ? `<tr class="summary-row"><td class="summary-label">🇪🇸 Datos España</td><td class="summary-value">${planGB} GB</td></tr><tr class="summary-row"><td class="summary-label">🇪🇺 Datos UE Roaming</td><td class="summary-value">${planEUGB} GB</td></tr>`
-    : `<tr class="summary-row"><td class="summary-label">📍 Datos</td><td class="summary-value">${planGB} GB</td></tr>`
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">Resumen de tu compra</h2><table role="presentation" width="100%"><tr class="summary-row"><td class="summary-label">Plan</td><td class="summary-value">${planName}</td></tr>${dataRow}<tr class="summary-row"><td class="summary-label">Duración</td><td class="summary-value">${planDays} días</td></tr><tr><td colspan="2"><div class="divider" style="margin:10px 0;"></div></td></tr><tr class="summary-row"><td class="summary-label">Total</td><td class="summary-value" style="font-size:22px;color:#C9973A;">USD ${amountUSD.toFixed(2)}</td></tr></table></div></td></tr>`
-}
-
-function supportBlock() {
-  return `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section" style="background:#FFFCF7;"><h2 class="h2">Estamos para ayudarte</h2><p class="p">Si tenés cualquier duda con la instalación o activación, contactanos.</p><div style="height:18px;"></div><a class="button-secondary" href="${siteBaseUrl()}/wa">Hablar por WhatsApp</a></div></td></tr>`
-}
-
-// ── B2C: Entrega de eSIM con QR embebido ──────────────────────────────────────
 // ── B2C: Entrega de eSIM única — reproduce "Ruta34 Email5 V4.dc.html" ─────────
 //
 // El master solo modela el caso "local" (eSIM ya activa desde el envío del
@@ -432,15 +417,23 @@ ${blockRow(sharedSupportBlock(data.orderRef), '0 40px 32px')}`
 }
 
 // ── B2C: Entrega de múltiples eSIMs en un solo email (compras grupales) ───────
+// ── B2C: Entrega de múltiples eSIMs — reproduce "Ruta34 Email6 Multiple.dc.html" ─
+//
+// El journey real: 01 código / 02 QR se repiten DENTRO de cada eSIM Unit
+// (no son pasos globales); 03 cómo instalarlas y 04 cuando te conectes son
+// compartidos, una sola vez, después de todas las unidades — igual que el
+// master. Cada unidad lleva su propio bloque de instalación manual (SM-DP+
+// individual, derivado, no persistido). No existe referencia global de
+// compra: solo el orderRef de cada unidad, nunca un "Pedido" al pie.
+// EXCEPCIÓN REGISTRADA (FASE 4B §4): el bloque "05 · Tu Plan" del master
+// queda pausado — no se implementa acá, no bloquea el resto del email.
+// `esims[].label` ya viene calculado por el caller con el orden canónico
+// (labelWithinGroup) — este template no recalcula posiciones.
 export function emailEntregaMultiple(data: {
   customerName: string
   totalCount: number
   planName: string
-  planGB: number
-  planEUGB?: number
-  planDays: number
   planType: 'local' | 'dataonly' | string
-  amountUSD: number
   esims: Array<{
     label: string
     orderRef: string
@@ -449,32 +442,53 @@ export function emailEntregaMultiple(data: {
     qrUrl?: string
   }>
 }) {
-  const subject = data.totalCount === 1
-    ? `Tu eSIM RUTA34 está confirmada`
-    : `Tus ${data.totalCount} eSIMs RUTA34 están confirmadas`
+  const isLocal = data.planType === 'local' || data.planType === 'prepago'
+  const subject = `Tus ${data.totalCount} eSIMs RUTA34 están confirmadas`
 
-  const esimRows = data.esims.map(esim =>
-    `<tr><td><div class="divider"></div></td></tr><tr><td><div class="section"><h2 class="h2">${esim.label} — ${esim.orderRef}</h2>${qrBlock(esim.qrUrl ?? 'cid:esim-qr', esim.confirmationCode, esim.activationString)}</div></td></tr>`
-  ).join('')
+  const greetingBody = isLocal
+    ? `Tus ${data.totalCount} eSIMs ${data.planName} están activas y listas para instalar.`
+    : `Tus ${data.totalCount} eSIMs ${data.planName} están listas para instalar, activalas cuando las necesites.`
+  const vigenciaTitle = isLocal ? 'Las eSIMs ya están activas.' : 'Activación dentro de 60 días.'
+  const vigenciaText = isLocal
+    ? 'Instalarlas después no cambia su fecha de inicio.'
+    : 'La vigencia empieza cuando las activás, no antes.'
+
+  const esimUnits = data.esims.map((esim) => {
+    const parsed = parseActivationString(esim.activationString)
+    const smdp = parsed.ok ? parsed.data.smdp : ''
+    return blockRow(whiteCard(`
+      <table role="presentation" width="100%"><tr>
+        <td style="font-family:${FONTS.header};font-size:20px;color:#1C3454;">${esim.label}</td>
+        <td align="right" style="font-family:${FONTS.body};font-size:12px;color:#9AA0AC;">Ref. ${esim.orderRef}</td>
+      </tr></table>
+      <div style="height:20px;"></div>
+      ${activationAndQrBlock(esim.confirmationCode, esim.qrUrl ?? 'cid:esim-qr')}
+      ${manualInstallBlock(smdp, esim.activationString)}
+    `))
+  }).join('')
+
+  const body = `
+${blockRow(`
+  ${eyebrow('TUS ESIMS ESTÁN ACTIVAS')}
+  ${h1('Ya podés instalarlas.')}
+  <div style="font-family:${FONTS.body};font-size:14.5px;line-height:1.6;color:#33415A;">Ahora sí: tu conexión ya está lista para acompañarte.</div>
+`, '24px 40px 20px')}
+${blockRow(heroImage(`${siteBaseUrl()}/email/ruta34-hero-final.jpg`, 'Pasaporte, anteojos de sol, teléfono con eSIM Ruta34 en pantalla y café sobre una mesa, con ventanal de aeropuerto de fondo', 280))}
+${blockRow(bodyText(`
+  <div style="margin-bottom:10px;">Hola, ${data.customerName}.</div>
+  <div style="margin-bottom:10px;">${greetingBody}</div>
+  <div style="font-weight:700;color:#1C3454;">Asigná cada eSIM a una persona o dispositivo y mantené esa numeración durante la instalación.</div>
+`))}
+${esimUnits}
+${blockRow(howToInstallBlock())}
+${blockRow(whenConnectedBlock())}
+${blockRow(italicNote(vigenciaTitle, vigenciaText))}
+${blockRow(italicNote('¿Querés evitar posibles cargos en tu SIM habitual?', 'Desactivá los datos móviles de tu SIM habitual. Podés mantener esa SIM encendida.'))}
+${blockRow(sharedSupportBlock(), '0 40px 32px')}`
 
   return {
     subject,
-    html: `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-${LIGHT_MODE_META}
-${premiumEmailStyles()}
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;">
-<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
-${premiumHeader()}
-<tr><td style="padding:32px 20px;">
-<table role="presentation" class="container" width="100%">
-<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">${data.totalCount === 1 ? 'Tu eSIM está lista' : `Tus ${data.totalCount} eSIMs están listas`}</p><p style="font-size:28px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">${data.totalCount} ${data.totalCount === 1 ? 'eSIM' : 'eSIMs'}</p><p class="p">Comparte un código diferente con cada persona. No escanees el mismo QR en más de un celular.</p></div></td></tr>
-${esimRows}
-${orderSummaryBlock(data.planName, data.planGB, data.planEUGB, data.planDays, data.amountUSD)}
-${supportBlock()}
-${premiumFooter()}`
+    html: emailDocument({ title: subject, headerRight: 'Tus eSIMs · Europa', bodyHtml: body }),
   }
 }
 
