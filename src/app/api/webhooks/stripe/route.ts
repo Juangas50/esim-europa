@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
         payment_method: order.payment_method,
         payment_id: session.payment_intent as string,
         amount_usd: order.amount_usd,
+        locale: order.locale,
         utm_source: order.utm_source,
         utm_medium: order.utm_medium,
         utm_campaign: order.utm_campaign,

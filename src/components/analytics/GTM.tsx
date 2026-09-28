@@ -2,6 +2,8 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { isAnalyticsExcludedRoute } from "@/lib/analytics/excluded-routes";
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
 const CONSENT_KEY = "ruta34_cookie_consent";
@@ -9,8 +11,14 @@ const CONSENT_KEY = "ruta34_cookie_consent";
 /**
  * GTM Script — only loads after the user has accepted cookies (GDPR).
  * Falls back gracefully if GTM_ID is not configured.
+ *
+ * También no carga en absoluto en rutas excluidas (ej. /reprogramar,
+ * que lleva tokens de autorización en la query string) — así gtm.js
+ * nunca se descarga ahí y ningún tag del container (incluida cualquier
+ * config de GA4 alojada dentro de GTM) puede leer location.href.
  */
 export function GTMScript({ nonce }: { nonce?: string }) {
+  const pathname = usePathname();
   const [canLoad, setCanLoad] = useState(false);
 
   useEffect(() => {
@@ -30,7 +38,7 @@ export function GTMScript({ nonce }: { nonce?: string }) {
     return () => window.removeEventListener("cookie-consent", handler);
   }, []);
 
-  if (!GTM_ID || !canLoad) return null;
+  if (!GTM_ID || !canLoad || isAnalyticsExcludedRoute(pathname)) return null;
 
   return (
     <Script
