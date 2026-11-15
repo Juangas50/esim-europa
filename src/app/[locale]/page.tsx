@@ -24,9 +24,9 @@ const base = SITE_URL;
 // ── Per-locale copy ──────────────────────────────────────────────────────────
 const META = {
   es: {
-    title: "Chip para Europa sin roaming | eSIM prepago para Argentinos y Latinoamericanos — RUTA34",
+    title: "eSIM para Europa y España | Internet sin Roaming 28 Días",
     description:
-      "eSIM prepago para viajar a Europa. Conectate desde US$15.90 sin roaming. Instalás con QR en 2 minutos. Llega a 30+ países. Ideal para argentinos, chilenos, uruguayos y brasileños.",
+      "Viajá por España y Europa con eSIM prepaga desde US$20. Activala con QR antes de salir, disfrutá 5G y llamadas a Latinoamérica. Elegí tu plan.",
     keywords:
       "chip para españa, chip prepago europa, chip digital europa, esim europa argentina, chip para viajar a europa, esim sin roaming, chip internet europa, esim chile europa, esim uruguay europa, chip para argentina españa, plan prepago europa latinoamerica, chip virtual europa, internet europa sin contrato",
     ogTitle: "El chip digital para viajar a Europa — RUTA34 Telecom",
