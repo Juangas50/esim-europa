@@ -63,7 +63,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
         </motion.div>
 
         {/* HEADLINE - Left aligned, floating */}
-        <motion.h1
+        <motion.h2
           custom={0.2}
           variants={fadeUp}
           initial="hidden"
@@ -71,7 +71,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           className="absolute top-[280px] left-20 lg:left-32 z-20 max-w-[500px] font-display text-5xl lg:text-6xl text-white leading-[1.1] tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
         >
           {t("headline")}
-        </motion.h1>
+        </motion.h2>
 
         {/* SUBHEADLINE - Left aligned, integrated */}
         <motion.p
@@ -151,7 +151,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
         {/* Badge hidden on tablet to save space */}
 
         {/* Headline - Adjusted size */}
-        <motion.h1
+        <motion.h2
           custom={0.2}
           variants={fadeUp}
           initial="hidden"
@@ -159,7 +159,7 @@ export default function Hero({ minPrice }: { minPrice?: number }) {
           className="absolute top-[240px] left-10 z-20 max-w-[400px] font-display text-4xl lg:text-5xl text-white leading-[1.1] tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
         >
           {t("headline")}
-        </motion.h1>
+        </motion.h2>
 
         {/* Subheadline */}
         <motion.p
