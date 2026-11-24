@@ -26,16 +26,20 @@ export default async function PedidosAdminPage() {
   const supabase = createAdminClient()
 
   // ── B2B orders ────────────────────────────────────────────────────────────
-  const { data: b2bOrders } = await supabase
+  // `users!orders_seller_id_fkey`: relación explícita (el vendedor). Sin ella, cualquier 2ª clave
+  // foránea de orders hacia users hace el embed ambiguo y la lista sale vacía.
+  const { data: b2bOrders, error: b2bError } = await supabase
     .from('orders')
-    .select(`*, agencies(name), users(full_name), tariffs(name, type), activation_string, confirmation_code`)
+    .select(`*, agencies(name), users!orders_seller_id_fkey(full_name), tariffs(name, type), activation_string, confirmation_code`)
     .order('created_at', { ascending: false })
+  if (b2bError) console.error('[admin/pedidos] error cargando pedidos de agencias:', b2bError.message)
 
   // ── B2C orders ────────────────────────────────────────────────────────────
-  const { data: b2cOrders } = await supabase
+  const { data: b2cOrders, error: b2cError } = await supabase
     .from('b2c_orders')
     .select(`*, tariffs(name, type)`)
     .order('created_at', { ascending: false })
+  if (b2cError) console.error('[admin/pedidos] error cargando pedidos web:', b2cError.message)
 
   // Costo interno de Vodafone congelado por venta (solo admin). Tolerante si la tabla aún no existe.
   const { data: internalCosts } = await supabase.from('order_internal_costs').select('order_id, vodafone_cost_usd')

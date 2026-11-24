@@ -6,7 +6,7 @@ import { createServerClient } from "@supabase/ssr";
 const nextIntlMiddleware = createMiddleware(routing);
 
 // ── Rutas del portal (requieren autenticación) ────────────────────────────────
-const PROTECTED_PORTAL = ["/admin", "/pedidos", "/facturas"];
+const PROTECTED_PORTAL = ["/admin", "/pedidos", "/facturas", "/wallet"];
 
 function isPortalRoute(pathname: string) {
   return PROTECTED_PORTAL.some(

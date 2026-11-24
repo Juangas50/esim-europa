@@ -25,9 +25,12 @@ alter table public.agencies
 -- ── 2. Pedidos: marcas de gestión / cancelación ───────────────────────────────
 alter table public.orders
   add column if not exists management_started_at timestamptz,
-  add column if not exists management_started_by uuid references public.users(id),
+  -- OJO: sin REFERENCES a users. `orders` ya tiene seller_id -> users; una 2ª/3ª clave foránea a la
+  -- misma tabla hace ambiguo el embed `users(full_name)` de PostgREST (PGRST201) y rompe las
+  -- consultas existentes (p. ej. /admin/pedidos). El actor queda además en admin_audit_log.
+  add column if not exists management_started_by uuid,
   add column if not exists cancelled_at          timestamptz,
-  add column if not exists cancelled_by          uuid references public.users(id);
+  add column if not exists cancelled_by          uuid;
 
 -- ── 3. (Movido) la política orders_partner_insert se elimina en
 --       20261124000003_drop_partner_order_insert.sql, que se aplica DESPUÉS de

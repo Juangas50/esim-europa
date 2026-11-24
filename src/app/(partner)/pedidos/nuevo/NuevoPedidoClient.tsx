@@ -73,7 +73,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
   const ready = !!tariff && missing.length === 0 && affordable && !busy
 
   const set = (k: keyof FormState, v: string) => setForm(f => ({ ...f, [k]: v }))
-  const blur = (k: string) => setTouched(t => ({ ...t, [k]: true }))
+  const blur = (k: string) => { if (String(form[k as keyof FormState] ?? '') !== '') setTouched(t => ({ ...t, [k]: true })) }
 
   function pickTariff(t: Tariff) {
     setTariffId(t.id)
@@ -103,6 +103,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
     }
     if (res.balanceAfter != null) setBalance(res.balanceAfter)
     setLastSale({ ref: res.orderRef, cost })
+    if (res.balanceAfter != null && cost > res.balanceAfter) setNoFunds({ name: tariff.name, cost })
     setForm(blank()); setTouched({})
     router.refresh()
     firstField.current?.focus({ preventScroll: true })
@@ -127,7 +128,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
   )
 
   const groups: { key: 'prepago' | 'dataonly'; title: string }[] = [{ key: 'prepago', title: 'eSIM Prepago' }, { key: 'dataonly', title: 'eSIM DataOnly' }]
-  const showMissing = missing.length > 0 ? `Falta: ${missing.map(k => LABEL[k]).join(', ')}.` : !affordable ? 'Elige un plan que cubra tu saldo.' : ''
+  const showMissing = missing.length > 0 ? `Falta: ${missing.map(k => LABEL[k]).join(', ')}.` : ''
 
   return (
     <div className="max-w-[1240px] mx-auto flex flex-col gap-5 pb-28 lg:pb-6" style={{ fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif", color: '#1B2433' }}>
@@ -276,6 +277,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
                   </div>
                 </div>
               )}
+              {!affordable && <p role="alert" className="text-[13px] font-bold m-0 mb-2" style={{ color: C.bad }}>Saldo insuficiente para este plan. Elige uno más barato o recarga tu wallet.</p>}
               {showMissing && <p className="text-[13px] m-0 mb-3" style={{ color: C.muted }}>{showMissing}</p>}
               <button type="button" onClick={sell} disabled={!ready} className="hidden lg:flex w-full min-h-[56px] rounded-xl font-extrabold text-[17px] items-center justify-center gap-2 transition disabled:cursor-not-allowed"
                 style={{ background: ready ? C.gold : '#F1ECE2', color: ready ? C.navy : '#7A8699', border: 0 }}>

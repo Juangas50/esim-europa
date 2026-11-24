@@ -168,6 +168,15 @@ select t.check('saldo = balance_after del último movimiento',
 select t.check('admin puede reconfigurar a postpago solo con saldo 0',
   t.run(:'ADM', format($$select public.admin_configure_wallet(%L,'postpaid')::text$$, :'AGP')) = 'ERR:BALANCE_NOT_ZERO');
 
+-- ── 14. Compatibilidad con las consultas existentes de la app (PostgREST) ──────
+-- Una 2ª clave foránea de orders hacia users haría ambiguo el embed `users(full_name)` y dejaría
+-- vacía la pantalla /admin/pedidos (error PGRST201, no detectable con SQL plano).
+select t.check('orders tiene UNA sola FK hacia users (embed users(...) sin ambiguedad)',
+  (select count(*) from pg_constraint c where c.contype='f' and c.conrelid='public.orders'::regclass and c.confrelid='public.users'::regclass) = 1,
+  (select count(*)::text from pg_constraint c where c.contype='f' and c.conrelid='public.orders'::regclass and c.confrelid='public.users'::regclass));
+select t.check('orders tiene UNA sola FK hacia agencies', (select count(*) from pg_constraint c where c.contype='f' and c.conrelid='public.orders'::regclass and c.confrelid='public.agencies'::regclass) = 1);
+select t.check('orders tiene UNA sola FK hacia tariffs', (select count(*) from pg_constraint c where c.contype='f' and c.conrelid='public.orders'::regclass and c.confrelid='public.tariffs'::regclass) = 1);
+
 -- ── Resumen ───────────────────────────────────────────────────────────────────
 select count(*) filter (where ok) as pasaron, count(*) filter (where not ok) as fallaron from t.results;
 select name, got from t.results where not ok;

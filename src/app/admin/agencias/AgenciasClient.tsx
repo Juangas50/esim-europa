@@ -207,8 +207,8 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                       <div style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}</div>
                     </div>
                     <div className="flex flex-wrap gap-4 items-end">
-                      <PriceInput label="Precio acordado" defaultValue={cost} onSave={val => handleSavePrice(t.id, val, pvp)} />
-                      <PriceInput label="PVP que ve la agencia" defaultValue={pvp} onSave={val => handleSavePrice(t.id, cost, val)} />
+                      <PriceInput key={`${managing.id}-${t.id}-cost-${cost}`} label="Precio acordado" defaultValue={cost} onSave={val => handleSavePrice(t.id, val, pvp)} />
+                      <PriceInput key={`${managing.id}-${t.id}-pvp-${pvp}`} label="PVP que ve la agencia" defaultValue={pvp} onSave={val => handleSavePrice(t.id, cost, val)} />
                       <div style={{ textAlign: 'center', minWidth: 56 }}>
                         <div style={{ fontSize: 10, color: '#64748B', fontWeight: 700, textTransform: 'uppercase', marginBottom: 5 }}>Margen</div>
                         <div style={{ fontSize: 20, fontWeight: 900, color: margin > 0 ? '#22C55E' : '#C9973A' }}>${margin.toFixed(0)}</div>
