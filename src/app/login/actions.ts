@@ -51,6 +51,11 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
+    // Solo en desarrollo: el mensaje al usuario es genérico a propósito, pero para depurar en local
+    // hace falta saber el motivo real (credenciales, conexión, URL/clave de Supabase equivocadas…).
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[login] signInWithPassword falló:', error.message, '| status:', error.status, '| Supabase:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    }
     return { error: 'Email o contraseña incorrectos' }
   }
 

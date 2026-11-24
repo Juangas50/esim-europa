@@ -1,6 +1,8 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
+import { walletErrorMessage } from '@/lib/wallet'
 import { requireAdmin } from '@/lib/auth/require-role'
 import { revalidatePath } from 'next/cache'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
@@ -13,8 +15,11 @@ import QRCode from 'qrcode'
 // distintos en la base de datos — usar un único set compartido dejaba pasar
 // estados que la tabla B2C rechaza (y viceversa). Ver supabase/migrations/
 // 20260524_b2c_orders.sql para el constraint real de b2c_orders.
+// `paid` NO existe en el enum order_status de `orders` (solo aplica a B2C, donde lo
+// pone el webhook de Stripe). `in_management` = el admin ya empezó a tramitar la
+// línea y la agencia no puede cancelar. `expired` tampoco está en el enum B2B.
 const VALID_STATUSES_B2B = new Set([
-  'pending_review', 'paid', 'scheduled', 'qr_sent', 'activated', 'expired', 'cancelled',
+  'pending_review', 'scheduled', 'in_management', 'qr_sent', 'activated', 'cancelled',
 ])
 const VALID_STATUSES_B2C = new Set([
   'pending_payment', 'paid', 'processing', 'qr_sent', 'active', 'expired', 'cancelled', 'error',
@@ -32,6 +37,14 @@ export async function updateOrderStatus(
     return { error: { message: `Invalid status: ${status}` } }
   }
 
+  // Pedidos de agencia: cancelar y pasar a "en gestión" mueven saldo / bloquean a la agencia,
+  // así que solo se hacen con las funciones SQL dedicadas (startManagement / voidOrder).
+  if (source === 'b2b' && (status === 'cancelled' || status === 'in_management')) {
+    return { error: { message: status === 'cancelled'
+      ? 'Para cancelar un pedido de agencia usa «Anular»: devuelve el saldo y exige un motivo.'
+      : 'Usa «Empezar a gestionar» para pasar el pedido a gestión.' } }
+  }
+
   // b2c_orders solo permite escritura a service_role (ver migración de RLS) —
   // el cliente con RLS no puede actualizarla y falla en silencio (0 filas, sin error).
   const supabase = createAdminClient()
@@ -43,6 +56,28 @@ export async function updateOrderStatus(
 
   revalidatePath('/admin/pedidos')
   return { error }
+}
+
+/** Admin empieza a gestionar un pedido de agencia: la agencia ya no puede cancelarlo. */
+export async function startManagement(orderId: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAdmin()
+  // Cliente de SESIÓN (no service_role): la función valida auth.uid() y deja al admin en la auditoría.
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('admin_start_management', { p_order_id: orderId })
+  if (error) return { ok: false, error: walletErrorMessage(error.message) }
+  revalidatePath('/admin/pedidos')
+  return { ok: true }
+}
+
+/** Anulación excepcional (incluso con QR enviado): devuelve el saldo y guarda el motivo en la auditoría. */
+export async function voidOrder(orderId: string, reason: string): Promise<{ ok: true; refunded: boolean } | { ok: false; error: string }> {
+  await requireAdmin()
+  const supabase = await createClient()
+  const { data, error } = await supabase.rpc('admin_void_order', { p_order_id: orderId, p_reason: reason })
+  if (error) return { ok: false, error: walletErrorMessage(error.message) }
+  revalidatePath('/admin/pedidos')
+  revalidatePath('/admin/agencias')
+  return { ok: true, refunded: !!(data as { refunded?: boolean } | null)?.refunded }
 }
 
 // ── Helper interno: lógica compartida de entrega ─────────────────────────────
@@ -76,6 +111,9 @@ async function _deliverCore(
   }
   if (order.status === 'qr_sent') {
     return { ok: false, error: 'Este pedido ya tiene el QR enviado.' }
+  }
+  if (order.status === 'cancelled') {
+    return { ok: false, error: 'Este pedido está cancelado: no se puede entregar la eSIM.' }
   }
 
   // Verificar cadena duplicada en AMBAS tablas (b2c_orders y orders)

@@ -15,11 +15,13 @@ export default async function MisPedidosPage() {
     .eq('id', user.id)
     .single()
 
+  const { data: agency } = await supabase.from('agencies').select('billing_model').eq('id', profile?.agency_id).maybeSingle()
+
   const { data: orders } = await supabase
     .from('orders')
     .select('*, tariffs(name)')
     .eq('agency_id', profile?.agency_id)
     .order('created_at', { ascending: false })
 
-  return <PedidosPartnerClient orders={orders || []} />
+  return <PedidosPartnerClient orders={orders || []} prepaid={agency?.billing_model === 'prepaid'} />
 }
