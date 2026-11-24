@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { createTariff, updateTariff, deleteTariff } from './actions'
+import { createTariff, updateTariff, deleteTariff, saveTariffCost } from './actions'
+import { toast } from '@/lib/toast'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 
@@ -130,7 +131,26 @@ function TariffForm({ initial, onSave, onCancel }: {
   )
 }
 
-export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] }) {
+function VodafoneCost({ tariffId, initial }: { tariffId: string; initial: number | undefined }) {
+  const [val, setVal] = useState(initial != null ? String(initial) : '')
+  async function save() {
+    const n = Number(val.replace(',', '.'))
+    if (val === '' || Number.isNaN(n)) return
+    if (initial != null && n === initial) return
+    const r = await saveTariffCost(tariffId, n)
+    toast(r.ok ? 'Costo de Vodafone guardado' : r.error, r.ok ? 'success' : 'error')
+  }
+  return (
+    <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#64748B', fontWeight: 700 }}>
+      Costo Vodafone (USD, interno)
+      <input inputMode="decimal" value={val} onChange={e => setVal(e.target.value)} onBlur={save} placeholder="0.00"
+        style={{ ...inp, width: 100, padding: '6px 10px', minHeight: 36 }} />
+      {initial == null && <span style={{ color: '#B42318', fontWeight: 700 }}>Sin configurar: el margen no se calcula</span>}
+    </label>
+  )
+}
+
+export default function TarifasClient({ tariffs: initial, costs }: { tariffs: Tariff[]; costs: Record<string, number> }) {
   const [tariffs, setTariffs] = useState(initial)
   const [adding, setAdding] = useState(false)
   const [editing, setEditing] = useState<Tariff | null>(null)
@@ -162,7 +182,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
         <div style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 9, padding: '9px 14px', fontSize: 12, color: '#64748B', flex: 1 }}>
-          💡 Los precios <strong style={{ color: '#1B2F4E' }}>coste y PVP</strong> se configuran por agencia en <strong style={{ color: '#C9973A' }}>Agencias → Gestionar</strong>
+          💡 El <strong style={{ color: '#1B2F4E' }}>precio acordado y el PVP</strong> se configuran por agencia en <strong style={{ color: '#C9973A' }}>Agencias → Gestionar</strong>
         </div>
         <button onClick={() => { setAdding(true); setEditing(null) }} style={{ background: '#C9973A', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           + Nueva tarifa
@@ -198,6 +218,7 @@ export default function TarifasClient({ tariffs: initial }: { tariffs: Tariff[] 
                       </div>
                     </div>
                   </div>
+                  <div style={{ marginBottom: 10 }}><VodafoneCost tariffId={t.id} initial={costs[t.id]} /></div>
                   {/* Acciones dentro de la card, full width en mobile */}
                   <div className="flex gap-2">
                     <button onClick={() => { setEditing(t); setAdding(false) }} className="flex-1" style={{ padding: '8px 0', background: '#fff', border: '1px solid #E2E8F0', borderRadius: 7, color: '#1B2F4E', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit', fontWeight: 500 }}>

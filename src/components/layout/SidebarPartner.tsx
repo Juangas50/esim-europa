@@ -5,11 +5,13 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useWindowSize } from '@/hooks/useWindowSize'
 
-const NAV = [
+const NAV_BASE = [
   { href: '/pedidos/nuevo', icon: '➕', label: 'Nuevo pedido' },
   { href: '/pedidos',       icon: '📦', label: 'Mis pedidos' },
   { href: '/facturas',      icon: '🧾', label: 'Mis facturas' },
 ]
+// El wallet solo existe para agencias prepago: las postpago no lo ven en el menú.
+const NAV_WALLET = { href: '/wallet', icon: '💳', label: 'Mi wallet' }
 
 // HORIZONTE BRANDBOOK
 const C = {
@@ -24,7 +26,8 @@ const C = {
   textoBajo: '#94A3B8',
 }
 
-export default function SidebarPartner({ agencyName }: { agencyName: string }) {
+export default function SidebarPartner({ agencyName, showWallet = false }: { agencyName: string; showWallet?: boolean }) {
+  const NAV = showWallet ? [NAV_BASE[0], NAV_BASE[1], NAV_WALLET, NAV_BASE[2]] : NAV_BASE
   const { isMobile } = useWindowSize()
   const [open, setOpen] = useState(false)
   const pathname = usePathname()

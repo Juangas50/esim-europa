@@ -29,10 +29,10 @@ alter table public.orders
   add column if not exists cancelled_at          timestamptz,
   add column if not exists cancelled_by          uuid references public.users(id);
 
--- ── 3. Seguridad: las agencias ya no insertan pedidos directamente ────────────
--- Antes: orders_partner_insert permitía a cualquier agencia insertar pedidos con
--- cost_at_time/status arbitrarios vía API. Ahora solo create_agency_order().
-drop policy if exists orders_partner_insert on public.orders;
+-- ── 3. (Movido) la política orders_partner_insert se elimina en
+--       20261124000003_drop_partner_order_insert.sql, que se aplica DESPUÉS de
+--       desplegar el código nuevo: hasta entonces la app actual inserta pedidos
+--       directamente y quitarla antes la rompería.
 
 -- ── 4. Tablas del wallet ──────────────────────────────────────────────────────
 create table public.agency_wallets (

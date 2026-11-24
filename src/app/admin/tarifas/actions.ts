@@ -1,6 +1,6 @@
 'use server'
 
-import { createAdminClient } from '@/lib/supabase/server'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/auth/require-role'
 
 const VALID_TYPES = new Set(['local', 'dataonly', 'prepago'])
@@ -80,4 +80,21 @@ export async function updateTariff(id: string, form: TariffForm) {
     .select()
     .single()
   return { data, error }
+}
+
+
+/**
+ * Costo interno de Vodafone por eSIM (solo admin; la tabla tariff_costs no tiene política para agencias).
+ * Se congela en cada venta (order_internal_costs) para calcular el margen real de RUTA34.
+ */
+export async function saveTariffCost(tariffId: string, cost: number): Promise<{ ok: true } | { ok: false; error: string }> {
+  const session = await requireAdmin()
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tariffId)) return { ok: false, error: 'Tarifa inválida.' }
+  if (typeof cost !== 'number' || !Number.isFinite(cost) || cost < 0 || cost > 100000) return { ok: false, error: 'Costo inválido.' }
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('tariff_costs')
+    .upsert({ tariff_id: tariffId, vodafone_cost_usd: Math.round(cost * 100) / 100, updated_at: new Date().toISOString(), updated_by: session.userId }, { onConflict: 'tariff_id' })
+  if (error) return { ok: false, error: 'No se pudo guardar el costo.' }
+  return { ok: true }
 }

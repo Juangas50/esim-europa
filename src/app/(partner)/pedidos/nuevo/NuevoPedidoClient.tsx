@@ -1,294 +1,359 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
 import { createOrder } from './actions'
+import CancelOrderButton from '@/components/partner/CancelOrderButton'
+import { useWalletBalance } from '@/hooks/useWalletBalance'
+import { ORDER_STATUS_LABELS, usd, type BillingModel } from '@/lib/wallet'
 
-type Tariff = { id: string; name: string; type: string; data_gb: number; validity_days: number | null; badge: string; highlight: boolean }
+export type Tariff = { id: string; name: string; type: 'prepago' | 'dataonly'; data_gb: number; validity_days: number | null }
 type Pricing = { tariff_id: string; cost_price: number; pvp: number }
-
-const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)
-const isAdult = (dob: string) => { if (!dob) return false; const b = new Date(dob); const c = new Date(); c.setFullYear(c.getFullYear() - 18); return b <= c }
-const todayStr = () => new Date().toISOString().split('T')[0]
-const maxDateStr = () => { const d = new Date(); d.setFullYear(d.getFullYear() + 1); return d.toISOString().split('T')[0] }
-const maxDobStr = () => { const d = new Date(); d.setFullYear(d.getFullYear() - 18); return d.toISOString().split('T')[0] }
-
-const fadeIn = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-const stagger = { animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } } }
-
-// HORIZONTE BRANDBOOK
-const C = {
-  navyProfundo: '#1B2F4E',
-  navyMedio: '#2D4A72',
-  dorado: '#C9973A',
-  doradoClaro: '#E8C56A',
-  crema: '#FAF7F2',
-  cremaOscuro: '#EDE8E0',
-  textoOscuro: '#1E293B',
-  textoMedio: '#64748B',
-  textoBajo: '#94A3B8',
-  success: '#059669',
-  error: '#DC2626',
+export type Recent = {
+  id: string; order_ref: string; customer_name: string; customer_lastname: string; status: string
+  cost_at_time: number; pvp_at_time: number; created_at: string; tariffs: { name: string } | null
 }
+type Props = {
+  tariffs: Tariff[]; pricing: Pricing[]; agencyId: string
+  billingModel: BillingModel; initialBalance: number | null; threshold: number; recent: Recent[]
+}
+type FormState = { nombre: string; apellido: string; pasaporte: string; nac: string; dob: string; email: string; when: 'now' | 'later'; fecha: string }
 
-export default function NuevoPedidoClient({ tariffs, pricing, agencyId, sellerId }: { tariffs: Tariff[]; pricing: Pricing[]; agencyId: string; sellerId: string }) {
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const NATIONALITIES = ['Argentina', 'Uruguay', 'Chile', 'Brasil', 'Paraguay', 'Bolivia', 'Colombia', 'Venezuela', 'Perú', 'Otra']
+const today = () => new Date().toISOString().slice(0, 10)
+const maxActivation = () => { const d = new Date(); d.setFullYear(d.getFullYear() + 1); return d.toISOString().slice(0, 10) }
+const maxDob = () => { const d = new Date(); d.setFullYear(d.getFullYear() - 18); return d.toISOString().slice(0, 10) }
+const blank = (): FormState => ({ nombre: '', apellido: '', pasaporte: '', nac: 'Argentina', dob: '', email: '', when: 'now', fecha: '' })
+
+const C = { navy: '#1B2F4E', navy2: '#2D4A72', gold: '#C9973A', cream: '#F6F2EA', line: '#E2DACB', line2: '#CFC5B2', muted: '#566377', ok: '#046C4E', bad: '#B42318' }
+const FONT_DISPLAY = 'DM Serif Display, DM Serif, serif'
+
+export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingModel, initialBalance, threshold, recent }: Props) {
   const router = useRouter()
-  const [step, setStep] = useState(0)
-  const [type, setType] = useState<string | null>(null)
-  const [tariffId, setTariffId] = useState<string | null>(null)
-  const [scheduled, setScheduled] = useState(false)
-  const [form, setForm] = useState({ nombre: '', apellidos: '', pasaporte: '', nac: 'Argentina', dob: '', email: '', date: '' })
+  const prepaid = billingModel === 'prepaid'
+  const [liveBalance, setBalance] = useWalletBalance(prepaid ? agencyId : null, initialBalance)
+  const balance = liveBalance ?? initialBalance ?? 0
+
+  const priceOf = (id: string) => pricing.find(p => p.tariff_id === id)
+  // Solo se ofrecen tarifas con precio configurado para esta agencia
+  const available = useMemo(() => tariffs.filter(t => (priceOf(t.id)?.pvp ?? 0) > 0), [tariffs, pricing]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [tariffId, setTariffId] = useState<string | null>(available[0]?.id ?? null)
+  const [form, setForm] = useState<FormState>(blank())
   const [touched, setTouched] = useState<Record<string, boolean>>({})
-  const [loading, setLoading] = useState(false)
-  const [done, setDone] = useState(false)
-  const [orderRef, setOrderRef] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const [lastSale, setLastSale] = useState<{ ref: string; cost: number } | null>(null)
+  const [noFunds, setNoFunds] = useState<{ name: string; cost: number } | null>(null)
+  const firstField = useRef<HTMLInputElement>(null)
 
-  const tariff = tariffs.find(t => t.id === tariffId)
-  const pvp = pricing.find(p => p.tariff_id === tariffId)?.pvp || 0
-  const cost = pricing.find(p => p.tariff_id === tariffId)?.cost_price || 0
-  const hasPricing = pvp > 0 && cost >= 0
+  const tariff = available.find(t => t.id === tariffId) ?? null
+  const price = tariff ? priceOf(tariff.id) : undefined
+  const cost = price?.cost_price ?? 0
+  const pvp = price?.pvp ?? 0
+  const isDataOnly = tariff?.type === 'dataonly'
+  const scheduled = !isDataOnly && form.when === 'later'
+  const canAfford = (c: number) => !prepaid || c <= balance
 
-  const errors = {
-    email: form.email && !isValidEmail(form.email) ? 'Email inválido' : '',
-    dob: form.dob && !isAdult(form.dob) ? 'Debes ser mayor de 18' : '',
-    date: form.date && (new Date(form.date) < new Date(todayStr()) || new Date(form.date) > new Date(maxDateStr())) ? 'Fecha inválida' : '',
+  const rules: Record<string, (v: string) => string> = {
+    nombre: v => v.trim().length >= 2 ? '' : 'Escribe el nombre del titular.',
+    apellido: v => v.trim().length >= 2 ? '' : 'Escribe el apellido del titular.',
+    pasaporte: v => v.trim().length >= 5 ? '' : 'El pasaporte necesita al menos 5 caracteres.',
+    email: v => EMAIL_RE.test(v.trim()) ? '' : 'Revisa el email, por ejemplo nombre@correo.com.',
+    dob: v => !v ? 'Indica la fecha de nacimiento.' : v <= maxDob() ? '' : 'El titular debe ser mayor de 18 años.',
+    fecha: v => !scheduled ? '' : !v ? 'Elige la fecha de activación.' : v < today() ? 'La fecha no puede ser pasada.' : v > maxActivation() ? 'Máximo un año desde hoy.' : '',
+  }
+  const LABEL: Record<string, string> = { nombre: 'nombre', apellido: 'apellido', pasaporte: 'pasaporte', email: 'email', dob: 'fecha de nacimiento', fecha: 'fecha de activación' }
+  const errorsNow = Object.fromEntries(Object.keys(rules).map(k => [k, rules[k](form[k as keyof FormState] as string)]).filter(([, m]) => m)) as Record<string, string>
+  const missing = Object.keys(errorsNow)
+  const totalFields = scheduled ? 6 : 5
+  const done = totalFields - missing.length
+  const affordable = !tariff || canAfford(cost)
+  const ready = !!tariff && missing.length === 0 && affordable && !busy
+
+  const set = (k: keyof FormState, v: string) => setForm(f => ({ ...f, [k]: v }))
+  const blur = (k: string) => setTouched(t => ({ ...t, [k]: true }))
+
+  function pickTariff(t: Tariff) {
+    setTariffId(t.id)
+    const c = priceOf(t.id)?.cost_price ?? 0
+    if (!canAfford(c)) setNoFunds({ name: t.name, cost: c })
   }
 
-  const touch = (f: string) => setTouched(p => ({ ...p, [f]: true }))
-  const step1Valid = type && tariffId && hasPricing
-  const step2Valid = form.nombre && form.apellidos && form.pasaporte && isValidEmail(form.email) && isAdult(form.dob) && (type === 'dataonly' || !scheduled || (form.date && !errors.date))
-
-  async function handleSubmit() {
-    setLoading(true)
-    const result = await createOrder({
-      agencyId, sellerId, tariffId: tariffId!, type: type!,
-      customerName: form.nombre, customerLastname: form.apellidos,
+  async function sell() {
+    if (!tariff) return
+    setTouched({ nombre: true, apellido: true, pasaporte: true, email: true, dob: true, fecha: true })
+    if (!canAfford(cost)) { setNoFunds({ name: tariff.name, cost }); return }
+    if (missing.length) return
+    setBusy(true); setError('')
+    const res = await createOrder({
+      tariffId: tariff.id,
+      customerName: form.nombre, customerLastname: form.apellido,
       customerPassport: form.pasaporte, customerNationality: form.nac,
       customerDob: form.dob, customerEmail: form.email,
-      activationDate: type === 'dataonly' ? null : (!scheduled ? null : form.date),
+      activationDate: scheduled ? form.fecha : null,
     })
-    if (result.orderRef) { setOrderRef(result.orderRef); setDone(true) }
-    setLoading(false)
+    setBusy(false)
+    if (!res.ok) {
+      if (res.insufficientBalance) setNoFunds({ name: tariff.name, cost })
+      else setError(res.error)
+      router.refresh()
+      return
+    }
+    if (res.balanceAfter != null) setBalance(res.balanceAfter)
+    setLastSale({ ref: res.orderRef, cost })
+    setForm(blank()); setTouched({})
+    router.refresh()
+    firstField.current?.focus({ preventScroll: true })
   }
 
-  if (done) return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen flex items-center justify-center px-4" style={{ background: C.crema }}>
-      <div className="text-center max-w-xl">
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center text-5xl" style={{ background: `rgba(5,150,105,0.2)`, border: `2px solid ${C.success}` }}>✓</motion.div>
-        <h2 className="text-4xl font-black mb-3" style={{ color: C.navyProfundo, fontFamily: 'DM Serif, serif' }}>¡Pedido Creado!</h2>
-        <p className="text-lg mb-8" style={{ color: C.textoMedio }}>{type === 'prepago' && !scheduled && 'Tu equipo RUTA34 activará la eSIM.'}{type === 'prepago' && scheduled && `Se activará el ${form.date}.`}{type === 'dataonly' && 'El QR se enviará al cliente.'}</p>
-        <div className="rounded-2xl p-6 mb-8 text-left" style={{ background: C.crema, border: `2px solid ${C.dorado}` }}>
-          <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: C.textoMedio }}>Resumen</div>
-          <div className="text-2xl font-black mb-1" style={{ color: C.navyProfundo, fontFamily: 'DM Serif, serif' }}>{tariff?.name}</div>
-          <div className="text-sm" style={{ color: C.textoMedio }}>{form.nombre} {form.apellidos}</div>
-          <div className="font-mono text-sm mt-3" style={{ color: C.dorado }}>{orderRef}</div>
-        </div>
-        <div className="flex gap-3">
-          <motion.button whileHover={{ scale: 1.02 }} onClick={() => { setDone(false); setStep(1); setType(null); setTariffId(null); setScheduled(false); setForm({ nombre: '', apellidos: '', pasaporte: '', nac: 'Argentina', dob: '', email: '', date: '' }); setTouched({}) }} className="flex-1 px-6 py-3 rounded-lg font-bold transition-colors" style={{ border: `2px solid ${C.navyProfundo}`, color: C.navyProfundo, background: 'transparent' }}>Nuevo Pedido</motion.button>
-          <motion.button whileHover={{ scale: 1.02 }} onClick={() => router.push('/pedidos')} className="flex-1 px-6 py-3 rounded-lg text-white font-bold transition-colors" style={{ background: C.dorado }}>Ver Pedidos</motion.button>
-        </div>
-      </div>
-    </motion.div>
+  const fieldErr = (k: string) => (touched[k] ? errorsNow[k] ?? '' : '')
+  const inputStyle = (k: string): React.CSSProperties => ({
+    width: '100%', minHeight: 48, padding: '10px 12px', borderRadius: 10, background: '#fff', color: '#1B2433',
+    border: `1.5px solid ${fieldErr(k) ? C.bad : C.line2}`, fontSize: 15,
+  })
+  const field = ({ id, label, type = 'text', full, ac, inputMode, max, refEl }: { id: keyof FormState; label: string; type?: string; full?: boolean; ac?: string; inputMode?: 'email'; max?: string; refEl?: React.Ref<HTMLInputElement> }) => (
+    <div className={`flex flex-col gap-1 min-w-0 ${full ? 'sm:col-span-2' : ''}`}>
+      <label htmlFor={`f-${id}`} className="text-[13px] font-bold">{label} <span aria-hidden style={{ color: C.bad }}>*</span></label>
+      <input
+        id={`f-${id}`} ref={refEl} type={type} value={form[id] as string} autoComplete={ac ?? 'off'} inputMode={inputMode} max={max} min={id === 'fecha' ? today() : undefined}
+        aria-required="true" aria-invalid={!!fieldErr(id)} aria-describedby={`e-${id}`}
+        onChange={e => set(id, e.target.value)} onBlur={() => blur(id)} style={inputStyle(id)}
+        onKeyDown={e => { if (e.key === 'Enter' && ready) { e.preventDefault(); sell() } }}
+      />
+      <div id={`e-${id}`} role="alert" className="text-[13px]" style={{ color: C.bad }}>{fieldErr(id)}</div>
+    </div>
   )
 
+  const groups: { key: 'prepago' | 'dataonly'; title: string }[] = [{ key: 'prepago', title: 'eSIM Prepago' }, { key: 'dataonly', title: 'eSIM DataOnly' }]
+  const showMissing = missing.length > 0 ? `Falta: ${missing.map(k => LABEL[k]).join(', ')}.` : !affordable ? 'Elige un plan que cubra tu saldo.' : ''
+
   return (
-    <div className="min-h-screen" style={{ background: C.crema }}>
-      <AnimatePresence mode="wait">
-        {step === 0 ? (
-          <motion.div key="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: `linear-gradient(135deg, ${C.navyProfundo} 0%, ${C.navyMedio} 100%)` }}>
-            <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(circle at top right, rgba(201,151,58,0.1), transparent)` }} />
+    <div className="max-w-[1240px] mx-auto flex flex-col gap-5 pb-28 lg:pb-6" style={{ fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif", color: '#1B2433' }}>
+      <div>
+        <h1 className="text-3xl m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy }}>Vender eSIM</h1>
+        <p className="m-0 mt-1 text-sm" style={{ color: C.muted }}>
+          {prepaid ? <>Saldo disponible: <b className="tabular-nums">{usd(balance)}</b>. Se descuenta al crear el pedido.</> : 'Elige el plan, completa los datos del cliente y vende.'}
+        </p>
+      </div>
 
-            <div className="relative max-w-6xl mx-auto px-4 py-20">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-center mb-16">
-                <div className="inline-block mb-6 px-4 py-2 rounded-full" style={{ background: `rgba(201,151,58,0.2)`, border: `1px solid rgba(201,151,58,0.5)` }}>
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: C.dorado }}>Portal Premium de Partners</span>
-                </div>
-                <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight tracking-tighter" style={{ color: C.crema, fontFamily: 'DM Serif, serif' }}>Vende Conectividad Global</h1>
-                <p className="text-base max-w-2xl mx-auto mb-6 leading-relaxed" style={{ color: C.doradoClaro }}>Tus clientes viajan tranquilos con eSIM premium. Tú generás ganancias. RUTA34 maneja el resto.</p>
-              </motion.div>
+      {prepaid && balance < threshold && (
+        <div role="alert" className="rounded-xl p-3.5 text-sm flex gap-3" style={{ background: '#FCF0D8', color: '#8A5206' }}>
+          <div><b className="block">Saldo bajo</b>Te quedan {usd(balance)}. Cuando recargues, avisa a tu ejecutivo RUTA34 con la referencia de pago.</div>
+        </div>
+      )}
 
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }} className="grid grid-cols-3 gap-3 mb-8">
-                {[
-                  { num: '10K+', label: 'Viajeros' },
-                  { num: '50+', label: 'Países' },
-                  { num: '2 min', label: 'Activación' },
-                ].map(({ num, label }) => (
-                  <div key={label} className="p-4 rounded-xl text-center" style={{ background: `rgba(255,255,255,0.1)`, border: `1px solid rgba(232,197,106,0.3)` }}>
-                    <div className="text-2xl font-black mb-1" style={{ color: C.dorado, fontFamily: 'DM Serif, serif' }}>{num}</div>
-                    <div className="text-xs" style={{ color: C.doradoClaro }}>{label}</div>
-                  </div>
-                ))}
-              </motion.div>
-
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} onClick={() => setStep(1)} className="mx-auto block px-8 py-3 text-white font-bold text-base rounded-xl transition-all" style={{ background: C.dorado }}>Crear Pedido Ahora</motion.button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div key={`step-${step}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-7xl mx-auto px-4 py-12">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-black mb-1" style={{ color: C.navyProfundo, fontFamily: 'DM Serif, serif' }}>{step === 1 ? 'Elige tu Plan' : step === 2 ? 'Datos del Viajero' : 'Confirmar'}</h1>
-                <p className="text-sm" style={{ color: C.textoMedio }}>{step === 1 && 'Selecciona tipo y tarifa'}{step === 2 && 'Información del cliente'}{step === 3 && 'Revisa antes de confirmar'}</p>
+      {available.length === 0 ? (
+        <div className="rounded-2xl p-10 text-center bg-white" style={{ border: `1px solid ${C.line}`, color: C.muted }}>
+          Tu agencia todavía no tiene tarifas con precio configurado. Contacta a tu ejecutivo RUTA34.
+        </div>
+      ) : (
+        <div className="grid gap-4 items-start lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+          <div className="flex flex-col gap-4 min-w-0">
+            {/* 1. Plan */}
+            <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>1</span>
+                <h2 className="text-base font-extrabold m-0">Plan</h2>
               </div>
-              <motion.button whileHover={{ scale: 1.05 }} onClick={() => setStep(0)} className="px-3 py-2 text-sm rounded-lg transition-colors" style={{ border: `1px solid ${C.navyProfundo}`, color: C.navyProfundo }}>Volver</motion.button>
-            </div>
-
-            <div className="flex gap-2 mb-12 overflow-x-auto">
-              {['Plan', 'Cliente', 'Confirmar'].map((label, i) => {
-                const n = i + 1; const isDone = step > n; const active = step === n
-                return (
-                  <motion.div key={n} className="flex items-center gap-2 px-4 py-3 rounded-lg border-2 transition-all flex-shrink-0" style={{ background: active ? `rgba(201,151,58,0.1)` : isDone ? `rgba(5,150,105,0.1)` : C.crema, borderColor: active ? C.dorado : isDone ? C.success : C.cremaOscuro }}>
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: active ? C.dorado : isDone ? C.success : C.cremaOscuro, color: (active || isDone) ? '#FFF' : C.textoMedio }}>
-                      {isDone ? '✓' : n}
+              <div role="radiogroup" aria-label="Plan" className="flex flex-col gap-2">
+                {groups.map(g => {
+                  const list = available.filter(t => t.type === g.key)
+                  if (!list.length) return null
+                  return (
+                    <div key={g.key} className="flex flex-col gap-2">
+                      <div className="text-[11px] font-extrabold uppercase tracking-wider mt-1" style={{ color: C.muted }}>{g.title}</div>
+                      {list.map(t => {
+                        const p = priceOf(t.id)!
+                        const ok = canAfford(p.cost_price)
+                        const checked = tariffId === t.id
+                        return (
+                          <label key={t.id} className="relative block cursor-pointer" style={{ opacity: ok ? 1 : 0.65 }}>
+                            <input type="radio" name="plan" value={t.id} checked={checked} onChange={() => pickTariff(t)} className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer m-0" />
+                            <div className="grid gap-x-3 gap-y-1 items-center rounded-xl px-3.5 py-3 min-h-[56px] grid-cols-3 sm:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(64px,0.6fr))] peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2"
+                              style={{ border: `1.5px solid ${checked ? C.gold : C.line}`, background: checked ? 'rgba(201,151,58,0.08)' : '#fff', boxShadow: checked ? '0 0 0 3px rgba(201,151,58,0.25)' : 'none', outlineColor: C.navy2 }}>
+                              <div className="col-span-3 sm:col-span-1 min-w-0">
+                                <strong className="block text-[15px]">{t.name}</strong>
+                                <span className="text-[13px]" style={{ color: C.muted }}>{t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}</span>
+                                {!ok && <span className="block text-[11px] font-extrabold mt-0.5" style={{ color: C.bad }}>Saldo insuficiente</span>}
+                              </div>
+                              {[{ l: 'Tu precio', v: p.cost_price, m: false }, { l: 'Tu PVP', v: p.pvp, m: false }, { l: 'Margen', v: p.pvp - p.cost_price, m: true }].map(c => (
+                                <div key={c.l} className="flex flex-col sm:items-end tabular-nums">
+                                  <small className="text-[11px] font-bold uppercase tracking-wide" style={{ color: C.muted }}>{c.l}</small>
+                                  <b className="text-[15px] sm:text-base" style={{ color: c.m ? C.ok : undefined }}>{usd(c.v)}</b>
+                                </div>
+                              ))}
+                            </div>
+                          </label>
+                        )
+                      })}
                     </div>
-                    <span className="font-semibold text-sm" style={{ color: active ? C.dorado : isDone ? C.success : C.textoMedio }}>{label}</span>
-                  </motion.div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                {step === 1 && (
-                  <motion.div variants={stagger} initial="initial" animate="animate" className="space-y-8">
-                    {!type ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {[{ key: 'prepago', title: 'eSIM Prepago', desc: '28 días desde activación' }, { key: 'dataonly', title: 'eSIM DataOnly', desc: '60 días para activar' }].map(({ key, title, desc }) => (
-                          <motion.button key={key} variants={fadeIn} whileHover={{ scale: 1.02 }} onClick={() => { setType(key); setTariffId(null) }} className="p-8 rounded-2xl text-left transition-all" style={{ background: `rgba(201,151,58,0.05)`, border: `2px solid ${C.dorado}` }}>
-                            <h3 className="text-2xl font-black mb-2" style={{ color: C.navyProfundo }}>{title}</h3>
-                            <p className="text-sm" style={{ color: C.textoMedio }}>{desc}</p>
-                          </motion.button>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="space-y-6">
-                        <div className="flex justify-between items-center">
-                          <h3 className="text-xl font-bold" style={{ color: C.navyProfundo }}>Tarifas Disponibles</h3>
-                          <motion.button whileHover={{ scale: 1.1 }} onClick={() => { setType(null); setTariffId(null) }} className="text-sm font-semibold" style={{ color: C.dorado }}>Cambiar</motion.button>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {tariffs.filter(t => t.type === type).map((t, idx) => {
-                            const tpvp = pricing.find(p => p.tariff_id === t.id)?.pvp || 0
-                            const thasPricing = tpvp > 0
-                            const maxGb = Math.max(...tariffs.map(t => t.data_gb))
-                            const dataPercent = (t.data_gb / maxGb) * 100
-                            return (
-                              <motion.button key={t.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} whileHover={thasPricing ? { scale: 1.02 } : {}} onClick={() => thasPricing && setTariffId(t.id)} disabled={!thasPricing} className="p-4 rounded-xl text-left transition-all" style={{ background: tariffId === t.id ? `rgba(201,151,58,0.15)` : C.crema, border: `2px solid ${tariffId === t.id ? C.dorado : C.cremaOscuro}`, opacity: thasPricing ? 1 : 0.5 }}>
-                                <div className="flex justify-between items-start mb-3">
-                                  <div>
-                                    <h4 className="text-base font-black" style={{ color: C.navyProfundo }}>{t.name}</h4>
-                                    {t.highlight && <span className="inline-block mt-1 px-2 py-0.5 bg-yellow-600 text-white text-xs font-bold rounded" style={{ background: C.dorado }}>MÁS ELEGIDO</span>}
-                                  </div>
-                                  {thasPricing && <div className="text-right"><div className="text-2xl font-black" style={{ color: C.dorado, fontFamily: 'DM Serif, serif' }}>${tpvp}</div></div>}
-                                </div>
-                                <div className="space-y-2">
-                                  <div>
-                                    <div className="flex justify-between mb-1 text-xs"><span className="font-semibold" style={{ color: C.navyProfundo }}>{t.data_gb}GB</span><span style={{ color: C.textoBajo }}>{Math.round(dataPercent)}%</span></div>
-                                    <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: C.cremaOscuro }}><motion.div initial={{ width: 0 }} animate={{ width: `${dataPercent}%` }} transition={{ delay: idx * 0.1 + 0.3, duration: 0.6 }} style={{ background: `linear-gradient(90deg, ${C.dorado}, ${C.doradoClaro})`, height: '100%' }} /></div>
-                                  </div>
-                                  <div className="text-xs pt-1 border-t" style={{ borderColor: C.cremaOscuro, color: C.textoBajo }}>{t.badge} · {t.validity_days}d</div>
-                                </div>
-                                {!thasPricing && <div className="mt-3 text-xs font-semibold" style={{ color: C.error }}>Sin precio</div>}
-                              </motion.button>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )}
-                    <motion.button whileHover={{ scale: step1Valid ? 1.02 : 1 }} whileTap={step1Valid ? { scale: 0.95 } : {}} onClick={() => setStep(2)} disabled={!step1Valid} className="w-full py-4 rounded-xl font-bold text-lg transition-all" style={{ background: step1Valid ? C.dorado : C.cremaOscuro, color: step1Valid ? 'white' : C.textoBajo }}>Continuar →</motion.button>
-                  </motion.div>
-                )}
-
-                {step === 2 && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {[{ key: 'nombre', label: 'Nombre' }, { key: 'apellidos', label: 'Apellidos' }, { key: 'pasaporte', label: 'Pasaporte' }, { key: 'nac', label: 'Nacionalidad', type: 'select' }, { key: 'dob', label: 'F. Nacimiento', type: 'date', full: true }, { key: 'email', label: 'Email', type: 'email', full: true }].map(({ key, label, type, full }) => (
-                        <div key={key} className={full ? 'md:col-span-2' : ''}>
-                          <label className="block text-xs font-bold mb-2 uppercase" style={{ color: C.textoMedio }}>{label}</label>
-                          {type === 'select' ? (
-                            <select value={(form as any)[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className="w-full px-4 py-3 rounded-lg text-white focus:outline-none transition-colors" style={{ background: C.cremaOscuro, border: `1px solid ${C.cremaOscuro}`, color: C.textoOscuro }}>
-                              {['Argentina', 'Uruguay', 'Chile', 'Brasil', 'Paraguay', 'Bolivia', 'Colombia', 'Venezuela', 'Perú', 'Otra'].map(n => <option key={n}>{n}</option>)}
-                            </select>
-                          ) : (
-                            <input type={type || 'text'} value={(form as any)[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} onBlur={() => touch(key)} max={key === 'dob' ? maxDobStr() : undefined} className="w-full px-4 py-3 rounded-lg text-white focus:outline-none transition-colors" style={{ background: C.cremaOscuro, border: `1px solid ${touched[key] && (errors as any)[key] ? C.error : C.cremaOscuro}`, color: C.textoOscuro }} />
-                          )}
-                          {touched[key] && (errors as any)[key] && <p className="text-xs mt-1" style={{ color: C.error }}>{(errors as any)[key]}</p>}
-                        </div>
+            {/* 2. Cliente */}
+            <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>2</span>
+                <h2 className="text-base font-extrabold m-0">Cliente</h2>
+                <span className="ml-auto text-[13px]" style={{ color: C.muted }}><span style={{ color: C.bad }}>*</span> obligatorio</span>
+              </div>
+              <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
+                {field({ id: 'nombre', label: 'Nombre', ac: 'given-name', refEl: firstField })}
+                {field({ id: 'apellido', label: 'Apellido', ac: 'family-name' })}
+                {field({ id: 'pasaporte', label: 'Pasaporte' })}
+                <div className="flex flex-col gap-1 min-w-0">
+                  <label htmlFor="f-nac" className="text-[13px] font-bold">Nacionalidad</label>
+                  <select id="f-nac" value={form.nac} onChange={e => set('nac', e.target.value)} style={{ ...inputStyle('nac'), border: `1.5px solid ${C.line2}` }}>
+                    {NATIONALITIES.map(n => <option key={n}>{n}</option>)}
+                  </select>
+                </div>
+                {field({ id: 'dob', label: 'Fecha de nacimiento', type: 'date', max: maxDob() })}
+                {field({ id: 'email', label: 'Email del cliente (recibe el QR)', type: 'email', ac: 'email', inputMode: 'email' })}
+                {isDataOnly ? (
+                  <p className="sm:col-span-2 text-[13px] m-0" style={{ color: C.muted }}>eSIM DataOnly: el cliente activa el QR cuando quiera, dentro de 60 días.</p>
+                ) : (
+                  <div className="sm:col-span-2 flex flex-col gap-2">
+                    <span className="text-[13px] font-bold" id="when-label">Activación</span>
+                    <div role="radiogroup" aria-labelledby="when-label" className="flex gap-2">
+                      {([['now', 'Lo antes posible'], ['later', 'Programar fecha']] as const).map(([v, l]) => (
+                        <label key={v} className="flex-1 relative flex items-center justify-center min-h-[48px] rounded-xl font-bold text-center px-2 cursor-pointer has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2"
+                          style={{ border: `1.5px solid ${form.when === v ? C.navy : C.line2}`, background: form.when === v ? C.navy : '#fff', color: form.when === v ? '#FAF7F2' : C.muted, outlineColor: C.navy2 }}>
+                          <input type="radio" name="when" value={v} checked={form.when === v} onChange={() => set('when', v)} className="absolute opacity-0 w-px h-px" />
+                          {l}
+                        </label>
                       ))}
                     </div>
-
-                    {type === 'prepago' && (
-                      <div className="space-y-4 pt-6" style={{ borderTop: `1px solid ${C.cremaOscuro}` }}>
-                        <h4 className="text-lg font-bold" style={{ color: C.navyProfundo }}>Activación</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                          {[{ key: false, label: 'Hoy' }, { key: true, label: 'Programar' }].map(({ key, label }) => (
-                            <motion.button key={String(key)} whileHover={{ scale: 1.02 }} onClick={() => { setScheduled(key as boolean); setForm(f => ({ ...f, date: '' })) }} className="p-3 rounded-lg border-2 transition-all" style={{ background: scheduled === key ? `rgba(201,151,58,0.1)` : C.crema, borderColor: scheduled === key ? C.dorado : C.cremaOscuro }}>
-                              <div className="font-bold" style={{ color: scheduled === key ? C.dorado : C.textoMedio }}>{label}</div>
-                            </motion.button>
-                          ))}
-                        </div>
-                        {scheduled && (
-                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                            <label className="block text-xs font-bold mb-2 uppercase" style={{ color: C.textoMedio }}>Fecha</label>
-                            <input type="date" min={todayStr()} max={maxDateStr()} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} onBlur={() => touch('date')} className="w-full px-4 py-3 rounded-lg focus:outline-none transition-colors" style={{ background: C.cremaOscuro, border: `1px solid ${C.cremaOscuro}`, color: C.textoOscuro }} />
-                            {touched.date && errors.date && <p className="text-xs mt-1" style={{ color: C.error }}>{errors.date}</p>}
-                          </motion.div>
-                        )}
-                      </div>
-                    )}
-
-                    <motion.button whileHover={{ scale: step2Valid ? 1.02 : 1 }} onClick={() => setStep(3)} disabled={!step2Valid} className="w-full py-4 rounded-xl font-bold text-lg transition-all" style={{ background: step2Valid ? C.dorado : C.cremaOscuro, color: step2Valid ? 'white' : C.textoBajo }}>Revisar →</motion.button>
-                  </motion.div>
-                )}
-
-                {step === 3 && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                    <div className="p-6 rounded-2xl" style={{ background: `rgba(201,151,58,0.05)`, border: `2px solid ${C.dorado}` }}>
-                      <h4 className="text-sm font-bold uppercase mb-4" style={{ color: C.textoMedio }}>Plan</h4>
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <div className="text-2xl font-black" style={{ color: C.navyProfundo, fontFamily: 'DM Serif, serif' }}>{tariff?.name}</div>
-                          <div className="text-sm mt-1" style={{ color: C.textoMedio }}>{tariff?.data_gb}GB · {tariff?.validity_days}d</div>
-                        </div>
-                        <div className="text-3xl font-black" style={{ color: C.dorado, fontFamily: 'DM Serif, serif' }}>${pvp}</div>
-                      </div>
-                    </div>
-
-                    <div className="p-6 rounded-2xl" style={{ background: C.crema, border: `2px solid ${C.cremaOscuro}` }}>
-                      <h4 className="text-sm font-bold uppercase mb-4" style={{ color: C.textoMedio }}>Cliente</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between"><span style={{ color: C.textoMedio }}>Nombre</span><span style={{ color: C.navyProfundo, fontWeight: 'bold' }}>{form.nombre} {form.apellidos}</span></div>
-                        <div className="flex justify-between"><span style={{ color: C.textoMedio }}>Email</span><span style={{ color: C.navyProfundo, fontWeight: 'bold' }}>{form.email}</span></div>
-                      </div>
-                    </div>
-
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} onClick={handleSubmit} disabled={loading} className="w-full py-4 rounded-xl font-bold text-lg transition-all" style={{ background: loading ? C.cremaOscuro : C.dorado, color: 'white' }}>
-                      {loading ? 'Procesando...' : 'Crear Pedido'}
-                    </motion.button>
-                  </motion.div>
-                )}
-              </div>
-
-              {step > 0 && (
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-1">
-                  <div className="sticky top-8 p-6 rounded-2xl" style={{ background: `rgba(201,151,58,0.1)`, border: `2px solid ${C.dorado}` }}>
-                    <h4 className="text-sm font-bold uppercase mb-6" style={{ color: C.textoMedio }}>Resumen</h4>
-                    <div className="space-y-3 pb-6" style={{ borderBottom: `1px solid ${C.cremaOscuro}` }}>
-                      <div className="flex justify-between text-sm"><span style={{ color: C.textoMedio }}>Tarifa</span><span style={{ color: C.navyProfundo, fontWeight: 'bold' }}>{tariff?.name}</span></div>
-                      <div className="flex justify-between text-sm"><span style={{ color: C.textoMedio }}>GB</span><span style={{ color: C.navyProfundo, fontWeight: 'bold' }}>{tariff?.data_gb}GB</span></div>
-                    </div>
-                    <div className="py-6">
-                      <div className="flex justify-between text-2xl font-black"><span style={{ color: C.navyProfundo }}>Total</span><span style={{ color: C.dorado }}>${pvp}</span></div>
-                    </div>
-                    {step < 3 && <div className="text-xs" style={{ color: C.textoMedio }}>Paso {step}/3</div>}
                   </div>
-                </motion.div>
+                )}
+                {scheduled && field({ id: 'fecha', label: 'Fecha de activación', type: 'date', full: true })}
+              </div>
+            </section>
+          </div>
+
+          {/* 3. Resumen */}
+          <aside aria-label="Resumen de la venta" className="lg:sticky lg:top-[72px]">
+            <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>3</span>
+                <h2 className="text-base font-extrabold m-0">Resumen</h2>
+              </div>
+              {lastSale && (
+                <div role="status" className="rounded-xl p-3 mb-3 text-sm" style={{ background: '#E4F4EC', color: C.ok }}>
+                  <b className="block">Venta {lastSale.ref} registrada</b>
+                  {prepaid ? `Se descontaron ${usd(lastSale.cost)}. ` : ''}Puedes cancelarla mientras esté pendiente.
+                </div>
               )}
+              {error && <div role="alert" className="rounded-xl p-3 mb-3 text-sm" style={{ background: '#FDE9E7', color: C.bad }}>{error}</div>}
+              <div className="flex justify-between text-[13px] font-bold"><span>Datos completos</span><span className="tabular-nums">{done} de {totalFields}</span></div>
+              <div className="h-1.5 rounded-full my-1 mb-3 overflow-hidden" style={{ background: '#F1ECE2' }} aria-hidden>
+                <div className="h-full transition-[width] duration-200" style={{ width: `${Math.round(done / totalFields * 100)}%`, background: C.gold }} />
+              </div>
+              {tariff && (
+                <div className="text-sm tabular-nums">
+                  <div className="flex justify-between py-1.5"><span style={{ color: C.muted }}>{tariff.name}</span><b>{tariff.data_gb} GB</b></div>
+                  <div className="flex justify-between py-1.5"><span style={{ color: C.muted }}>Tu PVP al cliente</span><b>{usd(pvp)}</b></div>
+                  <div className="flex justify-between py-1.5"><span style={{ color: C.muted }}>Tu margen</span><b style={{ color: C.ok }}>{usd(pvp - cost)}</b></div>
+                  <div className="rounded-xl px-3.5 py-2 my-3" style={{ background: '#F1ECE2' }}>
+                    {prepaid ? (
+                      <>
+                        <div className="flex justify-between py-1"><span style={{ color: C.muted }}>Saldo actual</span><b>{usd(balance)}</b></div>
+                        <div className="flex justify-between py-1"><span style={{ color: C.muted }}>Se descuenta</span><b>{usd(-cost)}</b></div>
+                        <div className="flex justify-between items-baseline pt-2 mt-1 font-extrabold" style={{ borderTop: `1px solid ${C.line2}` }}>
+                          <span>Saldo después</span>
+                          <b className="text-2xl" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: balance - cost < 0 ? C.bad : undefined }}>{usd(balance - cost)}</b>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex justify-between py-1"><span style={{ color: C.muted }}>Tu precio</span><b>{usd(cost)}</b></div>
+                        <p className="text-xs m-0" style={{ color: C.muted }}>Se factura a fin de mes.</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+              {showMissing && <p className="text-[13px] m-0 mb-3" style={{ color: C.muted }}>{showMissing}</p>}
+              <button type="button" onClick={sell} disabled={!ready} className="hidden lg:flex w-full min-h-[56px] rounded-xl font-extrabold text-[17px] items-center justify-center gap-2 transition disabled:cursor-not-allowed"
+                style={{ background: ready ? C.gold : '#F1ECE2', color: ready ? C.navy : '#7A8699', border: 0 }}>
+                {busy ? 'Vendiendo…' : `Vender eSIM${prepaid ? ` · ${usd(cost)}` : ''}`}
+              </button>
+              <p className="hidden lg:block text-xs text-center mt-2 mb-0" style={{ color: C.muted }}>Enter en cualquier campo también vende cuando todo está completo.</p>
+            </section>
+          </aside>
+        </div>
+      )}
+
+      {/* Barra fija en móvil */}
+      {available.length > 0 && (
+        <div className="lg:hidden fixed left-0 right-0 bottom-0 z-40 flex items-center gap-3 bg-white px-4 pt-2.5" style={{ borderTop: `1px solid ${C.line2}`, paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))' }}>
+          <div className="text-xs leading-tight" style={{ color: C.muted }}>{prepaid ? 'Se descuenta' : 'Tu precio'}<b className="block text-2xl font-normal" style={{ fontFamily: FONT_DISPLAY, color: '#1B2433' }}>{usd(cost)}</b></div>
+          <button type="button" onClick={sell} disabled={!ready} className="flex-1 min-h-[52px] rounded-xl font-extrabold text-base disabled:cursor-not-allowed"
+            style={{ background: ready ? C.gold : '#F1ECE2', color: ready ? C.navy : '#7A8699', border: 0 }}>{busy ? 'Vendiendo…' : 'Vender eSIM'}</button>
+        </div>
+      )}
+
+      {/* Ventas recientes (con cancelar) */}
+      {recent.length > 0 && (
+        <section>
+          <div className="flex items-baseline gap-3 mb-2">
+            <h2 className="text-lg m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400 }}>Últimas ventas</h2>
+            <p className="m-0 text-[13px]" style={{ color: C.muted }}>Puedes cancelar mientras el pedido esté pendiente.</p>
+          </div>
+          <div className="overflow-x-auto bg-white rounded-2xl" style={{ border: `1px solid ${C.line}` }}>
+            <table className="w-full border-collapse" style={{ minWidth: 760 }}>
+              <thead>
+                <tr style={{ background: '#F1ECE2' }}>
+                  {['Pedido', 'Cliente', 'Plan', 'Tu precio', 'Tu PVP', 'Estado', 'Acción'].map((h, i) => (
+                    <th key={h} className={`px-3 py-2.5 text-xs uppercase tracking-wide font-bold ${i === 3 || i === 4 ? 'text-right' : 'text-left'}`} style={{ color: C.muted }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {recent.map(o => {
+                  const st = ORDER_STATUS_LABELS[o.status] ?? ORDER_STATUS_LABELS.pending_review
+                  return (
+                    <tr key={o.id} style={{ borderTop: `1px solid ${C.line}` }}>
+                      <td className="px-3 py-2.5"><span className="font-mono text-[13px] font-semibold">{o.order_ref}</span><span className="block text-xs" style={{ color: C.muted }} suppressHydrationWarning>{new Date(o.created_at).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</span></td>
+                      <td className="px-3 py-2.5">{o.customer_name} {o.customer_lastname}</td>
+                      <td className="px-3 py-2.5">{o.tariffs?.name}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums">{usd(o.cost_at_time)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums">{usd(o.pvp_at_time)}</td>
+                      <td className="px-3 py-2.5"><span className="text-xs font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap" style={{ background: st.bg, color: st.color }}>{st.label}</span></td>
+                      <td className="px-3 py-2.5">
+                        <CancelOrderButton orderId={o.id} orderRef={o.order_ref} status={o.status} customer={`${o.customer_name} ${o.customer_lastname}`}
+                          tariffName={o.tariffs?.name ?? ''} refundAmount={prepaid ? Number(o.cost_at_time) : null}
+                          onCancelled={b => { if (b != null) setBalance(b) }} />
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Aviso previo: saldo insuficiente */}
+      {noFunds && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: 'rgba(6,12,24,0.6)' }} onClick={e => { if (e.target === e.currentTarget) setNoFunds(null) }}
+          onKeyDown={e => { if (e.key === 'Escape') setNoFunds(null) }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="nf-title" className="bg-white rounded-2xl p-6 w-full max-w-[460px] flex flex-col gap-4 shadow-2xl">
+            <h3 id="nf-title" className="text-2xl m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy }}>Saldo insuficiente</h3>
+            <div className="rounded-xl p-3 text-sm" style={{ background: '#FDE9E7', color: C.bad }}>
+              <b className="block">No puedes iniciar esta venta</b>
+              El {noFunds.name} cuesta {usd(noFunds.cost)} y tu saldo es {usd(balance)}. Faltan {usd(Math.max(noFunds.cost - balance, 0))}.
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <p className="text-sm m-0" style={{ color: C.muted }}>Transfiere a RUTA34 y envía la referencia de pago a tu ejecutivo. El saldo aparece aquí en cuanto se confirme el depósito.</p>
+            <div className="flex justify-end gap-2 flex-wrap">
+              <button type="button" autoFocus onClick={() => setNoFunds(null)} className="min-h-[44px] px-4 rounded-lg font-bold text-white" style={{ background: C.navy }}>Entendido</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

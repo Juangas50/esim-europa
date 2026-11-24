@@ -37,6 +37,10 @@ export default async function PedidosAdminPage() {
     .select(`*, tariffs(name, type)`)
     .order('created_at', { ascending: false })
 
+  // Costo interno de Vodafone congelado por venta (solo admin). Tolerante si la tabla aún no existe.
+  const { data: internalCosts } = await supabase.from('order_internal_costs').select('order_id, vodafone_cost_usd')
+  const vodafoneCost = new Map<string, number>((internalCosts ?? []).map(c => [c.order_id as string, Number(c.vodafone_cost_usd)]))
+
   // ── Normalizar B2B (siempre individuales, group_count = 1) ────────────────
   const normalised_b2b: UnifiedOrder[] = (b2bOrders ?? []).map(o => ({
     id:                   o.id,
@@ -52,6 +56,7 @@ export default async function PedidosAdminPage() {
     activation_date:      o.activation_date ?? null,
     pvp_at_time:          o.pvp_at_time ?? 0,
     cost_at_time:         o.cost_at_time ?? null,
+    vodafone_cost:        vodafoneCost.get(o.id) ?? null,
     created_at:           o.created_at,
     agencies:             o.agencies ?? null,
     users:                o.users ?? null,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail, resendGroupOrders } from './actions'
+import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail, resendGroupOrders, startManagement, voidOrder } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
 import { toast } from '@/lib/toast'
 
@@ -29,6 +29,8 @@ export type UnifiedOrder = {
   activation_date: string | null
   pvp_at_time: number
   cost_at_time: number | null
+  // Costo interno de Vodafone (solo admin). null = tarifa sin costo configurado
+  vodafone_cost?: number | null
   created_at: string
   agencies: { name: string } | null
   users: { full_name: string } | null
@@ -58,6 +60,7 @@ const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente revisión', color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
   paid:           { label: '⚡ Tramitar',         color: '#C9973A', bg: 'rgba(230,0,0,0.18)'   },
   scheduled:      { label: 'Programado',          color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
+  in_management: { label: 'En gestión',          color: '#3B82F6', bg: 'rgba(59,130,246,0.15)' },
   qr_sent:        { label: 'QR Enviado',           color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',             color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   expired:        { label: 'Expirado',             color: '#64748B', bg: 'rgba(122,122,122,0.15)' },
@@ -77,18 +80,18 @@ const STATUS_FILTERS = [
 ]
 
 function isTramitar(status: string) {
-  return status === 'paid' || status === 'pending_review'
+  return status === 'paid' || status === 'pending_review' || status === 'in_management'
 }
 
 // b2c_orders y orders tienen CHECK constraints de status distintos en la DB —
 // el dropdown debe ofrecer/enviar el valor crudo real de cada tabla, no el
 // status "unificado" que se usa solo para mostrar (ver mapB2CStatus en page.tsx).
 const STATUS_OPTIONS_B2B = [
-  { value: 'pending_review', label: 'Pendiente revisión' },
-  { value: 'scheduled',      label: 'Programado' },
-  { value: 'qr_sent',        label: 'QR enviado' },
-  { value: 'activated',      label: 'Activado' },
-  { value: 'cancelled',      label: 'Cancelar' },
+  // Pasar a "en gestión" bloquea la cancelación de la agencia; "Anular" devuelve el saldo y exige motivo.
+  { value: 'in_management', label: 'Empezar a gestionar' },
+  { value: 'qr_sent',       label: 'QR enviado' },
+  { value: 'activated',     label: 'Activado' },
+  { value: 'void',          label: 'Anular pedido…' },
 ]
 const STATUS_OPTIONS_B2C = [
   { value: 'paid',       label: 'Pagado' },
@@ -125,6 +128,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   const [search, setSearch]         = useState('')
   const [selected, setSelected]     = useState<UnifiedOrder | null>(null)
   const [updating, setUpdating]     = useState<string | null>(null)
+  const [voidTarget, setVoidTarget] = useState<UnifiedOrder | null>(null)
+  const [voidReason, setVoidReason] = useState('')
+  const [voiding, setVoiding]       = useState(false)
   const [isMobile, setIsMobile]     = useState(false)
 
   useEffect(() => {
@@ -253,7 +259,35 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     return true
   })
 
+  async function handleVoid() {
+    if (!voidTarget) return
+    setVoiding(true)
+    const r = await voidOrder(voidTarget.id, voidReason)
+    setVoiding(false)
+    if (!r.ok) { toast(r.error, 'error'); return }
+    const id = voidTarget.id
+    setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'cancelled' } : o))
+    setSelected(prev => (prev && prev.id === id) ? null : prev)
+    setVoidTarget(null); setVoidReason('')
+    toast(r.refunded ? 'Pedido anulado. Se devolvió el saldo a la agencia.' : 'Pedido anulado.')
+  }
+
   async function handleStatus(orderId: string, status: string, source: 'b2b' | 'b2c') {
+    if (source === 'b2b' && status === 'void') {
+      const target = orders.find(o => o.id === orderId) ?? null
+      setVoidTarget(target); setVoidReason('')
+      return
+    }
+    if (source === 'b2b' && status === 'in_management') {
+      setUpdating(orderId)
+      const r = await startManagement(orderId)
+      setUpdating(null)
+      if (!r.ok) { toast(r.error, 'error'); return }
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'in_management' } : o))
+      setSelected(prev => (prev && prev.id === orderId) ? { ...prev, status: 'in_management' } : prev)
+      toast('En gestión. La agencia ya no puede cancelar este pedido.')
+      return
+    }
     setUpdating(orderId)
     const result = await updateOrderStatus(orderId, status, source)
     if (result.error) {
@@ -589,8 +623,12 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               { label: 'Email',         value: selected.customer_email, icon: '✉️' },
               { label: 'F. compra',     value: new Date(selected.created_at).toLocaleDateString('es-AR'), icon: '📅' },
               { label: 'F. activación', value: selected.activation_date ?? 'Inmediata', icon: '⏰' },
-              { label: 'PVP',           value: `US$${selected.pvp_at_time.toFixed(2)}`, icon: '💵' },
-              ...(selected.cost_at_time != null ? [{ label: 'Coste', value: `US$${selected.cost_at_time.toFixed(2)}`, icon: '💰' }] : []),
+              { label: selected.source === 'b2b' ? 'PVP agencia' : 'PVP', value: `US$${selected.pvp_at_time.toFixed(2)}`, icon: '💵' },
+              ...(selected.cost_at_time != null ? [{ label: selected.source === 'b2b' ? 'Precio acordado' : 'Coste', value: `US$${selected.cost_at_time.toFixed(2)}`, icon: '💰' }] : []),
+              ...(selected.source === 'b2b' ? [
+                { label: 'Costo Vodafone', value: selected.vodafone_cost != null ? `US$${selected.vodafone_cost.toFixed(2)}` : 'Sin costo configurado en la tarifa', icon: '📡' },
+                ...(selected.vodafone_cost != null && selected.cost_at_time != null ? [{ label: 'Margen RUTA34', value: `US$${(selected.cost_at_time - selected.vodafone_cost).toFixed(2)}`, icon: '📈' }] : []),
+              ] : []),
             ] as { label: string; value: string | null | undefined; icon?: string; href?: string }[]).map(r => (
               <div key={r.label} style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 16, paddingBottom: 14, borderBottom: '1px solid #EDE8E0', alignItems: 'center' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2F4E' }}>{r.icon} {r.label}</span>
@@ -677,7 +715,7 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
             )}
 
             {/* ── Formulario entrega eSIM — permite entrega en estados "tramitar" ──── */}
-            {(selected.status === 'pending_review' || selected.status === 'paid' || selected.status === 'scheduled') && (
+            {(selected.status === 'pending_review' || selected.status === 'paid' || selected.status === 'scheduled' || selected.status === 'in_management') && (
               <div style={{ borderTop: '1px solid #2D4A72', paddingTop: 16, marginTop: 16 }}>
                 <div style={{ fontSize: 11, color: '#C9973A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
                   ⚡ {selected.group_count > 1 ? `Entregar ${selected.group_count} eSIMs` : 'Entregar eSIM'}
@@ -874,6 +912,29 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
               <button onClick={() => executeDeliver()}
                 style={{ padding: '10px 20px', borderRadius: 8, border: 'none', background: '#C9973A', color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'inherit' }}>
                 Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Anulación excepcional: motivo obligatorio, devuelve el saldo a la agencia */}
+      {voidTarget && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 80, background: 'rgba(6,12,24,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="void-title" style={{ background: '#fff', borderRadius: 16, maxWidth: 480, width: '100%', padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <h3 id="void-title" style={{ margin: 0, fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, fontSize: 24, color: '#1B2F4E' }}>Anular pedido</h3>
+            <div style={{ fontSize: 13, color: '#64748B' }}>{voidTarget.order_ref} · {voidTarget.agencies?.name} · {voidTarget.tariffs?.name}</div>
+            <div role="alert" style={{ background: 'rgba(180,35,24,0.08)', color: '#B42318', borderRadius: 10, padding: '10px 12px', fontSize: 13 }}>
+              <strong>Excepción.</strong> {voidTarget.cost_at_time != null ? `Si la agencia es prepago se devolverán US$${voidTarget.cost_at_time.toFixed(2)} a su wallet, ` : ''}incluso con el QR ya enviado. El motivo queda registrado.
+            </div>
+            <label style={{ fontSize: 12, fontWeight: 700, color: '#64748B' }}>Motivo (obligatorio, mínimo 10 caracteres)
+              <input autoFocus value={voidReason} onChange={e => setVoidReason(e.target.value)} placeholder="Ej.: error de la línea confirmado con Vodafone"
+                style={{ display: 'block', marginTop: 4, width: '100%', boxSizing: 'border-box', minHeight: 44, padding: '10px 12px', border: '1.5px solid #CFC5B2', borderRadius: 8, fontSize: 14, fontFamily: 'inherit' }} />
+            </label>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+              <button disabled={voiding} onClick={() => setVoidTarget(null)} style={{ minHeight: 44, padding: '0 16px', borderRadius: 8, border: '1.5px solid #CFC5B2', background: 'transparent', cursor: 'pointer', fontWeight: 700, fontFamily: 'inherit' }}>Volver</button>
+              <button disabled={voiding || voidReason.trim().length < 10} onClick={handleVoid} style={{ minHeight: 44, padding: '0 16px', borderRadius: 8, border: 'none', background: '#B42318', color: '#fff', cursor: 'pointer', fontWeight: 700, fontFamily: 'inherit', opacity: (voiding || voidReason.trim().length < 10) ? 0.5 : 1 }}>
+                {voiding ? 'Anulando…' : 'Anular y devolver saldo'}
               </button>
             </div>
           </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createAgency, updateAgency, toggleAgencyActive, savePricing, getPricing, getAgencyOrders } from './actions'
 import { toast } from '@/lib/toast'
+import WalletPanel from './WalletPanel'
 
 type Agency = { id: string; name: string; email: string; active: boolean }
 type Tariff = { id: string; name: string; type: string; data_gb: number; validity_days: number | null; badge: string }
@@ -13,6 +14,7 @@ const inp = { background: '#ffffff', border: '1px solid #E2E8F0', borderRadius: 
 const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
   pending_review: { label: 'Pendiente',  color: '#F59E0B', bg: 'rgba(245,158,11,0.15)' },
   scheduled:      { label: 'Programado', color: '#C9973A', bg: 'rgba(110,193,228,0.15)' },
+  in_management:  { label: 'En gestión', color: '#3B82F6', bg: 'rgba(59,130,246,0.15)' },
   qr_sent:        { label: 'QR Enviado', color: '#A78BFA', bg: 'rgba(167,139,250,0.15)' },
   activated:      { label: 'Activado',   color: '#22C55E', bg: 'rgba(34,197,94,0.15)'  },
   cancelled:      { label: 'Cancelado',  color: '#64748B', bg: 'rgba(122,122,122,0.15)' },
@@ -172,6 +174,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
       <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #2D4A72', marginBottom: 22 }}>
         {[
           { id: 'precios', label: '💰 Precios' },
+          { id: 'wallet', label: '💳 Wallet' },
           { id: 'pedidos', label: `📦 Pedidos (${orders.length})` },
         ].map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: '10px 18px', background: 'none', border: 'none', borderBottom: `2px solid ${tab === t.id ? '#C9973A' : 'transparent'}`, color: tab === t.id ? '#fff' : '#64748B', fontWeight: tab === t.id ? 700 : 400, fontSize: 13, cursor: 'pointer', fontFamily: 'inherit', marginBottom: -1 }}>
@@ -180,11 +183,13 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
         ))}
       </div>
 
+      {tab === 'wallet' && managing && <WalletPanel key={managing.id} agencyId={managing.id} />}
+
       {/* TAB PRECIOS */}
       {tab === 'precios' && (
         <div>
           <p style={{ color: '#64748B', fontSize: 13, marginBottom: 18 }}>
-            Configurá el <strong style={{ color: '#1B2F4E' }}>precio coste</strong> (lo que facturamos) y el <strong style={{ color: '#1B2F4E' }}>PVP que ve la agencia</strong>. Se guarda automáticamente al salir del campo.
+            Configurá el <strong style={{ color: '#1B2F4E' }}>precio acordado</strong> (lo que se descuenta del wallet o se factura a la agencia) y el <strong style={{ color: '#1B2F4E' }}>PVP de la agencia</strong>. El costo de Vodafone se configura en Tarifas y la agencia nunca lo ve. Se guarda automáticamente al salir del campo.
           </p>
           {['prepago', 'dataonly'].map(type => (
             <div key={type}>
@@ -202,7 +207,7 @@ export default function AgenciasClient({ agencies: initial, tariffs }: { agencie
                       <div style={{ fontSize: 12, color: '#64748B', marginTop: 2 }}>{t.data_gb} GB{t.validity_days ? ` · ${t.validity_days} días` : ''}</div>
                     </div>
                     <div className="flex flex-wrap gap-4 items-end">
-                      <PriceInput label="Precio coste" defaultValue={cost} onSave={val => handleSavePrice(t.id, val, pvp)} />
+                      <PriceInput label="Precio acordado" defaultValue={cost} onSave={val => handleSavePrice(t.id, val, pvp)} />
                       <PriceInput label="PVP que ve la agencia" defaultValue={pvp} onSave={val => handleSavePrice(t.id, cost, val)} />
                       <div style={{ textAlign: 'center', minWidth: 56 }}>
                         <div style={{ fontSize: 10, color: '#64748B', fontWeight: 700, textTransform: 'uppercase', marginBottom: 5 }}>Margen</div>

@@ -4,18 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWindowSize } from '@/hooks/useWindowSize'
 import { motion } from 'framer-motion'
+import CancelOrderButton from '@/components/partner/CancelOrderButton'
+import { ORDER_STATUS_LABELS, usd } from '@/lib/wallet'
 
 const EASE_OUT: [number, number, number, number] = [0.23, 1, 0.32, 1]
 
-const STATUSES: Record<string, { label: string; color: string; bg: string }> = {
-  pending_review: { label: 'Pendiente revisión', color: '#C9973A', bg: 'rgba(201,151,58,0.1)' },
-  scheduled:      { label: 'Programado',         color: '#C9973A', bg: 'rgba(201,151,58,0.1)' },
-  qr_sent:        { label: 'QR Enviado',         color: '#059669', bg: 'rgba(5,150,105,0.1)'  },
-  activated:      { label: 'Activado',           color: '#059669', bg: 'rgba(5,150,105,0.1)'  },
-  cancelled:      { label: 'Cancelado',          color: '#64748B', bg: 'rgba(100,116,139,0.1)' },
-}
+const STATUSES = ORDER_STATUS_LABELS
 
-export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
+export default function PedidosPartnerClient({ orders, prepaid }: { orders: any[]; prepaid: boolean }) {
   const router = useRouter()
   const { isMobile } = useWindowSize()
   const [search, setSearch] = useState('')
@@ -85,6 +81,10 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                   </span>
                   {o.activation_date && <span className="text-[#64748B]">{o.activation_date}</span>}
                 </div>
+                <div className="flex justify-between items-center gap-3 mt-3">
+                  <span className="text-xs text-[#566377] tabular-nums">Tu precio {usd(o.cost_at_time)} · PVP {usd(o.pvp_at_time)}</span>
+                  <CancelOrderButton orderId={o.id} orderRef={o.order_ref} status={o.status} customer={`${o.customer_name} ${o.customer_lastname}`} tariffName={o.tariffs?.name ?? ''} refundAmount={prepaid ? Number(o.cost_at_time) : null} />
+                </div>
               </motion.div>
             )
           })}
@@ -100,7 +100,7 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-[#EDE8E0]">
-                {['Ref', 'Cliente', 'Tarifa', 'Tipo', 'Activación', 'Estado'].map(h => (
+                {['Ref', 'Cliente', 'Tarifa', 'Tipo', 'Activación', 'Tu precio', 'Tu PVP', 'Estado', 'Acción'].map(h => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#64748B]">{h}</th>
                 ))}
               </tr>
@@ -128,8 +128,13 @@ export default function PedidosPartnerClient({ orders }: { orders: any[] }) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-[#64748B]">{o.activation_date || 'Cliente activa'}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums">{usd(o.cost_at_time)}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums text-[#64748B]">{usd(o.pvp_at_time)}</td>
                     <td className="px-4 py-3">
                       <span className="text-xs font-bold px-3 py-1 rounded" style={{ background: st.bg, color: st.color }}>{st.label}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <CancelOrderButton orderId={o.id} orderRef={o.order_ref} status={o.status} customer={`${o.customer_name} ${o.customer_lastname}`} tariffName={o.tariffs?.name ?? ''} refundAmount={prepaid ? Number(o.cost_at_time) : null} />
                     </td>
                   </motion.tr>
                 )

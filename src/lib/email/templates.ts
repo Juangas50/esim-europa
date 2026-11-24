@@ -45,6 +45,31 @@ ${premiumFooter()}`
   }
 }
 
+export function emailSaldoBajo(data: {
+  agencyName: string
+  balance: string
+  threshold: string
+}) {
+  return {
+    subject: `Tu saldo RUTA34 está bajo (${data.balance})`,
+    html: `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+${LIGHT_MODE_META}
+${premiumEmailStyles()}
+</head>
+<body style="margin:0;padding:0;background:#FAF7F2;">
+<table role="presentation" width="100%" style="background:#FAF7F2;margin:0;padding:0;border-collapse:collapse;">
+${premiumHeader()}
+<tr><td style="padding:32px 20px;">
+<table role="presentation" class="container" width="100%">
+<tr><td><div class="section" style="text-align:center;"><p class="eyebrow">Saldo bajo</p><p style="font-size:32px;font-weight:900;color:#1B2F4E;margin:0 0 12px;">${data.balance}</p><p class="p">Hola <strong style="color:#1B2F4E;">${data.agencyName}</strong>, el saldo de tu wallet bajó de ${data.threshold}.</p></div></td></tr>
+<tr><td><div class="divider"></div></td></tr>
+<tr><td><div class="section"><p class="p">Para seguir vendiendo eSIM sin interrupciones, recarga tu wallet: realiza la transferencia y envía la referencia de pago a tu ejecutivo RUTA34. El saldo se actualiza apenas confirmemos el depósito, y te emitimos la factura de la recarga.</p></div></td></tr>
+${premiumFooter()}`
+  }
+}
+
 export function emailAvisoClienteProgramado(data: {
   customerName: string
   tariffName: string
