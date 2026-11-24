@@ -1,4 +1,4 @@
--- Pruebas del wallet. Requiere prod_baseline_stub.sql + migraciones 20261124*.
+-- Pruebas del wallet. Requiere auth_stub.sql + baseline_prod.sql + migraciones 20261124000001..3.
 -- Uso: psql -v ON_ERROR_STOP=1 -f supabase/tests/wallet_test.sql  (en una BD de prueba, NUNCA producción)
 drop schema if exists t cascade;
 create schema t;
