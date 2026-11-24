@@ -48,14 +48,14 @@ export default async function WalletPage() {
   return (
     <div className="max-w-[1100px] mx-auto flex flex-col gap-6" style={{ color: '#1B2433' }}>
       <div>
-        <h1 className="text-3xl m-0" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, color: '#1B2F4E' }}>Mi wallet</h1>
+        <h1 className="m-0" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, color: '#1B2F4E', fontSize: 32, lineHeight: 1.15, letterSpacing: 0, textShadow: 'none' }}>Mi wallet</h1>
         <p className="m-0 mt-1 text-sm" style={{ color: '#566377' }}>
           Saldo disponible: <b className="tabular-nums">{usd(Number(wallet?.balance ?? 0))}</b>. Te avisamos por correo cuando baje de {usd(Number(wallet?.low_balance_threshold ?? 100))}.
         </p>
       </div>
 
       <section>
-        <h2 className="text-lg m-0 mb-2" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400 }}>Recargas y facturas</h2>
+        <h2 className="m-0 mb-2" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, fontSize: 20, lineHeight: 1.2, letterSpacing: 0, textShadow: 'none' }}>Recargas y facturas</h2>
         <div className="bg-white rounded-2xl overflow-x-auto" style={{ border: '1px solid #E2DACB' }}>
           <table className="w-full border-collapse" style={{ minWidth: 560 }}>
             <thead><tr style={{ background: '#F1ECE2' }}>
@@ -83,7 +83,7 @@ export default async function WalletPage() {
       </section>
 
       <section>
-        <h2 className="text-lg m-0 mb-2" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400 }}>Movimientos</h2>
+        <h2 className="m-0 mb-2" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, fontSize: 20, lineHeight: 1.2, letterSpacing: 0, textShadow: 'none' }}>Movimientos</h2>
         <div className="bg-white rounded-2xl overflow-x-auto" style={{ border: '1px solid #E2DACB' }}>
           <table className="w-full border-collapse" style={{ minWidth: 640 }}>
             <thead><tr style={{ background: '#F1ECE2' }}>

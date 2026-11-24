@@ -2,8 +2,11 @@
 
 export type BillingModel = 'prepaid' | 'postpaid'
 
-export const usd = (n: number | null | undefined) =>
-  `$${Number(n ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+export const usd = (n: number | null | undefined) => {
+  const v = Number(n ?? 0)
+  const abs = Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return `${v < 0 ? '-' : ''}$${abs}`
+}
 
 // Las funciones SQL lanzan códigos como 'INSUFFICIENT_BALANCE'; PostgREST los devuelve en error.message.
 const MESSAGES: Record<string, string> = {

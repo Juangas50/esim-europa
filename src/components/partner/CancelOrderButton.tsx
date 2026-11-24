@@ -70,7 +70,7 @@ export default function CancelOrderButton({ orderId, orderRef, status, customer,
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: 'rgba(6,12,24,0.6)' }}
           onClick={e => { if (e.target === e.currentTarget && !busy) setOpen(false) }}>
           <div role="dialog" aria-modal="true" aria-labelledby={`cancel-title-${orderId}`} className="bg-white rounded-2xl p-6 w-full max-w-[440px] flex flex-col gap-4 shadow-2xl">
-            <h3 id={`cancel-title-${orderId}`} className="text-2xl m-0" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', color: '#1B2F4E' }}>¿Cancelar este pedido?</h3>
+            <h3 id={`cancel-title-${orderId}`} className="m-0" style={{ fontFamily: 'DM Serif Display, DM Serif, serif', fontWeight: 400, color: '#1B2F4E', fontSize: 24, lineHeight: 1.2, letterSpacing: 0 }}>¿Cancelar este pedido?</h3>
             <p className="text-sm m-0" style={{ color: '#566377' }}>{orderRef} · {customer} · {tariffName}</p>
             <div className="rounded-xl p-3 text-sm" style={{ background: 'rgba(47,80,134,0.1)', color: '#2F5086' }}>
               {refundAmount != null ? <>Se devolverán <b>{usd(refundAmount)}</b> a tu wallet de inmediato.</> : 'El pedido se anula sin cargo.'}

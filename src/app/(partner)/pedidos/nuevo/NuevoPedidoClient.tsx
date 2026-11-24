@@ -132,7 +132,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
   return (
     <div className="max-w-[1240px] mx-auto flex flex-col gap-5 pb-28 lg:pb-6" style={{ fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif", color: '#1B2433' }}>
       <div>
-        <h1 className="text-3xl m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy }}>Vender eSIM</h1>
+        <h1 className="m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy, fontSize: 32, lineHeight: 1.15, letterSpacing: 0, textShadow: 'none' }}>Vender eSIM</h1>
         <p className="m-0 mt-1 text-sm" style={{ color: C.muted }}>
           {prepaid ? <>Saldo disponible: <b className="tabular-nums">{usd(balance)}</b>. Se descuenta al crear el pedido.</> : 'Elige el plan, completa los datos del cliente y vende.'}
         </p>
@@ -155,7 +155,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
             <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>1</span>
-                <h2 className="text-base font-extrabold m-0">Plan</h2>
+                <h2 className="m-0" style={{ fontFamily: 'inherit', fontWeight: 800, fontSize: 16, lineHeight: 1.3, letterSpacing: 0, textShadow: 'none' }}>Plan</h2>
               </div>
               <div role="radiogroup" aria-label="Plan" className="flex flex-col gap-2">
                 {groups.map(g => {
@@ -198,7 +198,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
             <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>2</span>
-                <h2 className="text-base font-extrabold m-0">Cliente</h2>
+                <h2 className="m-0" style={{ fontFamily: 'inherit', fontWeight: 800, fontSize: 16, lineHeight: 1.3, letterSpacing: 0, textShadow: 'none' }}>Cliente</h2>
                 <span className="ml-auto text-[13px]" style={{ color: C.muted }}><span style={{ color: C.bad }}>*</span> obligatorio</span>
               </div>
               <div className="grid gap-x-4 gap-y-3 sm:grid-cols-2">
@@ -239,7 +239,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
             <section className="bg-white rounded-2xl p-4 pb-5" style={{ border: `1px solid ${C.line}` }}>
               <div className="flex items-center gap-2 mb-3">
                 <span className="grid place-items-center w-6 h-6 rounded-full text-[13px] font-bold text-white" style={{ background: C.navy }}>3</span>
-                <h2 className="text-base font-extrabold m-0">Resumen</h2>
+                <h2 className="m-0" style={{ fontFamily: 'inherit', fontWeight: 800, fontSize: 16, lineHeight: 1.3, letterSpacing: 0, textShadow: 'none' }}>Resumen</h2>
               </div>
               {lastSale && (
                 <div role="status" className="rounded-xl p-3 mb-3 text-sm" style={{ background: '#E4F4EC', color: C.ok }}>
@@ -300,7 +300,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
       {recent.length > 0 && (
         <section>
           <div className="flex items-baseline gap-3 mb-2">
-            <h2 className="text-lg m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400 }}>Últimas ventas</h2>
+            <h2 className="m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, fontSize: 20, lineHeight: 1.2, letterSpacing: 0, textShadow: 'none' }}>Últimas ventas</h2>
             <p className="m-0 text-[13px]" style={{ color: C.muted }}>Puedes cancelar mientras el pedido esté pendiente.</p>
           </div>
           <div className="overflow-x-auto bg-white rounded-2xl" style={{ border: `1px solid ${C.line}` }}>
@@ -342,7 +342,7 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" style={{ background: 'rgba(6,12,24,0.6)' }} onClick={e => { if (e.target === e.currentTarget) setNoFunds(null) }}
           onKeyDown={e => { if (e.key === 'Escape') setNoFunds(null) }}>
           <div role="dialog" aria-modal="true" aria-labelledby="nf-title" className="bg-white rounded-2xl p-6 w-full max-w-[460px] flex flex-col gap-4 shadow-2xl">
-            <h3 id="nf-title" className="text-2xl m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy }}>Saldo insuficiente</h3>
+            <h3 id="nf-title" className="m-0" style={{ fontFamily: FONT_DISPLAY, fontWeight: 400, color: C.navy, fontSize: 24, lineHeight: 1.2, letterSpacing: 0 }}>Saldo insuficiente</h3>
             <div className="rounded-xl p-3 text-sm" style={{ background: '#FDE9E7', color: C.bad }}>
               <b className="block">No puedes iniciar esta venta</b>
               El {noFunds.name} cuesta {usd(noFunds.cost)} y tu saldo es {usd(balance)}. Faltan {usd(Math.max(noFunds.cost - balance, 0))}.
