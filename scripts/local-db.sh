@@ -51,18 +51,12 @@ SUPABASE_URL="$API_URL" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/local-
 cat <<EOF
 
 ────────────────────────────────────────────────────────────
-Supabase local listo. Para probar la app, crea un archivo .env.local
-(NUNCA uses las claves de producción aquí) con:
+Supabase local listo.
 
-NEXT_PUBLIC_SUPABASE_URL=$API_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
-STRIPE_SECRET_KEY=sk_test_placeholder
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_placeholder
-STRIPE_WEBHOOK_SECRET=whsec_placeholder
-RESEND_API_KEY=placeholder
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+Siguiente paso: crear el .env.local de pruebas (NUNCA con claves de producción).
+NO copies las claves a mano desde la pantalla ni desde un chat: pueden quedar tapadas con "•••".
+
+    bash scripts/local-env.sh
 
 Luego:  npm install   y   npm run dev   → http://localhost:3000/login
 

@@ -28,7 +28,7 @@ Requisitos: Docker Desktop abierto y Node.
 bash scripts/local-db.sh
 ```
 
-Levanta un Supabase local con el esquema real de producción (`supabase/baseline_prod.sql`, volcado del 2026-11-24) más las migraciones 1 a 3, y carga datos de ejemplo (un admin, una agencia prepago con 500 USD y una postpago). Al final imprime lo que hay que poner en `.env.local` y los usuarios de prueba. Después: `npm install` y `npm run dev`.
+Levanta un Supabase local con el esquema real de producción (`supabase/baseline_prod.sql`, volcado del 2026-11-24) más las migraciones 1 a 3, y carga datos de ejemplo (un admin, una agencia prepago con 500 USD y una postpago). Después `bash scripts/local-env.sh` crea el `.env.local` de pruebas leyendo las claves directamente del Supabase local. No copiar las claves a mano: al pegarlas desde un chat pueden quedar tapadas con `•••` y el login falla con "Cannot convert argument to a ByteString". Luego `npm install` y `npm run dev`.
 
 Qué probar, en este orden:
 
