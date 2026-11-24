@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { getWalletOverview, configureWallet, topupWallet, attachTopupInvoice, type WalletOverview } from './wallet-actions'
 import { toast } from '@/lib/toast'
-import { usd, type BillingModel } from '@/lib/wallet'
+import { usd, withTimeout, TIMEOUT_MESSAGE, type BillingModel } from '@/lib/wallet'
 
 const KIND: Record<string, string> = { topup: 'Recarga', sale: 'Venta', cancel_refund: 'Devolución (cancelación)', admin_void_refund: 'Devolución (anulación)', adjustment: 'Ajuste' }
 const inp: React.CSSProperties = { background: '#fff', border: '1px solid #CFC5B2', borderRadius: 8, padding: '10px 12px', color: '#1E293B', fontSize: 14, fontFamily: 'inherit', width: '100%', boxSizing: 'border-box', minHeight: 44 }
@@ -37,7 +37,9 @@ export default function WalletPanel({ agencyId }: { agencyId: string }) {
 
   async function run(fn: () => Promise<{ ok: boolean; error?: string }>, okMsg: string) {
     setBusy(true)
-    const r = await fn()
+    let r: { ok: boolean; error?: string }
+    try { r = await withTimeout(fn()) }
+    catch { setBusy(false); toast(TIMEOUT_MESSAGE, 'error'); return false }
     setBusy(false)
     if (!r.ok) { toast(r.error || 'No se pudo completar la acción', 'error'); return false }
     toast(okMsg); await load(); return true

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { cancelOrder } from '@/app/(partner)/pedidos/actions'
 import { toast } from '@/lib/toast'
-import { usd, isAgencyCancellable } from '@/lib/wallet'
+import { usd, isAgencyCancellable, withTimeout, TIMEOUT_MESSAGE } from '@/lib/wallet'
 
 type Props = {
   orderId: string
@@ -45,7 +45,9 @@ export default function CancelOrderButton({ orderId, orderRef, status, customer,
 
   async function confirm() {
     setBusy(true); setError('')
-    const res = await cancelOrder(orderId)
+    let res: Awaited<ReturnType<typeof cancelOrder>>
+    try { res = await withTimeout(cancelOrder(orderId)) }
+    catch { setBusy(false); setError(TIMEOUT_MESSAGE); router.refresh(); return }
     setBusy(false)
     if (!res.ok) { setError(res.error); router.refresh(); return }
     setOpen(false)

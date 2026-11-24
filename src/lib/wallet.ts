@@ -34,8 +34,19 @@ const MESSAGES: Record<string, string> = {
   INVALID_THRESHOLD: 'El umbral de saldo bajo no puede ser negativo.',
 }
 
+export const TIMEOUT_MESSAGE =
+  'No hubo respuesta del servidor. Revisa tu conexión y comprueba el estado del pedido antes de reintentar: la acción puede haberse aplicado.'
+
+/** Evita que un botón se quede en «Procesando…» para siempre si la conexión se corta. */
+export async function withTimeout<T>(p: Promise<T>, ms = 30000): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('TIMEOUT')), ms) })
+  try { return await Promise.race([p, timeout]) } finally { if (timer) clearTimeout(timer) }
+}
+
 export function walletErrorMessage(raw?: string | null): string {
   if (!raw) return 'No se pudo completar la acción. Intenta de nuevo.'
+  if (raw.includes('lock timeout')) return 'Este pedido o saldo se está modificando en este momento. Espera unos segundos y reintenta.'
   for (const code of Object.keys(MESSAGES)) {
     if (raw.includes(code)) return MESSAGES[code]
   }

@@ -207,6 +207,7 @@ end $$;
 create function public._require_admin() returns uuid
 language plpgsql security definer set search_path = '' as $$
 begin
+  perform pg_catalog.set_config('lock_timeout', '5s', true);  -- nunca esperar indefinidamente un bloqueo
   if auth.uid() is null then raise exception 'UNAUTHENTICATED'; end if;
   if public.get_user_role() is distinct from 'admin' then raise exception 'FORBIDDEN'; end if;
   return auth.uid();
@@ -235,6 +236,7 @@ declare
   v_vcost    numeric;
   i          int;
 begin
+  perform pg_catalog.set_config('lock_timeout', '5s', true);  -- nunca esperar indefinidamente un bloqueo
   if v_uid is null then raise exception 'UNAUTHENTICATED'; end if;
 
   select u.role::text, u.agency_id, coalesce(u.active, true)
@@ -315,6 +317,7 @@ declare
   v_bal numeric; v_alert boolean; v_thr numeric;
   v_refunded boolean := false;
 begin
+  perform pg_catalog.set_config('lock_timeout', '5s', true);  -- nunca esperar indefinidamente un bloqueo
   if v_uid is null then raise exception 'UNAUTHENTICATED'; end if;
   select u.role::text, u.agency_id into v_role, v_u_agency from public.users u
    where u.id = v_uid and coalesce(u.active, true);

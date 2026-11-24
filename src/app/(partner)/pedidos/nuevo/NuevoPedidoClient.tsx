@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createOrder } from './actions'
 import CancelOrderButton from '@/components/partner/CancelOrderButton'
 import { useWalletBalance } from '@/hooks/useWalletBalance'
-import { ORDER_STATUS_LABELS, usd, type BillingModel } from '@/lib/wallet'
+import { ORDER_STATUS_LABELS, usd, withTimeout, type BillingModel } from '@/lib/wallet'
 
 export type Tariff = { id: string; name: string; type: 'prepago' | 'dataonly'; data_gb: number; validity_days: number | null }
 type Pricing = { tariff_id: string; cost_price: number; pvp: number }
@@ -87,13 +87,21 @@ export default function NuevoPedidoClient({ tariffs, pricing, agencyId, billingM
     if (!canAfford(cost)) { setNoFunds({ name: tariff.name, cost }); return }
     if (missing.length) return
     setBusy(true); setError('')
-    const res = await createOrder({
-      tariffId: tariff.id,
-      customerName: form.nombre, customerLastname: form.apellido,
-      customerPassport: form.pasaporte, customerNationality: form.nac,
-      customerDob: form.dob, customerEmail: form.email,
-      activationDate: scheduled ? form.fecha : null,
-    })
+    let res: Awaited<ReturnType<typeof createOrder>>
+    try {
+      res = await withTimeout(createOrder({
+        tariffId: tariff.id,
+        customerName: form.nombre, customerLastname: form.apellido,
+        customerPassport: form.pasaporte, customerNationality: form.nac,
+        customerDob: form.dob, customerEmail: form.email,
+        activationDate: scheduled ? form.fecha : null,
+      }))
+    } catch {
+      setBusy(false)
+      setError('No hubo respuesta del servidor. Antes de reintentar, mira «Últimas ventas» y tu saldo: la venta puede haberse registrado.')
+      router.refresh()
+      return
+    }
     setBusy(false)
     if (!res.ok) {
       if (res.insufficientBalance) setNoFunds({ name: tariff.name, cost })

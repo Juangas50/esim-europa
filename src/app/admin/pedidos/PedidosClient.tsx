@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { updateOrderStatus, deliverOrder, deliverGroupOrders, resendDeliveryEmail, resendGroupOrders, startManagement, voidOrder } from './actions'
 import { parseActivationString, validateConfirmationCode } from '@/lib/esim/validate'
+import { withTimeout, TIMEOUT_MESSAGE } from '@/lib/wallet'
 import { toast } from '@/lib/toast'
 
 // Formatea una fecha sin hora ('YYYY-MM-DD') a dd/mm/aaaa.
@@ -262,7 +263,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
   async function handleVoid() {
     if (!voidTarget) return
     setVoiding(true)
-    const r = await voidOrder(voidTarget.id, voidReason)
+    let r: Awaited<ReturnType<typeof voidOrder>>
+    try { r = await withTimeout(voidOrder(voidTarget.id, voidReason)) }
+    catch { setVoiding(false); toast(TIMEOUT_MESSAGE, 'error'); return }
     setVoiding(false)
     if (!r.ok) { toast(r.error, 'error'); return }
     const id = voidTarget.id
@@ -280,7 +283,9 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
     }
     if (source === 'b2b' && status === 'in_management') {
       setUpdating(orderId)
-      const r = await startManagement(orderId)
+      let r: Awaited<ReturnType<typeof startManagement>>
+      try { r = await withTimeout(startManagement(orderId)) }
+      catch { setUpdating(null); toast(TIMEOUT_MESSAGE, 'error'); return }
       setUpdating(null)
       if (!r.ok) { toast(r.error, 'error'); return }
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'in_management' } : o))
@@ -520,7 +525,11 @@ export default function PedidosClient({ orders: initial }: { orders: UnifiedOrde
                             defaultValue=""
                             style={{ background: '#fff', border: '1px solid #EDE8E0', borderRadius: 7, padding: '7px 11px', color: '#1B2F4E', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
                             <option value="" disabled>{updating === o.id ? 'Guardando...' : 'Cambiar estado'}</option>
-                            {(o.source === 'b2c' ? STATUS_OPTIONS_B2C : STATUS_OPTIONS_B2B).map(opt => (
+                            {(o.source === 'b2c' ? STATUS_OPTIONS_B2C : STATUS_OPTIONS_B2B.filter(opt =>
+                              // «Empezar a gestionar» solo si aún no se ha empezado; «Anular» no si ya está cancelado
+                              !(opt.value === 'in_management' && o.status !== 'pending_review' && o.status !== 'scheduled') &&
+                              !(opt.value === 'void' && o.status === 'cancelled')
+                            )).map(opt => (
                               <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                           </select>

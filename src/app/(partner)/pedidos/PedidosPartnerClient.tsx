@@ -92,7 +92,7 @@ export default function PedidosPartnerClient({ orders, prepaid }: { orders: any[
       ) : (
         /* Desktop Table */
         <motion.div
-          className="bg-white border border-[#EDE8E0] rounded-2xl overflow-hidden"
+          className="bg-white border border-[#EDE8E0] rounded-2xl overflow-x-auto"
           initial={{ y: 8, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, ease: EASE_OUT }}
@@ -100,7 +100,7 @@ export default function PedidosPartnerClient({ orders, prepaid }: { orders: any[
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-[#EDE8E0]">
-                {['Ref', 'Cliente', 'Tarifa', 'Tipo', 'Activación', 'Tu precio', 'Tu PVP', 'Estado', 'Acción'].map(h => (
+                {['Ref', 'Cliente', 'Tarifa', 'Activación', 'Tu precio', 'Tu PVP', 'Estado', 'Acción'].map(h => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-[#64748B]">{h}</th>
                 ))}
               </tr>
@@ -121,12 +121,7 @@ export default function PedidosPartnerClient({ orders, prepaid }: { orders: any[
                       <div className="font-bold text-sm text-[var(--color-navy)]">{o.customer_name} {o.customer_lastname}</div>
                       <div className="text-xs text-[#64748B]">{o.customer_email}</div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-[var(--color-navy)]">{o.tariffs?.name}</td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs font-bold px-2 py-1 rounded" style={{ background: o.type === 'prepago' ? 'rgba(245,158,11,0.1)' : 'rgba(110,231,183,0.1)', color: o.type === 'prepago' ? '#F59E0B' : '#6EE7B7' }}>
-                        {o.type === 'prepago' ? 'Prepago' : 'DataOnly'}
-                      </span>
-                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-navy)]">{o.tariffs?.name}<span className="block text-[11px] text-[#64748B]">{o.type === 'prepago' ? 'Prepago' : 'DataOnly'}</span></td>
                     <td className="px-4 py-3 text-sm text-[#64748B]">{o.activation_date || 'Cliente activa'}</td>
                     <td className="px-4 py-3 text-sm tabular-nums">{usd(o.cost_at_time)}</td>
                     <td className="px-4 py-3 text-sm tabular-nums text-[#64748B]">{usd(o.pvp_at_time)}</td>
