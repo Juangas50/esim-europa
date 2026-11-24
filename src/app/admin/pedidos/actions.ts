@@ -13,8 +13,11 @@ import QRCode from 'qrcode'
 // distintos en la base de datos — usar un único set compartido dejaba pasar
 // estados que la tabla B2C rechaza (y viceversa). Ver supabase/migrations/
 // 20260524_b2c_orders.sql para el constraint real de b2c_orders.
+// `paid` NO existe en el enum order_status de `orders` (solo aplica a B2C, donde lo
+// pone el webhook de Stripe). `in_management` = el admin ya empezó a tramitar la
+// línea y la agencia no puede cancelar. `expired` tampoco está en el enum B2B.
 const VALID_STATUSES_B2B = new Set([
-  'pending_review', 'paid', 'scheduled', 'qr_sent', 'activated', 'expired', 'cancelled',
+  'pending_review', 'scheduled', 'in_management', 'qr_sent', 'activated', 'cancelled',
 ])
 const VALID_STATUSES_B2C = new Set([
   'pending_payment', 'paid', 'processing', 'qr_sent', 'active', 'expired', 'cancelled', 'error',
